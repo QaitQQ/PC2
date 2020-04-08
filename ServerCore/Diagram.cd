@@ -1,0 +1,60 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="Server.Class.Net.NetServer.CrmNetClass" Collapsed="true">
+    <Position X="7.5" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Class\Net\NetServer\CRMNetClasses\CrmNetClass.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Server.Class.Net.NetServer.Server_ItemNetClass" Collapsed="true">
+    <Position X="12" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAABAAAABAAAAAAABAAEAAAAAAAEABAAAAQAAAAAA=</HashCode>
+      <FileName>Class\Net\NetServer\ItemsNetClasses\Server_ItemNetClass.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Server.Class.Net.NetServer.Server_MailItemsDB" Collapsed="true">
+    <Position X="14.25" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAQAIAAAAAAAAAAAAAAAAAQAAAAQAAAAAAAACAAEAA=</HashCode>
+      <FileName>Class\Net\NetServer\ItemsNetClasses\Server_MailItemsDB.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Server.Class.Net.NetServer.Server_NetApiSiteClass" Collapsed="true">
+    <Position X="16.5" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Class\Net\NetServer\ItemsNetClasses\Server_NetApiSiteClass.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Server.Class.Net.NetServer.BaseNetClass" Collapsed="true">
+    <Position X="21" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAEAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAA=</HashCode>
+      <FileName>Class\Net\NetServer\RootNetClasses\BaseNetClass.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Server.Class.Net.NetServer.Server_Switch" Collapsed="true">
+    <Position X="9.75" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Class\Net\NetServer\RootNetClasses\Server_Switch.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Server.Class.Net.NetServer.AbstractNetClass" Collapsed="true">
+    <Position X="14.25" Y="4.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAQAAAAAABAAAAAAAAAAAAA=</HashCode>
+      <FileName>Class\Net\NetServer\AbstractNetClass.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Server.Class.Net.NetServer.Аuthorization" Collapsed="true">
+    <Position X="18.75" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAA=</HashCode>
+      <FileName>Class\Net\NetServer\Аuthorization.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>
