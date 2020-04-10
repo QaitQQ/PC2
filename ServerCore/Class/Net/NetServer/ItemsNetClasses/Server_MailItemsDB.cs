@@ -1,4 +1,6 @@
-﻿using Server.Class.Query;
+﻿using Pricecona;
+
+using Server.Class.Query;
 
 using StructLibs;
 
@@ -35,6 +37,19 @@ namespace Server.Class.Net.NetServer
                     DelItemFromСhangeList();
                     break;
                 case EnumMailDB_TS.SearchNewPairName:
+                    break;
+                case EnumMailDB_TS.SearchMappedPairName:
+
+                    break;
+                case EnumMailDB_TS.Retun_Compare_RC:
+
+                    List<KeyValuePair<PriceStruct, ItemDBStruct>> list = Program.Cash.СhangedItems.FindAll(x => x.Value != null && x.Value.PriceRC != x.Key.PriceRC);
+
+
+                    string t = "=>";
+                    foreach (KeyValuePair<PriceStruct, ItemDBStruct> item in list)
+                    { MassName.Add(new string[] { item.Value.Id.ToString(), item.Value.СomparisonName, item.Value.PriceRC.ToString() + t + item.Key.PriceRC.ToString(), item.Value.PriceDC.ToString() + t + item.Key.PriceDC.ToString(), item.Key.Description, item.Key.SourceName }); }
+                    this.Data.Obj = MassName;
                     break;
                 default:
                     break;

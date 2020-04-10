@@ -21,36 +21,24 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="Forms\CRMForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
+    <Compile Update="Forms\CRMForm.cs" />
     <Compile Update="Forms\CRMForm.Designer.cs">
       <DependentUpon>CRMForm.cs</DependentUpon>
     </Compile>
-    <Compile Update="Forms\DictionaryConfig.cs">
-      <SubType>Form</SubType>
-    </Compile>
+    <Compile Update="Forms\DictionaryConfig.cs" />
     <Compile Update="Forms\DictionaryConfig.Designer.cs">
       <DependentUpon>DictionaryConfig.cs</DependentUpon>
     </Compile>
-    <Compile Update="Forms\ItemForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
+    <Compile Update="Forms\ItemForm.cs" />
     <Compile Update="Forms\ItemForm.Designer.cs">
       <DependentUpon>ItemForm.cs</DependentUpon>
     </Compile>
-    <Compile Update="Forms\Mainform.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Update="Forms\StringModalBox.cs">
-      <SubType>Form</SubType>
-    </Compile>
+    <Compile Update="Forms\Mainform.cs" />
+    <Compile Update="Forms\StringModalBox.cs" />
     <Compile Update="Forms\StringModalBox.Designer.cs">
       <DependentUpon>StringModalBox.cs</DependentUpon>
     </Compile>
-    <Compile Update="Forms\АuthorizationForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
+    <Compile Update="Forms\АuthorizationForm.cs" />
   </ItemGroup>
 
   <ItemGroup>

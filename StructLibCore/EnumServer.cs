@@ -2,7 +2,9 @@
 {
     public static class Selector
     {
-        public enum FillTable { СhangedItemsTable, NewItemTable, СhangedSiteTable }
+        public enum FillTable { СhangedItemsTable, NewItemTable, СhangedSiteTable,
+            Compare_RC
+        }
         public enum FirstSelector
         {
             Ok_code,
@@ -64,7 +66,8 @@
                 SearchMappedPairName,
                 SearchNewPairName,
                 EditItemFromDBAndDelFromMappedList,
-                DelItemFromСhangeList
+                DelItemFromСhangeList,
+                Retun_Compare_RC
             }
         }
     }

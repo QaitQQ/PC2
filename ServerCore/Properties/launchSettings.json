@@ -3,7 +3,7 @@
     "1_ServerCore": {
       "commandName": "Project",
       "commandLineArgs": "-Server -Client",
-      "nativeDebugging": true
+      "nativeDebugging": false
     }
   }
 }

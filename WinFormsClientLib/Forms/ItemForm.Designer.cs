@@ -35,9 +35,10 @@ namespace Client.Forms
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             this.TechField = new System.Windows.Forms.RichTextBox();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.MarkupTextBox = new System.Windows.Forms.TextBox();
             this.ItemFieldBox = new System.Windows.Forms.ComboBox();
             this.DelDouble = new System.Windows.Forms.Button();
-            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.DiscountTextBox = new System.Windows.Forms.TextBox();
             this.button5 = new System.Windows.Forms.Button();
             this.button4 = new System.Windows.Forms.Button();
             this.button3 = new System.Windows.Forms.Button();
@@ -62,6 +63,7 @@ namespace Client.Forms
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
             this.panel5 = new System.Windows.Forms.Panel();
             this.splitContainer3 = new System.Windows.Forms.SplitContainer();
+            this.MappedRC = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.MainFieldTable)).BeginInit();
             this.panel2.SuspendLayout();
@@ -103,9 +105,11 @@ namespace Client.Forms
             // 
             // panel1
             // 
+            this.panel1.Controls.Add(this.MappedRC);
+            this.panel1.Controls.Add(this.MarkupTextBox);
             this.panel1.Controls.Add(this.ItemFieldBox);
             this.panel1.Controls.Add(this.DelDouble);
-            this.panel1.Controls.Add(this.textBox1);
+            this.panel1.Controls.Add(this.DiscountTextBox);
             this.panel1.Controls.Add(this.button5);
             this.panel1.Controls.Add(this.button4);
             this.panel1.Controls.Add(this.button3);
@@ -121,6 +125,14 @@ namespace Client.Forms
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(163, 689);
             this.panel1.TabIndex = 2;
+            // 
+            // MarkupTextBox
+            // 
+            this.MarkupTextBox.Location = new System.Drawing.Point(5, 461);
+            this.MarkupTextBox.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            this.MarkupTextBox.Name = "MarkupTextBox";
+            this.MarkupTextBox.Size = new System.Drawing.Size(149, 23);
+            this.MarkupTextBox.TabIndex = 13;
             // 
             // ItemFieldBox
             // 
@@ -142,13 +154,13 @@ namespace Client.Forms
             this.DelDouble.UseVisualStyleBackColor = true;
             this.DelDouble.Click += new System.EventHandler(this.DelDouble_Click);
             // 
-            // textBox1
+            // DiscountTextBox
             // 
-            this.textBox1.Location = new System.Drawing.Point(0, 432);
-            this.textBox1.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(150, 23);
-            this.textBox1.TabIndex = 13;
+            this.DiscountTextBox.Location = new System.Drawing.Point(4, 432);
+            this.DiscountTextBox.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            this.DiscountTextBox.Name = "DiscountTextBox";
+            this.DiscountTextBox.Size = new System.Drawing.Size(150, 23);
+            this.DiscountTextBox.TabIndex = 13;
             // 
             // button5
             // 
@@ -257,7 +269,7 @@ namespace Client.Forms
             this.SearchList.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.SearchList.MinimumSize = new System.Drawing.Size(58, 660);
             this.SearchList.Name = "SearchList";
-            this.SearchList.Size = new System.Drawing.Size(224, 689);
+            this.SearchList.Size = new System.Drawing.Size(223, 689);
             this.SearchList.TabIndex = 4;
             this.SearchList.SelectedIndexChanged += new System.EventHandler(this.SearchList_SelectedIndexChanged);
             // 
@@ -293,7 +305,7 @@ namespace Client.Forms
             this.panel2.Location = new System.Drawing.Point(0, 0);
             this.panel2.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(29, 689);
+            this.panel2.Size = new System.Drawing.Size(30, 689);
             this.panel2.TabIndex = 2;
             // 
             // panel6
@@ -303,7 +315,7 @@ namespace Client.Forms
             this.panel6.Location = new System.Drawing.Point(0, 0);
             this.panel6.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.panel6.Name = "panel6";
-            this.panel6.Size = new System.Drawing.Size(29, 689);
+            this.panel6.Size = new System.Drawing.Size(30, 689);
             this.panel6.TabIndex = 1;
             this.panel6.Visible = false;
             // 
@@ -325,7 +337,7 @@ namespace Client.Forms
             this.splitContainer4.Panel2.Controls.Add(this.treeView1);
             this.splitContainer4.Panel2.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.splitContainer4.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.splitContainer4.Size = new System.Drawing.Size(29, 689);
+            this.splitContainer4.Size = new System.Drawing.Size(30, 689);
             this.splitContainer4.SplitterDistance = 655;
             this.splitContainer4.SplitterWidth = 5;
             this.splitContainer4.TabIndex = 0;
@@ -345,7 +357,7 @@ namespace Client.Forms
             // splitContainer5.Panel2
             // 
             this.splitContainer5.Panel2.Controls.Add(this.webBrowser);
-            this.splitContainer5.Size = new System.Drawing.Size(29, 655);
+            this.splitContainer5.Size = new System.Drawing.Size(30, 655);
             this.splitContainer5.SplitterDistance = 36;
             this.splitContainer5.SplitterWidth = 5;
             this.splitContainer5.TabIndex = 2;
@@ -357,7 +369,7 @@ namespace Client.Forms
             this.comboBox1.Location = new System.Drawing.Point(0, 0);
             this.comboBox1.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(29, 23);
+            this.comboBox1.Size = new System.Drawing.Size(30, 23);
             this.comboBox1.TabIndex = 1;
             // 
             // webBrowser
@@ -367,7 +379,7 @@ namespace Client.Forms
             this.webBrowser.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.webBrowser.MinimumSize = new System.Drawing.Size(23, 23);
             this.webBrowser.Name = "webBrowser";
-            this.webBrowser.Size = new System.Drawing.Size(29, 614);
+            this.webBrowser.Size = new System.Drawing.Size(30, 614);
             this.webBrowser.TabIndex = 0;
             this.webBrowser.DocumentCompleted += new System.Windows.Forms.WebBrowserDocumentCompletedEventHandler(this.WebBrowser_DocumentCompleted);
             // 
@@ -377,7 +389,7 @@ namespace Client.Forms
             this.treeView1.Location = new System.Drawing.Point(0, 0);
             this.treeView1.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.treeView1.Name = "treeView1";
-            this.treeView1.Size = new System.Drawing.Size(29, 29);
+            this.treeView1.Size = new System.Drawing.Size(30, 29);
             this.treeView1.TabIndex = 0;
             // 
             // panel3
@@ -434,7 +446,7 @@ namespace Client.Forms
             // 
             this.splitContainer2.Panel2.Controls.Add(this.panel5);
             this.splitContainer2.Size = new System.Drawing.Size(1320, 689);
-            this.splitContainer2.SplitterDistance = 224;
+            this.splitContainer2.SplitterDistance = 223;
             this.splitContainer2.SplitterWidth = 5;
             this.splitContainer2.TabIndex = 0;
             // 
@@ -445,7 +457,7 @@ namespace Client.Forms
             this.panel5.Location = new System.Drawing.Point(0, 0);
             this.panel5.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.panel5.Name = "panel5";
-            this.panel5.Size = new System.Drawing.Size(1091, 689);
+            this.panel5.Size = new System.Drawing.Size(1092, 689);
             this.panel5.TabIndex = 0;
             // 
             // splitContainer3
@@ -462,10 +474,21 @@ namespace Client.Forms
             // splitContainer3.Panel2
             // 
             this.splitContainer3.Panel2.Controls.Add(this.panel2);
-            this.splitContainer3.Size = new System.Drawing.Size(1091, 689);
+            this.splitContainer3.Size = new System.Drawing.Size(1092, 689);
             this.splitContainer3.SplitterDistance = 1057;
             this.splitContainer3.SplitterWidth = 5;
             this.splitContainer3.TabIndex = 0;
+            // 
+            // MappedRC
+            // 
+            this.MappedRC.Location = new System.Drawing.Point(7, 201);
+            this.MappedRC.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            this.MappedRC.Name = "MappedRC";
+            this.MappedRC.Size = new System.Drawing.Size(74, 46);
+            this.MappedRC.TabIndex = 10;
+            this.MappedRC.Text = "Отличие в ронице";
+            this.MappedRC.UseVisualStyleBackColor = true;
+            this.MappedRC.Click += new System.EventHandler(this.Retun_Compare_RC_Click);
             // 
             // ItemForm
             // 
@@ -509,7 +532,7 @@ namespace Client.Forms
 
         }
 
-  
+
 
         #endregion
 
@@ -536,13 +559,13 @@ namespace Client.Forms
         private TreeView treeView1;
         private SplitContainer splitContainer5;
         private ComboBox comboBox1;
-        private DataGridViewTextBoxColumn Column1;
-        private DataGridViewTextBoxColumn Column2;
         private Button button3;
         private Button button4;
         private Button button5;
-        private TextBox textBox1;
+        private TextBox DiscountTextBox;
         private Button DelDouble;
         private ComboBox ItemFieldBox;
+        private TextBox MarkupTextBox;
+        private Button MappedRC;
     }
 }

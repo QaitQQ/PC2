@@ -52,7 +52,7 @@ namespace Server
             Tokens = new List<string>();
             Serializer<object> Serializer = new Serializer<object>();
             MailCheckFlag = false;
-            //  Gen_Dic();
+
             СhangeList += Serializer.Doit;
         }
 
@@ -63,11 +63,11 @@ namespace Server
             SiteItemsСhanged = Task.Run(() => new Deserializer<List<KeyValuePair<PriceStruct, ItemDBStruct>>>(Settings.SiteListСhanged).Doit()).Result;
             СhangedItems = Task.Run(() => new Deserializer<List<KeyValuePair<PriceStruct, ItemDBStruct>>>(Settings.СhangedItems).Doit()).Result;
             Dictionaries = Task.Run(() => new Deserializer<Dictionaries>(Settings.Dictionaries).Doit()).Result;
+           // Gen_Dic();
         }
 
 
         private void Gen_Dic()
-
         {
             Dictionaries = new Dictionaries();
 

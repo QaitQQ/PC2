@@ -60,6 +60,11 @@ namespace Client.Forms
             FillAtList(new ItemNetClass().Retun_Compare_Names());
             _FillTable = FillTable.СhangedItemsTable;
         }
+        private void Retun_Compare_RC_Click(object sender, EventArgs e)
+        {
+            FillAtList(new ItemNetClass().Retun_Compare_RC());
+            _FillTable = FillTable.СhangedItemsTable;
+        }
         private void Retun_New_Names_Click(object sender, EventArgs e)
         {
             FillAtList(new ItemNetClass().Retun_New_Names());
@@ -82,6 +87,24 @@ namespace Client.Forms
             _SearchList = new ItemNetClass(SearchTextBox.Text).Retun_Item_List(X);
             foreach (KeyValuePair<string, int> item in _SearchList)
             { SearchList.Items.Add(item.Key.Replace(@"\n", "").Trim()); }
+        }
+        private void DOM_Click(object sender, EventArgs e)
+        {
+            // удаляем непонятные элементы metrikaId...
+            //Regex _remove_IE_bug = new Regex(" ?metrikaId_[\\d\\.]*?=\"\\d*?\"", RegexOptions.IgnoreCase);
+            //// result - фрагмент html, полученный после применения метода 1 или 2
+            //result = _remove_IE_bug.Replace(result, "");
+            //HtmlAgilityPack.HtmlDocument htmlDoc = new HtmlAgilityPack.HtmlDocument();
+            //// вот оно ЧУДО
+            //htmlDoc.OptionFixNestedTags = true;
+            //htmlDoc.LoadHtml(result);
+            //if (htmlDoc.ParseErrors != null && htmlDoc.ParseErrors.Count() > 0)
+            //{
+            //    MessageBox.Show("Ошибочка!");
+            //    return;
+            //}
+            //result = htmlDoc.DocumentNode.InnerHtml;
+
         }
 
         #endregion
@@ -198,12 +221,18 @@ namespace Client.Forms
                             else if (item.Name.ToString() == "PriceDC")
                             {
                                 double Sale = 0;
-                                if (textBox1.Text != "")
+                                double Markup = 0;
+                                if (DiscountTextBox.Text != "")
                                 {
-                                    Sale = Convert.ToDouble(textBox1.Text);
+                                    Sale = Convert.ToDouble(DiscountTextBox.Text);
                                 }
 
-                                if (PriceDC != 0) { MainFieldTable.Rows.Add(item.Name.ToString(), PriceDC * (1 - (Sale / 100))); }
+                                if (MarkupTextBox.Text != "")
+                                {
+                                    Markup = Convert.ToDouble(MarkupTextBox.Text);
+                                }
+
+                                if (PriceDC != 0) { MainFieldTable.Rows.Add(item.Name.ToString(), PriceDC * (1 - (Sale / 100)) * (1 - (Markup / 100))); }
                                 else { MainFieldTable.Rows.Add(item.Name.ToString(), ItemValue.ToString()); }
                             }
                             else { MainFieldTable.Rows.Add(item.Name.ToString(), ItemValue.ToString()); }
@@ -232,24 +261,6 @@ namespace Client.Forms
             }
 
         }
-        private void DOM_Click(object sender, EventArgs e)
-        {
-            // удаляем непонятные элементы metrikaId...
-            //Regex _remove_IE_bug = new Regex(" ?metrikaId_[\\d\\.]*?=\"\\d*?\"", RegexOptions.IgnoreCase);
-            //// result - фрагмент html, полученный после применения метода 1 или 2
-            //result = _remove_IE_bug.Replace(result, "");
-            //HtmlAgilityPack.HtmlDocument htmlDoc = new HtmlAgilityPack.HtmlDocument();
-            //// вот оно ЧУДО
-            //htmlDoc.OptionFixNestedTags = true;
-            //htmlDoc.LoadHtml(result);
-            //if (htmlDoc.ParseErrors != null && htmlDoc.ParseErrors.Count() > 0)
-            //{
-            //    MessageBox.Show("Ошибочка!");
-            //    return;
-            //}
-            //result = htmlDoc.DocumentNode.InnerHtml;
-
-        }
         private void TableButtons(DataGridViewCellEventArgs e)
         {
             object Coordinate = MainFieldTable.Rows[e.RowIndex].Cells[e.ColumnIndex].Value;
@@ -276,7 +287,6 @@ namespace Client.Forms
             Task.Factory.StartNew(() => new ItemNetClass().Add_New_position_from_СhangeList(MainFieldTable.Rows[e.RowIndex].Cells[1].Value.ToString()));
             MainFieldTable.Rows[e.RowIndex].Visible = false;
         }
-
         private void SetPrice(DataGridViewCellEventArgs e)
         {
             Task.Factory.StartNew(() => new Setprice().SetPriceFromSite(Convert.ToInt32(MainFieldTable.Rows[e.RowIndex].Cells[0].Value), Convert.ToDouble(MainFieldTable.Rows[e.RowIndex].Cells[2].Value), ListBoxChanged));
@@ -332,14 +342,11 @@ namespace Client.Forms
                 }
             }
         }
-        private sealed class Setprice
-        {
-            public void SetPriceFromSite(int v1, double v2, Action<string> action)
+        private sealed class Setprice { public void SetPriceFromSite(int v1, double v2, Action<string> action)
             {
                 bool I = new ItemNetClass().SetPrice(v1, v2);
                 action(v1.ToString() + I.ToString());
-            }
-        }
+            } }
 
     }
 

@@ -49,5 +49,14 @@ namespace Client.Forms
         {
             new DictionaryConfig();
         }
+
+        private void ClientConfigMenuItem_Click(object sender, EventArgs e)
+        {
+            new Config();
+        }
+        private void Mainform_Activated(object sender, EventArgs e)
+        {
+
+        }
     }
 }

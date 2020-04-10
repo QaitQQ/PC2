@@ -1,4 +1,6 @@
-﻿namespace Client.Forms
+﻿using System;
+
+namespace Client.Forms
 {
     partial class Mainform
     {
@@ -39,6 +41,7 @@
             this.configformToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.словариToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.сетевыеToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.ClientConfig = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -50,7 +53,8 @@
             this.configformToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(1429, 24);
+            this.menuStrip1.Padding = new System.Windows.Forms.Padding(7, 2, 0, 2);
+            this.menuStrip1.Size = new System.Drawing.Size(1667, 24);
             this.menuStrip1.TabIndex = 1;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -109,7 +113,8 @@
             // 
             this.configformToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.словариToolStripMenuItem,
-            this.сетевыеToolStripMenuItem});
+            this.сетевыеToolStripMenuItem,
+            this.ClientConfig});
             this.configformToolStripMenuItem.Name = "configformToolStripMenuItem";
             this.configformToolStripMenuItem.Size = new System.Drawing.Size(82, 20);
             this.configformToolStripMenuItem.Text = " Настройки";
@@ -117,28 +122,37 @@
             // словариToolStripMenuItem
             // 
             this.словариToolStripMenuItem.Name = "словариToolStripMenuItem";
-            this.словариToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.словариToolStripMenuItem.Size = new System.Drawing.Size(181, 22);
             this.словариToolStripMenuItem.Text = "Словари";
             this.словариToolStripMenuItem.Click += new System.EventHandler(this.DictionariesToolStripMenuItem_Click);
             // 
             // сетевыеToolStripMenuItem
             // 
             this.сетевыеToolStripMenuItem.Name = "сетевыеToolStripMenuItem";
-            this.сетевыеToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.сетевыеToolStripMenuItem.Size = new System.Drawing.Size(181, 22);
             this.сетевыеToolStripMenuItem.Text = "Сетевые";
             this.сетевыеToolStripMenuItem.Click += new System.EventHandler(this.NetToolStripMenuItem_Click);
             // 
+            // ClientConfig
+            // 
+            this.ClientConfig.Name = "ClientConfig";
+            this.ClientConfig.Size = new System.Drawing.Size(181, 22);
+            this.ClientConfig.Text = "Настройки клиента";
+            this.ClientConfig.Click += new System.EventHandler(this.ClientConfigMenuItem_Click);
+            // 
             // Mainform
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1429, 565);
+            this.ClientSize = new System.Drawing.Size(1667, 652);
             this.Controls.Add(this.menuStrip1);
             this.IsMdiContainer = true;
             this.MainMenuStrip = this.menuStrip1;
+            this.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.Name = "Mainform";
             this.Text = "Mainform";
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
+            this.Activated += new System.EventHandler(this.Mainform_Activated);
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.Mainform_FormClosed);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
@@ -146,6 +160,8 @@
             this.PerformLayout();
 
         }
+
+
 
         #endregion
 
@@ -159,6 +175,7 @@
         private System.Windows.Forms.ToolStripMenuItem configformToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem iCQToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem словариToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem ClientConfig;
         private System.Windows.Forms.ToolStripMenuItem сетевыеToolStripMenuItem;
     }
 }

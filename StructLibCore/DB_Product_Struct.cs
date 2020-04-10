@@ -46,8 +46,7 @@ namespace StructLibs
 
             if (item.Pic != null)
             {
-                try
-                {
+
                     if (item.СomparisonName.Length < 15)
                     {
 
@@ -62,11 +61,8 @@ namespace StructLibs
                         Image = Imagelink;
 
                     }
-                }
-                catch (Exception E)
-                {
+                
 
-                }
 
 
 

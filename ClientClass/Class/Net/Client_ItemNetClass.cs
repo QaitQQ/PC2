@@ -1,5 +1,6 @@
 ﻿using StructLibs;
 
+using System;
 using System.Collections.Generic;
 
 using static NetEnum.Selector;
@@ -34,6 +35,9 @@ namespace Client.Class.Net
         public void LoadAllItemFromSite() => new TCP_Client_GetObj(ItemSelector).Get(SecondSelector.EnumItem.ApiSiteItem_Selektor, _SendObj, TripleSelector.ApiSiteItem.LoadAllItem);
         public void Del_Item_From_ID(int id) => new TCP_Client_GetObj(ItemSelector).Get(SecondSelector.EnumItem.Del_From_DB, id);
         public void Del_Item_From_СhangeList(object v) => new TCP_Client_GetObj(ItemSelector).Get(SecondSelector.EnumItem.WithMailDB_Selektor, v, TripleSelector.EnumMailDB_TS.DelItemFromСhangeList);
+
+        public List<string[]> Retun_Compare_RC() => (List<string[]>)new TCP_Client_GetObj(ItemSelector).Get(SecondSelector.EnumItem.WithMailDB_Selektor, _SendObj, TripleSelector.EnumMailDB_TS.Retun_Compare_RC);
+
         public void Add_New_position_from_СhangeList(string v) => new TCP_Client_GetObj(ItemSelector).Get(SecondSelector.EnumItem.Add_New_position_from_СhangeList, v);
         public List<string[]> CompareFromSite() => (List<string[]>)new TCP_Client_GetObj(ItemSelector).Get(SecondSelector.EnumItem.ApiSiteItem_Selektor, null, TripleSelector.ApiSiteItem.SiteItemCompared);
         public List<string[]> Retun_Compare_Site() => (List<string[]>)new TCP_Client_GetObj(ItemSelector).Get(SecondSelector.EnumItem.ApiSiteItem_Selektor, _SendObj, TripleSelector.ApiSiteItem.GetComparedItems);

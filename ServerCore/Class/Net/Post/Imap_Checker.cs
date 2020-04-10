@@ -11,13 +11,20 @@ namespace Server.Class.Net
         private string _Name;
         private string _Subject;
         private readonly CancellationTokenSource source = new CancellationTokenSource();
-        private readonly CancellationToken token;
+
+        public Imap_Checker(CancellationToken token)
+        {
+            this.Token = token;
+        }
+        public Imap_Checker() { }
+        public CancellationToken Token { get; }
+
         public async void Start_Check()
         {
             if (Program.Cash.MailCheckFlag == false)
             {
                 Program.Cash.MailCheckFlag = true;
-                await Task.Factory.StartNew(() => Cycle(), token);
+                await Task.Factory.StartNew(() => Cycle(), Token);
             }
 
         }

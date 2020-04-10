@@ -24,13 +24,18 @@ namespace Client
         private readonly string Token;
         public TCP_Client(object[] Code, string Token = null, object SendObj = null)
         {
-            string addres = ClientConfig.IP_and_Port_Server.Find(x => x.Key == "Server_IP").Value;
-            string port = ClientConfig.IP_and_Port_Server.Find(x => x.Key == "Port").Value;
-            if (addres == null)
+            string addres = ClientConfig.GetValue("Server_IP");
+
+            if (addres == "0")
             {
-                addres = "127.0.0.1";
-                port = "12001";
+                ClientConfig.SetValue("Server_IP", "127.0.0.1");
+                ClientConfig.SetValue("Port", "12001");
+
             }
+
+            addres = ClientConfig.GetValue("Server_IP");
+            string port = ClientConfig.GetValue("Port");
+
 
             IPEndPoint = new IPEndPoint(IPAddress.Parse(addres), Convert.ToInt32(port));
             Data = new TCP_CS_Obj();

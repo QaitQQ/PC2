@@ -25,11 +25,11 @@ namespace Client
         public void MainClient()
 
         {
-            ClientConfig.IP_and_Port_Server = new Deserializer<List<KeyValuePair<string, string>>>("ClientConfig.bin").Doit();
+            ClientConfig.ConfigValue = new Deserializer<List<KeyValuePair<string, string>>>("ClientConfig.bin").Doit();
 
-            if (ClientConfig.IP_and_Port_Server == null)
+            if (ClientConfig.ConfigValue == null)
             {
-                ClientConfig.IP_and_Port_Server = new List<KeyValuePair<string, string>>
+                ClientConfig.ConfigValue = new List<KeyValuePair<string, string>>
                 {
                     new KeyValuePair<string, string>("Server_IP", "127.0.0.1"),
                     new KeyValuePair<string, string>("Port", "12001")
@@ -39,6 +39,7 @@ namespace Client
             Application.SetCompatibleTextRenderingDefault(false);
             АuthorizationWindow = new АuthorizationForm();
             Application.Run(АuthorizationWindow);
+
         }
     }
 }

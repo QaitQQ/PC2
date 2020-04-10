@@ -98,31 +98,41 @@ namespace WindowsFormsClientLibrary.Forms
         }
         private void Save_Click(object sender, EventArgs e)
         {
-            IDictionaryPC NewDic;
-            string Name = dataGridView1.Rows[1].Cells[0].Value.ToString();
-            DictionaryRelate Relate = (DictionaryRelate)dataGridView1.Rows[3].Cells[0].Value;
 
-            if (dataGridView1.Rows[0].Cells[2].Value != null && dataGridView1.Rows[0].Cells[2].Value.ToString() != "")
+
+            if (listBox1.SelectedIndex == -1)
             {
-                NewDic = new DictionaryPrice(Name, Relate);
-                for (int i = 0; i < dataGridView1.Rows.Count - 1; i++)
-                { ((DictionaryPrice)NewDic).Set_Filling_method_string((FillDefinition)dataGridView1.Rows[i].Cells[3].Value, dataGridView1.Rows[i].Cells[2].Value.ToString()); }
+                new BaseNetClass().SetDictionaries(Dictionaries);
             }
-            else { NewDic = new DictionaryBase(Name, Relate); }
-            for (int i = 0; i < dataGridView1.Rows.Count - 1; i++)
+            else
             {
-                if (dataGridView1.Rows[0].Cells[1].Value?.ToString() != "")
+                IDictionaryPC NewDic;
+                string Name = dataGridView1.Rows[1].Cells[0].Value.ToString();
+                DictionaryRelate Relate = (DictionaryRelate)dataGridView1.Rows[3].Cells[0].Value;
+
+                if (dataGridView1.Rows[0].Cells[2].Value != null && dataGridView1.Rows[0].Cells[2].Value.ToString() != "")
                 {
-                    if (dataGridView1.Rows[i].Cells[1].Value != null && dataGridView1.Rows[i].Cells[1].Value.ToString() != "")
-                    { NewDic.Values.Add(dataGridView1.Rows[i].Cells[1].Value.ToString()); }
+                    NewDic = new DictionaryPrice(Name, Relate);
+                    for (int i = 0; i < dataGridView1.Rows.Count - 1; i++)
+                    { ((DictionaryPrice)NewDic).Set_Filling_method_string((FillDefinition)dataGridView1.Rows[i].Cells[3].Value, dataGridView1.Rows[i].Cells[2].Value.ToString()); }
                 }
+                else { NewDic = new DictionaryBase(Name, Relate); }
+                for (int i = 0; i < dataGridView1.Rows.Count - 1; i++)
+                {
+                    if (dataGridView1.Rows[0].Cells[1].Value?.ToString() != "")
+                    {
+                        if (dataGridView1.Rows[i].Cells[1].Value != null && dataGridView1.Rows[i].Cells[1].Value.ToString() != "")
+                        { NewDic.Values.Add(dataGridView1.Rows[i].Cells[1].Value.ToString()); }
+                    }
+                }
+                if (dataGridView1.Rows[5].Cells[0].Value != null && dataGridView1.Rows[5].Cells[0].Value.ToString() != "")
+                {
+                    NewDic.Id = Convert.ToInt32(dataGridView1.Rows[5].Cells[0].Value);
+                }
+                Dictionaries.Renew(NewDic);
+                new BaseNetClass().SetDictionaries(Dictionaries);
             }
-            if (dataGridView1.Rows[5].Cells[0].Value != null && dataGridView1.Rows[5].Cells[0].Value.ToString() != "")
-            {
-                NewDic.Id = Convert.ToInt32(dataGridView1.Rows[5].Cells[0].Value);
-            }
-            Dictionaries.Renew(NewDic);
-            new BaseNetClass().SetDictionaries(Dictionaries);
+            
         }
         private void AddDic_Button_Click(object sender, EventArgs e)
         {
