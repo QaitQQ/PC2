@@ -23,7 +23,9 @@
         public static string SiteLink = "https://salessab.su" + "/index.php?route=api";
         public static string Key = "gFhNIqYweY5o5mzLEEcDsjtmUt2vWphpzrXdkPxoV7pU0zLFXTSicerd0SholH3V6e7OEN3CPtjKPD0ZM6IXTmm4XyHkbRl6aGBzIVs7ReOzjHaZOVqYEDPiAhBxOfLmvcEXQWYPVczSNih71ntRx2e5E7syR3jhJY7FTRlPxEx5uqRHqMRlpmvTjw4kCaRBJKtk7yXPpXCE5Po2xuTCv7gtdBrnZmzPMqeTdaX2QaHrHEn64ewH7GCqkzudbeMb";
         public static string tokenfile = "token.bin";
-        public const string DBContext = "Host=localhost;Port=5432;Database=mydb;Username=postgres;Password=3011656";
+        public const string DBContext =
+        //"Host=192.168.1.49;Port=5432;Database=mydb;Username=postgres;Password=3011656";
+        "Host=localhost;Port=5432;Database=mydb;Username=postgres;Password=3011656";
         public static string[] ApiSettngs = new string[] { SiteLink, Key, tokenfile };
     }
 

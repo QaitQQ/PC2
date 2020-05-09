@@ -6,6 +6,8 @@ using Server.Class.ItemProcessor;
 
 using Spire.Xls;
 
+using StructLibs;
+
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -19,8 +21,7 @@ namespace XLS
     {
         private Workbook _workbook;
         private Worksheet _Worksheet;
-        private DictionaryPrice _Dictionary;
-        private List<PriceStruct> _priceDataList;
+        private IDictionaryPC _Dictionary;
         public XLS_TO_LIST(Stream stream) { _workbook = new Workbook(); using (Stream Stream = stream) { _workbook.LoadFromStream(Stream); }; }
         #region поиски
         private int RCCellFind(ref int rowRCFin)
@@ -34,7 +35,7 @@ namespace XLS
                 for (int cell = 1; cell < 20; cell++)
                 {
                     tester = Convert.ToString(_Worksheet[rowRC, cell].Value);
-                    foreach (KeyValuePair<FillDefinition, string> item in _Dictionary.GetFillingStringUnderRelate(FillDefinition.PriceRC))
+                    foreach (KeyValuePair<FillDefinitionPrice, string> item in ((DictionaryPrice)_Dictionary).GetFillingStringUnderRelate(FillDefinitionPrice.PriceRC))
                     {
                         if (tester.ToUpper().Contains(item.Value.ToUpper()))
                         {
@@ -47,7 +48,6 @@ namespace XLS
 
                                 for (int i = Testrow++; i < Testrow + 6; i++)
                                 {
-
                                     double One = ReadStringToDouble(_Worksheet[i, r.Column].Value);
                                     double Two = ReadStringToDouble(_Worksheet[i, r.LastColumn].Value);
 
@@ -73,87 +73,134 @@ namespace XLS
         }   // пытаемся найти розницу
         private int DC_CellFind(int cellRC, int rowRCFin)
         {
-
             int cellDC = cellRC;
             double RC;
             double[] String = new double[20];
-            for (int m = 0; m < 20; m++)
+            if (((DictionaryPrice)_Dictionary).GetFillingStringUnderRelate(FillDefinitionPrice.PriceDC).Count > 0)
             {
-                string str = _Worksheet[rowRCFin + m, cellRC].Value;
-
-                if (str != "")
+                for (int rowRC = 1; rowRC < 30; rowRC++)
                 {
-
-
-                    RC = ReadStringToDouble(str);
-
-                    if (RC != -1)
+                    for (int cell = 1; cell < 20; cell++)
                     {
-                        if (RC != 0)
+                        string tester = Convert.ToString(_Worksheet[rowRC, cell].Value);
+                        foreach (KeyValuePair<FillDefinitionPrice, string> item in ((DictionaryPrice)_Dictionary).GetFillingStringUnderRelate(FillDefinitionPrice.PriceDC))
                         {
-                            for (int i = 1; i < 20; i++)
+                            if (tester.ToUpper().Contains(item.Value.ToUpper()))
                             {
-                                String[i] = ReadStringToDouble(_Worksheet[rowRCFin + m, i].FormulaValue?.ToString());
-                            }
-                        }
-                        double smallest = String[0];
-                        for (int i = 1; i < 20; i++)
-                        {
-                            if (String[i] == 0 || String[i] < RC / 2) { continue; }
-                            if (smallest > String[i] && smallest != 0)
-                            {
-                                smallest = String[i];
-                            }
-                            if (String[i] != 0 && smallest == 0) { smallest = String[i]; }
-                        }
-                        for (int i = 0; i < 20; i++)
-                        {
-                            if (smallest == String[i] && smallest != 0)
-                            {
-                                cellDC = i;
-                                break;
-                            }
-                        }
+                                cellDC = cell;
 
-                        if (cellDC != cellRC)
-                        {
-                            break;
+                                CellRange r = _Worksheet[rowRC, cellDC].MergeArea;
+
+                                if (r != null)
+                                {
+                                    int Testrow = rowRC;
+
+                                    for (int i = Testrow++; i < Testrow + 6; i++)
+                                    {
+
+                                        double One = ReadStringToDouble(_Worksheet[i, r.Column].Value);
+                                        double Two = ReadStringToDouble(_Worksheet[i, r.LastColumn].Value);
+
+                                        if (One < Two)
+                                        {
+                                            cellDC = r.Column;
+                                        }
+                                        else
+                                        {
+                                            cellDC = r.LastColumn;
+                                        }
+                                    }
+                                }
+                                rowRC++;
+                                if (cellDC != cellRC)
+                                {
+                                    return cellDC;
+                                }
+                               
+                            };
                         }
                     }
                 }
+            }
+
+                for (int m = 0; m < 20; m++)
+                {
+                    string str = _Worksheet[rowRCFin + m, cellRC].Value;
+
+                    if (str != "")
+                    {
+                        RC = ReadStringToDouble(str);
+
+                        if (RC != -1)
+                        {
+                            if (RC != 0)
+                            {
+                                for (int i = 1; i < 20; i++)
+                                {
+                                    String[i] = ReadStringToDouble(_Worksheet[rowRCFin + m, i].FormulaValue?.ToString());
+                                }
+                            }
+                            double smallest = String[0];
+                            for (int i = 1; i < 20; i++)
+                            {
+                                if (String[i] == 0 || String[i] < RC / 2) { continue; }
+                                if (smallest > String[i] && smallest != 0)
+                                {
+                                    smallest = String[i];
+                                }
+                                if (String[i] != 0 && smallest == 0) { smallest = String[i]; }
+                            }
+                            for (int i = 0; i < 20; i++)
+                            {
+                                if (smallest == String[i] && smallest != 0)
+                                {
+                                    cellDC = i;
+                                    break;
+                                }
+                            }
+                            if (cellDC != cellRC)
+                            {
+                                break;
+                            }
+                        }
+                    }
+                
             }
             return cellDC;
         }//пытаемся определить наименьшую цену из ряда  
         private Image ImageFind(int Row)
         {
             List<Image> image = new List<Image>();
+
+            Spire.Xls.Collections.PicturesCollection Pictures = null;
             try
             {
-                Spire.Xls.Collections.PicturesCollection Pictures = _Worksheet.Pictures;
-
-                foreach (ExcelPicture Picture in Pictures)
-                {
-                    int _row = Picture.TopRow;
-                    int _col = Picture.LeftColumn;
-                    if (_row == Row)
-                    {
-                        image.Add(Picture.Picture);
-                    }
-                    else
-                    {
-                        CellRange Range = _Worksheet[_row, _col].MergeArea;
-                        if (Range != null && Range.Row <= Row && Row <= Range.LastRow)
-                        {
-                            image.Add(Picture.Picture);
-                        }
-                    }
-
-                }
+                Pictures = _Worksheet.Pictures;
             }
             catch
             {
+                return null;
+            }
+
+            foreach (ExcelPicture Picture in Pictures)
+            {
+                int _row = Picture.TopRow;
+                int _col = Picture.LeftColumn;
+                if (_row == Row)
+                {
+                    image.Add(Picture.Picture);
+                }
+                else
+                {
+                    CellRange Range = _Worksheet[_row, _col].MergeArea;
+                    if (Range != null && Range.Row <= Row && Row <= Range.LastRow)
+                    {
+                        image.Add(Picture.Picture);
+                    }
+                }
 
             }
+
 
             if (image.Count > 1)
             {
@@ -179,18 +226,12 @@ namespace XLS
                         image.RemoveRange(1, image.Count - 1);
                     }
                 }
-
-
             }
             else
             { image.Add(null); }
-
-
-
-
             return image[0];
         } //пытаемся найти изображений
-        private int NameColFind()   // пытаемся найти наименование
+        private int ColFindOnValue(List<KeyValuePair<FillDefinitionPrice, string>> FillingStringUnderRelate)   // пытаемся найти наименование
         {
             int NamePoz = 0;
             {
@@ -198,21 +239,20 @@ namespace XLS
                 {
                     for (int cell = 1; cell < 10; cell++)
                     {
-                        string tester = Convert.ToString(_Worksheet[i, cell].Value);
-
-                        foreach (KeyValuePair<FillDefinition, string> item in _Dictionary.GetFillingStringUnderRelate(FillDefinition.Name))
+                        string tester = Convert.ToString(_Worksheet[i, cell].Value);   
+                        if (FillingStringUnderRelate.Count != 0)
                         {
-                            string vl = item.Value;
-
-                            if (tester.ToUpper().Contains(vl.ToUpper()))
+                            foreach (KeyValuePair<FillDefinitionPrice, string> item in FillingStringUnderRelate)
                             {
-                                NamePoz = cell;
-                                return NamePoz;
-                            };
+                                string vl = item.Value;
 
-
+                                if (tester.ToUpper().Contains(vl.ToUpper()))
+                                {
+                                    NamePoz = cell;
+                                    return NamePoz;
+                                };
+                            }
                         }
-
                     }
                 }
             }
@@ -228,7 +268,7 @@ namespace XLS
         {
             int DescPoz = 0;
 
-            foreach (KeyValuePair<FillDefinition, string> item in _Dictionary.GetFillingStringUnderRelate(FillDefinition.Description))
+            foreach (KeyValuePair<FillDefinitionPrice, string> item in ((DictionaryPrice)_Dictionary).GetFillingStringUnderRelate(FillDefinitionPrice.Description))
             {
                 for (int i = 1; i < 30; i++)
                 {
@@ -236,9 +276,9 @@ namespace XLS
                     {
                         int x = 0;
                         string tester = Convert.ToString(_Worksheet[i, cell].Value);
-                        if (tester.ToUpper().Contains(item.Value.ToUpper()))
+                        if (Regex.IsMatch(tester, item.Value, RegexOptions.IgnoreCase))
                         {
-                            for (int m = i; m < 17; m++)
+                            for (int m = i; m < 30; m++)
                             {
                                 m++;
                                 tester = Convert.ToString(_Worksheet[m, cell].Value);
@@ -256,7 +296,7 @@ namespace XLS
                                 else { continue; }
                             }
                             if (DescPoz != 0) { break; }
-                        };
+                        }
                     }
                     if (DescPoz != 0) { break; }
                 }
@@ -277,8 +317,7 @@ namespace XLS
 
                 if (ResultSTR != null && ResultSTR != "" && !regex.IsMatch(ResultSTR) && !regex2.IsMatch(ResultSTR) && !ResultSTR.Contains(",,"))
                 {
-
-                    return Convert.ToDouble(ResultSTR);
+                        return Convert.ToDouble(ResultSTR);               
                 }
 
             }
@@ -286,80 +325,45 @@ namespace XLS
         }
         private string FindCurrency(string cell)
         {
-
-
             string Currency = null;
-
             if (cell.Contains("р.") || cell.Contains("руб")) { Currency = "RUB"; }
             else if (cell.Contains("USD")) { Currency = "USD"; }
-
             return Currency;
         }
-
         #endregion
-        public List<PriceStruct> Read(List<int> WorksheetsNumbers, string FileName = null, IDictionaryPC Dictionary = null)
+        public object Read(List<int> WorksheetsNumbers, string FileName = null, IDictionaryPC Dictionary = null)
         {
-            _Dictionary = (DictionaryPrice)Dictionary;
-            _priceDataList = new List<PriceStruct>();
-
+            _Dictionary = Dictionary;
             if (WorksheetsNumbers == null || WorksheetsNumbers.Count == 0) { WorksheetsNumbers = new List<int>(); for (int i = 0; i < _workbook.Worksheets.Count; i++) { WorksheetsNumbers.Add(i); } }
 
+
+            if (Dictionary.Relate == DictionaryRelate.Price)
+            {
+                return ReadPrice(FileName, WorksheetsNumbers);
+
+            }
+            else if (Dictionary.Relate == DictionaryRelate.Storage)
+            {
+                return ReadStorage(FileName, WorksheetsNumbers);
+            }
+            else
+            {
+                return null;
+            }
+
+        }
+        private List<PriceStruct> ReadPrice(string FileName, List<int> WorksheetsNumbers)
+        {
+            List<PriceStruct> DataList = new List<PriceStruct>();
             for (int n = 0; n < WorksheetsNumbers.Count; n++)
             {
                 int WorksheetsN = WorksheetsNumbers[n];
-                int rowRCFin = 1;
-                int cellRC = 0, NamePoz = 0, cellDC = 0, DescPoz = 0, MaxRow = 250;
                 _Worksheet = _workbook.Worksheets[WorksheetsN];
 
-                var B = _Dictionary.GetFillingStringUnderRelate(FillDefinition.MaxRow);
-                if (B.Count > 0)
-                {
-                    MaxRow = Convert.ToInt32(B.First().Value);
-                }
+                int cellRC = 0, NamePoz = 0, cellDC = 0, DescPoz = 0, MaxRow = 250, IDcall = 0, SKUcall = 0, nullstr = 0, rowRCFin = 1;
 
+                ColumnPriceOrient(ref rowRCFin, ref cellRC, ref NamePoz, ref cellDC, ref DescPoz, ref MaxRow, ref SKUcall);
 
-                if (_Dictionary.Filling_method_coll().Count != 0)
-                {
-                    foreach (KeyValuePair<FillDefinition, int> item in _Dictionary.Filling_method_coll())
-                    {
-                        switch (item.Key)
-                        {
-                            case FillDefinition.Id:
-                                break;
-                            case FillDefinition.Sku:
-                                break;
-                            case FillDefinition.Name:
-                                NamePoz = item.Value;
-                                break;
-                            case FillDefinition.PriceRC:
-                                cellRC = item.Value;
-                                break;
-                            case FillDefinition.PriceDC:
-                                cellDC = item.Value;
-                                break;
-                            case FillDefinition.Description:
-                                DescPoz = item.Value;
-                                break;
-                            case FillDefinition.Currency:
-                                break;
-                            default:
-                                break;
-                        }
-                    }
-
-                    if (NamePoz == 0) { NamePoz = NameColFind(); }
-                    if (cellRC == 0) { cellRC = RCCellFind(ref rowRCFin); }
-                    if (cellDC == 0) { cellDC = DC_CellFind(cellRC, rowRCFin); }
-                    if (DescPoz == 0) { DescPoz = DescriptionFind(); }
-                }
-                else
-                {
-                    NamePoz = NameColFind();
-                    cellRC = RCCellFind(ref rowRCFin);
-                    cellDC = DC_CellFind(cellRC, rowRCFin);
-                    DescPoz = DescriptionFind();
-                }
-                int nullstr = 0;
                 for (int Row = rowRCFin; Row < MaxRow;)
                 {
                     if (nullstr > 50)
@@ -372,69 +376,43 @@ namespace XLS
                         string PriceListName = _Worksheet.Name;
                         string NameString = _Worksheet[Row, NamePoz].Value;
                         Image Pic = ImageFind(Row);
+                        string SKU, DescriptionString, DCstring;
+
                         if (NameString == "" || NameString == " ") { Row++; continue; }
 
-                        if (_Dictionary.GetFillingStringUnderRelate(FillDefinition.NamePattern).Count == 1)
+                        if (((DictionaryPrice)_Dictionary).GetFillingStringUnderRelate(FillDefinitionPrice.NamePattern).Count == 1)
                         {
-                            string vl = _Dictionary.GetFillingStringUnderRelate(FillDefinition.NamePattern)[0].Value;
-
+                            string vl = ((DictionaryPrice)_Dictionary).GetFillingStringUnderRelate(FillDefinitionPrice.NamePattern)[0].Value;
                             Regex regex = new Regex(vl, RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
                             NameString = NameString.Replace(".", ",");
-
-                            if (regex.Matches(NameString).Count > 0)
-                            {
-                                NameString = regex.Matches(NameString)[0].Value;
-                            }
-
+                            if (regex.Matches(NameString).Count > 0) { NameString = regex.Matches(NameString)[0].Value; }
                         }
 
-                        double PriceRC = 0;
-
-                        PriceRC = ReadStringToDouble(_Worksheet[Row, cellRC].Value);
-
+                        double PriceRC = ReadStringToDouble(_Worksheet[Row, cellRC].Value);
                         if (PriceRC == 0) { Row++; continue; }
 
-                        string DCstring;
+                        if (IDcall != 0) { SKU = _Worksheet[Row, SKUcall].Value; } else { SKU = null; }
+                        PriceRC = ReadStringToDouble(_Worksheet[Row, cellRC].Value);
 
-                        if (_Worksheet[Row, cellDC].HasFormula)
-                        {
-                            DCstring = _Worksheet[Row, cellDC].FormulaValue.ToString();
-                        }
-                        else
-                        {
-                            DCstring = _Worksheet[Row, cellDC].Value;
-                        }
-
+                        if (_Worksheet[Row, cellDC].HasFormula) { DCstring = _Worksheet[Row, cellDC].FormulaValue.ToString(); }
+                        else { DCstring = _Worksheet[Row, cellDC].Value; }
                         double PriceDC = ReadStringToDouble(DCstring);
-                        string DescriptionString;
+
                         if (_Worksheet[Row, DescPoz].HasMerged)
                         {
-                            if (_Worksheet[Row, DescPoz].HasFormula)
-                            {
-                                DescriptionString = _Worksheet[Row, DescPoz].MergeArea.FormulaValue.ToString();
-                            }
-                            else
-                            {
-                                DescriptionString = _Worksheet[Row, DescPoz].MergeArea.DisplayedText;
-                            }
+                            if (_Worksheet[Row, DescPoz].HasFormula) { DescriptionString = _Worksheet[Row, DescPoz].MergeArea.FormulaValue?.ToString(); }
+                            else { DescriptionString = _Worksheet[Row, DescPoz].MergeArea.DisplayedText; }
                         }
                         else
                         {
-                            if (_Worksheet[Row, DescPoz].HasFormula)
-                            {
-                                DescriptionString = _Worksheet[Row, DescPoz].FormulaValue.ToString();
-                            }
-                            else
-                            {
-                                DescriptionString = _Worksheet[Row, DescPoz].Value;
-                            }
+                            if (_Worksheet[Row, DescPoz].HasFormula) { DescriptionString = _Worksheet[Row, DescPoz].FormulaValue.ToString(); }
+                            else { DescriptionString = _Worksheet[Row, DescPoz].Value; }
                         }
-
                         string Currency = FindCurrency(_Worksheet[Row, cellRC].Style.NumberFormat);
-                        string _СomparisonName = СomparisonNameGenerator.Get(NameString);
+
                         if (PriceRC != -1)
                         {
-                            _priceDataList.Add(new PriceStruct()
+                            DataList.Add(new PriceStruct()
                             {
                                 Name = NameString,
                                 PriceRC = PriceRC,
@@ -445,7 +423,7 @@ namespace XLS
                                 Currency = Currency,
                                 PriceListName = PriceListName,
                                 SourceName = FileName,
-                                СomparisonName = _СomparisonName
+                                Sku = SKU
                             });
                         }
                         Row++;
@@ -453,13 +431,89 @@ namespace XLS
                     else { Row++; nullstr++; }
                 }
             }
-            _workbook = null;
-            _Worksheet = null;
-            _Dictionary = null;
 
+            return DataList;
 
-            return _priceDataList;
+            void ColumnPriceOrient(ref int rowRCFin, ref int cellRC, ref int NamePoz, ref int cellDC, ref int DescPoz, ref int MaxRow, ref int SKUcall)
+            {
+
+                if (((DictionaryPrice)_Dictionary).Filling_method_string?.Count > 0)
+                {                 
+                    if (NamePoz == 0) { NamePoz = ColFindOnValue(((DictionaryPrice)_Dictionary).GetFillingStringUnderRelate(FillDefinitionPrice.Name)); }
+                    if (cellRC == 0) { cellRC = RCCellFind(ref rowRCFin); }
+                    if (cellDC == 0) { cellDC = DC_CellFind(cellRC, rowRCFin); }
+                    if (DescPoz == 0) { DescPoz = DescriptionFind(); }
+                }
+                else if (((DictionaryPrice)_Dictionary).Filling_method_coll?.Count >0)
+                {
+
+                    foreach (KeyValuePair<FillDefinitionPrice, int> item in ((DictionaryPrice)_Dictionary).Filling_method_coll)
+                    {
+                        switch (item.Key)
+                        {
+                            case FillDefinitionPrice.Sku:
+                                SKUcall = item.Value;
+                                break;
+                            case FillDefinitionPrice.Name:
+                                NamePoz = item.Value;
+                                break;
+                            case FillDefinitionPrice.PriceRC:
+                                cellRC = item.Value;
+                                break;
+                            case FillDefinitionPrice.PriceDC:
+                                cellDC = item.Value;
+                                break;
+                            case FillDefinitionPrice.Description:
+                                DescPoz = item.Value;
+                                break;
+                            case FillDefinitionPrice.Currency:
+                                break;
+                            case FillDefinitionPrice.MaxRow:
+                                MaxRow = item.Value;
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+
+                }
+                else
+                {
+                    NamePoz = ColFindOnValue(((DictionaryPrice)_Dictionary).GetFillingStringUnderRelate(FillDefinitionPrice.Name));
+                    cellRC = RCCellFind(ref rowRCFin);
+                    cellDC = DC_CellFind(cellRC, rowRCFin);
+                    DescPoz = DescriptionFind();
+                }
+            }
         }
+        private List<Storage> ReadStorage(string FileName, List<int> WorksheetsNumbers)
+        {
+
+            List<Storage> DataList = new List<Storage>();
+
+            for (int n = 0; n < WorksheetsNumbers.Count; n++)
+            {
+                int WorksheetsN = WorksheetsNumbers[n];
+                _Worksheet = _workbook.Worksheets[WorksheetsN];
+
+
+
+
+
+            }
+
+
+
+
+
+
+
+                return null;
+        
+        
+        
+        }
+
         #region IDisposable Support
         private bool disposedValue = false; // Для определения избыточных вызовов
         protected virtual void Dispose(bool disposing)
@@ -471,15 +525,12 @@ namespace XLS
                     _workbook = null;
                     _Worksheet = null;
                     _Dictionary = null;
-                    _priceDataList = null;
                 }
 
 
                 disposedValue = true;
             }
         }
-
-
         void IDisposable.Dispose() => Dispose(true);
         #endregion
     }

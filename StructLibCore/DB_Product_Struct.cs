@@ -1,4 +1,6 @@
-﻿using Pricecona;
+﻿using CRMLibs;
+
+using Pricecona;
 
 using Server.Class.ItemProcessor;
 
@@ -24,7 +26,7 @@ namespace StructLibs
         public int ManufactorID { get; set; }
         public string SourceName { get; set; }
         public string СomparisonName { get; set; }
-        public int StorageID { get; set; }
+        public Storage[] StorageID { get; set; }
         public List<Category> Categories { get; set; }
         public bool SiteFlag { get; set; }
         public string PriceListName { get; set; }
@@ -61,11 +63,7 @@ namespace StructLibs
                         Image = Imagelink;
 
                     }
-                
-
-
-
-
+               
             }
 
             PriceRC = item.PriceRC;
@@ -88,10 +86,6 @@ namespace StructLibs
         }
 
         public static PropertyInfo[] GetProperties() => typeof(ItemDBStruct).GetProperties(BindingFlags.Public | BindingFlags.Instance);
-
-
-
-
     }
 
     [System.Serializable]
@@ -117,9 +111,10 @@ namespace StructLibs
     [System.Serializable]
     public class Storage
     {
-        public int Id { get; set; }
-        public int Number { get; set; }
-        public int WarehouseID { get; set; }
+        public int StorageId { get; set; }
+        public ItemDBStruct Item { get; set; }
+        public Warehouse Warehouse { get; set; }
+        public int Count { get; set; }
 
     }
     [System.Serializable]
@@ -133,7 +128,7 @@ namespace StructLibs
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        public int PartnerID { get; set; }
+        public Partner PartnerID { get; set; }
     }
 
 }

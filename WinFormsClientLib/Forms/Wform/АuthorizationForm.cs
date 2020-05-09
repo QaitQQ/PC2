@@ -68,9 +68,9 @@ namespace Client.Forms
         {
             if (new Class.Net.Аuthorization().SetToken(new string[] { Login , Pass }))
             {
-                Mainform mainform = new Mainform();
-                mainform.Show();
-                Hide();
+                Main.CommonWindow = new Mainform();
+                Main.CommonWindow.Show();
+                this.Hide();
             }
             else { Ok_Button.BackColor = System.Drawing.Color.Red; }
         }

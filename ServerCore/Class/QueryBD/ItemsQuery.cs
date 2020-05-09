@@ -6,6 +6,7 @@ using Server.Class.ItemProcessor;
 
 using StructLibs;
 
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -41,13 +42,20 @@ namespace Server.Class.Query
         {
             List<ItemDBStruct> QweryResult = null;
 
-            using (ApplicationContext db = new ApplicationContext())
+            if (Field.PropertyType.Name.Contains("List"))
             {
-                QweryResult = db.Item.ToList();
-
-                QweryResult = QweryResult.FindAll(item => Field.GetValue(item).ToString().Contains(Str));
-
+                using ApplicationContext db = new ApplicationContext();
+                QweryResult = db.Item.ToList();               
+                QweryResult = QweryResult.FindAll(item => (Field.GetValue(item) as List<string>) != null && (Field.GetValue(item) as List<string>).Contains(Str));
             }
+            else
+            {
+                using ApplicationContext db = new ApplicationContext();
+                QweryResult = db.Item.ToList();
+                QweryResult = QweryResult.FindAll(item => Field.GetValue(item).ToString().ToUpper().Contains(Str.ToUpper()));
+            }
+
+
             return QweryResult;
         }
         public override List<ItemDBStruct> Find(string Name)

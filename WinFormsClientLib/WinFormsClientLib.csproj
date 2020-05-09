@@ -4,6 +4,7 @@
     <OutputType>Library</OutputType>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <UseWindowsForms>true</UseWindowsForms>
+    <UseWPF>true</UseWPF>
   </PropertyGroup>
 
   <ItemGroup>
@@ -17,6 +18,9 @@
     </Reference>
     <Reference Include="PresentationFramework">
       <HintPath>C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\PresentationFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="WindowsFormsIntegration">
+      <HintPath>C:\Program Files\Reference Assemblies\Microsoft\Framework\v3.0\WindowsFormsIntegration.dll</HintPath>
     </Reference>
   </ItemGroup>
 
@@ -39,10 +43,6 @@
       <DependentUpon>StringModalBox.cs</DependentUpon>
     </Compile>
     <Compile Update="Forms\АuthorizationForm.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Forms\Controls\" />
   </ItemGroup>
 
 </Project>

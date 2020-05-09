@@ -15,7 +15,7 @@ namespace Server
 {
     public class CashClass
     {
-        public List<KeyValuePair<string, int>> ItemName;
+        public List<СomparisonNameID> ItemName;
         public List<string> UserName;
         public List<string> Tokens;
         public bool MailCheckFlag { get; set; }
@@ -89,52 +89,52 @@ namespace Server
 
             DictionaryPrice DSSL_PriceDic = (DictionaryPrice)Dictionaries.Get("DSSL_Price");
 
-            DSSL_PriceDic.Set_Filling_method_string(FillDefinition.Name, "Модель");
-            DSSL_PriceDic.Set_Filling_method_string(FillDefinition.PriceRC, "розни");
-            DSSL_PriceDic.Set_Filling_method_string(FillDefinition.PriceRC, "ользователь");
-            DSSL_PriceDic.Set_Filling_method_string(FillDefinition.PriceRC, "EU");
-            DSSL_PriceDic.Set_Filling_method_string(FillDefinition.Description, "писание");
-            DSSL_PriceDic.Set_Filling_method_string(FillDefinition.PriceDC, "Дистрибьютор");
-            DSSL_PriceDic.Set_Filling_method_string(FillDefinition.MaxRow, "250");
+            DSSL_PriceDic.Set_Filling_method_string(FillDefinitionPrice.Name, "Модель");
+            DSSL_PriceDic.Set_Filling_method_string(FillDefinitionPrice.PriceRC, "розни");
+            DSSL_PriceDic.Set_Filling_method_string(FillDefinitionPrice.PriceRC, "ользователь");
+            DSSL_PriceDic.Set_Filling_method_string(FillDefinitionPrice.PriceRC, "EU");
+            DSSL_PriceDic.Set_Filling_method_string(FillDefinitionPrice.Description, "писание");
+            DSSL_PriceDic.Set_Filling_method_string(FillDefinitionPrice.PriceDC, "Дистрибьютор");
+            DSSL_PriceDic.Set_Filling_method_string(FillDefinitionPrice.MaxRow, "250");
 
 
             DictionaryPrice Hik_PriceDic = (DictionaryPrice)Dictionaries.Get("Hik_Price");
 
-            Hik_PriceDic.Set_Filling_method_string(FillDefinition.Name, "Модель");
-            Hik_PriceDic.Set_Filling_method_string(FillDefinition.PriceRC, "Новая РРЦ");
-            Hik_PriceDic.Set_Filling_method_string(FillDefinition.Description, "Описание");
-            Hik_PriceDic.Set_Filling_method_string(FillDefinition.MaxRow, "250");
+            Hik_PriceDic.Set_Filling_method_string(FillDefinitionPrice.Name, "Модель");
+            Hik_PriceDic.Set_Filling_method_string(FillDefinitionPrice.PriceRC, "Новая РРЦ");
+            Hik_PriceDic.Set_Filling_method_string(FillDefinitionPrice.Description, "Описание");
+            Hik_PriceDic.Set_Filling_method_string(FillDefinitionPrice.MaxRow, "250");
 
             DictionaryPrice GeoVision_Price_PriceDic = (DictionaryPrice)Dictionaries.Get("GeoVision_Price");
 
-            GeoVision_Price_PriceDic.Set_Filling_method_string(FillDefinition.Name, @"Наименование");
-            GeoVision_Price_PriceDic.Set_Filling_method_string(FillDefinition.PriceRC, "Розн");
-            GeoVision_Price_PriceDic.Set_Filling_method_string(FillDefinition.PriceDC, "Дилер");
-            GeoVision_Price_PriceDic.Set_Filling_method_string(FillDefinition.Description, "Наименование");
-            GeoVision_Price_PriceDic.Set_Filling_method_string(FillDefinition.MaxRow, "250");
-            GeoVision_Price_PriceDic.Set_Filling_method_string(FillDefinition.NamePattern, @"^.*\s");
+            GeoVision_Price_PriceDic.Set_Filling_method_string(FillDefinitionPrice.Name, @"Наименование");
+            GeoVision_Price_PriceDic.Set_Filling_method_string(FillDefinitionPrice.PriceRC, "Розн");
+            GeoVision_Price_PriceDic.Set_Filling_method_string(FillDefinitionPrice.PriceDC, "Дилер");
+            GeoVision_Price_PriceDic.Set_Filling_method_string(FillDefinitionPrice.Description, "Наименование");
+            GeoVision_Price_PriceDic.Set_Filling_method_string(FillDefinitionPrice.MaxRow, "250");
+            GeoVision_Price_PriceDic.Set_Filling_method_string(FillDefinitionPrice.NamePattern, @"^.*\s");
 
             DictionaryPrice HiWatch_PriceDic = (DictionaryPrice)Dictionaries.Get("HiWatch_Price");
 
-            HiWatch_PriceDic.Set_Filling_method_string(FillDefinition.Name, "Модель");
-            HiWatch_PriceDic.Set_Filling_method_string(FillDefinition.PriceRC, "Розница 10.03");
-            HiWatch_PriceDic.Set_Filling_method_string(FillDefinition.Description, "Описание");
-            HiWatch_PriceDic.Set_Filling_method_string(FillDefinition.MaxRow, "250");
+            HiWatch_PriceDic.Set_Filling_method_string(FillDefinitionPrice.Name, "Модель");
+            HiWatch_PriceDic.Set_Filling_method_string(FillDefinitionPrice.PriceRC, "Розница 10.03");
+            HiWatch_PriceDic.Set_Filling_method_string(FillDefinitionPrice.Description, "Описание");
+            HiWatch_PriceDic.Set_Filling_method_string(FillDefinitionPrice.MaxRow, "250");
 
             DictionaryPrice HIQ_PriceDic = (DictionaryPrice)Dictionaries.Get("HIQ");
 
-            HIQ_PriceDic.Set_Filling_method_string(FillDefinition.Name, "Наименование");
-            HIQ_PriceDic.Set_Filling_method_string(FillDefinition.PriceRC, "Розничная");
-            HIQ_PriceDic.Set_Filling_method_string(FillDefinition.Description, "Краткие характеристики");
-            HIQ_PriceDic.Set_Filling_method_string(FillDefinition.NamePattern, @"HIQ.*?\, ");
-            HIQ_PriceDic.Set_Filling_method_string(FillDefinition.MaxRow, "250");
+            HIQ_PriceDic.Set_Filling_method_string(FillDefinitionPrice.Name, "Наименование");
+            HIQ_PriceDic.Set_Filling_method_string(FillDefinitionPrice.PriceRC, "Розничная");
+            HIQ_PriceDic.Set_Filling_method_string(FillDefinitionPrice.Description, "Краткие характеристики");
+            HIQ_PriceDic.Set_Filling_method_string(FillDefinitionPrice.NamePattern, @"HIQ.*?\, ");
+            HIQ_PriceDic.Set_Filling_method_string(FillDefinitionPrice.MaxRow, "250");
 
             DictionaryPrice Dahua_PriceDic = (DictionaryPrice)Dictionaries.Get("Dahua");
-            Dahua_PriceDic.Set_Filling_method_string(FillDefinition.Name, "Наименование");
-            Dahua_PriceDic.Set_Filling_method_string(FillDefinition.PriceRC, "Розничная");
-            Dahua_PriceDic.Set_Filling_method_string(FillDefinition.Description, "Описание");
-            Dahua_PriceDic.Set_Filling_method_string(FillDefinition.MaxRow, "250");
-            Dahua_PriceDic.Set_Filling_method_string(FillDefinition.PriceRC, "РРЦ");
+            Dahua_PriceDic.Set_Filling_method_string(FillDefinitionPrice.Name, "Наименование");
+            Dahua_PriceDic.Set_Filling_method_string(FillDefinitionPrice.PriceRC, "Розничная");
+            Dahua_PriceDic.Set_Filling_method_string(FillDefinitionPrice.Description, "Описание");
+            Dahua_PriceDic.Set_Filling_method_string(FillDefinitionPrice.MaxRow, "250");
+            Dahua_PriceDic.Set_Filling_method_string(FillDefinitionPrice.PriceRC, "РРЦ");
 
         }
     }

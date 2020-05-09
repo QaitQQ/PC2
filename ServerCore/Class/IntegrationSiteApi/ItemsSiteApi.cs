@@ -90,7 +90,7 @@ namespace Server.Class.IntegrationSiteApi
                         Description = item["description"],
                         PriceRC = RC
                     };
-                    Product = new Server.Class.ItemProcessor.NameFix(Program.Cash.Dictionaries.Get("NameEdit")).Fix(Product);
+                    Product = new Server.Class.ItemProcessor.FixName().Fix(Product);
                     ItemList.Add(Product);
                 }
             }

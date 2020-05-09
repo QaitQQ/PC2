@@ -17,7 +17,7 @@ namespace Server.Class.Net.NetServer
         public Server_MailItemsDB(TCP_CS_Obj Data) { _Selector = (EnumMailDB_TS)Data.Code[2]; this.Data = Data; Doit(); }
         private void Doit()
         {
-            List<string[]> MassName = new List<string[]>();
+            List<СomparisonItems> MassName = new List<СomparisonItems>();
 
             switch (_Selector)
             {
@@ -39,29 +39,29 @@ namespace Server.Class.Net.NetServer
                 case EnumMailDB_TS.SearchNewPairName:
                     break;
                 case EnumMailDB_TS.SearchMappedPairName:
-
                     break;
                 case EnumMailDB_TS.Retun_Compare_RC:
-
-                    List<KeyValuePair<PriceStruct, ItemDBStruct>> list = Program.Cash.СhangedItems.FindAll(x => x.Value != null && x.Value.PriceRC != x.Key.PriceRC);
-
-
-                    string t = "=>";
-                    foreach (KeyValuePair<PriceStruct, ItemDBStruct> item in list)
-                    { MassName.Add(new string[] { item.Value.Id.ToString(), item.Value.СomparisonName, item.Value.PriceRC.ToString() + t + item.Key.PriceRC.ToString(), item.Value.PriceDC.ToString() + t + item.Key.PriceDC.ToString(), item.Key.Description, item.Key.SourceName }); }
-                    this.Data.Obj = MassName;
+                    Retun_Compare_RC(MassName);
                     break;
                 default:
                     break;
             }
         }
 
+        private void Retun_Compare_RC(List<СomparisonItems> MassName)
+        {
+            List<KeyValuePair<PriceStruct, ItemDBStruct>> list = Program.Cash.СhangedItems.FindAll(x => x.Value != null && x.Value.PriceRC != x.Key.PriceRC);
+            foreach (KeyValuePair<PriceStruct, ItemDBStruct> item in list)
+            {
+                MassName.Add(new СomparisonItems(item.Key, item.Value));
+            }
+            this.Data.Obj = MassName;
+        }
         private void DelItemFromСhangeList()
         {
             object[] Item = (object[])this.Data.Obj;
             string СomparisonName = (string)Item[0];
             FillTable ListType = (FillTable)Item[1];
-
             switch (ListType)
             {
                 case FillTable.СhangedItemsTable:
@@ -73,10 +73,12 @@ namespace Server.Class.Net.NetServer
                 case FillTable.СhangedSiteTable:
                     Program.Cash.SiteItemsСhanged = Program.Cash.СhangedItems.FindAll(x => x.Key.СomparisonName != СomparisonName);
                     break;
+                case FillTable.СhangedItemsTableSelected:
+                    Program.Cash.СhangedItems = Program.Cash.СhangedItems.FindAll(x => x.Key.СomparisonName != СomparisonName);
+                    break;
                 default:
                     break;
             }
-
         }
         private void EditItemFromDBAndDelFromMappedList()
         {
@@ -87,33 +89,30 @@ namespace Server.Class.Net.NetServer
             Program.Cash.СhangedItems = Program.Cash.СhangedItems;
             this.Data.Obj = true;
         }
-        private void GetNewPositionName(List<string[]> MassName)
+        private void GetNewPositionName(List<СomparisonItems> MassName)
         {
             List<KeyValuePair<Pricecona.PriceStruct, ItemDBStruct>> NewItemList = Program.Cash.СhangedItems.FindAll(x => x.Value == null);
-            foreach (KeyValuePair<Pricecona.PriceStruct, ItemDBStruct> item in NewItemList)
-            {
-                string tags = null;
-                if (item.Key.Tags != null)
+
+                foreach (KeyValuePair<PriceStruct, ItemDBStruct> item in NewItemList)
                 {
-                    foreach (string X in item.Key.Tags)
-                    {
-                        tags += X + "/";
-                    }
-                }
-                MassName.Add(new string[] { item.Key.Name + "/" + tags, item.Key.СomparisonName, item.Key.PriceRC.ToString(), item.Key.PriceRC.ToString(), item.Key.Description });
+                    MassName.Add(new СomparisonItems(item.Key, item.Value));
                 if (MassName.Count > 500)
                 {
                     break;
                 }
             }
+
+            
             this.Data.Obj = MassName;
         }
-        private void GetMappedPositionName(List<string[]> MassName)
+        private void GetMappedPositionName(List<СomparisonItems> MassName)
         {
             List<KeyValuePair<Pricecona.PriceStruct, ItemDBStruct>> list = Program.Cash.СhangedItems.FindAll(x => x.Value != null);
-            string t = "=>";
-            foreach (KeyValuePair<Pricecona.PriceStruct, ItemDBStruct> item in list)
-            { MassName.Add(new string[] { item.Value.Id.ToString(), item.Value.СomparisonName, item.Value.PriceRC.ToString() + t + item.Key.PriceRC.ToString(), item.Value.PriceDC.ToString() + t + item.Key.PriceDC.ToString(), item.Key.Description, item.Key.SourceName }); }
+
+            foreach (KeyValuePair<PriceStruct, ItemDBStruct> item in list)
+            {
+                MassName.Add(new СomparisonItems(item.Key, item.Value));
+            }
             this.Data.Obj = MassName;
         }
     }

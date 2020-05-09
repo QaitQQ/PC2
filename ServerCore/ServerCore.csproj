@@ -6,7 +6,7 @@
     <UseWindowsForms>true</UseWindowsForms>
     <RootNamespace>Server</RootNamespace>
     <AssemblyName>Server_Core_PC</AssemblyName>
-    <ApplicationIcon />
+    <ApplicationIcon>123.ico</ApplicationIcon>
     <StartupObject />
     <Platforms>AnyCPU;x64;x86</Platforms>
     <LangVersion>8.0</LangVersion>
@@ -16,7 +16,7 @@
     <Prefer32Bit>false</Prefer32Bit>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <Optimize>true</Optimize>
+    <Optimize>false</Optimize>
     <CheckForOverflowUnderflow>false</CheckForOverflowUnderflow>
   </PropertyGroup>
   
@@ -27,6 +27,7 @@
   
   <ItemGroup>
     <None Remove="Class\Net\NetServer\ItemsNetClasses\4_ItemNetClass.cs~RF8ccee.TMP" />
+    <None Remove="Class\XLS\XLS_TO_LIST.cs~RF5b05394.TMP" />
   </ItemGroup>
 
   <ItemGroup>
@@ -54,12 +55,6 @@
   <ItemGroup>
     <ProjectReference Include="..\StructLibCore\StructLibCore.csproj" />
     <ProjectReference Include="..\WinFormsClientLib\WinFormsClientLib.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Reference Include="PresentationFramework">
-      <HintPath>C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\PresentationFramework.dll</HintPath>
-    </Reference>
   </ItemGroup>
 
   <ItemGroup>

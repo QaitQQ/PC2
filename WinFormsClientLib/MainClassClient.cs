@@ -16,10 +16,7 @@ namespace Client
 
     public class Main
     {
-
-        public static АuthorizationForm АuthorizationWindow;
-
-
+        public static Form CommonWindow;
 
         [STAThread]
         public void MainClient()
@@ -37,8 +34,8 @@ namespace Client
             }
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            АuthorizationWindow = new АuthorizationForm();
-            Application.Run(АuthorizationWindow);
+            CommonWindow = new АuthorizationForm();
+            Application.Run(CommonWindow);
 
         }
     }

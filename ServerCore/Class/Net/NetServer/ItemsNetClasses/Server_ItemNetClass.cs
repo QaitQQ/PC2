@@ -8,6 +8,7 @@ using StructLibs;
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
@@ -72,7 +73,7 @@ namespace Server.Class.Net.NetServer
             }
             else
             {
-                var List = new List<KeyValuePair<string, int>>();
+                var List = new List<СomparisonNameID>();
 
                 if (Str.Contains(@"&"))
                 {
@@ -87,7 +88,7 @@ namespace Server.Class.Net.NetServer
 
                     foreach (var item in F)
                     {
-                        List.Add(new KeyValuePair<string, int>(item.Name, item.Id));
+                        List.Add(new СomparisonNameID() { Name = item.Name, СomparisonName = item.СomparisonName, Id = item.Id });
                     }
 
                 }
@@ -95,9 +96,12 @@ namespace Server.Class.Net.NetServer
                 {
 
                     var F = new Query.ItemsQuery().FindWithParameters(Str, X);
-                    foreach (var item in F)
+                    if (F != null)
                     {
-                        List.Add(new KeyValuePair<string, int>(item.Name, item.Id));
+                        foreach (var item in F)
+                        {
+                            List.Add(new СomparisonNameID() { Name = item.Name, СomparisonName = item.СomparisonName, Id = item.Id });
+                        }
                     }
                 }
                 this.Data.Obj = List;
@@ -105,7 +109,9 @@ namespace Server.Class.Net.NetServer
         }
         private void AllowAllСhange()
         {
-            FillTable FillTable = (FillTable)this.Data.Obj;
+
+            var mesrge = (object[])this.Data.Obj;
+            FillTable FillTable = (FillTable)mesrge[0];
             switch (FillTable)
             {
                 case FillTable.СhangedItemsTable:
@@ -142,19 +148,49 @@ namespace Server.Class.Net.NetServer
                     break;
                 case FillTable.СhangedSiteTable:
 
-                    List<KeyValuePair<PriceStruct, ItemDBStruct>> FindList = Program.Cash.SiteItemsСhanged.FindAll(x => x.Value != null);
-                    FindList = FindList.FindAll(x => x.Value.PriceRC != x.Key.PriceRC);
-                    List<ItemDBStruct> PC_List = new List<ItemDBStruct>();
+                    //KeyValuePair<int, double> ID_Price = (KeyValuePair<int, double>)this.Data.Obj;
+                    //SiteItem SiteApi = new SiteItem(Settings.ApiSettngs);
 
-                    foreach (KeyValuePair<PriceStruct, ItemDBStruct> item in FindList)
+                    //bool Result = Task.Factory.StartNew(() => SiteApi.SetPrice(ID_Price)).Result;
+
+                    //this.Data.Obj = Result;
+
+                    //if (Result)
+                    //{
+                    //    KeyValuePair<Pricecona.PriceStruct, ItemDBStruct> accept = Program.Cash.SiteItemsСhanged.Find(x => x.Key.Id == ID_Price.Key);
+                    //    Program.Cash.SiteItemsСhanged.Remove(accept);
+                    //}
+
+
+                    break;
+                case NetEnum.Selector.FillTable.СhangedItemsTableSelected:
+
+                    List<string> listName = (List<string>)mesrge[1];
+                    List<ItemDBStruct> FindListСhangedItemsTableSelected = new List<ItemDBStruct>();
+                    foreach (var Item in listName)
                     {
-                        if (item.Key.PriceRC != item.Value.PriceRC)
+                        int ID = Convert.ToInt32(Item);
+
+                        var item = Program.Cash.СhangedItems.Find(x => x.Value?.Id == ID);
+
+                        if (item.Value != null)
                         {
-                            PC_List.Add(item.Value);
+                            ItemDBStruct newItem = item.Value;
+
+                            newItem.PriceRC = item.Key.PriceRC;
+                            newItem.PriceDC = item.Key.PriceDC;
+                            newItem.Description = item.Key.Description;
+                            newItem.DateСhange = item.Key.DateСhange;
+                            newItem.SourceName = item.Key.SourceName;
+
+                            FindListСhangedItemsTableSelected.Add(newItem);
+
+                            Program.Cash.СhangedItems = Program.Cash.СhangedItems.FindAll(x => x.Value?.Id == ID);
                         }
+
                     }
-                    new ItemsQuery().EditList(PC_List);
-                    Program.Cash.SiteItemsСhanged = new List<KeyValuePair<PriceStruct, ItemDBStruct>>();
+                    new Query.ItemsQuery().EditList(FindListСhangedItemsTableSelected);
+                    Program.Cash.ItemName = new Class.Query.NameCash().GetCashItemName();
 
                     break;
             }
@@ -171,12 +207,32 @@ namespace Server.Class.Net.NetServer
             int ID = (int)Data.Obj;
             ItemDBStruct item = new Class.Query.ItemsQuery().FindID(ID)[0];
             new Class.Query.ItemsQuery().Del(item);
-            Program.Cash.ItemName.RemoveAll(x => x.Value == ID);
+            Program.Cash.ItemName.RemoveAll(x => x.Id == ID);
         }
         private void ItemsNameFromCash(string Name)
         {
-            List<KeyValuePair<string, int>> Xlist = (from Items in Program.Cash.ItemName where Items.Key.ToUpper().Contains(Name.ToUpper()) select Items).ToList();
-            if (Xlist.Count == 0) { Xlist.Add(new KeyValuePair<string, int>("not found", 0)); }
+            List<СomparisonNameID> Xlist;
+            Name = СomparisonNameGenerator.Get(Name);
+
+            Xlist = (from Items in Program.Cash.ItemName where Items.СomparisonName.ToUpper().Contains(Name.ToUpper()) select Items).ToList();
+
+            for (int i = 0; i < 10; i++)
+            {
+                if (Xlist.Count == 0)
+                {
+                    Name = Name.Remove(Name.Length - 1);
+                    Name = Name.Remove(0, 1);
+                    Xlist = (from Items in Program.Cash.ItemName where Items.СomparisonName.ToUpper().Contains(Name.ToUpper()) select Items).ToList();
+                }
+                else { break; }
+
+            }
+
+
+
+
+
+            if (Xlist.Count == 0) { Xlist.Add(new СomparisonNameID() { Name = "not found" }); }
             this.Data.Obj = Xlist;
         }
         private void GetPositionFromDB()

@@ -15,9 +15,8 @@ namespace Object_Description
         None,
         Manufactor
     }
-    public enum FillDefinition
+    public enum FillDefinitionPrice
     {
-        Id,
         Sku,
         Name,
         PriceRC,
@@ -35,10 +34,9 @@ namespace Object_Description
     {
         public int Id { get; set; }
         public string Name { get; protected set; }
-        public DictionaryRelate Relate { get; protected set; }
-        public List<string> Values { get; protected set; }
-        public List<IDictionaryPC> Branches { get; protected set; }
-        public void AddValue(string Value) => Values.Add(Value);
+        public DictionaryRelate Relate { get; set; }
+        public List<string> Values { get; set; }
+        public List<IDictionaryPC> Branches { get; set; }
         public IDictionaryPC Сontained(string Value)
         {
             if (Сontain(Value)) { return this; } else { foreach (IDictionaryPC item in Branches) { return Сontained(Value); } }
@@ -64,14 +62,14 @@ namespace Object_Description
     [Serializable]
     public class DictionaryPrice : DictionaryBase
     {
-        private readonly Dictionary<FillDefinition, int> _Filling_method_coll;
-        private readonly List<KeyValuePair<FillDefinition, string>> _Filling_method_string;
-        public DictionaryPrice(string name, DictionaryRelate Relate) { Name = name; Values = new List<string>(); _Filling_method_coll = new Dictionary<FillDefinition, int>(); _Filling_method_string = new List<KeyValuePair<FillDefinition, string>>(); this.Relate = Relate; }
-        public DictionaryPrice(string name, List<string> Values, DictionaryRelate Relate) { Name = name; this.Values = Values; _Filling_method_coll = new Dictionary<FillDefinition, int>(); _Filling_method_string = new List<KeyValuePair<FillDefinition, string>>(); this.Relate = Relate; }
-        public void Set_Filling_method_coll(FillDefinition Key, int Value) => _Filling_method_coll.Add(Key, Value);
-        public void Set_Filling_method_string(FillDefinition Key, string Value) => _Filling_method_string.Add(new KeyValuePair<FillDefinition, string>(Key, Value));
-        public Dictionary<FillDefinition, int> Filling_method_coll() => _Filling_method_coll;
-        public List<KeyValuePair<FillDefinition, string>> Filling_method_string() => _Filling_method_string;
-        public List<KeyValuePair<FillDefinition, string>> GetFillingStringUnderRelate(FillDefinition Key) => _Filling_method_string.Where(x => x.Key == Key).ToList();
+        public List<KeyValuePair<FillDefinitionPrice, int>> Filling_method_coll;
+        public List<KeyValuePair<FillDefinitionPrice, string>> Filling_method_string;
+        public DictionaryPrice(string name, DictionaryRelate Relate) { Name = name; Values = new List<string>(); Filling_method_coll = new List<KeyValuePair<FillDefinitionPrice, int>>(); Filling_method_string = new List<KeyValuePair<FillDefinitionPrice, string>>(); this.Relate = Relate; }
+        public DictionaryPrice(string name, List<string> Values, DictionaryRelate Relate) { Name = name; this.Values = Values; Filling_method_coll = new List<KeyValuePair<FillDefinitionPrice, int>>(); Filling_method_string = new List<KeyValuePair<FillDefinitionPrice, string>>(); this.Relate = Relate; }
+        public void Set_Filling_method_coll(FillDefinitionPrice Key, int Value) => Filling_method_coll.Add(new KeyValuePair<FillDefinitionPrice, int>(Key, Value));
+        public void Set_Filling_method_string(FillDefinitionPrice Key, string Value) => Filling_method_string.Add(new KeyValuePair<FillDefinitionPrice, string>(Key, Value));  
+        public List<KeyValuePair<FillDefinitionPrice, string>> GetFillingStringUnderRelate(FillDefinitionPrice Key) => Filling_method_string?.Where(x => x.Key == Key).ToList();
     }
-}
+    public class DictionaryStorage : DictionaryBase
+    { }
+    }

@@ -18,8 +18,8 @@ namespace WindowsFormsClientLibrary.Forms
             Dictionaries = new BaseNetClass().GetDictionaries();
             comboBox1.DataSource = Enum.GetValues(typeof(DictionaryRelate));
             FillListBox();
-            Column4.DataSource = Enum.GetValues(typeof(FillDefinition));
-            Column4.ValueType = typeof(FillDefinition);
+            Column4.DataSource = Enum.GetValues(typeof(FillDefinitionPrice));
+            Column4.ValueType = typeof(FillDefinitionPrice);
             Show();
         }
         private void FillListBox()
@@ -45,11 +45,11 @@ namespace WindowsFormsClientLibrary.Forms
         {
             dataGridView1.Rows.Clear();
 
-            if (T is DictionaryPrice && ((DictionaryPrice)T).Filling_method_string().Count != 0)
+            if (T is DictionaryPrice && ((DictionaryPrice)T).Filling_method_string.Count != 0)
             {
                 DictionaryPrice F = T as DictionaryPrice;
 
-                foreach (System.Collections.Generic.KeyValuePair<FillDefinition, string> item in F.Filling_method_string())
+                foreach (System.Collections.Generic.KeyValuePair<FillDefinitionPrice, string> item in F.Filling_method_string)
                 {
                     DataGridViewComboBoxCell X = new DataGridViewComboBoxCell();
                     X.Items.Add(item.Key.ToString());
@@ -114,7 +114,12 @@ namespace WindowsFormsClientLibrary.Forms
                 {
                     NewDic = new DictionaryPrice(Name, Relate);
                     for (int i = 0; i < dataGridView1.Rows.Count - 1; i++)
-                    { ((DictionaryPrice)NewDic).Set_Filling_method_string((FillDefinition)dataGridView1.Rows[i].Cells[3].Value, dataGridView1.Rows[i].Cells[2].Value.ToString()); }
+                    {
+                        if (dataGridView1.Rows[i].Cells[3].Value != null && dataGridView1.Rows[i].Cells[2].Value != null)
+                        {
+                            ((DictionaryPrice)NewDic).Set_Filling_method_string((FillDefinitionPrice)dataGridView1.Rows[i].Cells[3].Value, dataGridView1.Rows[i].Cells[2].Value.ToString());
+                        }
+                    }
                 }
                 else { NewDic = new DictionaryBase(Name, Relate); }
                 for (int i = 0; i < dataGridView1.Rows.Count - 1; i++)

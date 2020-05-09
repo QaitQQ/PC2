@@ -19,8 +19,7 @@ namespace Server.Class.ItemProcessor
                     }
                 }
             }
-
-            return _СomparisonName.ToLower();
+            return _СomparisonName?.ToLower();
         }
         public static PriceStruct GetForPriceStruct(PriceStruct item) => new PriceStruct(item, СomparisonName: Get(item.Name));
     }

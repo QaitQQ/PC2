@@ -6,10 +6,9 @@ namespace Object_Description
     {
         public int Id { get; set; }
         public string Name { get; }
-        public DictionaryRelate Relate { get; }
-        public List<string> Values { get; }
+        public DictionaryRelate Relate { get; set; }
+        public List<string> Values { get; set; }
         public List<IDictionaryPC> Branches { get; }
-        public void AddValue(string Value);
         public bool Сontain(string Value);
         public IDictionaryPC Сontained(string Value);
         public IDictionaryPC GetBranchFromName(string Value);

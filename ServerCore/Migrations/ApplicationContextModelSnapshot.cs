@@ -17,7 +17,7 @@ namespace ServerCore.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn)
-                .HasAnnotation("ProductVersion", "3.1.0")
+                .HasAnnotation("ProductVersion", "3.1.3")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             modelBuilder.Entity("CRMLibs.Directory", b =>
@@ -281,9 +281,6 @@ namespace ServerCore.Migrations
                     b.Property<string>("SourceName")
                         .HasColumnType("text");
 
-                    b.Property<int>("StorageID")
-                        .HasColumnType("integer");
-
                     b.Property<List<string>>("Tags")
                         .HasColumnType("text[]");
 
@@ -312,18 +309,25 @@ namespace ServerCore.Migrations
 
             modelBuilder.Entity("StructLibs.Storage", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("StorageId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer")
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
-                    b.Property<int>("Number")
+                    b.Property<int>("Count")
                         .HasColumnType("integer");
 
-                    b.Property<int>("WarehouseID")
+                    b.Property<int?>("ItemId")
                         .HasColumnType("integer");
 
-                    b.HasKey("Id");
+                    b.Property<int?>("WarehouseId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("StorageId");
+
+                    b.HasIndex("ItemId");
+
+                    b.HasIndex("WarehouseId");
 
                     b.ToTable("Storage");
                 });
@@ -338,10 +342,12 @@ namespace ServerCore.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("text");
 
-                    b.Property<int>("PartnerID")
+                    b.Property<int?>("PartnerIDId")
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("PartnerIDId");
 
                     b.ToTable("Warehouse");
                 });
@@ -376,6 +382,24 @@ namespace ServerCore.Migrations
                     b.HasOne("StructLibs.ItemDBStruct", null)
                         .WithMany("Details")
                         .HasForeignKey("ItemDBStructId");
+                });
+
+            modelBuilder.Entity("StructLibs.Storage", b =>
+                {
+                    b.HasOne("StructLibs.ItemDBStruct", "Item")
+                        .WithMany("StorageID")
+                        .HasForeignKey("ItemId");
+
+                    b.HasOne("StructLibs.Warehouse", "Warehouse")
+                        .WithMany()
+                        .HasForeignKey("WarehouseId");
+                });
+
+            modelBuilder.Entity("StructLibs.Warehouse", b =>
+                {
+                    b.HasOne("CRMLibs.Partner", "PartnerID")
+                        .WithMany()
+                        .HasForeignKey("PartnerIDId");
                 });
 #pragma warning restore 612, 618
         }

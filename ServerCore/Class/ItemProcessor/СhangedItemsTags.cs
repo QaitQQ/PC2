@@ -20,14 +20,8 @@ namespace Server.Class.ItemProcessor
         private PriceStruct Doit(PriceStruct Item)
         {
 
-            foreach (IDictionaryPC item in Dics)
-            {
-                Item = new TagGenerator(item).Generate(Item);
-
-                Item = new NameFix(Program.Cash.Dictionaries.Get("NameEdit")).Fix(Item);
-
-            }
-
+            Item = new FixName().Fix(Item);
+            Item = new TagGenerator().Generate(Item);
             return Item;
         }
 

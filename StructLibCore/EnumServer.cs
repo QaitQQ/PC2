@@ -3,7 +3,7 @@
     public static class Selector
     {
         public enum FillTable { СhangedItemsTable, NewItemTable, СhangedSiteTable,
-            Compare_RC
+            СhangedItemsTableSelected
         }
         public enum FirstSelector
         {

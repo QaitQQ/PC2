@@ -15,7 +15,7 @@ namespace Server.Class.Net.NetServer
         public Server_NetApiSiteClass(TCP_CS_Obj Data)
         {
             this.Data = Data;
-            List<string[]> MassName = new List<string[]>();
+            List<СomparisonItems> MassName = new List<СomparisonItems>();
 
             switch (this.Data.Code[2])
             {
@@ -32,12 +32,12 @@ namespace Server.Class.Net.NetServer
                 case TripleSelector.ApiSiteItem.GetComparedItems:
 
                     List<KeyValuePair<Pricecona.PriceStruct, ItemDBStruct>> list = Program.Cash.SiteItemsСhanged.FindAll(x => x.Value != null);
-                    string t = "=>";
+
                     foreach (KeyValuePair<Pricecona.PriceStruct, ItemDBStruct> item in list)
                     {
                         if (item.Key.PriceRC != item.Value.PriceRC)
                         {
-                            MassName.Add(new string[] { item.Key.Id.ToString(), item.Key.PriceRC.ToString() + t, item.Value.PriceRC.ToString(), item.Value.Name.ToString(), item.Value.Description });
+                            MassName.Add(new СomparisonItems(item.Key, item.Value));
                         }
 
                     }
