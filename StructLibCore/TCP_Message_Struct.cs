@@ -13,13 +13,6 @@ using System.Windows.Forms;
 namespace StructLibs
 {
     [System.Serializable]
-    public class TCP_CS_Obj
-    {
-        public object[] Code { get; set; }
-        public object Obj { get; set; }
-        public string Token { get; set; }
-    }
-    [System.Serializable]
 
     public class СomparisonNameID
     {

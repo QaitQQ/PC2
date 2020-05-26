@@ -9,19 +9,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\ClientClass\ClientClass.csproj" />
+    <ProjectReference Include="..\NetworkLibrary\NetworkLibrary.csproj" />
     <ProjectReference Include="..\StructLibCore\StructLibCore.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Reference Include="PresentationCore">
-      <HintPath>C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\PresentationCore.dll</HintPath>
-    </Reference>
-    <Reference Include="PresentationFramework">
-      <HintPath>C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\PresentationFramework.dll</HintPath>
-    </Reference>
-    <Reference Include="WindowsFormsIntegration">
-      <HintPath>C:\Program Files\Reference Assemblies\Microsoft\Framework\v3.0\WindowsFormsIntegration.dll</HintPath>
-    </Reference>
   </ItemGroup>
 
   <ItemGroup>

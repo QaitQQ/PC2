@@ -26,7 +26,6 @@
   </PropertyGroup>
   
   <ItemGroup>
-    <None Remove="Class\Net\NetServer\ItemsNetClasses\4_ItemNetClass.cs~RF8ccee.TMP" />
     <None Remove="Class\XLS\XLS_TO_LIST.cs~RF5b05394.TMP" />
   </ItemGroup>
 
@@ -53,12 +52,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\ItemProcessor\ItemProcessor.csproj" />
+    <ProjectReference Include="..\NetworkLibrary\NetworkLibrary.csproj" />
     <ProjectReference Include="..\StructLibCore\StructLibCore.csproj" />
     <ProjectReference Include="..\WinFormsClientLib\WinFormsClientLib.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Config\" />
   </ItemGroup>
 
 </Project>

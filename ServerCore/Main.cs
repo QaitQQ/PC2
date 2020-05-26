@@ -1,7 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
-
-using Server.Class.Net.NetServer;
-
+﻿
 using System;
 using System.Linq;
 using System.Threading;
@@ -15,7 +12,7 @@ namespace Server
         public static CashClass Cash;
         private static Task Server;
 
-        public static  event Action<string> Log;
+        public static event Action<string> Log;
 
         // правила обработки
         // несинхронный цикл проверки почты
@@ -27,7 +24,7 @@ namespace Server
             Cash.LoadCash();
             if (arg.Contains("-Server"))
             {
-                Log("Server Start"+ DateTime.Now);
+                Log("Server Start" + DateTime.Now);
                 GC.SuppressFinalize(Cash);
                 await StartServers();
             }
@@ -46,7 +43,7 @@ namespace Server
 
         private static async Task StartServers()
         {
-            Server = new TCPServer().AsyncUp();
+            Server = new Network.ServerTCP(12001, new CommonSwitch().Result).AsyncUp();
             await Task.Factory.StartNew(() => Server);
             Class.Net.Imap_Checker ImapServer = new Class.Net.Imap_Checker();
             await Task.Factory.StartNew(() => ImapServer.Start_Check());

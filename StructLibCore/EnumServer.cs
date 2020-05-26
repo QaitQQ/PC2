@@ -2,7 +2,9 @@
 {
     public static class Selector
     {
-        public enum FillTable { СhangedItemsTable, NewItemTable, СhangedSiteTable,
+        public enum FillTable
+        {
+            СhangedItemsTable, NewItemTable, СhangedSiteTable,
             СhangedItemsTableSelected
         }
         public enum FirstSelector
@@ -17,7 +19,13 @@
         {
             public enum EnumCrmNetClass
             {
-                GetPartner, GetEvents, AddPartner, DelPartner, AddEvents, DelEvents
+                GetPartner,
+                NewPartner,
+                DelPartner,
+
+                GetEvents,
+                NewEvent,
+                DelEvent
             }
             public enum EnumBase
             {
@@ -42,7 +50,8 @@
                 Del_From_DB,
                 Add_New_position_from_СhangeList,
                 AllowAllСhange,
-                DelDouble
+                DelDouble,
+                EditItem
             }
 
         }

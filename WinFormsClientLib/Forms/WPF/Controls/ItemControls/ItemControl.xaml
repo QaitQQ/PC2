@@ -24,7 +24,7 @@
 
         <DataGrid Grid.ColumnSpan="2" Grid.Row="1" Name="PropInfo" AutoGenerateColumns="False">
             <DataGrid.Columns>
-                <DataGridTextColumn  Binding="{Binding PropertyInfo.Name}" IsReadOnly ="True">
+                <DataGridTextColumn  Binding="{Binding Name}" IsReadOnly ="True">
                 </DataGridTextColumn>
                 <DataGridTextColumn  Width="400" Binding="{Binding Value, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}">
                     <DataGridTextColumn.ElementStyle>

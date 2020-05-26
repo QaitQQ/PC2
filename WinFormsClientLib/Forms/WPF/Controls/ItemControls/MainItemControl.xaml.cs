@@ -1,14 +1,17 @@
-﻿using Client.Class.Net;
+﻿
+using Client;
 
 using StructLibs;
 
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+
 using WinFormsClientLib.Forms.WPF.Controls.Other;
 
 namespace WinFormsClientLib.Forms.WPF.ItemControls
@@ -28,11 +31,10 @@ namespace WinFormsClientLib.Forms.WPF.ItemControls
         public MainItemControl()
         {
             InitializeComponent();
-
             SearchList = new ObservableCollection<СomparisonNameID>();
             Prop = ItemDBStruct.GetProperties();
             FilterList = new ObservableCollection<PropPair>();
-            foreach (var item in Prop)
+            foreach (System.Reflection.PropertyInfo item in Prop)
             {
                 PropertyInfoComboBox.Items.Add(item.Name);
                 if (item.Name == "Name") { PropertyInfoComboBox.SelectedIndex = PropertyInfoComboBox.Items.Count - 1; }
@@ -55,13 +57,12 @@ namespace WinFormsClientLib.Forms.WPF.ItemControls
         {
             if (e.AddedItems.Count > 0)
             {
-                var X = e.AddedItems[0] as СomparisonNameID;
-                ItemNetStruct Obj = new ItemNetClass(X.Id.ToString()).Retun_Item_And_Image() as ItemNetStruct;
-
-                var NewControl = new ItemControl(Obj);
+                СomparisonNameID X = e.AddedItems[0] as СomparisonNameID;           
+                ItemNetStruct Obj = new Network.Item.GetItemFromId().Get<ItemNetStruct>(new WrapNetClient(), X.Id.ToString());
+                ItemControl NewControl = new ItemControl(Obj);
+                NewControl.GoSite += ((Client.Forms.Mainform)Client.Main.CommonWindow).GoSite;
                 if (ItemDescriptionBox.Children.Count < 3) { ItemDescriptionBox.Children.Add(NewControl); }
                 else { ItemDescriptionBox.Children.Clear(); ItemDescriptionBox.Children.Add(NewControl); }
-
             }
         }
         private void SaleChange(object Obj, TextChangedEventArgs e)
@@ -71,7 +72,7 @@ namespace WinFormsClientLib.Forms.WPF.ItemControls
                 string X = null;
                 if (Str != "")
                 {
-                    foreach (var item in Str)
+                    foreach (char item in Str)
                     {
                         if (char.IsDigit(item)) { X += item; }
                     }
@@ -81,8 +82,11 @@ namespace WinFormsClientLib.Forms.WPF.ItemControls
             }
 
             SaleValue = new int[] { ConvertToInt(SaleBox.Text), ConvertToInt(MarkupBox.Text) };
-        } 
-        private void AddFilterButton_Click(object sender, RoutedEventArgs e) => FilterList.Add(new PropPair() { PropertyInfo = Prop.First(x => x.Name == PropertyInfoComboBox.SelectedItem.ToString()), Value = SearhTextBox.Text });
+        }
+        private void AddFilterButton_Click(object sender, RoutedEventArgs e)
+        {
+            FilterList.Add(new PropPair() { PropertyInfo = Prop.First(x => x.Name == PropertyInfoComboBox.SelectedItem.ToString()), Value = SearhTextBox.Text });
+        }
         private void Search(string Str, string PropName)
         {
             int i;
@@ -93,25 +97,19 @@ namespace WinFormsClientLib.Forms.WPF.ItemControls
                     break;
                 }
             }
-            var Search = new ItemNetClass(Str).Retun_Item_List(i);
+            var Search = new Network.Item.ItemSearch().Get<List<СomparisonNameID>>(new WrapNetClient(), new object[] { Str, i}); 
             foreach (var item in Search) { SearchList.Add(item); }
         }
         private void AppFilter(object Obj, NotifyCollectionChangedEventArgs e)
         {
             if (e.Action == NotifyCollectionChangedAction.Add)
             {
-                foreach (var item in Obj as IEnumerable)
+                foreach (object item in Obj as IEnumerable)
                 {
-                    var X = (PropPair)item;
+                    PropPair X = (PropPair)item;
                     Search(X.Value.ToString(), X.PropertyInfo.Name);
                 }
             }
-        }      
+        }
     }
 }
-
-//        private void Del_From_ID(DataGridViewCellEventArgs e)
-//        {
-//            int id = Convert.ToInt32(MainFieldTable.Rows[e.RowIndex].Cells[1].Value);
-//            Task.Factory.StartNew(() => new ItemNetClass().Del_Item_From_ID(id));
-//        }
