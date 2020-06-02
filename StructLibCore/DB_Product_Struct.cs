@@ -31,6 +31,7 @@ namespace StructLibs
         public bool SiteFlag { get; set; }
         public string PriceListName { get; set; }
         public List<DetailValue> Details { get; set; }
+        public PriceСhangeHistory HistoryID { get; set; }
         public List<string> Tags { get; set; }
         public ItemDBStruct(PriceStruct item)
         {
@@ -84,7 +85,6 @@ namespace StructLibs
             Details = new List<DetailValue>();
             Tags = new List<string>();
         }
-
         public static PropertyInfo[] GetProperties() => typeof(ItemDBStruct).GetProperties(BindingFlags.Public | BindingFlags.Instance);
     }
 
@@ -130,7 +130,12 @@ namespace StructLibs
         public string Name { get; set; }
         public Partner PartnerID { get; set; }
     }
-
+    [System.Serializable]
+    public class PriceСhangeHistory
+    {
+        public int Id { get; set; }
+        public List<KeyValuePair<DateTime, double>> History;
+    }
 }
 
 

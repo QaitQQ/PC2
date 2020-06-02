@@ -25,6 +25,10 @@ namespace WinFormsClientLib.Forms.WPF.ItemControls
         public ObservableCollection<СomparisonNameID> SearchList { get; set; }
         public ObservableCollection<PropPair> FilterList { get; set; }
         private readonly System.Reflection.PropertyInfo[] Prop;
+
+
+        public ObservableCollection<ItemControl> ItemsPanel { get; set; }
+
         public event Action<int, int> ChangeSale;
         private int[] _SaleValue;
         private int[] SaleValue { get => _SaleValue; set { _SaleValue = value; ChangeSale?.Invoke(SaleValue[0], SaleValue[1]); } }
@@ -34,6 +38,7 @@ namespace WinFormsClientLib.Forms.WPF.ItemControls
             SearchList = new ObservableCollection<СomparisonNameID>();
             Prop = ItemDBStruct.GetProperties();
             FilterList = new ObservableCollection<PropPair>();
+            ItemsPanel = new ObservableCollection<ItemControl>();
             foreach (System.Reflection.PropertyInfo item in Prop)
             {
                 PropertyInfoComboBox.Items.Add(item.Name);
@@ -42,6 +47,8 @@ namespace WinFormsClientLib.Forms.WPF.ItemControls
             ButtonStack.Items.Add(new Button() { Name = "Plus", Height = 20, Content = "Кнопка" });
             FilterStack.ItemsSource = FilterList;
             ItemSearchListBox.ItemsSource = SearchList;
+           // ItemDescriptionBox.ItemsSource = ItemsPanel;
+
             SaleBox.TextChanged += new TextChangedEventHandler(SaleChange);
             MarkupBox.TextChanged += new TextChangedEventHandler(SaleChange);
             ButtonStack.Items.Add(new PercentCalc());
@@ -57,12 +64,29 @@ namespace WinFormsClientLib.Forms.WPF.ItemControls
         {
             if (e.AddedItems.Count > 0)
             {
-                СomparisonNameID X = e.AddedItems[0] as СomparisonNameID;           
-                ItemNetStruct Obj = new Network.Item.GetItemFromId().Get<ItemNetStruct>(new WrapNetClient(), X.Id.ToString());
-                ItemControl NewControl = new ItemControl(Obj);
+                СomparisonNameID X = e.AddedItems[0] as СomparisonNameID;
+
+
+                using Network.Item.GetItemFromId Qwery = new Network.Item.GetItemFromId();
+                ItemPlusImage Obj = Qwery.Get<ItemPlusImage>(new WrapNetClient(), X.Id.ToString());
+                ItemControl NewControl = new ItemControl(Obj, Prop);
                 NewControl.GoSite += ((Client.Forms.Mainform)Client.Main.CommonWindow).GoSite;
-                if (ItemDescriptionBox.Children.Count < 3) { ItemDescriptionBox.Children.Add(NewControl); }
-                else { ItemDescriptionBox.Children.Clear(); ItemDescriptionBox.Children.Add(NewControl); }
+
+                if (ItemDescriptionBox.Children.Count < 2) { ItemDescriptionBox.Children.Add(NewControl); }
+
+
+                else
+                {
+                    foreach (var item in ItemDescriptionBox.Children)
+                    {
+                        ((ItemControl)item).Dispose();
+                    }
+
+                    ItemDescriptionBox.Children.Clear();
+                    ItemDescriptionBox.Children.Add(NewControl);
+                    GC.Collect();
+                
+                }
             }
         }
         private void SaleChange(object Obj, TextChangedEventArgs e)
@@ -97,7 +121,7 @@ namespace WinFormsClientLib.Forms.WPF.ItemControls
                     break;
                 }
             }
-            var Search = new Network.Item.ItemSearch().Get<List<СomparisonNameID>>(new WrapNetClient(), new object[] { Str, i}); 
+            var Search = new Network.Item.ItemSearch().Get<List<СomparisonNameID>>(new WrapNetClient(), new object[] { Str, i });
             foreach (var item in Search) { SearchList.Add(item); }
         }
         private void AppFilter(object Obj, NotifyCollectionChangedEventArgs e)

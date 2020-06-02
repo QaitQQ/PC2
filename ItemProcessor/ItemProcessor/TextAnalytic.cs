@@ -4,12 +4,9 @@
 
 using Object_Description;
 
-using Pricecona;
-
 using StructLibs;
 
 using System.Collections.Generic;
-using System.Linq;
 using System.Text.RegularExpressions;
 
 namespace Server.Class.ItemProcessor
@@ -17,23 +14,27 @@ namespace Server.Class.ItemProcessor
 
     public abstract class TextAnalytic
     {
-        internal IEnumerable<IDictionaryPC> _Dictionaries;
-        public TextAnalytic() { }
+        internal Dictionaries Dictionaries;
+        public TextAnalytic(Dictionaries Dictionaries) { this.Dictionaries = Dictionaries; }
         public virtual ItemDBStruct Search(ItemDBStruct Item)
         {
             return Item;
         }
     }
-
     public class SerchManufactor : TextAnalytic
     {
-        public SerchManufactor(IEnumerable<IDictionaryPC> Dictionaries) { _Dictionaries = Dictionaries; }
+        public SerchManufactor(Dictionaries Dictionaries) : base(Dictionaries)
+        {
+        }
+
         public override ItemDBStruct Search(ItemDBStruct Item)
         {
+            IEnumerable<IDictionaryPC> ActiveDictionaries;
+            ActiveDictionaries = Dictionaries.GetDictionaryRelate(DictionaryRelate.Manufactor);
 
-            foreach (var item in _Dictionaries)
+            foreach (IDictionaryPC item in ActiveDictionaries)
             {
-                foreach (var X in item.Values)
+                foreach (string X in item.Values)
                 {
                     if (Regex.IsMatch(Item.Name, X))
                     {
@@ -52,18 +53,24 @@ namespace Server.Class.ItemProcessor
         }
     }
 
-    internal class TagGenerator: TextAnalytic
+    internal class TagGenerator : TextAnalytic
     {
-        public TagGenerator(IEnumerable<IDictionaryPC> Dictionaries) => _Dictionaries  =Dictionaries;
-        public PriceStruct Generate(PriceStruct Item)
+        public TagGenerator(Dictionaries Dictionaries) : base(Dictionaries)
         {
-            foreach (var item in _Dictionaries)
+        }
+
+        public ItemDBStruct Generate(ItemDBStruct Item)
+        {
+            IEnumerable<IDictionaryPC> ActiveDictionaries;
+            ActiveDictionaries = Dictionaries.GetDictionaryRelate(DictionaryRelate.Tags);
+
+            foreach (IDictionaryPC item in ActiveDictionaries)
             {
                 DicWork(ref Item, item);
-            }        
+            }
             return Item;
         }
-        private static void DicWork( ref PriceStruct Item, IDictionaryPC Dictionary)
+        private static void DicWork(ref ItemDBStruct Item, IDictionaryPC Dictionary)
         {
             foreach (string item in Dictionary.Values)
             {
@@ -82,19 +89,19 @@ namespace Server.Class.ItemProcessor
     }
     public class FixName : TextAnalytic
     {
-    //    public FixName() { _Dictionaries = new List<IDictionaryPC>(); _Dictionaries.ToList().Add(Program.Cash.Dictionaries.Get("NameEdit")); }
-        public PriceStruct Fix(PriceStruct Item)
+        public FixName(Dictionaries Dictionaries) : base(Dictionaries)
         {
-            Item.Name = Item.Name.Trim().ToUpper();
-            foreach (var item in _Dictionaries)
-            {
-                DicWork(Item, item);
-            }
+        }
 
+        public ItemDBStruct Fix(ItemDBStruct Item)
+        {
+
+            Item.Name = Item.Name.Trim().ToUpper();
+            DicWork(Item, Dictionaries.Get("NameEdit"));
             Item.СomparisonName = СomparisonNameGenerator.Get(Item.Name);
             return Item;
         }
-        private static void DicWork(PriceStruct item, IDictionaryPC Dictionary)
+        private static void DicWork(ItemDBStruct item, IDictionaryPC Dictionary)
         {
             foreach (string X in Dictionary.Values)
             {

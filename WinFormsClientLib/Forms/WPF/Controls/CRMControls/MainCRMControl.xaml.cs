@@ -1,4 +1,6 @@
 ﻿
+using Client;
+
 using CRMLibs;
 
 using System;
@@ -27,13 +29,15 @@ namespace WinFormsClientLib.Forms.WPF.Controls.CRMControls
             PartnerList = new ObservableCollection<Partner>();
             EventsList = new ObservableCollection<Event>();
             Filters = new ObservableCollection<UIElement>();
-            //   foreach (Partner item in new CrmNetClass().GetPartnerList()) { PartnerList.Add(item); }
+            var Partn = new Network.CRM.GetAllPartners().Get<List<Partner>>(new WrapNetClient());
+
+            foreach (Partner item in Partn) { PartnerList.Add(item); }
             InitializeComponent();
             Partners.ItemsSource = PartnerList;
             ComboRelateBox.ItemsSource = Enum.GetValues(typeof(SearchComboBox)).Cast<SearchComboBox>();
             ComboRelateBox.SelectedIndex = 0;
             FilterStack.ItemsSource = Filters;
-            //  Filters.CollectionChanged += new NotifyCollectionChangedEventHandler(FindFilter);
+             Filters.CollectionChanged += new NotifyCollectionChangedEventHandler(FindFilter);
             ButtonsPartnerInteractionPanel = new ObservableCollection<Button>();
             ButtonsEventInteractionPanel = new ObservableCollection<Button>();
             PartnerInteractionPanel.ItemsSource = ButtonsPartnerInteractionPanel;
@@ -44,20 +48,20 @@ namespace WinFormsClientLib.Forms.WPF.Controls.CRMControls
         }
         private void Partners_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            //ActivePartner = (Partner)Partners.SelectedItem;
-            //if (ActivePartner != null)
-            //{
-            //    EventsList = new ObservableCollection<Event>();
-            //    List<Event> Events = new CrmNetClass().ShowEvents(ActivePartner.Id);
-            //    if (Events != null)
-            //    {
-            //        foreach (Event item in Events)
-            //        {
-            //            EventsList.Add(item);
-            //        }
-            //        EventsLst.ItemsSource = EventsList;
-            //    }
-            //}
+            ActivePartner = (Partner)Partners.SelectedItem;
+            if (ActivePartner != null)
+            {
+              EventsList = new ObservableCollection<Event>();
+                List<Event> Events = new Network.CRM.GetEventsFromPartnerID().Get<List<Event>>(new WrapNetClient(),ActivePartner.Id);
+             if (Events != null)
+                {
+                    foreach (Event item in Events)
+                    {
+                        EventsList.Add(item);
+                    }
+                    EventsLst.ItemsSource = EventsList;
+                }
+            }
         }
         private void AddFilter_Click(object sender, RoutedEventArgs e)
         {

@@ -8,10 +8,10 @@ namespace Network.Аuthorization
 {
 
     [Serializable]
-    public abstract class АuthorizationNet : NetQwerry  {}
+    public abstract class NetАuthorization : NetQwerry  {}
 
     [Serializable]
-    public class SetToken : АuthorizationNet
+    public class SetToken : NetАuthorization
     {
         public override TCPMessage Post(ApplicationContext Db, object Obj = null)
         {
@@ -44,7 +44,7 @@ namespace Network.Аuthorization
         }
     }
     [Serializable]
-    public class GetUserList : АuthorizationNet
+    public class GetUserList : NetАuthorization
     {
         public override TCPMessage Post(ApplicationContext Db, object Obj = null)
         {

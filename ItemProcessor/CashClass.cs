@@ -1,11 +1,12 @@
 ﻿using Object_Description;
 
 using Pricecona;
-
 using Server.Class.Base;
 using Server.Class.HDDClass;
 
 using StructLibs;
+
+using System.Linq;
 
 using System;
 using System.Collections.Generic;
@@ -19,22 +20,23 @@ namespace Server
         public List<string> UserName;
         public List<string> Tokens;
         public bool MailCheckFlag { get; set; }
-        private List<PriceStruct> _SiteItems;
-        private List<KeyValuePair<PriceStruct, ItemDBStruct>> _СhangedItems;
+        private List<ItemPlusImage> _NewItem;
+        private List<ItemChanges> _СhangedItems;
         private List<KeyValuePair<PriceStruct, ItemDBStruct>> _SiteItemsСhanged;
         private Dictionaries dictionaries;
         private event Action<string, object> СhangeList;
-        public List<PriceStruct> SiteItems
+        public List<ItemPlusImage> NewItem
         {
-            get => _SiteItems;
-            set { if (value != null) { _SiteItems = value; СhangeList?.Invoke(Settings.SiteList, _SiteItems); } }
+            get => _NewItem;
+            set { if (value != null) { _NewItem = value; СhangeList?.Invoke(Settings.NewItem, _NewItem); } }
         }
 
-        public List<KeyValuePair<PriceStruct, ItemDBStruct>> СhangedItems
+        public List<ItemChanges> СhangedItems
         {
             get => _СhangedItems;
             set { if (value != null) { _СhangedItems = value; СhangeList?.Invoke(Settings.СhangedItems, _СhangedItems); } }
         }
+
         public List<KeyValuePair<PriceStruct, ItemDBStruct>> SiteItemsСhanged
         {
             get => _SiteItemsСhanged;
@@ -42,12 +44,19 @@ namespace Server
         }
 
         public Dictionaries Dictionaries { get => dictionaries; set { if (value != null) { dictionaries = value; СhangeList?.Invoke(Settings.Dictionaries, dictionaries); } } }
-        public void ReloadNameCash() { ItemName = new Class.Query.NameCash().GetCashItemName(); }
+        public void ReloadNameCash() 
+        {
+            using (ApplicationContext db = new ApplicationContext())
+            {
+                ItemName = (from Item in db.Item select new СomparisonNameID() { Name = Item.Name, СomparisonName = Item.СomparisonName, Id = Item.Id }).ToList();
+            }
+      
+        }
 
         public CashClass()
         {
-            SiteItems = new List<PriceStruct>();
-            СhangedItems = new List<KeyValuePair<PriceStruct, ItemDBStruct>>();
+            NewItem = new List<ItemPlusImage>();
+            СhangedItems = new List<ItemChanges>();
             Dictionaries = new Dictionaries();
             Tokens = new List<string>();
             Serializer<object> Serializer = new Serializer<object>();
@@ -59,12 +68,12 @@ namespace Server
         public void LoadCash()
         {
 
-            SiteItems = Task.Run(() => new Deserializer<List<PriceStruct>>(Settings.SiteList).Doit()).Result;
-            SiteItemsСhanged = Task.Run(() => new Deserializer<List<KeyValuePair<PriceStruct, ItemDBStruct>>>(Settings.SiteListСhanged).Doit()).Result;
-            СhangedItems = Task.Run(() => new Deserializer<List<KeyValuePair<PriceStruct, ItemDBStruct>>>(Settings.СhangedItems).Doit()).Result;
+             NewItem = Task.Run(() => new Deserializer<List<ItemPlusImage>>(Settings.NewItem).Doit()).Result;
+            //  SiteItemsСhanged = Task.Run(() => new Deserializer<List<KeyValuePair<PriceStruct, ItemDBStruct>>>(Settings.SiteListСhanged).Doit()).Result;
+            СhangedItems = Task.Run(() => new Deserializer<List<ItemChanges>>(Settings.СhangedItems).Doit()).Result;
             Dictionaries = Task.Run(() => new Deserializer<Dictionaries>(Settings.Dictionaries).Doit()).Result;
             ReloadNameCash();
-           // Gen_Dic();
+            // Gen_Dic();
         }
 
 

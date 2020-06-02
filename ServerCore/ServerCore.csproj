@@ -6,7 +6,7 @@
     <UseWindowsForms>true</UseWindowsForms>
     <RootNamespace>Server</RootNamespace>
     <AssemblyName>Server_Core_PC</AssemblyName>
-    <ApplicationIcon>123.ico</ApplicationIcon>
+    <ApplicationIcon></ApplicationIcon>
     <StartupObject />
     <Platforms>AnyCPU;x64;x86</Platforms>
     <LangVersion>8.0</LangVersion>

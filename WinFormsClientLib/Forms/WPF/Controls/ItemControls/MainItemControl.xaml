@@ -68,7 +68,8 @@
                     </DataTemplate>
                 </ListBox.ItemTemplate>
             </ListBox>
-            <DockPanel Name="ItemDescriptionBox" Grid.Column="2">
+            <DockPanel Name="ItemDescriptionBox" Grid.Column="2" >
+
             </DockPanel>
         </Grid>
     </Grid>

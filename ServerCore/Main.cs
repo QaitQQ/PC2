@@ -1,4 +1,5 @@
 ﻿
+using Server.Class.Base;
 using System;
 using System.Linq;
 using System.Threading;
@@ -24,19 +25,19 @@ namespace Server
             Cash.LoadCash();
             if (arg.Contains("-Server"))
             {
-                Log("Server Start" + DateTime.Now);
+                Log("Server Start " + DateTime.Now);
                 GC.SuppressFinalize(Cash);
                 await StartServers();
             }
             if (arg.Contains("-Client"))
             {
-                Log("Client Start" + DateTime.Now);
+                Log("Client Start " + DateTime.Now);
                 StartClient();
             }
             GC.Collect();
             if (Server != null)
             {
-                Log("Server Wait" + DateTime.Now);
+                Log("Server Wait " + DateTime.Now);
                 Server.Wait();
             }
         }
@@ -55,8 +56,6 @@ namespace Server
             Client.SetApartmentState(ApartmentState.STA);
             Client.Start();
         }
-
-
         private static void CW(string STR) { System.Console.WriteLine(STR); }
     }
 }

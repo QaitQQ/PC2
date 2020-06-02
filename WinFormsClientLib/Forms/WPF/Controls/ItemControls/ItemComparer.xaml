@@ -36,9 +36,11 @@
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
-                    <DataGridTextColumn Binding="{Binding Path=Name}"></DataGridTextColumn>
-                    <DataGridTextColumn Binding="{Binding Path=OldRC}"></DataGridTextColumn>
-                    <DataGridTextColumn Binding="{Binding Path=NewRC}"></DataGridTextColumn>
+                    <DataGridTextColumn Binding="{Binding Path=ItemName}"></DataGridTextColumn>
+                    <DataGridTextColumn Binding="{Binding Path=OldValue}"></DataGridTextColumn>
+                    <DataGridTextColumn Binding="{Binding Path=NewValue}"></DataGridTextColumn>
+                    <DataGridTextColumn Binding="{Binding Path=FieldName}"></DataGridTextColumn>
+                    <DataGridTextColumn Binding="{Binding Path=Source}"></DataGridTextColumn>
                 </DataGrid.Columns>
             </DataGrid>
         </Grid>

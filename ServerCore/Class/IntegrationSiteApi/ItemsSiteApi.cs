@@ -58,55 +58,60 @@ namespace Server.Class.IntegrationSiteApi
 
             return ItemList;
         }
-        private List<PriceStruct> GetAllItem()
-        {
-            EndLoading = false;
-            GetAllProduct();
+        //private List<PriceStruct> GetAllItem()
+        //{
+        //    EndLoading = false;
+        //    GetAllProduct();
 
-            double RC = 0;
-            ItemList = new List<PriceStruct>();
-            foreach (Dictionary<string, string> item in mapList)
-            {
-                string f = item["name"];
-                if (item["name"] != " None")
-                {
+        //    double RC = 0;
+        //    ItemList = new List<PriceStruct>();
+        //    foreach (Dictionary<string, string> item in mapList)
+        //    {
+        //        string f = item["name"];
+        //        if (item["name"] != " None")
+        //        {
 
-                    Dictionary<string, string> Item = item;
+        //            Dictionary<string, string> Item = item;
 
-                    try
-                    {
-                        RC = Convert.ToDouble(item["base_price"].Replace('.', ','));
-                    }
-                    catch
-                    {
-                        RC = 0;
-                    }
+        //            try
+        //            {
+        //                RC = Convert.ToDouble(item["base_price"].Replace('.', ','));
+        //            }
+        //            catch
+        //            {
+        //                RC = 0;
+        //            }
 
 
-                    PriceStruct Product = new Pricecona.PriceStruct
-                    {
-                        Name = item["name"],
-                        Id = Convert.ToInt32(item["product_id"]),
-                        Description = item["description"],
-                        PriceRC = RC
-                    };
-                    Product = new Server.Class.ItemProcessor.FixName().Fix(Product);
-                    ItemList.Add(Product);
-                }
-            }
-            mapList = new List<Dictionary<string, string>>();
-            EndLoading = true;
-            return ItemList;
-        }
+        //            PriceStruct Product = new Pricecona.PriceStruct
+        //            {
+        //                Name = item["name"],
+        //                Id = Convert.ToInt32(item["product_id"]),
+        //                Description = item["description"],
+        //                PriceRC = RC
+        //            };
+        //            Product = new Server.Class.ItemProcessor.FixName().Fix(Product);
+        //            ItemList.Add(Product);
+        //        }
+        //    }
+        //    mapList = new List<Dictionary<string, string>>();
+        //    EndLoading = true;
+        //    return ItemList;
+        //}
         public async Task GetAllItemAsync()
         {
-            await Task.Factory.StartNew(() => GetAllItem());
-            if (EndLoading)
-            {
-                ItemListReady();
-            }
+            //await Task.Factory.StartNew(() => GetAllItem());
+            //if (EndLoading)
+            //{
+            //    ItemListReady();
+            //}
         }
-        public List<PriceStruct> RetunItemList() { Program.Cash.SiteItems = ItemList; return ItemList; }
+        public List<PriceStruct> RetunItemList() 
+        {
+          //  Program.Cash.SiteItems = ItemList;
+            return ItemList;
+        
+        }
         public bool SetPrice(KeyValuePair<int, double> ID_Price)
         {
             Ok = false;

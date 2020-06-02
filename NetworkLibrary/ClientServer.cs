@@ -17,7 +17,7 @@ namespace Network
 
     public interface INetClient { public TCPMessage Messaging(TCPMessage Data); }
 
-    public abstract class TCPClass
+    public abstract class TCPClass : IDisposable
     {
         protected bool ConnectedStatus;
         protected byte[] Buffer;
@@ -49,6 +49,15 @@ namespace Network
             Buffer = new byte[1048576];
             Buffer = ObjToBin(Data);
             Client.Client.BeginSend(Buffer, 0, Buffer.Length, SocketFlags.None, null, null);
+        }
+
+        public void Dispose()
+        {
+            Client.Close();
+            Method = null;
+            Data = null;
+            this.Buffer = null;
+            GC.SuppressFinalize(this);
         }
     }
     public class ServerTCP : TCPClass
@@ -90,7 +99,7 @@ namespace Network
         public TCPMessage Messaging(TCPMessage Data)
         {
             this.Data = Data;
-            
+
 
             if (this.Token != null)
             {

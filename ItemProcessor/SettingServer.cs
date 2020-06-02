@@ -2,7 +2,7 @@
 {
 
 
-    internal static class Settings
+    public class Settings
     {
 
         public const int NetPort = 12001;
@@ -10,6 +10,7 @@
         public const string Config = @"Config.bin";
         public const string Genprice = @"generallist.bin"; // основной накопитель позиций
         public const string SiteList = @"SiteList.bin"; // накопитель сайта
+        public const string NewItem = @"NewItem.bin";
         public const string SiteListСhanged = @"SiteListСhanged.bin"; // накопитель сайта
         public const string Dictionaries = @"Dictionaries.bin"; // накопитель сайта
         public const string NewItems = @"NewItems.bin"; // накопитель новый позиций

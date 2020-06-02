@@ -2,42 +2,44 @@
 
 using Pricecona;
 
+using StructLibs;
+
 using System.Collections.Generic;
 
 namespace Server.Class.ItemProcessor
 {
-    internal class СhangedItemsTags
+    public class СhangedItemsTags
     {
-        private List<PriceStruct> _List;
-        private readonly IEnumerable<IDictionaryPC> Dics;
-        public СhangedItemsTags(List<PriceStruct> List, IEnumerable<IDictionaryPC> dics)
+        private List<ItemPlusImage> _List;
+        private readonly Dictionaries Dics;
+        public СhangedItemsTags(List<ItemPlusImage> List, Dictionaries dics)
         {
             _List = List;
             Dics = dics;
             Enumeration();
         }
 
-        private PriceStruct Doit(PriceStruct Item)
+        private ItemPlusImage Doit(ItemPlusImage Item)
         {
 
-            Item = new FixName().Fix(Item);
-            Item = new TagGenerator(Dics).Generate(Item);
+            Item.Item = new FixName(Dics).Fix(Item.Item);
+            Item.Item = new TagGenerator(Dics).Generate(Item.Item);
             return Item;
         }
 
 
         private void Enumeration()
         {
-            List<PriceStruct> List = new List<PriceStruct>();
+            List<ItemPlusImage> List = new List<ItemPlusImage>();
 
-            foreach (PriceStruct item in _List)
+            foreach (ItemPlusImage item in _List)
             {
                 List.Add(Doit(item));
             }
             _List = List;
         }
 
-        public List<PriceStruct> Return() => _List;
+        public List<ItemPlusImage> Return() => _List;
     }
 
 

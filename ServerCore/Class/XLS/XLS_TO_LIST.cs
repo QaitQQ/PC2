@@ -352,9 +352,9 @@ namespace XLS
             }
 
         }
-        private List<PriceStruct> ReadPrice(string FileName, List<int> WorksheetsNumbers)
+        private List<ItemPlusImage> ReadPrice(string FileName, List<int> WorksheetsNumbers)
         {
-            List<PriceStruct> DataList = new List<PriceStruct>();
+            List<ItemPlusImage> DataList = new List<ItemPlusImage>();
             for (int n = 0; n < WorksheetsNumbers.Count; n++)
             {
                 int WorksheetsN = WorksheetsNumbers[n];
@@ -412,18 +412,21 @@ namespace XLS
 
                         if (PriceRC != -1)
                         {
-                            DataList.Add(new PriceStruct()
+                            DataList.Add(new ItemPlusImage()
                             {
+                                Image = Pic,
+                                Item = new ItemDBStruct()
+                                { 
                                 Name = NameString,
                                 PriceRC = PriceRC,
                                 PriceDC = PriceDC,
                                 Description = DescriptionString,
                                 DateСhange = DateСhange,
-                                Pic = Pic,
                                 Currency = Currency,
                                 PriceListName = PriceListName,
                                 SourceName = FileName,
-                                Sku = SKU
+                                Sku = SKU 
+                                }
                             });
                         }
                         Row++;

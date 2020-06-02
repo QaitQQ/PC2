@@ -1,4 +1,5 @@
 ﻿using Server;
+
 using System;
 
 namespace Network
@@ -11,7 +12,7 @@ namespace Network
         public object Attach { get; set; }
     }
     [Serializable]
-    public abstract class NetQwerry : INetQwerry
+    public abstract class NetQwerry : INetQwerry, IDisposable
     {
         public TCPMessage Message { get; set; }
         public object Attach { get; set; }
@@ -24,11 +25,16 @@ namespace Network
             return (T)Client.Messaging(Message).Obj;
         }
         public virtual TCPMessage Post(ApplicationContext Db, object Obj = null) { throw new NotImplementedException(); }
+
+        public void Dispose()
+        {
+            this.Attach = null;
+            this.Message = null;
+        }
     }
 
 
 }
-
 
 
 

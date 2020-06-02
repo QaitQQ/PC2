@@ -28,11 +28,11 @@ namespace Server.Class.Net
 
     internal class Imap_Handler_Price : Imap_Handler
     {
-        private List<PriceStruct> _Result;
+        private List<ItemPlusImage> _Result;
 
         private event Action СhangeResult;
         public Imap_Handler_Price(IDictionaryPC Dictionary) { _Dictionary = Dictionary; СhangeResult += Comparer; }
-        private List<PriceStruct> Result
+        private List<ItemPlusImage> Result
         {
             get => _Result;
             set
@@ -51,7 +51,7 @@ namespace Server.Class.Net
         {
             using XLS.XLS_TO_LIST X = new XLS.XLS_TO_LIST(Attach);
 
-            Result = (List<PriceStruct>)X.Read(null, FileName, _Dictionary);
+            Result = (List<ItemPlusImage>)X.Read(null, FileName, _Dictionary);
         }
         private void Comparer() => Program.Cash.СhangedItems = new Сompare_PriceStruct_with_DB(Result).StartCompare().Result;
     }

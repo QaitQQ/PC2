@@ -1,17 +1,25 @@
 ﻿
 using Pricecona;
 
-using StructLibs;
-
+using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Drawing;
 using System.Reflection;
-using System.Windows.Forms;
 
 namespace StructLibs
 {
+    [Serializable]
+    public class ItemChanges
+    {
+        public int ItemID { get; set; }
+        public string FieldName { get; set; }
+        public string ItemName { get; set; }
+        public object OldValue { get; set; }
+        public object NewValue { get; set; }
+        public string Source { get; set; }
+        public DateTime DateTime { get; set; }
+    }
     [System.Serializable]
 
     public class СomparisonNameID
@@ -23,7 +31,7 @@ namespace StructLibs
     }
 
     [System.Serializable]
-    public class ItemNetStruct
+    public class ItemPlusImage
     {
         public ItemDBStruct Item { get; set; }
         public Image Image { get; set; }
@@ -35,7 +43,7 @@ namespace StructLibs
         public int BaseId { get; set; }
         public string Name { get; set; }
         public double OldRC { get; set; }
-        public double NewRC { get { return _NewRC; } set { _NewRC = value; PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("СomparisonItems")); } }
+        public double NewRC { get => _NewRC; set { _NewRC = value; PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("СomparisonItems")); } }
         public double OldDC { get; set; }
         public double NewDC { get; set; }
         public string SourceName { get; set; }
@@ -43,7 +51,11 @@ namespace StructLibs
         public int SiteId { get; set; }
         public string СomparisonName { get; set; }
         public List<string> Tags { get; set; }
-        public static PropertyInfo[] GetProperties() => typeof(СomparisonItems).GetProperties(BindingFlags.Public | BindingFlags.Instance);
+        public static PropertyInfo[] GetProperties()
+        {
+            return typeof(СomparisonItems).GetProperties(BindingFlags.Public | BindingFlags.Instance);
+        }
+
         public СomparisonItems(PriceStruct NewItem, ItemDBStruct BaseItem = null)
         {
             BaseId = BaseItem?.Id ?? 0; Name = NewItem.Name ?? "";
@@ -63,14 +75,14 @@ namespace StructLibs
 
             if (NewItem.Tags != null)
             {
-                foreach (var item in (NewItem.Tags))
+                foreach (string item in (NewItem.Tags))
                 {
                     Tags.Add(item);
                 }
             }
             if (BaseItem != null && BaseItem.Tags != null)
             {
-                foreach (var item in (BaseItem.Tags))
+                foreach (string item in (BaseItem.Tags))
                 {
                     Tags.Add(item);
                 }

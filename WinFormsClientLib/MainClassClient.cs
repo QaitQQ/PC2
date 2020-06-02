@@ -18,7 +18,12 @@ namespace Client
     {
         string IP = Main.Server_IP;
         int Port = Main.Server_Port;
-        public TCPMessage Messaging(TCPMessage Data) => new ClientTCP(IP, Port, Main.Token).Messaging(Data);
+        public TCPMessage Messaging(TCPMessage Data)
+        {
+            using ClientTCP Client = new ClientTCP(IP, Port, Main.Token);
+            
+            return Client.Messaging(Data);
+        }
 
     }
     public class Main
