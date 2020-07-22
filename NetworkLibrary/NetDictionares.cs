@@ -1,4 +1,6 @@
-﻿using Object_Description;
+﻿using Microsoft.EntityFrameworkCore.Infrastructure;
+
+using Object_Description;
 
 using Server;
 
@@ -25,6 +27,8 @@ namespace Network.Dictionary
         {
             ((CashClass)Obj).Dictionaries = (Dictionaries)Attach;
             Message.Obj = true;
+
+
             return Message;
         }
     }

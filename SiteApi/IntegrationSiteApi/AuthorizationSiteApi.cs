@@ -59,7 +59,7 @@ namespace Server.Class.IntegrationSiteApi
             return null;
 
         }
-        private string GetToken(Meseger MSG = null)
+        private string GetToken()
         {
 
             string Token = null;
@@ -81,9 +81,8 @@ namespace Server.Class.IntegrationSiteApi
                     throw new Exception(key.Error.ToString());
                 }
             }
-            catch (Exception e)
+            catch 
             {
-                MSG(e.Message.ToString());
             }
 
             SaveToken(Token);

@@ -34,7 +34,6 @@ namespace Client.Forms
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.файлToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.видToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.WindowToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.cRMToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ItemsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.EventsBox = new System.Windows.Forms.ToolStripMenuItem();
@@ -42,12 +41,18 @@ namespace Client.Forms
             this.словариToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.сетевыеToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ClientConfig = new System.Windows.Forms.ToolStripMenuItem();
-            this.panel1 = new System.Windows.Forms.Panel();
-            this.button1 = new System.Windows.Forms.Button();
-            this.splitter1 = new System.Windows.Forms.Splitter();
+            this.WindowToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.RightPanel = new System.Windows.Forms.Panel();
+            this.LeftPanel = new System.Windows.Forms.Panel();
+            this.ShowRightPanelButton = new System.Windows.Forms.Button();
+            this.ShowLeftPanelButton = new System.Windows.Forms.Button();
+            this.RightPanelSplitter = new System.Windows.Forms.Splitter();
             this.panel2 = new System.Windows.Forms.Panel();
+            this.panel1 = new System.Windows.Forms.Panel();
+            this.LeftPanelSplitter = new System.Windows.Forms.Splitter();
             this.menuStrip1.SuspendLayout();
             this.panel2.SuspendLayout();
+            this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // menuStrip1
@@ -72,20 +77,12 @@ namespace Client.Forms
             // видToolStripMenuItem
             // 
             this.видToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.WindowToolStripMenuItem});
-            this.видToolStripMenuItem.Name = "видToolStripMenuItem";
-            this.видToolStripMenuItem.Size = new System.Drawing.Size(39, 20);
-            this.видToolStripMenuItem.Text = "Вид";
-            // 
-            // WindowToolStripMenuItem
-            // 
-            this.WindowToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.cRMToolStripMenuItem,
             this.ItemsToolStripMenuItem,
             this.EventsBox});
-            this.WindowToolStripMenuItem.Name = "WindowToolStripMenuItem";
-            this.WindowToolStripMenuItem.Size = new System.Drawing.Size(103, 22);
-            this.WindowToolStripMenuItem.Text = "Окно";
+            this.видToolStripMenuItem.Name = "видToolStripMenuItem";
+            this.видToolStripMenuItem.Size = new System.Drawing.Size(39, 20);
+            this.видToolStripMenuItem.Text = "Вид";
             // 
             // cRMToolStripMenuItem
             // 
@@ -138,54 +135,102 @@ namespace Client.Forms
             this.ClientConfig.Text = "Настройки клиента";
             this.ClientConfig.Click += new System.EventHandler(this.ClientConfigMenuItem_Click);
             // 
-            // panel1
+            // WindowToolStripMenuItem
             // 
-            this.panel1.Dock = System.Windows.Forms.DockStyle.Right;
-            this.panel1.Location = new System.Drawing.Point(505, 24);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(194, 628);
-            this.panel1.TabIndex = 3;
+            this.WindowToolStripMenuItem.Name = "WindowToolStripMenuItem";
+            this.WindowToolStripMenuItem.Size = new System.Drawing.Size(103, 22);
+            this.WindowToolStripMenuItem.Text = "Окно";
             // 
-            // button1
+            // RightPanel
             // 
-            this.button1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.button1.BackColor = System.Drawing.SystemColors.HotTrack;
-            this.button1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.button1.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.button1.Location = new System.Drawing.Point(0, 0);
-            this.button1.Margin = new System.Windows.Forms.Padding(0);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(10, 628);
-            this.button1.TabIndex = 4;
-            this.button1.UseVisualStyleBackColor = false;
-            this.button1.Click += new System.EventHandler(this.ShowWebBrowser);
+            this.RightPanel.Dock = System.Windows.Forms.DockStyle.Right;
+            this.RightPanel.Location = new System.Drawing.Point(505, 24);
+            this.RightPanel.Name = "RightPanel";
+            this.RightPanel.Size = new System.Drawing.Size(194, 628);
+            this.RightPanel.TabIndex = 3;
             // 
-            // splitter1
+            // LeftPanel
             // 
-            this.splitter1.Dock = System.Windows.Forms.DockStyle.Right;
-            this.splitter1.Location = new System.Drawing.Point(502, 24);
-            this.splitter1.Name = "splitter1";
-            this.splitter1.Size = new System.Drawing.Size(3, 628);
-            this.splitter1.TabIndex = 6;
-            this.splitter1.TabStop = false;
+            this.LeftPanel.Dock = System.Windows.Forms.DockStyle.Left;
+            this.LeftPanel.Location = new System.Drawing.Point(3, 24);
+            this.LeftPanel.Name = "LeftPanel";
+            this.LeftPanel.Size = new System.Drawing.Size(121, 628);
+            this.LeftPanel.TabIndex = 3;
+            // 
+            // ShowRightPanelButton
+            // 
+            this.ShowRightPanelButton.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.ShowRightPanelButton.BackColor = System.Drawing.SystemColors.HotTrack;
+            this.ShowRightPanelButton.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.ShowRightPanelButton.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.ShowRightPanelButton.Location = new System.Drawing.Point(0, 0);
+            this.ShowRightPanelButton.Margin = new System.Windows.Forms.Padding(0);
+            this.ShowRightPanelButton.Name = "ShowRightPanelButton";
+            this.ShowRightPanelButton.Size = new System.Drawing.Size(10, 628);
+            this.ShowRightPanelButton.TabIndex = 4;
+            this.ShowRightPanelButton.UseVisualStyleBackColor = false;
+            this.ShowRightPanelButton.Click += new System.EventHandler(this.ShowWebBrowser);
+            // 
+            // ShowLeftPanelButton
+            // 
+            this.ShowLeftPanelButton.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.ShowLeftPanelButton.BackColor = System.Drawing.Color.LightSkyBlue;
+            this.ShowLeftPanelButton.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.ShowLeftPanelButton.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.ShowLeftPanelButton.Location = new System.Drawing.Point(0, 0);
+            this.ShowLeftPanelButton.Margin = new System.Windows.Forms.Padding(0);
+            this.ShowLeftPanelButton.Name = "ShowLeftPanelButton";
+            this.ShowLeftPanelButton.Size = new System.Drawing.Size(10, 628);
+            this.ShowLeftPanelButton.TabIndex = 4;
+            this.ShowLeftPanelButton.UseVisualStyleBackColor = false;
+            this.ShowLeftPanelButton.Click += new System.EventHandler(this.ShowLeftPanelButton_Click);
+            // 
+            // RightPanelSplitter
+            // 
+            this.RightPanelSplitter.Dock = System.Windows.Forms.DockStyle.Right;
+            this.RightPanelSplitter.Location = new System.Drawing.Point(502, 24);
+            this.RightPanelSplitter.Name = "RightPanelSplitter";
+            this.RightPanelSplitter.Size = new System.Drawing.Size(3, 628);
+            this.RightPanelSplitter.TabIndex = 6;
+            this.RightPanelSplitter.TabStop = false;
             // 
             // panel2
             // 
-            this.panel2.Controls.Add(this.button1);
+            this.panel2.Controls.Add(this.ShowRightPanelButton);
             this.panel2.Dock = System.Windows.Forms.DockStyle.Right;
             this.panel2.Location = new System.Drawing.Point(492, 24);
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(10, 628);
             this.panel2.TabIndex = 8;
             // 
+            // panel1
+            // 
+            this.panel1.Controls.Add(this.ShowLeftPanelButton);
+            this.panel1.Dock = System.Windows.Forms.DockStyle.Left;
+            this.panel1.Location = new System.Drawing.Point(124, 24);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(10, 628);
+            this.panel1.TabIndex = 10;
+            // 
+            // LeftPanelSplitter
+            // 
+            this.LeftPanelSplitter.Location = new System.Drawing.Point(0, 24);
+            this.LeftPanelSplitter.Name = "LeftPanelSplitter";
+            this.LeftPanelSplitter.Size = new System.Drawing.Size(3, 628);
+            this.LeftPanelSplitter.TabIndex = 11;
+            this.LeftPanelSplitter.TabStop = false;
+            // 
             // Mainform
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(699, 652);
-            this.Controls.Add(this.panel2);
-            this.Controls.Add(this.splitter1);
             this.Controls.Add(this.panel1);
+            this.Controls.Add(this.LeftPanel);
+            this.Controls.Add(this.LeftPanelSplitter);
+            this.Controls.Add(this.panel2);
+            this.Controls.Add(this.RightPanelSplitter);
+            this.Controls.Add(this.RightPanel);
             this.Controls.Add(this.menuStrip1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.IsMdiContainer = true;
@@ -194,10 +239,10 @@ namespace Client.Forms
             this.Name = "Mainform";
             this.Text = "Mainform";
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
-            this.Shown += new System.EventHandler(this.Mainform_Shown);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             this.panel2.ResumeLayout(false);
+            this.panel1.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -219,9 +264,13 @@ namespace Client.Forms
         private System.Windows.Forms.ToolStripMenuItem словариToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem ClientConfig;
         private System.Windows.Forms.ToolStripMenuItem сетевыеToolStripMenuItem;
-        private System.Windows.Forms.Panel panel1;
-        private System.Windows.Forms.Button button1;
-        private System.Windows.Forms.Splitter splitter1;
+        private System.Windows.Forms.Panel RightPanel;
+        private System.Windows.Forms.Panel LeftPanel;
+        private System.Windows.Forms.Button ShowRightPanelButton;
+        private System.Windows.Forms.Button ShowLeftPanelButton;
+        private System.Windows.Forms.Splitter RightPanelSplitter;
         private System.Windows.Forms.Panel panel2;
+        private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.Splitter LeftPanelSplitter;
     }
 }

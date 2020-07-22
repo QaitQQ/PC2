@@ -1,173 +1,217 @@
 ﻿
 using Client;
-
 using StructLibs;
-
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Documents;
 
-using static NetEnum.Selector;
 
 namespace WinFormsClientLib.Forms.WPF.Controls.ItemControls
 {
     /// <summary>
-    /// Логика взаимодействия для ItemComparer.xaml
+    /// Форма сравнения позиций, данные тянет напрямую с сервера.
     /// </summary>
     public partial class ItemComparer : UserControl
     {
         private FillTable FillTable { get; set; }
         public BindingList<ItemChanges> CommonItemSourse { get; set; }
+        System.Reflection.PropertyInfo[] Prop;
         public ItemComparer()
         {
             InitializeComponent();
             CommonItemSourse = new BindingList<ItemChanges>();
             CommonGrid.ItemsSource = CommonItemSourse;
+            Prop = ItemDBStruct.GetProperties();
 
-            Button SiteLoadButton = new Button() { Content = "SiteLoad", Height = 20 };
+            Button SiteLoadButton = new Button() { Content = "Загрузить Лист с Сайта", Height = 20 };
             SiteLoadButton.Click += new RoutedEventHandler(SiteApiLoadAll_Click);
 
-            Button RetunCompareNamesButton = new Button() { Content = "RetunCompareNames", Height = 20 };
-            RetunCompareNamesButton.Click += new RoutedEventHandler(Retun_Compare_Names_Click);
-
-            Button Retun_Compare_RC = new Button() { Content = "Retun_Compare_RC", Height = 20 };
+            Button Retun_Compare_RC = new Button() { Content = "Сопостовление с разницев в РЦ", Height = 20 };
             Retun_Compare_RC.Click += new RoutedEventHandler(Retun_Compare_RC_Click);
 
-            Button Retun_New_Names = new Button() { Content = "Retun_New_Names", Height = 20 };
+            Button Retun_New_Names = new Button() { Content = "Новые позиции", Height = 20 };
             Retun_New_Names.Click += new RoutedEventHandler(Retun_New_Names_Click);
 
-            Button Get_Mapped = new Button() { Content = "Get_Mapped", Height = 20 };
-            Get_Mapped.Click += new RoutedEventHandler(Get_Mapped_Click);
+            Button DelDuble = new Button() { Content = "Удалить дубликаты", Height = 20 };
+            DelDuble.Click += new RoutedEventHandler(DelDuble_Click);
 
-            Button Retun_Compare_Site = new Button() { Content = "Retun_Compare_Site", Height = 20 };
-            Retun_Compare_Site.Click += new RoutedEventHandler(Retun_Compare_Site_Click);
-
-            Button DelDouble = new Button() { Content = "DelDouble", Height = 20 };
-            Retun_Compare_Site.Click += new RoutedEventHandler(DelDouble_Click);
-
-            UIElement[] Buttons = new UIElement[] { SiteLoadButton, RetunCompareNamesButton, Retun_Compare_RC, Retun_New_Names, Get_Mapped, Retun_Compare_Site };
-
+            UIElement[] Buttons = new UIElement[] {
+                SiteLoadButton,
+                Retun_Compare_RC,
+                Retun_New_Names,
+                DelDuble
+            };
             ButtonStack.ItemsSource = Buttons;
         }
+
         private void SiteApiLoadAll_Click(object sender, EventArgs e)
         {
-            //  new ItemNetClass().LoadAllItemFromSite();
-        }
-        private void Retun_Compare_Names_Click(object sender, EventArgs e)
-        {
-            FillTable = FillTable.СhangedItemsTableSelected;
-            //    FillAtList(new ItemNetClass().Retun_Compare_Names());
-        }
+            Task.Factory.StartNew(() => SiteCompare(ButtonRenew, FillAtList, (Button)sender));
+            FillTable = FillTable.СhangedSiteTable;
+
+            void SiteCompare(Action<Button, string, bool> ButtonRenew, Action<List<ItemChanges>> FillAtList, Button Button)
+            {
+                int Code = new Network.Item.SiteApi.RenewSiteList().Get<int>(new WrapNetClient());
+                ButtonRenew(Button, "Запросили", false);
+                bool Run = false;
+                ButtonRenew.Invoke(Button, "Исправляем имена", false);
+                while (!Run)
+                {
+                    Run = new Network.Item.SiteApi.FixNameFromSiteList().Get<bool>(new WrapNetClient(), Code);
+                    Thread.Sleep(1000);
+                }
+                Run = false;
+                ButtonRenew.Invoke(Button, "Сравниваем с базой", false);
+                while (!Run)
+                {
+                    Run = new Network.Item.SiteApi.ComparisonWithDB().Get<bool>(new WrapNetClient(), Code);
+
+                    Thread.Sleep(1000);
+                }
+                Run = false;
+                ButtonRenew.Invoke(Button, "Ждем списка", false);
+                while (!Run)
+                {
+                    object List = new Network.Item.SiteApi.ReturnComparisonWithDB().Get<object>(new WrapNetClient(), Code);
+                    if (List is bool)
+                    {
+                        Run = (bool)List;
+                    }
+                    else
+                    {
+                        FillAtList((List<ItemChanges>)List);
+                        Run = true;
+                    }
+                    Thread.Sleep(1000);
+                }
+                ButtonRenew.Invoke(Button, "Загрузить Лист с Сайта", true);
+            }
+
+        }  // сравнение и возврат разницы с сайтом
         private void Retun_Compare_RC_Click(object sender, EventArgs e)
         {
             FillTable = FillTable.СhangedItemsTable;
             FillAtList(new Network.Item.Changes.GetChanges().Get<List<ItemChanges>>(new WrapNetClient()));
-
-            //   FillAtList(new ItemNetClass().Retun_Compare_RC());
-        }
-        private void FillAtList(List<ItemChanges> Query)
-        {
-            CommonItemSourse.Clear();
-            if (Query != null)
-            {
-                foreach (ItemChanges item in Query)
-                {
-                    CommonItemSourse.Add(item);
-                }
-                CommonGrid.Items.Refresh();
-            }
-        }
+        } // сравнение с базой данных разница только в рознице    
         private void Retun_New_Names_Click(object sender, EventArgs e)
         {
             FillTable = FillTable.NewItemTable;
             FillAtList(new Network.Item.Changes.GetNewList().Get<List<ItemChanges>>(new WrapNetClient()));
-        }
-        private void Get_Mapped_Click(object sender, EventArgs e)
-        {
-            FillTable = FillTable.СhangedSiteTable;
-            //  FillAtList(new ItemNetClass().CompareFromSite());
-        }
-        private void Retun_Compare_Site_Click(object sender, EventArgs e)
-        {
-            FillTable = FillTable.СhangedSiteTable;
-            //   FillAtList(new ItemNetClass().Retun_Compare_Site());
-        }
-        private void DelDouble_Click(object sender, EventArgs e)
-        {
-            //   new ItemNetClass().DelDouble();
-        }
+        } //возвращаем неприкаянные позиции
         private void ApplyAllButton_Click(object sender, RoutedEventArgs e)
         {
-            if (FillTable == FillTable.СhangedItemsTableSelected)
+
+            new Network.Item.Changes.AllowAllChanges().Get<List<string>>(new WrapNetClient());
+        
+        
+        
+        
+        
+        }
+        private void DelDuble_Click(object sender, RoutedEventArgs e) 
+        {
+            CommonItemSourse.Clear();
+            var X = new Network.Item.RemoveDuplicate().Get<List<string>>(new WrapNetClient());
+
+            foreach (var item in X)
             {
-                List<string> List = new List<string>();
-                //foreach (СomparisonItems item in CommonItemSourse)
-                //{
-                //    List.Add(item.BaseId.ToString());
-                //}
-                //  Task.Factory.StartNew(() => new ItemNetClass().AllowAll(FillTable, List));
+                CommonItemSourse.Add(new ItemChanges() { FieldName = item });
+            }
+           
+
+
+        }
+        private void Table_Button_Click(object sender, RoutedEventArgs e) // клик на позиции в таблице
+        {
+            int I = (int)(((Button)sender).Tag);
+            if (I < (CommonItemSourse.Count + 1) && CommonItemSourse.Count!= 0)
+            {
+                ItemChanges X = CommonItemSourse[I];
+                switch (FillTable)
+                {
+                    case FillTable.СhangedItemsTable:
+                        UpdateMappedPosition(X);
+                        break;
+                    case FillTable.NewItemTable:
+
+                        new Network.Item.AddNewItemFromList().Get<bool>(new WrapNetClient(), X.ItemName);  
+
+                        break;
+                    case FillTable.СhangedSiteTable:
+                        SetPrice(X);
+                        break;
+                    default:
+                        break;
+                }
+                CommonItemSourse.Remove(X);
+            }
+
+            void UpdateMappedPosition(ItemChanges Item)
+            {
+                ItemPlusImageAndStorege Obj = new Network.Item.GetItemFromId().Get<ItemPlusImageAndStorege>(new WrapNetClient(), Item.ItemID);
+
+                foreach (System.Reflection.PropertyInfo item in Prop)
+                {
+                    if (item.Name == Item.FieldName)
+                    {
+                        item.SetValue(Obj.Item, Item.NewValue);
+                    }
+                }
+
+                Obj.Item.DateСhange = DateTime.Now;
+                new Network.Item.EditItem().Get<bool>(new WrapNetClient(), Obj.Item);
+
+                new Network.Item.Changes.DelFromСhangedList().Get<bool>(new WrapNetClient(), Item);
+            }  // обновление при FillTable = СhangedItemsTable
+            void SetPrice(ItemChanges Item)
+            {
+                Task.Factory.StartNew(() =>
+                {
+                    AddLogs(new Network.Item.SiteApi.UpdateSiteRC().Get<string>(new WrapNetClient(), Item));
+                });
+            } // обновляем цену на сайте   
+        }
+        private void FillAtList(List<ItemChanges> Query)
+        {
+            if (Dispatcher.CheckAccess())
+            {
+                CommonItemSourse.Clear();
+                if (Query != null)
+                {
+                    foreach (ItemChanges item in Query)
+                    {
+                        CommonItemSourse.Add(item);
+                    }
+                    CommonGrid.Items.Refresh();
+                }
             }
             else
             {
-                //   new ItemNetClass().AllowAll(FillTable);
+                Dispatcher.Invoke(() =>
+                {
+                    CommonItemSourse.Clear();
+                    if (Query != null)
+                    {
+                        foreach (ItemChanges item in Query)
+                        {
+                            CommonItemSourse.Add(item);
+                        }
+                        CommonGrid.Items.Refresh();
+                    }
+                }
+                );
             }
-        }
+        } // заполняем лист
+        private void ButtonRenew(Button Button, string Str, bool IsEnabled) => Button.Dispatcher.Invoke(() => { Button.Content = Str; Button.IsEnabled = IsEnabled; });
+        private void AddLogs(string Str) => Dispatcher.Invoke(() => LogList.Items.Add(Str));
+
         private void ClearButton_Click(object sender, RoutedEventArgs e)
         {
 
-        }
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-            //СomparisonItems X = CommonItemSourse[(int)(((Button)sender).Tag)];
-            //switch (FillTable)
-            //{
-            //    case FillTable.СhangedItemsTable:
-            //        UpdateMappedPosition(X);
-            //        break;
-            //    case FillTable.NewItemTable:
-            //        Add_New_position_from_СhangeList(X);
-            //        break;
-            //    case FillTable.СhangedSiteTable:
-            //        SetPrice(X.SiteId, X.NewRC);
-            //        break;
-            //    case FillTable.СhangedItemsTableSelected:
-            //        break;
-            //    default:
-            //        break;
-            //}
-            //CommonItemSourse.Remove(X);
-
-        }
-        private void UpdateMappedPosition(СomparisonItems Item)
-        {
-            //  ItemNetStruct Obj = new ItemNetClass(Item.BaseId).Retun_Item_And_Image() as ItemNetStruct;
-            //   Obj.Item.PriceRC = Item.NewRC;
-            //   Obj.Item.PriceDC = Item.NewDC;
-            //   Obj.Item.Description = Item.Description;
-            //   Obj.Item.SourceName = Item.SourceName;
-            //   Obj.Item.DateСhange = DateTime.Now;
-            //  new ItemNetClass().EditItemFromDBAndDelFromMappedList(Obj.Item);
-        }
-        private void ResultRenew(string STR) { }
-        private sealed class Setprice
-        {
-            public void SetPriceFromSite(int v1, double v2, Action<string> action)
-            {
-                //    bool I = new ItemNetClass().SetPrice(v1, v2);
-                //   action(v1.ToString() + I.ToString());
-            }
-        }
-        private void Add_New_position_from_СhangeList(СomparisonItems Item)
-        {
-            // Task.Factory.StartNew(() => new ItemNetClass().Add_New_position_from_СhangeList(Item.СomparisonName));
-        }
-        private void SetPrice(int ID, double NewPrice)
-        {
-            Task.Factory.StartNew(() => new Setprice().SetPriceFromSite(ID, NewPrice, ResultRenew));
         }
     }
 }

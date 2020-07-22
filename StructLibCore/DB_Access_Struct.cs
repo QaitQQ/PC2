@@ -1,6 +1,6 @@
 ﻿namespace Object_Description
 {
-    public class Access_Struct
+    public class DB_Access_Struct
     {
         [System.Serializable]
         public class User

@@ -17,26 +17,7 @@ namespace Server.Class.Query
     public class ItemsQuery : DB_Abstract<ItemDBStruct>
     {
 
-        public void AddPriceStruct(PriceStruct Item)
-        {
-            using (ApplicationContext db = new ApplicationContext())
-            {
-                db.Add(new ItemDBStruct(Item));
-                db.SaveChanges();
-            }
-        }
-        public void AddListPriceStruct(List<PriceStruct> Item)
-        {
-
-            using ApplicationContext db = new ApplicationContext();
-
-            foreach (var item in Item)
-            {
-                db.Add(new ItemDBStruct(item));
-            }
-
-            db.SaveChanges();
-        }
+    
 
         public List<ItemDBStruct> FindWithParameters(string Str, PropertyInfo Field)
         {

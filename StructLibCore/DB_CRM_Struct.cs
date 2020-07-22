@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-using static Object_Description.Access_Struct;
+using static Object_Description.DB_Access_Struct;
 
 namespace CRMLibs
 {

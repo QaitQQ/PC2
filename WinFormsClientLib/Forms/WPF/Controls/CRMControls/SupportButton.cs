@@ -2,7 +2,7 @@
 using System.Windows;
 using System.Windows.Controls;
 
-namespace WinFormsClientLib.Forms.WPF.Controls.CRMControls
+namespace WinFormsClientLib.Forms.WPF.Controls
 {
     public static class SupportButton
     {

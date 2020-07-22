@@ -10,7 +10,7 @@ namespace Server.Class.HDDClass
         public Deserializer(string FilePath) => _FilePath = FilePath;
         public T Doit()
         {
-            if (File.Exists(_FilePath))
+            if (File.Exists(_FilePath) )
             {
                 try
                 {

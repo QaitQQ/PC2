@@ -24,11 +24,49 @@ namespace Object_Description
         Description,
         Currency,
         MaxRow,
-        NamePattern
+        Storege,
+        NamePattern,
+        PriceRCException
 
     }
     #endregion
+    public interface IDictionaryPC
+    {
+        public int Id { get; set; }
+        public string Name { get; }
+        public DictionaryRelate Relate { get; set; }
+        public List<string> Values { get; set; }
+        public List<IDictionaryPC> Branches { get; }
+        public bool Сontain(string Value);
+        public IDictionaryPC Сontained(string Value);
+        public IDictionaryPC GetBranchFromName(string Value);
+        public void AddBranch(IDictionaryPC Branch);
 
+    }
+    [Serializable]
+    public class Dictionaries
+    {
+        private List<IDictionaryPC> _Dictionaries;
+        public List<IDictionaryPC> RetunUnderRelate(DictionaryRelate Relate) => _Dictionaries.FindAll(x => x.Relate == Relate);
+        public Dictionaries() => _Dictionaries = new List<IDictionaryPC>();
+        public void Add(IDictionaryPC Dictionary) => _Dictionaries.Add(Dictionary);
+        public void Renew(IDictionaryPC Dictionary) { _Dictionaries = _Dictionaries.FindAll(x => x.Name != Dictionary.Name); _Dictionaries.Add(Dictionary); }
+        public List<IDictionaryPC> GetAll() => _Dictionaries;
+        public IDictionaryPC Get(string name) { IEnumerable<IDictionaryPC> Result = _Dictionaries.Where(x => x.Name == name); return Result.First(); }
+        public bool Contains(string Name)
+        {
+            var X = _Dictionaries.FindAll(x => x.Name == Name);
+
+
+            if (X.Count > 0)
+            {
+                return true;
+            }
+            return false;
+        }
+        public void Del(IDictionaryPC Dictionary) => _Dictionaries.Remove(Dictionary);
+        public IEnumerable<IDictionaryPC> GetDictionaryRelate(DictionaryRelate Relate) { IEnumerable<IDictionaryPC> Result = _Dictionaries.Where(x => x.Relate == Relate); return Result; }
+    }
     [Serializable]
     public class DictionaryBase : IDictionaryPC
     {
@@ -48,7 +86,6 @@ namespace Object_Description
             return null;
         }
         public void AddBranch(IDictionaryPC Branch) => Branches.Add(Branch);
-
         public bool Сontain(string Value)
         {
             foreach (string item in Values) { if (Value.ToLower().Contains(item.ToLower())) { return true; } }
@@ -70,6 +107,5 @@ namespace Object_Description
         public void Set_Filling_method_string(FillDefinitionPrice Key, string Value) => Filling_method_string.Add(new KeyValuePair<FillDefinitionPrice, string>(Key, Value));  
         public List<KeyValuePair<FillDefinitionPrice, string>> GetFillingStringUnderRelate(FillDefinitionPrice Key) => Filling_method_string?.Where(x => x.Key == Key).ToList();
     }
-    public class DictionaryStorage : DictionaryBase
-    { }
+
     }

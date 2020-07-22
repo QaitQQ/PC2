@@ -23,7 +23,7 @@
                     <RowDefinition Height="150"></RowDefinition>
                     <RowDefinition></RowDefinition>
                 </Grid.RowDefinitions>
-                <Grid>
+                <Grid Margin="2">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition></ColumnDefinition>
                         <ColumnDefinition Width="20"></ColumnDefinition>
@@ -33,12 +33,12 @@
                         <RowDefinition></RowDefinition>
                         <RowDefinition></RowDefinition>
                     </Grid.RowDefinitions>
-                    <ComboBox Name="PropertyInfoComboBox"  Grid.Row="0" Grid.ColumnSpan="2"></ComboBox>
-                    <TextBox Name="SearhTextBox" Grid.Row="1" Background="Honeydew"></TextBox>
-                    <Button Name="SearchButton" Grid.Row="1" Grid.Column="1" Content=">" Click="SearchButton_Click"></Button>
-                    <Button Grid.Row="2" Grid.ColumnSpan="2" Content="Add" Name="AddFilterButton" Click="AddFilterButton_Click"></Button>
+                    <ComboBox Name="PropertyInfoComboBox" Margin="2" Grid.Row="0" Grid.ColumnSpan="2"></ComboBox>
+                    <TextBox Name="SearhTextBox" Margin="2" Grid.Row="1" Background="Honeydew"></TextBox>
+                    <Button Name="SearchButton" Margin="2" Grid.Row="1" Grid.Column="1" Content=">" Click="SearchButton_Click"></Button>
+                    <Button Grid.Row="2" Margin="2" Grid.ColumnSpan="2" Content="Add" Name="AddFilterButton" Click="AddFilterButton_Click"></Button>
                 </Grid>
-                <Grid Grid.Row="1">
+                <Grid Grid.Row="1" Margin="2">
                     <DataGrid Name="FilterStack" AutoGenerateColumns="False" EnableRowVirtualization="False" EnableColumnVirtualization="False" HeadersVisibility="None">
                         <DataGrid.Columns>
                             <DataGridTextColumn  Binding="{Binding PropertyInfo.Name}" IsReadOnly ="True" ></DataGridTextColumn>
@@ -48,29 +48,29 @@
                 </Grid>
                 <StackPanel Grid.Column="0" Grid.Row="2" >
                     <ItemsControl Name="ButtonStack">
-                        <Grid Background="Black" Height="2"></Grid>
-                        <DockPanel>
-                            <TextBlock Width="50" Text="Скидка"  DockPanel.Dock="Left"></TextBlock>
-                            <TextBox x:Name="SaleBox" DockPanel.Dock="Right" ></TextBox>
+                        <Grid  Height="2"></Grid>
+                        <DockPanel Margin="2">
+                            <TextBlock Margin="2" Width="50" Text="Скидка"  DockPanel.Dock="Left"></TextBlock>
+                            <TextBox Margin="2" x:Name="SaleBox" DockPanel.Dock="Right" ></TextBox>
                         </DockPanel>
-                        <DockPanel>
-                            <TextBlock  Width="50" Text="Наценка"  DockPanel.Dock="Left"></TextBlock>
-                            <TextBox x:Name="MarkupBox" DockPanel.Dock="Right"></TextBox>
+                        <DockPanel Margin="2">
+                            <TextBlock Margin="2" Width="50" Text="Наценка"  DockPanel.Dock="Left"></TextBlock>
+                            <TextBox Margin="2" x:Name="MarkupBox" DockPanel.Dock="Right"></TextBox>
                         </DockPanel>
-                        <Grid Background="Black" Height="2"></Grid>
+                        <Grid  Height="2"></Grid>
                     </ItemsControl>
                 </StackPanel>
             </Grid>
-            <ListBox Name="ItemSearchListBox" Grid.Column="1" SelectionChanged="ItemSearchListBox_SelectionChanged">
+            <ListBox Name="ItemSearchListBox" MinWidth="60" MaxWidth="200" Grid.Column="1" SelectionChanged="ItemSearchListBox_SelectionChanged">
                 <ListBox.ItemTemplate  >
                     <DataTemplate>
                         <TextBlock Text="{Binding Name}"></TextBlock>
                     </DataTemplate>
                 </ListBox.ItemTemplate>
             </ListBox>
-            <DockPanel Name="ItemDescriptionBox" Grid.Column="2" >
+            <StackPanel Orientation="Horizontal" Margin="2" Name="ItemDescriptionBox" Grid.Column="2" >
 
-            </DockPanel>
+            </StackPanel>
         </Grid>
     </Grid>
 </UserControl>

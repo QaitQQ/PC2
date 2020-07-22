@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 using StructLibs;
 
-using static Object_Description.Access_Struct;
+using static Object_Description.DB_Access_Struct;
 
 namespace Server
 {
@@ -20,6 +20,7 @@ namespace Server
         public DbSet<ItemDBStruct> Item { get; set; }
         public DbSet<DetailValue> DetailValue { get; set; }
         public DbSet<Manufactor> Manufactor { get; set; }
+        public DbSet<ManufactorSite> ManufactorSite { get; set; }
         public DbSet<Details> Details { get; set; }
         public DbSet<Storage> Storage { get; set; }
         public DbSet<Category> Category { get; set; }

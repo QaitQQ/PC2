@@ -3,7 +3,7 @@ using MailKit.Net.Imap;
 using MailKit.Search;
 
 using MimeKit;
-
+using Object_Description;
 using System.IO;
 
 namespace Server.Class.Net
@@ -22,6 +22,11 @@ namespace Server.Class.Net
             Pass = "3011656";
             Port = 993;
         }
+        public bool Search_Extension(string Value)
+        {
+            IDictionaryPC Extension_list = Program.Cash.Dictionaries.Get("xls");
+            return Extension_list.Сontain(Value);
+        }
 
 
         public Stream GetAttach(out string Name, out string Subject)
@@ -32,7 +37,6 @@ namespace Server.Class.Net
                 {
                     Name = null;
                     Subject = null;
-                    Imap_Rules Rules = new Imap_Rules();
                     client.Connect(Server_Adress, Port, true);
                     client.Authenticate(Accaunt, Pass);
                     IMailFolder inbox = client.Inbox;
@@ -47,7 +51,7 @@ namespace Server.Class.Net
                         foreach (MimePart item in X.Attachments)
                         {
                             Name = item.ContentDisposition.FileName;
-                            if (Rules.Search_Extension(Name))
+                            if (Search_Extension(Name))
                             {
                                 Stream Stream = new MemoryStream();
                                 item.Content.DecodeTo(Stream);

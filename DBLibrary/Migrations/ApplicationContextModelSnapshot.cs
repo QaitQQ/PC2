@@ -156,7 +156,7 @@ namespace ServerCore.Migrations
                     b.ToTable("СontactPerson");
                 });
 
-            modelBuilder.Entity("Object_Description.Access_Struct+User", b =>
+            modelBuilder.Entity("Object_Description.DB_Access_Struct+User", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -284,11 +284,14 @@ namespace ServerCore.Migrations
                     b.Property<string>("SourceName")
                         .HasColumnType("text");
 
+                    b.Property<List<int>>("StorageID")
+                        .HasColumnType("integer[]");
+
                     b.Property<List<string>>("Tags")
                         .HasColumnType("text[]");
 
-                    b.Property<string>("СomparisonName")
-                        .HasColumnType("text");
+                    b.Property<string[]>("СomparisonName")
+                        .HasColumnType("text[]");
 
                     b.HasKey("Id");
 
@@ -312,6 +315,27 @@ namespace ServerCore.Migrations
                     b.ToTable("Manufactor");
                 });
 
+            modelBuilder.Entity("StructLibs.ManufactorSite", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+                    b.Property<int>("ManufactorId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("SearchLink")
+                        .HasColumnType("text");
+
+                    b.Property<string>("SiteLink")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ManufactorSite");
+                });
+
             modelBuilder.Entity("StructLibs.PriceСhangeHistory", b =>
                 {
                     b.Property<int>("Id")
@@ -326,7 +350,7 @@ namespace ServerCore.Migrations
 
             modelBuilder.Entity("StructLibs.Storage", b =>
                 {
-                    b.Property<int>("StorageId")
+                    b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer")
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
@@ -334,17 +358,21 @@ namespace ServerCore.Migrations
                     b.Property<int>("Count")
                         .HasColumnType("integer");
 
-                    b.Property<int?>("ItemId")
+                    b.Property<DateTime>("DateСhange")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<int>("ItemID")
                         .HasColumnType("integer");
 
-                    b.Property<int?>("WarehouseId")
+                    b.Property<string>("SourceName")
+                        .HasColumnType("text");
+
+                    b.Property<int>("WarehouseID")
                         .HasColumnType("integer");
 
-                    b.HasKey("StorageId");
+                    b.HasKey("ID");
 
-                    b.HasIndex("ItemId");
-
-                    b.HasIndex("WarehouseId");
+                    b.HasIndex("WarehouseID");
 
                     b.ToTable("Storage");
                 });
@@ -410,13 +438,11 @@ namespace ServerCore.Migrations
 
             modelBuilder.Entity("StructLibs.Storage", b =>
                 {
-                    b.HasOne("StructLibs.ItemDBStruct", "Item")
-                        .WithMany("StorageID")
-                        .HasForeignKey("ItemId");
-
                     b.HasOne("StructLibs.Warehouse", "Warehouse")
                         .WithMany()
-                        .HasForeignKey("WarehouseId");
+                        .HasForeignKey("WarehouseID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("StructLibs.Warehouse", b =>

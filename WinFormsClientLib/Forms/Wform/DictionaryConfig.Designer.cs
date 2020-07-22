@@ -101,7 +101,7 @@
             // 
             this.splitContainer3.Panel2.Controls.Add(this.listBox1);
             this.splitContainer3.Size = new System.Drawing.Size(423, 499);
-         //   this.splitContainer3.SplitterDistance = 154;
+            this.splitContainer3.SplitterDistance = 154;
             this.splitContainer3.TabIndex = 1;
             // 
             // dataGridView1
@@ -148,7 +148,7 @@
             this.DelDic.TabIndex = 2;
             this.DelDic.Text = "Del";
             this.DelDic.UseVisualStyleBackColor = true;
-         //   this.DelDic.Click += new System.EventHandler(this.DelDic_Click);
+           this.DelDic.Click += new System.EventHandler(this.DelDic_Click);
             // 
             // button1
             // 
@@ -158,7 +158,7 @@
             this.button1.TabIndex = 0;
             this.button1.Text = "Save";
             this.button1.UseVisualStyleBackColor = true;
-          //  this.button1.Click += new System.EventHandler(this.Save_Click);
+          this.button1.Click += new System.EventHandler(this.Save_Click);
             // 
             // AddDic_Button
             // 
@@ -168,7 +168,7 @@
             this.AddDic_Button.TabIndex = 1;
             this.AddDic_Button.Text = "Add";
             this.AddDic_Button.UseVisualStyleBackColor = true;
-          //  this.AddDic_Button.Click += new System.EventHandler(this.AddDic_Button_Click);
+            this.AddDic_Button.Click += new System.EventHandler(this.AddDic_Button_Click);
             // 
             // listBox1
             // 
@@ -178,7 +178,7 @@
             this.listBox1.Name = "listBox1";
             this.listBox1.Size = new System.Drawing.Size(265, 499);
             this.listBox1.TabIndex = 0;
-         //   this.listBox1.SelectedIndexChanged += new System.EventHandler(this.ListBox1_SelectedIndexChanged);
+            this.listBox1.SelectedIndexChanged += new System.EventHandler(this.ListBox1_SelectedIndexChanged);
             // 
             // panel2
             // 
@@ -196,7 +196,7 @@
             this.comboBox1.Name = "comboBox1";
             this.comboBox1.Size = new System.Drawing.Size(132, 21);
             this.comboBox1.TabIndex = 3;
-        //    this.comboBox1.SelectedIndexChanged += new System.EventHandler(this.comboBox1_SelectedIndexChanged);
+           this.comboBox1.SelectedIndexChanged += new System.EventHandler(this.comboBox1_SelectedIndexChanged);
             // 
             // ManufFromSite
             // 
@@ -206,7 +206,7 @@
             this.ManufFromSite.TabIndex = 4;
             this.ManufFromSite.Text = "Manufactor from Site";
             this.ManufFromSite.UseVisualStyleBackColor = true;
-       //     this.ManufFromSite.Click += new System.EventHandler(this.ManufFromSite_Click);
+            this.ManufFromSite.Click += new System.EventHandler(this.ManufFromSite_Click);
             // 
             // DictionaryConfig
             // 

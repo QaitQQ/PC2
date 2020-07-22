@@ -1,15 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace WinFormsClientLib.Forms.WPF.Controls.Other
 {
@@ -23,7 +14,31 @@ namespace WinFormsClientLib.Forms.WPF.Controls.Other
             InitializeComponent();
         }
 
-        private void Plus_Click(object sender, RoutedEventArgs e) { if (SumBox.Text != "") { TotalBox.Text = (Convert.ToDouble(SumBox.Text) * (1 + Convert.ToDouble(PercentBox.Text) / 100)).ToString(); } }
-        private void Minus_Click(object sender, RoutedEventArgs e) { if (SumBox.Text != "") { TotalBox.Text = (Convert.ToDouble(SumBox.Text) * (1 - Convert.ToDouble(PercentBox.Text) / 100)).ToString(); } }
+        private void Plus_Click(object sender, RoutedEventArgs e) { if (SumBox.Text != "") { TotalBox.Text = (ConvertToDouble(SumBox.Text) * (1 + ConvertToDouble(PercentBox.Text) / 100)).ToString(); } }
+        private void Minus_Click(object sender, RoutedEventArgs e) { if (SumBox.Text != "") { TotalBox.Text = (ConvertToDouble(SumBox.Text) * (1 - ConvertToDouble(PercentBox.Text) / 100)).ToString(); } }
+        private double ConvertToDouble(string STR)
+        {
+            string newStr = null;
+
+            foreach (char item in STR)
+            {
+                if (char.IsDigit(item) || item == '.' || item == ',')
+                {
+                    if (item == '.')
+                    {
+                        newStr += ',';
+                    }
+                    else
+                    {
+                        newStr += item;
+                    }
+                }
+            }
+
+            return Convert.ToDouble(newStr);
+        }
     }
+
+
+
 }

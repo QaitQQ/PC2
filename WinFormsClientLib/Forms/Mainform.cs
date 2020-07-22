@@ -1,10 +1,18 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore.Internal;
+
+using System;
+using System.Drawing;
+using System.Threading;
 using System.Windows.Forms;
+using System.Windows.Forms.Integration;
 
 using WindowsFormsClientLibrary.Forms;
 
 using WinFormsClientLib.Forms;
+using WinFormsClientLib.Forms.Wform;
+using WinFormsClientLib.Forms.WPF.Controls;
 using WinFormsClientLib.Forms.WPF.Controls.CRMControls;
+using WinFormsClientLib.Forms.WPF.Controls.DictionaryControls;
 using WinFormsClientLib.Forms.WPF.Controls.ItemControls;
 using WinFormsClientLib.Forms.WPF.ItemControls;
 
@@ -14,25 +22,39 @@ namespace Client.Forms
     public partial class Mainform : Form
     {
         private WebBrowser webBrowser;
-        public Form CRMForm { get; private set; }
-        public Form itemForm { get; private set; }
+        public ElementHost CRMForm { get; private set; }
+        public ElementHost itemForm { get; private set; }
         public Mainform()
         {
+            Controls.Add(new DradDropPanel
+                 (
+                 controls: new Control[]
+                 {
+                    new ElementHost() { Child = new MainItemControl()  },
+                    new ElementHost() { Child = new MainCRMControl()  },
+                 },
+                 Orientation: Orientation.Horizontal
+                 )
+                 );
             InitializeComponent();
-            CRMForm = new UniversalWPFContainerForm(new MainCRMControl());
-            itemForm = new UniversalWPFContainerForm(new MainItemControl());
-            CRMForm.MdiParent = this;
-            webBrowser = new WebBrowser();
-            var Win = new System.Windows.Forms.ToolStripMenuItem() { Text = "Новое окно" };
-            Win.Click += new EventHandler(Win_Shown);
-            WindowToolStripMenuItem.DropDownItems.Add(Win);
-            this.webBrowser.Dock = System.Windows.Forms.DockStyle.Fill;
-            webBrowser.ScriptErrorsSuppressed = true;
-            panel1.Visible = false;
-            
-            this.webBrowser.TabIndex = 0;
-            panel1.Controls.Add(webBrowser);
-            this.webBrowser.DocumentCompleted += new System.Windows.Forms.WebBrowserDocumentCompletedEventHandler(this.WebBrowser_DocumentCompleted);
+            LeftPanel.Controls.Add(new DradDropPanel(0));
+
+            AddNewForm("Сравнение", new EventHandler(Comparer_Win_Shown), видToolStripMenuItem);
+            AddNewForm("Работа с прайсами", new EventHandler(PriceStorege_Win_Show), видToolStripMenuItem);
+            AddNewForm("Работа с таблицами", new EventHandler(NewForm), видToolStripMenuItem);
+            AddNewForm("Дочернее окно", new EventHandler(ContainerForm), файлToolStripMenuItem);
+
+
+            RightPanel.Visible = false;
+            RightPanelSplitter.Visible = false;
+            LeftPanel.Visible = false;
+            LeftPanelSplitter.Visible = false;
+        }
+        private void AddNewForm(string Text, EventHandler ClikEvent, ToolStripMenuItem toolStrip)
+        {
+            var Win = new System.Windows.Forms.ToolStripMenuItem() { Text = Text };
+            Win.Click += ClikEvent;
+            toolStrip.DropDownItems.Add(Win);
         }
         private void FormActivator(Form Form)
         {
@@ -44,11 +66,10 @@ namespace Client.Forms
             {
                 Form.Show();
                 Form.Activate();
-
             }
         }
-        private void CRMToolStripMenuItem_Click(object sender, EventArgs e) => FormActivator(CRMForm);
-        private void ItemToolStripMenuItem_Click(object sender, EventArgs e) => FormActivator(itemForm);
+        private void CRMToolStripMenuItem_Click(object sender, EventArgs e) { }// => FormActivator(CRMForm);
+        private void ItemToolStripMenuItem_Click(object sender, EventArgs e) { }// => FormActivator(itemForm);
         private void NetToolStripMenuItem_Click(object sender, EventArgs e) => new Config();
         private void DictionariesToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -58,36 +79,37 @@ namespace Client.Forms
         {
             new Config();
         }
-        private void Mainform_Shown(object sender, EventArgs e)
+        private void Comparer_Win_Shown(object sender, EventArgs e)
         {
-            var XHeight = (int)(Height * 0.935);
-            var XWidth = (int)(Width * 0.99);
-
-            CRMForm.Height = (int)(XHeight * 0.33);
-            CRMForm.Location = new System.Drawing.Point(0, (int)(XHeight * 0.66));
-            itemForm.MdiParent = this;
-            itemForm.Height = (int)(XHeight * 0.66);
-            itemForm.Location = new System.Drawing.Point(0, 0);
-            itemForm.Width = XWidth;
-            CRMForm.Width = XWidth;
-
-            FormActivator(CRMForm);
-            FormActivator(itemForm);
+            FormActivator(new UniversalWPFContainerForm(new ItemComparer()) { CanClosed = true });
         }
-        private void Win_Shown(object sender, EventArgs e)
+        private void PriceStorege_Win_Show(object sender, EventArgs e)
         {
-            FormActivator(new UniversalWPFContainerForm(new ItemComparer()) { CanClosed = true, MdiParent = this });
+            FormActivator(new UniversalWPFContainerForm(new PriceServiceControl()) { CanClosed = true });
         }
         private void ShowWebBrowser(object sender, EventArgs e)
         {
-            panel1.Width = this.Width/2;
-            if (panel1.Visible == true)
+
+            if (RightPanel.Visible == true)
             {
-                panel1.Visible = false;
+                RightPanelSplitter.Visible = false;
+                RightPanel.Visible = false;
+                if (webBrowser != null)
+                {
+                    this.webBrowser.DocumentCompleted -= new System.Windows.Forms.WebBrowserDocumentCompletedEventHandler(this.WebBrowser_DocumentCompleted);    
+                    RightPanel.Controls.Remove(webBrowser);
+                    webBrowser.Dispose();
+                    ((WebB)webBrowser).Disp();
+                    GC.SuppressFinalize(webBrowser);
+                }
+
+
             }
             else
             {
-                panel1.Visible = true;
+                RightPanel.Width = this.Width / 2;
+                RightPanelSplitter.Visible = true;
+                RightPanel.Visible = true;
             }
         }
         private void WebBrowser_DocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs e)
@@ -102,13 +124,58 @@ namespace Client.Forms
             {
                 e.ToElement.Style = "border: 2px solid red;";
 
-           //     TechField.Text = e.ToElement.OuterHtml;
+                //     TechField.Text = e.ToElement.OuterHtml;
 
             }
         }
         public void GoSite(string Url)
         {
+            if (!RightPanel.Visible)
+            {
+                RenewWebBrowser();
+                RightPanel.Width = this.Width / 2;
+                RightPanelSplitter.Visible = true;
+                RightPanel.Visible = true;
+                Thread.Sleep(100);
+            }
             webBrowser.Navigate(Url);
+        }
+        private void ShowLeftPanelButton_Click(object sender, EventArgs e)
+        {
+            LeftPanel.Width = this.Width / 2;
+            if (LeftPanel.Visible == true)
+            {
+                LeftPanelSplitter.Visible = false;
+                LeftPanel.Visible = false;
+            }
+            else
+            {
+                LeftPanelSplitter.Visible = true;
+                LeftPanel.Visible = true;
+            }
+        }
+        private void NewForm(object sender, EventArgs e)
+        {
+            FormActivator(new UniversalWPFContainerForm(new UniversalDBItemFormControl()) { CanClosed = true });
+        }
+        private void RenewWebBrowser()
+        {
+            WebB WB = new WebB();
+            webBrowser = WB;
+            this.webBrowser.Dock = System.Windows.Forms.DockStyle.Fill;
+            webBrowser.ScriptErrorsSuppressed = true;
+            this.webBrowser.TabIndex = 0;
+            RightPanel.Controls.Add(webBrowser);
+            this.webBrowser.DocumentCompleted += new System.Windows.Forms.WebBrowserDocumentCompletedEventHandler(this.WebBrowser_DocumentCompleted);
+        }
+        private void ContainerForm(object sender, EventArgs e) { new ContainerForm().Show(); }
+        class WebB : WebBrowser
+        {
+            public void Disp() { Dispose(true); }
+            protected override void Dispose(bool disposing)
+            {
+                base.Dispose(disposing);
+            }
         }
     }
 }

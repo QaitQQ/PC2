@@ -25,11 +25,8 @@ namespace WinFormsClientLib.Forms.WPF.ItemControls
         public ObservableCollection<СomparisonNameID> SearchList { get; set; }
         public ObservableCollection<PropPair> FilterList { get; set; }
         private readonly System.Reflection.PropertyInfo[] Prop;
-
-
         public ObservableCollection<ItemControl> ItemsPanel { get; set; }
-
-        public event Action<int, int> ChangeSale;
+        private event Action<int, int> ChangeSale;
         private int[] _SaleValue;
         private int[] SaleValue { get => _SaleValue; set { _SaleValue = value; ChangeSale?.Invoke(SaleValue[0], SaleValue[1]); } }
         public MainItemControl()
@@ -44,15 +41,30 @@ namespace WinFormsClientLib.Forms.WPF.ItemControls
                 PropertyInfoComboBox.Items.Add(item.Name);
                 if (item.Name == "Name") { PropertyInfoComboBox.SelectedIndex = PropertyInfoComboBox.Items.Count - 1; }
             }
-            ButtonStack.Items.Add(new Button() { Name = "Plus", Height = 20, Content = "Кнопка" });
+
             FilterStack.ItemsSource = FilterList;
             ItemSearchListBox.ItemsSource = SearchList;
-           // ItemDescriptionBox.ItemsSource = ItemsPanel;
+
+            KeyDown += MainItemControl_KeyDown;
+
+            ChangeSale += new Action<int, int>(SetSeleValue);
 
             SaleBox.TextChanged += new TextChangedEventHandler(SaleChange);
             MarkupBox.TextChanged += new TextChangedEventHandler(SaleChange);
             ButtonStack.Items.Add(new PercentCalc());
+
+            Button RenewButton = new Button() { Content = "Обновить Кэш", Margin = new Thickness(2) };
+            RenewButton.Click += RenewCash_Click;
+            ButtonStack.Items.Add(RenewButton);
+
             FilterList.CollectionChanged += new System.Collections.Specialized.NotifyCollectionChangedEventHandler(AppFilter);
+        }
+        private void MainItemControl_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            if (e.Key == System.Windows.Input.Key.Enter && SearhTextBox.IsSelectionActive)
+            {
+                SearchButton_Click(sender, new RoutedEventArgs());
+            }
         }
         private void SearchButton_Click(object sender, RoutedEventArgs e)
         {
@@ -65,19 +77,28 @@ namespace WinFormsClientLib.Forms.WPF.ItemControls
             if (e.AddedItems.Count > 0)
             {
                 СomparisonNameID X = e.AddedItems[0] as СomparisonNameID;
-
-
                 using Network.Item.GetItemFromId Qwery = new Network.Item.GetItemFromId();
-                ItemPlusImage Obj = Qwery.Get<ItemPlusImage>(new WrapNetClient(), X.Id.ToString());
-                ItemControl NewControl = new ItemControl(Obj, Prop);
+                ItemPlusImageAndStorege Obj = Qwery.Get<ItemPlusImageAndStorege>(new WrapNetClient(), X.Id.ToString());
+                ItemControl NewControl = new ItemControl(Obj);
                 NewControl.GoSite += ((Client.Forms.Mainform)Client.Main.CommonWindow).GoSite;
+                if (ItemDescriptionBox.Children.Count < 2)
+                {
+                    if (ItemDescriptionBox.Children.Count == 0)
+                    {
+                        ItemDescriptionBox.Children.Add(NewControl);
+                    }
+                    else
+                    {
+                        UIElement GG = ItemDescriptionBox.Children[0];
+                        ItemDescriptionBox.Children.Clear();
+                        ItemDescriptionBox.Children.Add(NewControl);
+                        ItemDescriptionBox.Children.Add(GG);
+                    }
 
-                if (ItemDescriptionBox.Children.Count < 2) { ItemDescriptionBox.Children.Add(NewControl); }
-
-
+                }
                 else
                 {
-                    foreach (var item in ItemDescriptionBox.Children)
+                    foreach (object item in ItemDescriptionBox.Children)
                     {
                         ((ItemControl)item).Dispose();
                     }
@@ -85,7 +106,6 @@ namespace WinFormsClientLib.Forms.WPF.ItemControls
                     ItemDescriptionBox.Children.Clear();
                     ItemDescriptionBox.Children.Add(NewControl);
                     GC.Collect();
-                
                 }
             }
         }
@@ -121,9 +141,10 @@ namespace WinFormsClientLib.Forms.WPF.ItemControls
                     break;
                 }
             }
-            var Search = new Network.Item.ItemSearch().Get<List<СomparisonNameID>>(new WrapNetClient(), new object[] { Str, i });
-            foreach (var item in Search) { SearchList.Add(item); }
+            List<СomparisonNameID> Search = new Network.Item.ItemSearch().Get<List<СomparisonNameID>>(new WrapNetClient(), new object[] { Str, i });
+            foreach (СomparisonNameID item in Search) { SearchList.Add(item); }
         }
+        private void SetSeleValue(int Sale, int MarkupBox) { ActiveValue.SaleValue = new int[] { Sale, MarkupBox }; }
         private void AppFilter(object Obj, NotifyCollectionChangedEventArgs e)
         {
             if (e.Action == NotifyCollectionChangedAction.Add)
@@ -135,5 +156,7 @@ namespace WinFormsClientLib.Forms.WPF.ItemControls
                 }
             }
         }
+
+        private void RenewCash_Click(object sender, RoutedEventArgs e) { new Network.Item.RenewNameCash().Get<bool>(new WrapNetClient()); }
     }
 }

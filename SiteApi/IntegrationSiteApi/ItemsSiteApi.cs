@@ -3,6 +3,8 @@ using Newtonsoft.Json.Linq;
 
 using Pricecona;
 
+using StructLibs;
+
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -12,27 +14,27 @@ using System.Threading.Tasks;
 
 namespace Server.Class.IntegrationSiteApi
 {
-    public delegate List<PriceStruct> ItemDeligate();
-    internal class SiteItem
+    public class SiteItem
     {
         /// <summary>
         /// Apilink = Setting[0]; Key = Setting[1]; tokenfile = Setting[2];
         /// </summary>
-        public SiteItem(string[] Setting) { GetToken(); Apilink = Setting[0]; Key = Setting[1]; FilePath = Setting[2]; EndLoading = false; }
+        public SiteItem(string[] ApiSetting, string[] FtpSetting) { GetToken(); Apilink = ApiSetting[0]; Key = ApiSetting[1]; FilePath = ApiSetting[2]; EndLoading = false; this.FtpSetting = FtpSetting; }
         private readonly string Apilink;
         private readonly string Key;
         private readonly string FilePath;
+        private readonly string[] FtpSetting;
         private string token = "";
         private List<int> product_id = new List<int>();
-        private List<PriceStruct> ItemList;
+        private List<ItemDBStruct> ItemList;
         private List<Dictionary<string, string>> mapList = new List<Dictionary<string, string>>();
         private static readonly HttpClient client = new HttpClient();
         private bool Ok;
         private int product_id_in;
         private readonly List<KeyValuePair<int, bool>> Result = new List<KeyValuePair<int, bool>>();
         private bool EndLoading;
-        public event ItemDeligate ItemListReady;
-        public List<PriceStruct> GetItem(List<int> product_id)
+        public event Action ItemListReady;
+        public List<ItemDBStruct> GetItem(List<int> product_id)
         {
 
             this.product_id = product_id;
@@ -44,7 +46,7 @@ namespace Server.Class.IntegrationSiteApi
                 if (item["name"] != " None")
                 {
                     ItemList.Add(
-                        new Pricecona.PriceStruct
+                        new ItemDBStruct
                         {
                             Name = item["name"],
                             Id = Convert.ToInt32(item["product_id"]),
@@ -58,59 +60,47 @@ namespace Server.Class.IntegrationSiteApi
 
             return ItemList;
         }
-        //private List<PriceStruct> GetAllItem()
-        //{
-        //    EndLoading = false;
-        //    GetAllProduct();
+        private void GetAllItem()
+        {
+            EndLoading = false;
+            GetAllProduct();
 
-        //    double RC = 0;
-        //    ItemList = new List<PriceStruct>();
-        //    foreach (Dictionary<string, string> item in mapList)
-        //    {
-        //        string f = item["name"];
-        //        if (item["name"] != " None")
-        //        {
+            double RC = 0;
+            ItemList = new List<ItemDBStruct>();
+            foreach (Dictionary<string, string> item in mapList)
+            {
+                string f = item["name"];
+                if (item["name"] != " None")
+                {
 
-        //            Dictionary<string, string> Item = item;
-
-        //            try
-        //            {
-        //                RC = Convert.ToDouble(item["base_price"].Replace('.', ','));
-        //            }
-        //            catch
-        //            {
-        //                RC = 0;
-        //            }
+                    Dictionary<string, string> Item = item;
 
 
-        //            PriceStruct Product = new Pricecona.PriceStruct
-        //            {
-        //                Name = item["name"],
-        //                Id = Convert.ToInt32(item["product_id"]),
-        //                Description = item["description"],
-        //                PriceRC = RC
-        //            };
-        //            Product = new Server.Class.ItemProcessor.FixName().Fix(Product);
-        //            ItemList.Add(Product);
-        //        }
-        //    }
-        //    mapList = new List<Dictionary<string, string>>();
-        //    EndLoading = true;
-        //    return ItemList;
-        //}
+                    RC = Convert.ToDouble(item["base_price"].Replace('.', ','));
+
+
+
+                    ItemDBStruct Product = new ItemDBStruct
+                    {
+                        Name = item["name"],
+                        Id = Convert.ToInt32(item["product_id"]),
+                        PriceRC = RC
+                    };
+                    ItemList.Add(Product);
+                }
+            }
+            mapList = new List<Dictionary<string, string>>();
+            EndLoading = true;
+
+        }
         public async Task GetAllItemAsync()
         {
-            //await Task.Factory.StartNew(() => GetAllItem());
-            //if (EndLoading)
-            //{
-            //    ItemListReady();
-            //}
+            await Task.Factory.StartNew(() => GetAllItem());
+            ItemListReady?.Invoke();
         }
-        public List<PriceStruct> RetunItemList() 
+        public List<ItemDBStruct> RetunItemList()
         {
-          //  Program.Cash.SiteItems = ItemList;
             return ItemList;
-        
         }
         public bool SetPrice(KeyValuePair<int, double> ID_Price)
         {
@@ -145,7 +135,7 @@ namespace Server.Class.IntegrationSiteApi
             { str = str + Product.GetID().ToString() + "|" + Product.GetDetailValues() + ";"; }
             str = str.Remove(str.Length - 1, 1);
 
-            if (Item.Imagelink != null) { FTP fTP = new FTP(Class.Base.Settings.FtpUri, Base.Settings.FtpUP); fTP.FTPUploadFile(Item.Imagelink); } //подсовываем на фтп фотку из прайса если есть
+            if (Item.Imagelink != null) { FTP fTP = new FTP(FtpSetting); fTP.FTPUploadFile(Item.Imagelink); } //подсовываем на фтп фотку из прайса если есть
             if (Item.Imagelink != null) { Imagelink = @"catalog/" + Item.Imagelink.Replace(".//pic//", ""); } // форматируем адресс
 
             //ищем категории
@@ -313,8 +303,6 @@ namespace Server.Class.IntegrationSiteApi
         }
         private async void SetPrice(Task<HttpResponseMessage> message)
         {
-
-
             using (StreamReader reader = new StreamReader(await message.Result.Content.ReadAsStreamAsync()))
             {
 

@@ -7,10 +7,11 @@ namespace Server
     internal class FTP
     {
         private readonly string FtpUri;
-        private readonly string[] FtpUP;
-        public FTP(string FtpUri, string[] FtpUP) { this.FtpUri = FtpUri; this.FtpUP = FtpUP; }
+        private readonly string FtpUser;
+        private readonly string FtpPass;
+        public FTP(string[] FtpSetting) { this.FtpUri = FtpSetting[0]; this.FtpUser = FtpSetting[1]; this.FtpPass = FtpSetting[2]; }
 
-        public void FTPUploadFile(string filename, Meseger MSG = null)
+        public void FTPUploadFile(string filename)
         {
             FileInfo fileInf = new FileInfo(filename);
 
@@ -20,7 +21,7 @@ namespace Server
             // Создаем объект FtpWebRequest
             reqFTP = (FtpWebRequest)FtpWebRequest.Create(new Uri(FtpUri + fileInf.Name));
             // Учетная запись
-            reqFTP.Credentials = new NetworkCredential(FtpUP[0], FtpUP[1]);
+            reqFTP.Credentials = new NetworkCredential(FtpUser, FtpPass);
             reqFTP.KeepAlive = false;
             // Задаем команду на закачку
             reqFTP.Method = WebRequestMethods.Ftp.UploadFile;

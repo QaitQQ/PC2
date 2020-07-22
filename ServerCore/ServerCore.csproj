@@ -24,10 +24,6 @@
     <Prefer32Bit>true</Prefer32Bit>
     <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
-  
-  <ItemGroup>
-    <None Remove="Class\XLS\XLS_TO_LIST.cs~RF5b05394.TMP" />
-  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="HtmlAgilityPack" Version="1.11.23" />

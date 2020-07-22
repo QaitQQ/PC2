@@ -1,13 +1,9 @@
 ﻿using Client;
-using Client.Forms;
-
 using CRMLibs;
-
 using StructLibs;
-
 using System;
+using System.Collections;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Drawing.Imaging;
 using System.IO;
@@ -15,10 +11,7 @@ using System.Linq;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Documents;
 using System.Windows.Media.Imaging;
-
-using WinFormsClientLib.Forms.WPF.Controls.CRMControls;
 
 namespace WinFormsClientLib.Forms.WPF.ItemControls
 {
@@ -28,41 +21,70 @@ namespace WinFormsClientLib.Forms.WPF.ItemControls
     public partial class ItemControl : UserControl, IDisposable
     {
         public event Action<string> GoSite;
-        private ItemPlusImage Item { get; set; }
+        private ItemPlusImageAndStorege Item { get; set; }
         private Partner ActivePartner { get; set; }
         private BitmapImage Image { get; set; }
         private PropertyInfo[] Prop { get; set; }
         private List<PropPair> Values { get; set; }
-        public ItemControl(ItemPlusImage item, System.Reflection.PropertyInfo[] Prop)
+        public ItemControl(ItemPlusImageAndStorege item)
         {
-            this.Prop = Prop;
-            Item = item;
             InitializeComponent();
+            Prop = ItemDBStruct.GetProperties();
+            Item = item;
             if (Item.Image != null)
             {
-                Image = ConvertIMG(Item.Image);
+                using System.Drawing.Image Img = Item.Image;
+                Image = ConvertIMG(Img);
                 Image.CacheOption = BitmapCacheOption.OnLoad;
                 Imagebox.Source = Image;
             }
-            (((Main.CommonWindow as Mainform).CRMForm as UniversalWPFContainerForm).Control as MainCRMControl).ChangedPartner += new Action<Partner>(SetPartner);
-            (((Main.CommonWindow as Mainform).itemForm as UniversalWPFContainerForm).Control as MainItemControl).ChangeSale += new Action<int, int>(RenewPriceDC);
-           
-            Values = new List<PropPair>();
+            ActiveValue.ChangedPartner += new Action<Partner>(SetPartner);
+            ActiveValue.ChangeSale += new Action<int, int>(RenewPriceDC);
             FillProp();
         }
         private void FillProp()
         {
+            Values = new List<PropPair>();
             foreach (PropertyInfo X in Prop)
             {
                 PropPair PParir = new PropPair() { PropertyInfo = X, Value = X.GetValue(Item.Item) };
 
+                if (!(PParir.Value is String) && PParir.Value is IEnumerable)
+                {
+                    string Value = null;
+
+
+                    foreach (object item in PParir.Value as IEnumerable)
+                    {
+                        Value += item.ToString() + "\n";
+                    }
+
+                    PParir.Value = Value;
+                }
+
+
                 if (PParir.PropertyInfo.Name.Contains("PriceDC"))
                 {
                     PParir.Name = "Цена со скидкой";
+
                 }
-                else if (PParir.PropertyInfo.Name.Contains("Name"))
+                else if (PParir.PropertyInfo.Name == "Name")
                 {
                     PParir.Name = "";
+                }
+                else if (PParir.PropertyInfo.Name.Contains("StorageID") && Item.Storages != null)
+                {
+                    PParir.Name = "Остатки";
+
+                    string Storege = null;
+
+                    foreach (Storage item in Item.Storages)
+                    {
+                        Storege = Storege + item.Warehouse.Name + "  " + item.Count + "  " + item.SourceName + "  " + item.DateСhange + "\n";
+                    }
+
+                    PParir.Value = Storege;
+
                 }
                 else if (PParir.PropertyInfo.Name.Contains("PriceRC"))
                 {
@@ -76,9 +98,9 @@ namespace WinFormsClientLib.Forms.WPF.ItemControls
                 PParir.PropertyChanged += RenewItem;
                 Values.Add(PParir);
 
-                PropInfo.ItemsSource = Values;
-            }
 
+            }
+            PropInfo.ItemsSource = Values;
         }
         private void SetPartner(Partner Partner) { ActivePartner = Partner; }
         private void RenewItem(object Obj, PropertyChangedEventArgs e)
@@ -111,21 +133,26 @@ namespace WinFormsClientLib.Forms.WPF.ItemControls
             bitmapImage.StreamSource = memory;
             bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
             bitmapImage.EndInit();
+            memory.Close();
             return bitmapImage;
         }
         private void RenewPriceDC(int Sale, int Markup)
         {
-            PropPair RC = Values.First(x => x.PropertyInfo.Name.Contains("PriceRC"));
-            double FinDC = ((double)RC.Value);
-            FinDC = FinDC * (1 - ((double)Sale / 100));
-            FinDC = FinDC * (1 + ((double)Markup / 100));
-            PropPair DC = Values.First(x => x.PropertyInfo.Name.Contains("PriceDC"));
-            DC.Value = FinDC;
-            PropInfo.Items.Refresh();
+            if (Values != null)
+            {
+                PropPair RC = Values.First(x => x.PropertyInfo.Name.Contains("PriceRC"));
+                double FinDC = ((double)RC.Value);
+                FinDC = FinDC * (1 - ((double)Sale / 100));
+                FinDC = FinDC * (1 + ((double)Markup / 100));
+                FinDC = Math.Round(FinDC, 2);
+                PropPair DC = Values.First(x => x.PropertyInfo.Name.Contains("PriceDC"));
+                DC.Value = FinDC;
+                PropInfo.Items.Refresh();
+            }
         }
         private void SaveButton_Click(object sender, RoutedEventArgs e)
         {
-            new Network.Item.EditItem().Get<bool>(new WrapNetClient(), Item);
+            new Network.Item.EditItem().Get<bool>(new WrapNetClient(), Item.Item);
         }
         private void GoToSiteButton_Click(object sender, RoutedEventArgs e)
         {
@@ -137,13 +164,7 @@ namespace WinFormsClientLib.Forms.WPF.ItemControls
         {
             PropInfo.ItemsSource = null;
             PropInfo = null;
-            (((Main.CommonWindow as Mainform).CRMForm as UniversalWPFContainerForm).Control as MainCRMControl).ChangedPartner -= new Action<Partner>(SetPartner);
-            (((Main.CommonWindow as Mainform).itemForm as UniversalWPFContainerForm).Control as MainItemControl).ChangeSale -= new Action<int, int>(RenewPriceDC);
-            foreach (var item in Values)
-            {
-                item.PropertyChanged -= RenewItem;
-                item.Dispose();
-            }
+            foreach (PropPair item in Values) { item.PropertyChanged -= RenewItem; item.Dispose(); }
             GoSite = null;
             ActivePartner = null;
             Imagebox.Source = null;
@@ -151,8 +172,61 @@ namespace WinFormsClientLib.Forms.WPF.ItemControls
             Item = null;
             Prop = null;
             Image = null;
+            Content = null;
             Values = null;
+            ActiveValue.ChangedPartner -= new Action<Partner>(SetPartner);
+            ActiveValue.ChangeSale -= new Action<int, int>(RenewPriceDC);
             GC.SuppressFinalize(this);
+
+        }
+        private void GoToManufSiteButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (Item.Item.ManufactorID != 0)
+            {
+                ManufactorSite X = new Network.Other.GetManufSite().Get<ManufactorSite>(new WrapNetClient(), Item.Item.ManufactorID);
+                string Name = Item.Item.Name;
+                string Link = X.SiteLink + X.SearchLink + Name;
+                GoSite?.Invoke(Link);
+            }
+
+        }
+        private void FindManuf_Click(object sender, RoutedEventArgs e)
+        {
+            bool X = new Network.Other.FindManuf().Get<bool>(new WrapNetClient(), Item.Item);
+            if (X)
+            {
+                ItemPlusImageAndStorege F = new Network.Item.GetItemFromId().Get<ItemPlusImageAndStorege>(new WrapNetClient(), Item.Item.Id);
+                Item.Item.ManufactorID = F.Item.ManufactorID;
+                FillProp();
+            }
+
+
+        }
+        private double ConvertToDouble(string STR)
+        {
+            string newStr = null;
+
+            foreach (char item in STR)
+            {
+                if (char.IsDigit(item) || item == '.' || item == ',')
+                {
+                    if (item == '.')
+                    {
+                        newStr += ',';
+                    }
+                    else
+                    {
+                        newStr += item;
+                    }
+                }
+            }
+
+            return Convert.ToDouble(newStr);
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            new Network.Item.MergeItem().Get<bool>(new WrapNetClient(), new int[] { Item.Item.Id, Convert.ToInt32(ConvertToDouble(UniID.Text)) });
         }
     }
 }

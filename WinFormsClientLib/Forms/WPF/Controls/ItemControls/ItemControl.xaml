@@ -16,15 +16,26 @@
             <ColumnDefinition></ColumnDefinition>
         </Grid.ColumnDefinitions>
         <Image HorizontalAlignment="Left" Grid.Row="0" Name="Imagebox" Width="80" Height="80"/>
-        <DockPanel  Grid.Column="1">
-            <Button Content="Save" Width="80" Height="20" Name="SaveButton" Click="SaveButton_Click" HorizontalAlignment="Left" VerticalAlignment="Top"></Button>
-            <Button Content="GoToSite" Width="80" Height="20" Name="GoToSiteButton" Click="GoToSiteButton_Click" HorizontalAlignment="Left" VerticalAlignment="Top"></Button>
+        <DockPanel Margin="2"  Grid.Column="1">
+            <Button Margin="2" Content="Save" Width="80" Height="20" Name="SaveButton" Click="SaveButton_Click" HorizontalAlignment="Left" VerticalAlignment="Top"></Button>
+            <Button Margin="2" Content="Перейти на наш сайт"  Height="20" Name="GoToSiteButton" Click="GoToSiteButton_Click" HorizontalAlignment="Left" VerticalAlignment="Top"></Button>
+            <Button Margin="2" Content="Перейти на наш сайт производителя"  Height="20" Name="GoToManufSiteButton" Click="GoToManufSiteButton_Click"  HorizontalAlignment="Left" VerticalAlignment="Top"></Button>
+            <Button Margin="2" Content="Найти производителя"  Height="20" Name="FindManuf" Click="FindManuf_Click" HorizontalAlignment="Left" VerticalAlignment="Top"></Button>
+            <Grid VerticalAlignment="Top" Height="20">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="150"></ColumnDefinition>
+                    <ColumnDefinition></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+                <TextBox Text="Объеденить с ID" x:Name="UniID" Grid.Column="0" Width="150" TabIndex="0"></TextBox>
+                <Button Content=">" Grid.Column="1" Click="Button_Click"></Button>
+            
+            </Grid>
         </DockPanel>
        
 
         <DataGrid Grid.ColumnSpan="2" Grid.Row="1" Name="PropInfo" AutoGenerateColumns="False">
             <DataGrid.Columns>
-                <DataGridTextColumn  Binding="{Binding Name}" IsReadOnly ="True">
+                <DataGridTextColumn  Binding="{Binding Name, Mode=OneTime}" IsReadOnly ="True">
                 </DataGridTextColumn>
                 <DataGridTextColumn  Width="400" Binding="{Binding Value, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}">
                     <DataGridTextColumn.ElementStyle>

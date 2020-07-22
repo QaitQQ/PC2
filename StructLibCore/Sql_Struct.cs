@@ -36,10 +36,4 @@ namespace Pricecona
         public override int GetHashCode() => Name.GetHashCode();
     }
 
-
-
-
-
-
-
 }

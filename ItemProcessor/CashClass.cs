@@ -1,15 +1,14 @@
 ﻿using Object_Description;
 
-using Pricecona;
 using Server.Class.Base;
 using Server.Class.HDDClass;
+using Server.Class.ItemProcessor;
 
 using StructLibs;
 
-using System.Linq;
-
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Server
@@ -19,64 +18,76 @@ namespace Server
         public List<СomparisonNameID> ItemName;
         public List<string> UserName;
         public List<string> Tokens;
+        private List<PriceStorage> priceStorageList;
+        private List<ItemDBStruct> siteList;
+
+        public List<QueueOfObj> ObjBuffer;
+
+        public List<ItemDBStruct> SiteList
+        {
+            get => siteList;
+            set { siteList = value; СhangeList?.Invoke(Settings.SiteList, siteList); }
+        }
+
+        public string[] ApiSiteSettngs;
+        public string[] FtpSiteSettngs;
+        public List<PriceStorage> PriceStorageList
+        {
+            get => priceStorageList;
+            set { priceStorageList = value; СhangeList?.Invoke(Settings.PriceStoragePath, PriceStorageList); }
+        }
         public bool MailCheckFlag { get; set; }
-        private List<ItemPlusImage> _NewItem;
-        private List<ItemChanges> _СhangedItems;
-        private List<KeyValuePair<PriceStruct, ItemDBStruct>> _SiteItemsСhanged;
+        private List<ItemPlusImageAndStorege> newItem;
+        private List<ItemChanges> changedItems;
+
+
         private Dictionaries dictionaries;
         private event Action<string, object> СhangeList;
-        public List<ItemPlusImage> NewItem
+        public List<ItemPlusImageAndStorege> NewItem
         {
-            get => _NewItem;
-            set { if (value != null) { _NewItem = value; СhangeList?.Invoke(Settings.NewItem, _NewItem); } }
+            get => newItem;
+            set { if (value != null) { newItem = value; СhangeList?.Invoke(Settings.NewItem, newItem); } }
         }
-
         public List<ItemChanges> СhangedItems
         {
-            get => _СhangedItems;
-            set { if (value != null) { _СhangedItems = value; СhangeList?.Invoke(Settings.СhangedItems, _СhangedItems); } }
+            get => changedItems;
+            set { if (value != null) { changedItems = value; СhangeList?.Invoke(Settings.СhangedItems, changedItems); } }
         }
-
-        public List<KeyValuePair<PriceStruct, ItemDBStruct>> SiteItemsСhanged
-        {
-            get => _SiteItemsСhanged;
-            set { if (value != null) { _SiteItemsСhanged = value; СhangeList?.Invoke(Settings.SiteListСhanged, _SiteItemsСhanged); } }
-        }
-
         public Dictionaries Dictionaries { get => dictionaries; set { if (value != null) { dictionaries = value; СhangeList?.Invoke(Settings.Dictionaries, dictionaries); } } }
-        public void ReloadNameCash() 
+        public void ReloadNameCash()
         {
             using (ApplicationContext db = new ApplicationContext())
             {
-                ItemName = (from Item in db.Item select new СomparisonNameID() { Name = Item.Name, СomparisonName = Item.СomparisonName, Id = Item.Id }).ToList();
+                ItemName = (from Item in db.Item select new СomparisonNameID() { Name = Item.Name, СomparisonName = Item.СomparisonName[0], Id = Item.Id }).ToList();
             }
-      
-        }
 
+        }
         public CashClass()
         {
-            NewItem = new List<ItemPlusImage>();
-            СhangedItems = new List<ItemChanges>();
-            Dictionaries = new Dictionaries();
+
+            newItem = new List<ItemPlusImageAndStorege>();
+            priceStorageList = new List<PriceStorage>();
+            changedItems = new List<ItemChanges>();
+            dictionaries = new Dictionaries();
+            siteList = new List<ItemDBStruct>();
             Tokens = new List<string>();
             Serializer<object> Serializer = new Serializer<object>();
             MailCheckFlag = false;
-
+            ObjBuffer = new List<QueueOfObj>();
             СhangeList += Serializer.Doit;
+            ApiSiteSettngs = Settings.ApiSettngs;
+            FtpSiteSettngs = Settings.FtpSettings;
         }
-
         public void LoadCash()
         {
-
-             NewItem = Task.Run(() => new Deserializer<List<ItemPlusImage>>(Settings.NewItem).Doit()).Result;
-            //  SiteItemsСhanged = Task.Run(() => new Deserializer<List<KeyValuePair<PriceStruct, ItemDBStruct>>>(Settings.SiteListСhanged).Doit()).Result;
-            СhangedItems = Task.Run(() => new Deserializer<List<ItemChanges>>(Settings.СhangedItems).Doit()).Result;
-            Dictionaries = Task.Run(() => new Deserializer<Dictionaries>(Settings.Dictionaries).Doit()).Result;
+            LoadFromFile(ref newItem, Settings.NewItem);
+            LoadFromFile(ref changedItems, Settings.СhangedItems);
+            LoadFromFile(ref dictionaries, Settings.Dictionaries);
+            LoadFromFile(ref priceStorageList, Settings.PriceStoragePath);
+            LoadFromFile(ref siteList, Settings.SiteList);
             ReloadNameCash();
             // Gen_Dic();
         }
-
-
         private void Gen_Dic()
         {
             Dictionaries = new Dictionaries();
@@ -147,5 +158,36 @@ namespace Server
             Dahua_PriceDic.Set_Filling_method_string(FillDefinitionPrice.PriceRC, "РРЦ");
 
         }
+        private void LoadFromFile<T>(ref T Object, string Path)
+        {
+            T Obj = Task.Run(() => new Deserializer<T>(Path).Doit()).Result;
+            if (Obj != null)
+            {
+                Object = Obj;
+            }
+
+        }
     }
+
+    [Serializable]
+    public class PriceStorage
+    {
+        public PriceStorage() { ReceivingData = DateTime.Now; Attributes = new List<string>(); }
+        public string Name { get; set; }
+        public string FilePath { get; set; }
+        public DateTime ReceivingData { get; set; }
+        public List<string> Attributes { get; set; }
+
+    }
+
+
+    public class QueueOfObj
+    {
+        public int ID { get; set; }
+        public object Object { get; set; }
+
+    }
+
+
+
 }

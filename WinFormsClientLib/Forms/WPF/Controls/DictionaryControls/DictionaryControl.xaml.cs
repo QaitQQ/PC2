@@ -49,7 +49,7 @@ namespace WinFormsClientLib.Forms
             DataContext = Dictionary_active;
             FillDefinitionList = (Dictionary_active as DictionaryPrice).Filling_method_string;
 
-            if ((Dictionary_active is DictionaryPrice) || (Dictionary_active is DictionaryStorage))
+            if ((Dictionary_active is DictionaryPrice) )
             {
                 FillingMethodStackPanelButton.Visibility = Visibility.Visible;
             }

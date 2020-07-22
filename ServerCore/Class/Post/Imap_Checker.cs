@@ -47,7 +47,27 @@ namespace Server.Class.Net
                 Check();
                 if (Attach != null)
                 {
-                    new Imap_Rules(Attach, _Name, _Subject).Apply_rules();
+                    var Path = @"price_storage\\" + _Name;
+                    try
+                    {
+                        using (FileStream fstream = new FileStream(Path, FileMode.OpenOrCreate))
+                        {
+                            // преобразуем строку в байты
+                            byte[] array = ((MemoryStream)Attach).ToArray();
+                            // запись массива байтов в файл
+                            fstream.Write(array, 0, array.Length);
+                        }
+
+                        var X = Program.Cash.PriceStorageList;
+                        X.Add(new PriceStorage() { FilePath = Path, Name = _Name, Attributes = new System.Collections.Generic.List<string>() { _Subject } });
+                        Program.Cash.PriceStorageList = X;
+                    }
+                    catch (System.Exception e)
+                    {
+
+                        System.Console.WriteLine(e.Message);
+                    }
+                    //   new Imap_Rules(Attach, _Name, _Subject).Apply_rules()
                 }
                 Thread.Sleep(300000);
             }

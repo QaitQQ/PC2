@@ -10,16 +10,16 @@ namespace Server.Class.ItemProcessor
 {
     public class СhangedItemsTags
     {
-        private List<ItemPlusImage> _List;
+        private List<ItemPlusImageAndStorege> _List;
         private readonly Dictionaries Dics;
-        public СhangedItemsTags(List<ItemPlusImage> List, Dictionaries dics)
+        public СhangedItemsTags(List<ItemPlusImageAndStorege> List, Dictionaries dics)
         {
             _List = List;
             Dics = dics;
             Enumeration();
         }
 
-        private ItemPlusImage Doit(ItemPlusImage Item)
+        private ItemPlusImageAndStorege Doit(ItemPlusImageAndStorege Item)
         {
 
             Item.Item = new FixName(Dics).Fix(Item.Item);
@@ -30,16 +30,16 @@ namespace Server.Class.ItemProcessor
 
         private void Enumeration()
         {
-            List<ItemPlusImage> List = new List<ItemPlusImage>();
+            List<ItemPlusImageAndStorege> List = new List<ItemPlusImageAndStorege>();
 
-            foreach (ItemPlusImage item in _List)
+            foreach (ItemPlusImageAndStorege item in _List)
             {
                 List.Add(Doit(item));
             }
             _List = List;
         }
 
-        public List<ItemPlusImage> Return() => _List;
+        public List<ItemPlusImageAndStorege> Return() => _List;
     }
 
 

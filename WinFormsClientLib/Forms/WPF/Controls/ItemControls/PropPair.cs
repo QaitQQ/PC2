@@ -8,9 +8,7 @@ namespace WinFormsClientLib.Forms.WPF.ItemControls
     {
         public PropertyInfo PropertyInfo { get; set; }
         private object _Value;
-
         private string _name;
-
         public string Name
         {
             get => _name;
@@ -32,7 +30,6 @@ namespace WinFormsClientLib.Forms.WPF.ItemControls
             _Value = null;
             _name = null;
             PropertyChanged = null;
-            GC.SuppressFinalize(this);
         }
     }
 }

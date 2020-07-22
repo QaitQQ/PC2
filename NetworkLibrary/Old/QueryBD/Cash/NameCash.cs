@@ -14,7 +14,7 @@ namespace Server.Class.Query
             List<СomparisonNameID> QweryResult = null;
             using (ApplicationContext db = new ApplicationContext())
             {
-                QweryResult = (from Item in db.Item select new СomparisonNameID() {Name = Item.Name, СomparisonName = Item.СomparisonName, Id=Item.Id }).ToList();
+                QweryResult = (from Item in db.Item select new СomparisonNameID() {Name = Item.Name, СomparisonName = Item.СomparisonName[0], Id=Item.Id }).ToList();
             }
             return QweryResult;
         }

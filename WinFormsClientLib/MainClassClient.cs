@@ -1,5 +1,7 @@
 ﻿using Client.Forms;
 
+using CRMLibs;
+
 using Network;
 
 using Server.Class.HDDClass;
@@ -13,6 +15,24 @@ using WindowsFormsClientLibrary.Class;
 
 namespace Client
 {
+
+    public static class ActiveValue 
+    {
+        private static Partner activePartner;
+        private static int[] saleValue;
+        public static Partner ActivePartner { get => activePartner; set { activePartner = value; ChangedPartner?.Invoke(activePartner); } }
+
+        public static int[] SaleValue { get => saleValue; set { saleValue = value; ChangeSale?.Invoke(saleValue[0], saleValue[1]); } }
+
+        public static event Action<Partner> ChangedPartner;
+        public static event Action<int, int> ChangeSale;
+
+
+
+
+
+
+    }
 
     public class WrapNetClient : INetClient
     {

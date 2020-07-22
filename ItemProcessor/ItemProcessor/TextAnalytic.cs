@@ -37,12 +37,9 @@ namespace Server.Class.ItemProcessor
                 foreach (string X in item.Values)
                 {
                     if (Regex.IsMatch(Item.Name, X))
-                    {
-                        Item.СomparisonName = Item.СomparisonName.Replace(X, "");
-
+                    {                                      
                         Item.ManufactorID = item.Id;
                         return Item;
-
                     }
                 }
 
@@ -74,16 +71,26 @@ namespace Server.Class.ItemProcessor
         {
             foreach (string item in Dictionary.Values)
             {
-                if (Item.СomparisonName.Contains(item))
+                if (Item.СomparisonName== null)
                 {
-                    Item.СomparisonName = Item.СomparisonName.Replace(item, "");
-                    if (Item.Tags == null)
-                    {
-                        Item.Tags = new List<string>();
-                    }
-
-                    Item.Tags.Add(Dictionary.Name);
+                    Item.СomparisonName = new string[] { СomparisonNameGenerator.Get(Item.Name) };
                 }
+
+                for (int i = 0; i < Item.СomparisonName.Length; i++)
+                {
+
+                    if (Item.СomparisonName[i].Contains(item))
+                    {
+                        Item.СomparisonName[i] = Item.СomparisonName[i].Replace(item, "");
+                        Item.Name = Item.Name.Replace(item, "");
+                        if (Item.Tags == null)
+                        {
+                            Item.Tags = new List<string>();
+                        }
+
+                        Item.Tags.Add(Dictionary.Name);
+                    }
+                }      
             }
         }
     }
@@ -98,7 +105,13 @@ namespace Server.Class.ItemProcessor
 
             Item.Name = Item.Name.Trim().ToUpper();
             DicWork(Item, Dictionaries.Get("NameEdit"));
-            Item.СomparisonName = СomparisonNameGenerator.Get(Item.Name);
+
+            if (Item.СomparisonName == null || Item.СomparisonName.Length <= 1)
+            {
+                Item.СomparisonName = new string[] { СomparisonNameGenerator.Get(Item.Name) };
+            }
+            
+            
             return Item;
         }
         private static void DicWork(ItemDBStruct item, IDictionaryPC Dictionary)
@@ -109,16 +122,4 @@ namespace Server.Class.ItemProcessor
             }
         }
     }
-
-
-
-
-
-
-
-
-
-
-
-
 }

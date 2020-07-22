@@ -12,9 +12,15 @@
             <ColumnDefinition></ColumnDefinition>
         </Grid.ColumnDefinitions>
         <Grid>
-            <StackPanel Grid.Column="0" Width="200"  HorizontalAlignment="Left">
+            <Grid.RowDefinitions>
+                <RowDefinition></RowDefinition>
+                <RowDefinition></RowDefinition>
+            </Grid.RowDefinitions>
+            <StackPanel Grid.Row="0" Width="200"  HorizontalAlignment="Left">
                 <ItemsControl Name="ButtonStack"></ItemsControl>
             </StackPanel>
+            <ListBox Grid.Row="1" Name="LogList"></ListBox>
+            
         </Grid>
         <Grid Grid.Column="1">
             <Grid.RowDefinitions>
@@ -26,13 +32,13 @@
                 <ColumnDefinition></ColumnDefinition>
             </Grid.ColumnDefinitions>
             <Button Name="ApplyAllButton" Click="ApplyAllButton_Click" Content="ApplyAll"></Button>
-            <Button Grid.Column="1" Name="ClearButton" Click="ClearButton_Click" Content="Clear"></Button>
+            <Button Grid.Column="1" Name="ClearButton" Click="ClearButton_Click"  Content="Clear"></Button>
             <DataGrid x:Name="CommonGrid" Grid.Row="1" Grid.ColumnSpan="2" MaxColumnWidth="200" AutoGenerateColumns="False">
                 <DataGrid.Columns>
                     <DataGridTemplateColumn>
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
-                                <Button Tag="{Binding SelectedIndex, ElementName=CommonGrid}" Click="Button_Click"></Button>
+                                <Button Tag="{Binding SelectedIndex, ElementName=CommonGrid}" Click="Table_Button_Click"></Button>
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>

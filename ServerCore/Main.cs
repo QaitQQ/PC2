@@ -1,19 +1,51 @@
 ﻿
 using Server.Class.Base;
+
 using System;
+using System.Drawing;
 using System.Linq;
+using System.Net.Http.Headers;
+using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Controls;
+using System.Windows.Forms;
 
 namespace Server
 {
+    public class Ico
+    {
+        private  void Close(object sender, MouseEventArgs e) { System.Environment.Exit(0); }
+        public Ico()
+        {
+            var icon = new NotifyIcon();
+            icon.MouseDoubleClick += new MouseEventHandler(Close);
+            icon.Icon = new Icon("134.ico");
+            icon.Visible = true;
+            icon.MouseUp += new MouseEventHandler(Close);
+        
+        }
+
+
+    }
+    
+
     public delegate string Meseger(string Message);
     internal static class Program
     {
         public static CashClass Cash;
         private static Task Server;
 
+
+        [DllImport("user32.dll")]
+        private static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
+
+        [DllImport("kernel32.dll", ExactSpelling = true)]
+        private static extern IntPtr GetConsoleWindow();
+
         public static event Action<string> Log;
+
+     
 
         // правила обработки
         // несинхронный цикл проверки почты
@@ -23,11 +55,18 @@ namespace Server
             Log += new Action<string>(CW);
             Cash = new CashClass();
             Cash.LoadCash();
+
+            ShowWindow(GetConsoleWindow(), 0);
+         
+
             if (arg.Contains("-Server"))
             {
                 Log("Server Start " + DateTime.Now);
                 GC.SuppressFinalize(Cash);
                 await StartServers();
+
+                new Ico();
+
             }
             if (arg.Contains("-Client"))
             {
@@ -35,11 +74,14 @@ namespace Server
                 StartClient();
             }
             GC.Collect();
+
             if (Server != null)
             {
                 Log("Server Wait " + DateTime.Now);
                 Server.Wait();
             }
+
+
         }
 
         private static async Task StartServers()

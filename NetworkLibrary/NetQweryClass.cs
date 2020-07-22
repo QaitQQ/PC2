@@ -1,4 +1,5 @@
-﻿using Server;
+﻿
+using Server;
 
 using System;
 
@@ -28,14 +29,11 @@ namespace Network
 
         public void Dispose()
         {
-            this.Attach = null;
-            this.Message = null;
+            Attach = null;
+            Message = null;
         }
     }
 
-
 }
-
-
 
 

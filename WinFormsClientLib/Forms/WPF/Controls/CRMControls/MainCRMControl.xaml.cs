@@ -17,7 +17,7 @@ namespace WinFormsClientLib.Forms.WPF.Controls.CRMControls
     {
         private Partner _ActivePartner;
         public Partner ActivePartner { get => _ActivePartner; private set { _ActivePartner = value; ChangedPartner?.Invoke(_ActivePartner); } }
-        public event Action<Partner> ChangedPartner;
+        private event Action<Partner> ChangedPartner;
         private enum SearchComboBox { Name }
         public ObservableCollection<UIElement> Filters { get; set; }
         public ObservableCollection<Partner> PartnerList { get; set; }
@@ -42,6 +42,8 @@ namespace WinFormsClientLib.Forms.WPF.Controls.CRMControls
             ButtonsEventInteractionPanel = new ObservableCollection<Button>();
             PartnerInteractionPanel.ItemsSource = ButtonsPartnerInteractionPanel;
             EventInteractionPanel.ItemsSource = ButtonsEventInteractionPanel;
+
+            ChangedPartner += new Action<Partner>(RenewActivePartner);
 
             SupportButton.AddButtons(ButtonsPartnerInteractionPanel, new RoutedEventHandler[] { AddPartner, DelPartner });
             SupportButton.AddButtons(ButtonsEventInteractionPanel, new RoutedEventHandler[] { AddEvent, DelEvent });
@@ -89,7 +91,7 @@ namespace WinFormsClientLib.Forms.WPF.Controls.CRMControls
             //}
         }
 
-
+        private void RenewActivePartner(Partner Partner) { ActiveValue.ActivePartner = Partner; }
 
         private void AddPartner(object Obj, RoutedEventArgs e) { }
         private void DelPartner(object Obj, RoutedEventArgs e) { }

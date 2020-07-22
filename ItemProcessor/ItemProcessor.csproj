@@ -5,6 +5,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="FreeSpire.XLS" Version="10.1.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\DBLibrary\DBLibrary.csproj" />
     <ProjectReference Include="..\StructLibCore\StructLibCore.csproj" />
   </ItemGroup>

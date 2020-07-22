@@ -10,6 +10,14 @@ using System.Reflection;
 namespace StructLibs
 {
     [Serializable]
+    public enum FillTable
+    {
+        NewItemTable,
+        СhangedItemsTable,
+        СhangedSiteTable
+    }
+
+    [Serializable]
     public class ItemChanges
     {
         public int ItemID { get; set; }
@@ -27,14 +35,14 @@ namespace StructLibs
         public string Name { get; set; }
         public string СomparisonName { get; set; }
         public int Id { get; set; }
-
     }
 
     [System.Serializable]
-    public class ItemPlusImage
+    public class ItemPlusImageAndStorege
     {
         public ItemDBStruct Item { get; set; }
         public Image Image { get; set; }
+        public Storage[] Storages { get; set; }
     }
     [System.Serializable]
     public class СomparisonItems : INotifyPropertyChanged
@@ -51,11 +59,7 @@ namespace StructLibs
         public int SiteId { get; set; }
         public string СomparisonName { get; set; }
         public List<string> Tags { get; set; }
-        public static PropertyInfo[] GetProperties()
-        {
-            return typeof(СomparisonItems).GetProperties(BindingFlags.Public | BindingFlags.Instance);
-        }
-
+        public static PropertyInfo[] GetProperties() => typeof(СomparisonItems).GetProperties(BindingFlags.Public | BindingFlags.Instance);
         public СomparisonItems(PriceStruct NewItem, ItemDBStruct BaseItem = null)
         {
             BaseId = BaseItem?.Id ?? 0; Name = NewItem.Name ?? "";
@@ -88,11 +92,6 @@ namespace StructLibs
                 }
             }
         }
-
         public event PropertyChangedEventHandler PropertyChanged;
     }
-
-
-
-
 }

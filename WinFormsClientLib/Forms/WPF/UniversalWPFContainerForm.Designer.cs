@@ -91,10 +91,11 @@
             this.CloseButton.BackColor = System.Drawing.Color.Red;
             this.CloseButton.Dock = System.Windows.Forms.DockStyle.Right;
             this.CloseButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.CloseButton.Location = new System.Drawing.Point(1053, 0);
+            this.CloseButton.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.CloseButton.Location = new System.Drawing.Point(1037, 0);
             this.CloseButton.Margin = new System.Windows.Forms.Padding(0);
             this.CloseButton.Name = "CloseButton";
-            this.CloseButton.Size = new System.Drawing.Size(9, 25);
+            this.CloseButton.Size = new System.Drawing.Size(25, 25);
             this.CloseButton.TabIndex = 0;
             this.CloseButton.UseVisualStyleBackColor = false;
             this.CloseButton.Click += new System.EventHandler(this.CloseButton_Click);
