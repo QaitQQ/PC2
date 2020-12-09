@@ -14,8 +14,31 @@ namespace WinFormsClientLib.Forms.WPF.Controls.Other
             InitializeComponent();
         }
 
-        private void Plus_Click(object sender, RoutedEventArgs e) { if (SumBox.Text != "") { TotalBox.Text = (ConvertToDouble(SumBox.Text) * (1 + ConvertToDouble(PercentBox.Text) / 100)).ToString(); } }
-        private void Minus_Click(object sender, RoutedEventArgs e) { if (SumBox.Text != "") { TotalBox.Text = (ConvertToDouble(SumBox.Text) * (1 - ConvertToDouble(PercentBox.Text) / 100)).ToString(); } }
+        private void Plus_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                if (SumBox.Text != "") { TotalBox.Text = (ConvertToDouble(SumBox.Text) * (1 + ConvertToDouble(PercentBox.Text) / 100)).ToString(); }
+            }
+            catch (Exception E)
+            {
+                MessageBox.Show(E.Message);
+     
+            }
+
+        }
+        private void Minus_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                if (SumBox.Text != "") { TotalBox.Text = (ConvertToDouble(SumBox.Text) * (1 - ConvertToDouble(PercentBox.Text) / 100)).ToString(); }
+            }
+            catch (Exception E)
+            {
+                MessageBox.Show(E.Message);
+  
+            }
+        }
         private double ConvertToDouble(string STR)
         {
             string newStr = null;

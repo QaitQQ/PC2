@@ -2,19 +2,11 @@
 
 using Server;
 
-using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace WinFormsClientLib.Forms.WPF.Controls.DictionaryControls
 {
@@ -24,17 +16,17 @@ namespace WinFormsClientLib.Forms.WPF.Controls.DictionaryControls
     public partial class PriceServiceControl : UserControl
     {
 
-        private ObservableCollection<PriceStorage> STList;
-        private ObservableCollection<Button> LeftBtn;
-        private ObservableCollection<Button> ItemBtn;
-        private ObservableCollection<StackPanel> ItemInfoList;
+        private ObservableCollection<PriceStorage> STList { get; set; }
+        private readonly ObservableCollection<Button> LeftBtn;
+        private readonly ObservableCollection<Button> ItemBtn;
+        private readonly ObservableCollection<StackPanel> ItemInfoList;
         private PriceStorage ActivePrice;
         public PriceServiceControl()
 
         {
             STList = new ObservableCollection<PriceStorage>();
-            var col = new Network.PriceService.GetPriceStorege().Get<List<PriceStorage>>(new WrapNetClient());
-            foreach (var item in col){STList.Add(item);}
+            List<PriceStorage> col = new Network.PriceService.GetPriceStorege().Get<List<PriceStorage>>(new WrapNetClient());
+            foreach (PriceStorage item in col) { STList.Add(item); }
 
             InitializeComponent();
             LeftBtn = new ObservableCollection<Button>();
@@ -52,12 +44,14 @@ namespace WinFormsClientLib.Forms.WPF.Controls.DictionaryControls
 
         private void AddFile(object sender, RoutedEventArgs e) { STList.Add(new PriceStorage() { Name = "Новый Файл" }); }
 
-        private StackPanel GenPair(string Label,string Value) 
+        private StackPanel GenPair(string Label, string Value)
         {
-            var Grd = new StackPanel();
-            Grd.Orientation = Orientation.Horizontal;
+            StackPanel Grd = new StackPanel
+            {
+                Orientation = Orientation.Horizontal
+            };
 
-            Grd.Children.Add(new Label() {Content= Label });
+            Grd.Children.Add(new Label() { Content = Label });
             Grd.Children.Add(new Label() { Content = Value });
 
             return Grd;
@@ -71,14 +65,43 @@ namespace WinFormsClientLib.Forms.WPF.Controls.DictionaryControls
             ItemInfoList.Add(GenPair("Путь ", ActivePrice.FilePath));
             ItemInfoList.Add(GenPair("Дата ", ActivePrice.ReceivingData.ToString()));
             ItemInfoList.Add(GenPair("Атрибуты ", string.Join(",", ActivePrice.Attributes)));
+
+            StackPanel Grd = new StackPanel { Orientation = Orientation.Horizontal };
+            Grd.Children.Add(new Label() { Content = "Автоматическое чтение" });
+            CheckBox CheckBox = new CheckBox();
+            CheckBox.IsChecked = ActivePrice.DefaultReading;
+            CheckBox.Click += CheckBox_Click;
+            Grd.Children.Add(CheckBox);
+            ItemInfoList.Add(Grd);
+
+
+
+            StackPanel BtnStack = new StackPanel { Orientation = Orientation.Horizontal };
+            var SaveBtn = new Button() { Content = "Save" };
+            SaveBtn.Click += SaveBtn_Click;
+            BtnStack.Children.Add(SaveBtn);
+            ItemInfoList.Add(BtnStack);
+
+
         }
+
+        private void SaveBtn_Click(object sender, RoutedEventArgs e)
+        {
+            new Network.PriceService.SavePriceStorege().Get<bool>(new WrapNetClient(), ActivePrice);
+        }
+
+        private void CheckBox_Click(object sender, RoutedEventArgs e)
+        {
+            ActivePrice.DefaultReading =(bool)((CheckBox)sender).IsChecked;
+        }
+
         private void ReadPrice(object sender, RoutedEventArgs e)
         {
             if (ActivePrice != null)
             {
                 MessageBox.Text = new Network.PriceService.ReadPrice().Get<string>(new WrapNetClient(), ActivePrice);
             }
-          
+
         }
     }
 }

@@ -35,6 +35,7 @@ namespace Server
         {
             get => priceStorageList;
             set { priceStorageList = value; СhangeList?.Invoke(Settings.PriceStoragePath, PriceStorageList); }
+       
         }
         public bool MailCheckFlag { get; set; }
         private List<ItemPlusImageAndStorege> newItem;
@@ -176,6 +177,7 @@ namespace Server
         public string Name { get; set; }
         public string FilePath { get; set; }
         public DateTime ReceivingData { get; set; }
+        public bool DefaultReading { get; set; }
         public List<string> Attributes { get; set; }
 
     }

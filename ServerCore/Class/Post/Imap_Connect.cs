@@ -3,8 +3,12 @@ using MailKit.Net.Imap;
 using MailKit.Search;
 
 using MimeKit;
+
 using Object_Description;
+
+using System.ComponentModel.DataAnnotations;
 using System.IO;
+using System.IO.Compression;
 
 namespace Server.Class.Net
 {
@@ -57,6 +61,30 @@ namespace Server.Class.Net
                                 item.Content.DecodeTo(Stream);
                                 inbox.AddFlags(inbox.FirstUnread, MessageFlags.Seen, true);
                                 return Stream;
+                            }
+                            else if (Name.ToLower().Contains(".zip"))
+                            {
+                                Stream Stream = new MemoryStream();
+                                item.Content.DecodeTo(Stream);
+                                inbox.AddFlags(inbox.FirstUnread, MessageFlags.Seen, true);
+
+                                var Unzip = new ZipArchive(Stream);
+                                var Z = Unzip.Entries;
+
+                                foreach (ZipArchiveEntry Y in Z)
+                                {
+                                    if (Y.FullName.ToLower().Contains(".xls"))
+                                    {
+                                        Y.ExtractToFile("_extract_file", true);
+                                        Name = Y.FullName;
+                                        using Stream fileStream = new FileStream("_extract_file", FileMode.Open);
+                                        Stream = new MemoryStream();
+                                        fileStream.CopyTo(Stream);
+                                        return Stream;
+                                    }
+
+                                }
+
                             }
                             else
                             {

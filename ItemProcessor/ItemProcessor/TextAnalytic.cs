@@ -7,6 +7,7 @@ using Object_Description;
 using StructLibs;
 
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.RegularExpressions;
 
 namespace Server.Class.ItemProcessor
@@ -50,7 +51,7 @@ namespace Server.Class.ItemProcessor
         }
     }
 
-    internal class TagGenerator : TextAnalytic
+    public class TagGenerator : TextAnalytic
     {
         public TagGenerator(Dictionaries Dictionaries) : base(Dictionaries)
         {
@@ -76,13 +77,32 @@ namespace Server.Class.ItemProcessor
                     Item.СomparisonName = new string[] { СomparisonNameGenerator.Get(Item.Name) };
                 }
 
+
+                if (Item.Name.Contains(item))
+                {
+                    Item.Name = Item.Name.Replace(item, "");
+                    if (Item.Tags == null)
+                    {
+                        Item.Tags = new List<string>();
+                    }
+
+                    var СomparisonNames = Item.СomparisonName.ToList();
+
+                    СomparisonNames.Add(СomparisonNameGenerator.Get(Item.Name));
+
+                    Item.СomparisonName = СomparisonNames.ToArray();
+
+                    Item.Tags.Add(Dictionary.Name);
+
+                }
+
                 for (int i = 0; i < Item.СomparisonName.Length; i++)
                 {
 
-                    if (Item.СomparisonName[i].Contains(item))
+                    if (Item.СomparisonName[i].Contains(item) )
                     {
                         Item.СomparisonName[i] = Item.СomparisonName[i].Replace(item, "");
-                        Item.Name = Item.Name.Replace(item, "");
+                        Item.Name = Item.Name.Replace(item.ToUpper(), "");
                         if (Item.Tags == null)
                         {
                             Item.Tags = new List<string>();

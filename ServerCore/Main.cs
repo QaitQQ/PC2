@@ -1,41 +1,35 @@
 ﻿
-using Server.Class.Base;
-
 using System;
 using System.Drawing;
 using System.Linq;
-using System.Net.Http.Headers;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows.Controls;
 using System.Windows.Forms;
 
 namespace Server
 {
     public class Ico
     {
-        private  void Close(object sender, MouseEventArgs e) { System.Environment.Exit(0); }
+        private void Close(object sender, MouseEventArgs e) { System.Environment.Exit(0); }
         public Ico()
         {
-            var icon = new NotifyIcon();
-            icon.MouseDoubleClick += new MouseEventHandler(Close);
+            NotifyIcon icon = new NotifyIcon();
+            icon.MouseDown += new MouseEventHandler(Close);
             icon.Icon = new Icon("134.ico");
             icon.Visible = true;
-            icon.MouseUp += new MouseEventHandler(Close);
-        
+
+
         }
 
 
     }
-    
 
     public delegate string Meseger(string Message);
     internal static class Program
     {
         public static CashClass Cash;
         private static Task Server;
-
 
         [DllImport("user32.dll")]
         private static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
@@ -44,8 +38,6 @@ namespace Server
         private static extern IntPtr GetConsoleWindow();
 
         public static event Action<string> Log;
-
-     
 
         // правила обработки
         // несинхронный цикл проверки почты
@@ -57,15 +49,25 @@ namespace Server
             Cash.LoadCash();
 
             ShowWindow(GetConsoleWindow(), 0);
-         
+
 
             if (arg.Contains("-Server"))
             {
                 Log("Server Start " + DateTime.Now);
                 GC.SuppressFinalize(Cash);
-                await StartServers();
+               
 
-                new Ico();
+                if (!arg.Contains("-Client"))
+                {
+                    await System.Threading.Tasks.Task.Factory.StartNew(() => new Ico());
+                    Application.Run();
+                }
+
+
+                
+                await StartServers();
+              
+
 
             }
             if (arg.Contains("-Client"))

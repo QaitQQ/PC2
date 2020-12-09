@@ -21,6 +21,30 @@ namespace Network.PriceService
             return Message;
         }
     }
+
+    [System.Serializable]
+    public class SavePriceStorege : NetQwerry
+    {
+        public override TCPMessage Post(ApplicationContext Db, object Obj = null)
+        {
+            var PriceStorage = (PriceStorage)Attach;
+
+            var PriceStorageList = ((CashClass)Obj).PriceStorageList;
+
+            for (int i = 0; i < PriceStorageList.Count; i++)
+            {
+                if (PriceStorageList[i].Name == PriceStorage.Name)
+                {
+                    PriceStorageList[i] = PriceStorage;
+                }
+            }
+            ((CashClass)Obj).PriceStorageList = PriceStorageList;
+
+
+            Message.Obj = true;
+            return Message;
+        }
+    }
     [System.Serializable]
     public class ReadPrice : NetQwerry
     {   [NonSerialized]

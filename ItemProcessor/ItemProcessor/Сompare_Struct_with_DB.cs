@@ -93,7 +93,7 @@ namespace Server
                 item.Item.Id = FindResult[0].Id;
                 storegeUpdateList.Add(item);
             }
-            if (FindResult[0].PriceRC != item.Item.PriceRC)
+            if (FindResult[0].PriceRC != item.Item.PriceRC && item.Item.PriceRC != 0)
             {
                 Result.Add(new ItemChanges()
                 {

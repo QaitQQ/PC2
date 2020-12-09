@@ -165,11 +165,19 @@ namespace WindowsFormsClientLibrary.Forms
             FillListBox();
         }
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e) { FillListBox(); }
-        private void ManufFromSite_Click(object sender, EventArgs e)
+
+
+        private void SiteSync_Click(object sender, EventArgs e)
         {
-            //new BaseNetClass().ManufFromSite();
-            //Dictionaries = new BaseNetClass().GetDictionaries();
-            //FillListBox();
+
+            new Network.Dictionary.SiteSync().Get<bool>(new WrapNetClient());
+
+
+            Dictionaries = new Network.Dictionary.GetDictionares().Get<Dictionaries>(new WrapNetClient());
+
+
+
+
         }
     }
 }

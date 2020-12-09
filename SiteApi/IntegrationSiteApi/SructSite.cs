@@ -5,13 +5,16 @@ using Pricecona;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Net.Http;
+using System.Threading.Tasks;
 
 namespace Server.Class.IntegrationSiteApi
 {
-    internal class SructSite : Api
+    public class StructSite : Api
     {
-        public SructSite(string _SiteLink) => SiteLink = _SiteLink;
+        public StructSite(string _SiteLink) => SiteLink = _SiteLink;
         #region описание сообщений
         internal class _Rows
         {
@@ -22,7 +25,7 @@ namespace Server.Class.IntegrationSiteApi
             public object rows { get; set; }
 
         }
-        internal class _Cat
+        public class Cat
         {
             [JsonProperty("category_id")]
             public string Id { get; set; }
@@ -31,7 +34,7 @@ namespace Server.Class.IntegrationSiteApi
             [JsonProperty("parent_id")]
             public string Parent_id { get; set; }
         }
-        internal class Manufactur
+        public class Manufactur
         {
             [JsonProperty("manufacturer_id")]
             public string Id { get; set; }
@@ -39,6 +42,39 @@ namespace Server.Class.IntegrationSiteApi
             public string Name { get; set; }
 
         }
+        [Serializable]
+        public class product_attribute
+        {
+            [JsonProperty("product_id")]
+            public string product_id { get; set; }
+            [JsonProperty("attribute_id")]
+            public string attribute_id { get; set; }
+            [JsonProperty("language_id")]
+            public string language_id { get; set; }
+            [JsonProperty("text")]
+            public string text { get; set; }
+
+        }
+        [Serializable]
+        public class attribute_description
+        {
+            [JsonProperty("attribute_id")]
+            public string attribute_id { get; set; }
+            [JsonProperty("language_id")]
+            public string language_id { get; set; }
+            [JsonProperty("name")]
+            public string name { get; set; }
+
+        }
+
+        public class Void_result
+        {
+            [JsonProperty("result")]
+            public string result { get; set; }
+
+        }
+
+
         #endregion
         public Manufactur[] ManufactorsId()
         {
@@ -58,6 +94,134 @@ namespace Server.Class.IntegrationSiteApi
 
             return result.ToArray();
         }
+        public T[] GetTable<T>(string Table)
+        {
+            var result = new List<T>();
+
+            Post($"/RC/Get_" + Table);
+
+            _Rows RowArrey = JsonConvert.DeserializeObject<_Rows>(JsonConvert.DeserializeObject<_Message>(Response.Result.Content.ReadAsStringAsync().Result).msg.ToString());
+
+            foreach (object item in RowArrey.rows as IEnumerable)
+            {
+                var D = JsonConvert.DeserializeObject<T>(item.ToString());
+                result.Add(D);
+            }
+
+            return result.ToArray();
+        }
+        public async void DeleteAttribute(int attribute_id)
+        {
+
+
+            Task<HttpResponseMessage> response;
+            FormUrlEncodedContent Json;
+            HttpClient client = new HttpClient();
+
+            Json = new FormUrlEncodedContent(new[] { new KeyValuePair<string, string>("attribute_id", attribute_id.ToString()) });
+            response = client.PostAsync(SiteLink + $"/RC/deleteAttribute/", Json);
+
+            using (StreamReader reader = new StreamReader(await response.Result.Content.ReadAsStreamAsync()))
+            {
+
+                string m = reader.ReadToEnd();
+                if (m.Contains("success"))
+                {
+
+                }
+            }
+        }
+        public async void Attribute_replacement(int old_attribute_id, int New_attribute_id)
+        {
+            Task<HttpResponseMessage> response;
+            FormUrlEncodedContent Json;
+            HttpClient client = new HttpClient();
+
+            Json = new FormUrlEncodedContent(new[]
+            {
+                new KeyValuePair<string, string>("Old_Id", old_attribute_id.ToString()),
+                new KeyValuePair<string, string>("New_Id", New_attribute_id.ToString())
+            });
+
+
+
+            while (true)
+            {
+
+            
+
+
+            response = client.PostAsync(SiteLink + $"/RC/Attribute_replacement/", Json);
+                using (StreamReader reader = new StreamReader(await response.Result.Content.ReadAsStreamAsync()))
+                {
+
+                    string m = reader.ReadToEnd();
+
+                    for (int i = 0; i < m.Length; i++)
+                    {
+                        if (m[i] == '{')
+                        {
+                            m = m.Remove(0, i);
+                            break;
+                        }
+                    }
+
+                    var D = JsonConvert.DeserializeObject<_Message>(m);
+
+                    var reslt = D.msg.ToString();
+
+                    if (reslt.Contains("Duplicate"))
+                    {
+                        for (int i = 0; i < reslt.Length; i++)
+                        {
+                            if (reslt[i] == '\'')
+                            {
+                                reslt = reslt.Remove(0, i + 1);
+                                break;
+                            }
+                        }
+                        for (int i = 0; i < reslt.Length; i++)
+                        {
+                            if (reslt[i] == '\'')
+                            {
+                                reslt = reslt.Remove(i);
+                                break;
+                            }
+                        }
+
+                        var ID = reslt.Split('-')[0];
+
+
+                        Json = new FormUrlEncodedContent(new[]
+                          {
+                           new KeyValuePair<string, string>("Old_Id", old_attribute_id.ToString()),
+                           new KeyValuePair<string, string>("New_Id", New_attribute_id.ToString()),
+                           new KeyValuePair<string, string>("Product_ID", ID.ToString())
+                       });
+                        var httpResponse = client.PostAsync(SiteLink + $"/RC/Attribute_glue/", Json);
+                        using (StreamReader read = new StreamReader(await httpResponse.Result.Content.ReadAsStreamAsync()))
+                        {
+
+                            string G = read.ReadToEnd();
+
+                        }
+
+
+                    }
+                    else
+                    {
+                        break;
+                    }
+
+
+
+                }
+
+
+
+
+            }
+        }
         public WordTable GetCategoryTree()
         {
 
@@ -72,7 +236,7 @@ namespace Server.Class.IntegrationSiteApi
 
                 foreach (object item in RowArrey.rows as IEnumerable)
                 {
-                    _Cat D = JsonConvert.DeserializeObject<_Cat>(item.ToString());
+                    Cat D = JsonConvert.DeserializeObject<Cat>(item.ToString());
                     List.Add(new WordTable(int.Parse(D.Id), D.Name, int.Parse(D.Parent_id)));
                 }
 

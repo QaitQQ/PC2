@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Server.Class.IntegrationSiteApi
 {
-    internal class Api
+    public class Api
     {
 
 

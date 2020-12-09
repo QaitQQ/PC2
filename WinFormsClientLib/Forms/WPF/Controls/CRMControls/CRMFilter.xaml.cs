@@ -35,6 +35,7 @@ namespace WinFormsClientLib.Forms.WPF.Controls.CRMControls
         private void DelButton_Click(object sender, RoutedEventArgs e)
         {
             _mainCRMControl.Filters.Remove(this);
+            _mainCRMControl.RenewPartnerList();
         }
     }
 }

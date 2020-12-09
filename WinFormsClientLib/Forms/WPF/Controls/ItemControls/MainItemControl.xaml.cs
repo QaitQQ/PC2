@@ -1,6 +1,8 @@
 ﻿
 using Client;
 
+using CRMLibs;
+
 using StructLibs;
 
 using System;
@@ -12,6 +14,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 
+using WinFormsClientLib.Forms.WPF.Controls.ItemControls;
 using WinFormsClientLib.Forms.WPF.Controls.Other;
 
 namespace WinFormsClientLib.Forms.WPF.ItemControls
@@ -53,11 +56,19 @@ namespace WinFormsClientLib.Forms.WPF.ItemControls
             MarkupBox.TextChanged += new TextChangedEventHandler(SaleChange);
             ButtonStack.Items.Add(new PercentCalc());
 
-            Button RenewButton = new Button() { Content = "Обновить Кэш", Margin = new Thickness(2) };
-            RenewButton.Click += RenewCash_Click;
-            ButtonStack.Items.Add(RenewButton);
+            //Button RenewButton = new Button() { Content = "Обновить Кэш", Margin = new Thickness(2) };
+            //RenewButton.Click += RenewCash_Click;
+            //ButtonStack.Items.Add(RenewButton);
+
+            //Button TagGenerateButton = new Button() { Content = "Перебрать Теги", Margin = new Thickness(2) };
+            //TagGenerateButton.Click += TagGenerate_Click;
+            //ButtonStack.Items.Add(TagGenerateButton);
 
             FilterList.CollectionChanged += new System.Collections.Specialized.NotifyCollectionChangedEventHandler(AppFilter);
+        }
+        private void TagGenerate_Click(object sender, RoutedEventArgs e)
+        {
+            new Network.Item.TagGenerate().Get<bool>(new WrapNetClient());
         }
         private void MainItemControl_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
         {
@@ -68,19 +79,23 @@ namespace WinFormsClientLib.Forms.WPF.ItemControls
         }
         private void SearchButton_Click(object sender, RoutedEventArgs e)
         {
+
             SearchList.Clear();
             Search(SearhTextBox.Text, PropertyInfoComboBox.SelectedItem.ToString());
             ItemSearchListBox.Items.Refresh();
         }
-        private void ItemSearchListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private async void ItemSearchListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (e.AddedItems.Count > 0)
             {
                 СomparisonNameID X = e.AddedItems[0] as СomparisonNameID;
                 using Network.Item.GetItemFromId Qwery = new Network.Item.GetItemFromId();
-                ItemPlusImageAndStorege Obj = Qwery.Get<ItemPlusImageAndStorege>(new WrapNetClient(), X.Id.ToString());
+                ItemPlusImageAndStorege Obj = null;
+                await System.Threading.Tasks.Task.Factory.StartNew(() => Obj = Qwery.Get<ItemPlusImageAndStorege>(new WrapNetClient(), X.Id.ToString()));
                 ItemControl NewControl = new ItemControl(Obj);
                 NewControl.GoSite += ((Client.Forms.Mainform)Client.Main.CommonWindow).GoSite;
+                NewControl.GenSiteItem += (i) => { GenSiteItemList.Children.Add(new SiteItemGenerator(i)); SiteGeneratorGrid.Width = new GridLength(100); };
+
                 if (ItemDescriptionBox.Children.Count < 2)
                 {
                     if (ItemDescriptionBox.Children.Count == 0)
@@ -94,7 +109,6 @@ namespace WinFormsClientLib.Forms.WPF.ItemControls
                         ItemDescriptionBox.Children.Add(NewControl);
                         ItemDescriptionBox.Children.Add(GG);
                     }
-
                 }
                 else
                 {
@@ -102,7 +116,6 @@ namespace WinFormsClientLib.Forms.WPF.ItemControls
                     {
                         ((ItemControl)item).Dispose();
                     }
-
                     ItemDescriptionBox.Children.Clear();
                     ItemDescriptionBox.Children.Add(NewControl);
                     GC.Collect();
@@ -149,14 +162,47 @@ namespace WinFormsClientLib.Forms.WPF.ItemControls
         {
             if (e.Action == NotifyCollectionChangedAction.Add)
             {
-                foreach (object item in Obj as IEnumerable)
+
+                if (FilterList.Count == 1)
                 {
-                    PropPair X = (PropPair)item;
-                    Search(X.Value.ToString(), X.PropertyInfo.Name);
+                    foreach (object item in Obj as IEnumerable)
+                    {
+                        PropPair X = (PropPair)item;
+                        Search(X.Value.ToString(), X.PropertyInfo.Name);
+                    }
                 }
+                else
+                {
+                    var X = (PropPair)((e.NewItems)[0]);
+                    int i;
+                    for (i = 0; i < Prop.Length; i++)
+                    {
+                        if (Prop[i].Name == X.PropertyInfo.Name)
+                        {
+                            break;
+                        }
+                    }
+                    List<int> IDs = new List<int>();
+
+                    foreach (var item in SearchList)
+                    {
+                        IDs.Add(item.Id);
+                    }
+
+                    List<СomparisonNameID> Search = new Network.Item.ItemSearchFromList().Get<List<СomparisonNameID>>(new WrapNetClient(), new object[] { IDs, X.Value, i });
+                    SearchList.Clear();
+                    foreach (СomparisonNameID item in Search) { SearchList.Add(item); }
+                }
+
             }
         }
-
         private void RenewCash_Click(object sender, RoutedEventArgs e) { new Network.Item.RenewNameCash().Get<bool>(new WrapNetClient()); }
+
     }
+
+
+
+
+
+
 }

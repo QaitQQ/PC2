@@ -13,7 +13,9 @@ namespace Object_Description
         Storage,
         Tags,
         None,
-        Manufactor
+        Manufactor,
+        Attribute,
+        Category
     }
     public enum FillDefinitionPrice
     {
@@ -104,8 +106,13 @@ namespace Object_Description
         public DictionaryPrice(string name, DictionaryRelate Relate) { Name = name; Values = new List<string>(); Filling_method_coll = new List<KeyValuePair<FillDefinitionPrice, int>>(); Filling_method_string = new List<KeyValuePair<FillDefinitionPrice, string>>(); this.Relate = Relate; }
         public DictionaryPrice(string name, List<string> Values, DictionaryRelate Relate) { Name = name; this.Values = Values; Filling_method_coll = new List<KeyValuePair<FillDefinitionPrice, int>>(); Filling_method_string = new List<KeyValuePair<FillDefinitionPrice, string>>(); this.Relate = Relate; }
         public void Set_Filling_method_coll(FillDefinitionPrice Key, int Value) => Filling_method_coll.Add(new KeyValuePair<FillDefinitionPrice, int>(Key, Value));
-        public void Set_Filling_method_string(FillDefinitionPrice Key, string Value) => Filling_method_string.Add(new KeyValuePair<FillDefinitionPrice, string>(Key, Value));  
+        public void Set_Filling_method_string(FillDefinitionPrice Key, string Value) => Filling_method_string.Add(new KeyValuePair<FillDefinitionPrice, string>(Key, Value));
         public List<KeyValuePair<FillDefinitionPrice, string>> GetFillingStringUnderRelate(FillDefinitionPrice Key) => Filling_method_string?.Where(x => x.Key == Key).ToList();
     }
-
+    [Serializable]
+    public class DictionarySiteCategory : DictionaryBase
+    {
+        public int Parent_id { get; set; }
+        public DictionarySiteCategory(string name, DictionaryRelate Relate) { Name = name; this.Relate = Relate; Values = new List<string>(); }
     }
+}

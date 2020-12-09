@@ -14,6 +14,7 @@ using WinFormsClientLib.Forms.WPF.Controls;
 using WinFormsClientLib.Forms.WPF.Controls.CRMControls;
 using WinFormsClientLib.Forms.WPF.Controls.DictionaryControls;
 using WinFormsClientLib.Forms.WPF.Controls.ItemControls;
+using WinFormsClientLib.Forms.WPF.Controls.Other;
 using WinFormsClientLib.Forms.WPF.ItemControls;
 
 namespace Client.Forms
@@ -31,24 +32,37 @@ namespace Client.Forms
                  controls: new Control[]
                  {
                     new ElementHost() { Child = new MainItemControl()  },
-                    new ElementHost() { Child = new MainCRMControl()  },
+                 //   new ElementHost() { Child = new MainCRMControl()  },
                  },
                  Orientation: Orientation.Horizontal
                  )
                  );
             InitializeComponent();
-            LeftPanel.Controls.Add(new DradDropPanel(0));
+            LeftPanel.Controls.Add(new DradDropPanel(
+                
+                controls: new Control[]
+                {
+                 new ElementHost() { Child = new TextPayEditor()  },
+
+                }
+                
+                
+                ));
 
             AddNewForm("Сравнение", new EventHandler(Comparer_Win_Shown), видToolStripMenuItem);
             AddNewForm("Работа с прайсами", new EventHandler(PriceStorege_Win_Show), видToolStripMenuItem);
             AddNewForm("Работа с таблицами", new EventHandler(NewForm), видToolStripMenuItem);
             AddNewForm("Дочернее окно", new EventHandler(ContainerForm), файлToolStripMenuItem);
-
+            AddNewForm("Завершить сервер", new EventHandler(CloseServer), файлToolStripMenuItem);
 
             RightPanel.Visible = false;
             RightPanelSplitter.Visible = false;
             LeftPanel.Visible = false;
             LeftPanelSplitter.Visible = false;
+        }
+        private void CloseServer(object sender, EventArgs e)
+        {
+            System.Environment.Exit(0);
         }
         private void AddNewForm(string Text, EventHandler ClikEvent, ToolStripMenuItem toolStrip)
         {

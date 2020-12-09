@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -14,7 +15,7 @@ namespace Server.Class.Net
 
         public Imap_Checker(CancellationToken token)
         {
-            this.Token = token;
+            Token = token;
         }
         public Imap_Checker() { }
         public CancellationToken Token { get; }
@@ -47,7 +48,7 @@ namespace Server.Class.Net
                 Check();
                 if (Attach != null)
                 {
-                    var Path = @"price_storage\\" + _Name;
+                    string Path = @"price_storage\\" + _Name;
                     try
                     {
                         using (FileStream fstream = new FileStream(Path, FileMode.OpenOrCreate))
@@ -58,9 +59,64 @@ namespace Server.Class.Net
                             fstream.Write(array, 0, array.Length);
                         }
 
-                        var X = Program.Cash.PriceStorageList;
-                        X.Add(new PriceStorage() { FilePath = Path, Name = _Name, Attributes = new System.Collections.Generic.List<string>() { _Subject } });
-                        Program.Cash.PriceStorageList = X;
+                        System.Collections.Generic.List<PriceStorage> PriceStorageList = Program.Cash.PriceStorageList;
+
+
+                        var MatchingStorageList = PriceStorageList.FindAll(x => x.Name == _Name);
+
+
+                        if (MatchingStorageList.Count == 0)
+                        {
+                            PriceStorageList.Add(new PriceStorage() { FilePath = Path, Name = _Name, Attributes = new System.Collections.Generic.List<string>() { _Subject } });
+                        }
+                        else if (MatchingStorageList.Count == 1)
+                        {
+
+                            foreach (var item in PriceStorageList)
+                            {
+                                if (item == MatchingStorageList[0])
+                                {
+                                    item.Attributes = new System.Collections.Generic.List<string>() { _Subject };
+                                    item.ReceivingData = DateTime.Now;
+
+                                    if (item.DefaultReading)
+                                    {
+                                        using (ApplicationContext DB = new ApplicationContext())
+                                        {
+                                            var X = new Network.PriceService.ReadPrice();
+                                            X.Attach = item;
+                                            X.Post(DB, Program.Cash);
+                                        }
+                                    }
+                                }
+
+
+
+                            }
+
+
+
+
+                        }
+                        else if (MatchingStorageList.Count > 1)
+                        {
+                            foreach (var item in PriceStorageList)
+                            {
+                                if (item == MatchingStorageList[0])
+                                {
+                                    item.Attributes = new System.Collections.Generic.List<string>() { _Subject };
+                                    item.ReceivingData = DateTime.Now;
+                                }
+                            }
+
+                            for (int i = 1; i < MatchingStorageList.Count; i++)
+                            {
+                                PriceStorageList.Remove(MatchingStorageList[i]);
+                            }
+
+                        }
+
+                        Program.Cash.PriceStorageList = PriceStorageList;
                     }
                     catch (System.Exception e)
                     {

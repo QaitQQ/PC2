@@ -1,6 +1,9 @@
 ﻿using Client;
+
 using CRMLibs;
+
 using StructLibs;
+
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -21,9 +24,9 @@ namespace WinFormsClientLib.Forms.WPF.ItemControls
     public partial class ItemControl : UserControl, IDisposable
     {
         public event Action<string> GoSite;
+        public event Action<ItemPlusImageAndStorege> GenSiteItem;
         private ItemPlusImageAndStorege Item { get; set; }
         private Partner ActivePartner { get; set; }
-        private BitmapImage Image { get; set; }
         private PropertyInfo[] Prop { get; set; }
         private List<PropPair> Values { get; set; }
         public ItemControl(ItemPlusImageAndStorege item)
@@ -31,13 +34,20 @@ namespace WinFormsClientLib.Forms.WPF.ItemControls
             InitializeComponent();
             Prop = ItemDBStruct.GetProperties();
             Item = item;
+
             if (Item.Image != null)
             {
-                using System.Drawing.Image Img = Item.Image;
-                Image = ConvertIMG(Img);
-                Image.CacheOption = BitmapCacheOption.OnLoad;
-                Imagebox.Source = Image;
+
+
+
             }
+            else if (Item.Item.Image != null && Item.Item.Image != "")
+            {
+                GetImage();
+
+            }
+
+
             ActiveValue.ChangedPartner += new Action<Partner>(SetPartner);
             ActiveValue.ChangeSale += new Action<int, int>(RenewPriceDC);
             FillProp();
@@ -152,7 +162,7 @@ namespace WinFormsClientLib.Forms.WPF.ItemControls
         }
         private void SaveButton_Click(object sender, RoutedEventArgs e)
         {
-            new Network.Item.EditItem().Get<bool>(new WrapNetClient(), Item.Item);
+          new Network.Item.EditItem().Get<bool>(new WrapNetClient(), Item.Item);
         }
         private void GoToSiteButton_Click(object sender, RoutedEventArgs e)
         {
@@ -171,7 +181,6 @@ namespace WinFormsClientLib.Forms.WPF.ItemControls
             Imagebox = null;
             Item = null;
             Prop = null;
-            Image = null;
             Content = null;
             Values = null;
             ActiveValue.ChangedPartner -= new Action<Partner>(SetPartner);
@@ -223,10 +232,33 @@ namespace WinFormsClientLib.Forms.WPF.ItemControls
 
             return Convert.ToDouble(newStr);
         }
-
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             new Network.Item.MergeItem().Get<bool>(new WrapNetClient(), new int[] { Item.Item.Id, Convert.ToInt32(ConvertToDouble(UniID.Text)) });
+        }
+        private void SiteGen_Click(object sender, RoutedEventArgs e)
+        {
+            GenSiteItem?.Invoke(Item);
+        }
+        private async void GetImage()
+        {
+            using Network.Item.GetItemImage Qwery = new Network.Item.GetItemImage();
+            System.Drawing.Image Img = null;
+
+
+
+            await System.Threading.Tasks.Task.Factory.StartNew(() => { Img = Qwery.Get<ItemPlusImageAndStorege>(new WrapNetClient(), Item.Item.Id.ToString()).Image; });
+            if (Img != null)
+            {
+                BitmapImage image = ConvertIMG(Img);
+
+                if (Imagebox == null)
+                {
+                    Imagebox = new Image();
+                }
+                Imagebox.Source = image;
+                Item.Image = Img;
+            }
         }
     }
 }

@@ -19,7 +19,7 @@ namespace Network.Item
     [Serializable]
     public class ItemSearch : NetItem
     {
-        private PropertyInfo[] Prop { get; set; }
+        protected PropertyInfo[] Prop { get; set; }
         public override TCPMessage Post(ApplicationContext Db, object Obj = null)
         {
             Prop = ItemDBStruct.GetProperties();
@@ -64,30 +64,33 @@ namespace Network.Item
 
             return Message;
         }
-        private List<СomparisonNameID> ItemsNameFromCash(string Name, List<СomparisonNameID> CashItemName)
+        protected List<СomparisonNameID> ItemsNameFromCash(string Name, List<СomparisonNameID> CashItemName)
         {
-            List<СomparisonNameID> Xlist;
-            Name = СomparisonNameGenerator.Get(Name);
-
-            Xlist = (from Items in CashItemName where Items.СomparisonName.ToUpper().Contains(Name.ToUpper()) select Items).ToList();
-
-            for (int i = 0; i < 10; i++)
+            List<СomparisonNameID> Xlist = new List<СomparisonNameID>();
+            if (Name!="")
             {
-                if (Xlist.Count == 0)
+
+                Name = СomparisonNameGenerator.Get(Name);
+
+                Xlist = (from Items in CashItemName where Items.СomparisonName.ToUpper().Contains(Name.ToUpper()) select Items).ToList();
+
+                for (int i = 0; i < 10; i++)
                 {
-                    Name = Name.Remove(Name.Length - 1);
-                    Name = Name.Remove(0, 1);
-                    Xlist = (from Items in CashItemName where Items.СomparisonName.ToUpper().Contains(Name.ToUpper()) select Items).ToList();
+                    if (Xlist.Count == 0)
+                    {
+                        Name = Name.Remove(Name.Length - 1);
+                        Name = Name.Remove(0, 1);
+                        Xlist = (from Items in CashItemName where Items.СomparisonName.ToUpper().Contains(Name.ToUpper()) select Items).ToList();
+                    }
+                    else { break; }
+
                 }
-                else { break; }
-
+                if (Xlist.Count == 0) { Xlist.Add(new СomparisonNameID() { Name = "not found" }); }
             }
-            if (Xlist.Count == 0) { Xlist.Add(new СomparisonNameID() { Name = "not found" }); }
-
             return Xlist;
 
         }
-        public List<ItemDBStruct> FindWithParameters(string Str, PropertyInfo Field, ApplicationContext Db)
+        protected List<ItemDBStruct> FindWithParameters(string Str, PropertyInfo Field, ApplicationContext Db)
         {
             List<ItemDBStruct> QweryResult = null;
 
@@ -104,6 +107,58 @@ namespace Network.Item
 
 
             return QweryResult;
+        }
+    }
+    [Serializable]
+    public class ItemSearchFromList : ItemSearch
+    {
+        public override TCPMessage Post(ApplicationContext Db, object Obj = null)
+        {
+            Prop = ItemDBStruct.GetProperties();
+            var List = new List<СomparisonNameID>();
+            object[] DataMass = (object[])this.Attach;
+
+            List<int> IDs = (List<int>)DataMass[0];
+
+            PropertyInfo Property = Prop.ElementAt((int)DataMass[2]);
+            string Str = DataMass[1].ToString();
+
+            if (Property.Name == "Name")
+            {
+                if (Str != "")
+                {
+                    Str = СomparisonNameGenerator.Get(Str);
+                    List = (from Items in ((CashClass)Obj).ItemName where Items.СomparisonName.ToUpper().Contains(Str.ToUpper()) && IDs.Contains(Items.Id) select Items).ToList();
+                }
+            }
+            else
+            {
+                List<ItemDBStruct> QweryResult = null;
+
+                if (Property.PropertyType.Name.Contains("List"))
+                {
+                    QweryResult = Db.Item.ToList();
+                    QweryResult = QweryResult.FindAll(item => (Property.GetValue(item) as List<string>) != null && (Property.GetValue(item) as List<string>).Contains(Str) && IDs.Contains(item.Id));
+                }
+                else
+                {
+                    QweryResult = Db.Item.ToList();
+                    QweryResult = QweryResult.FindAll(item => Property.GetValue(item).ToString().ToUpper().Contains(Str.ToUpper()) && IDs.Contains(item.Id));
+                }
+
+                if (QweryResult != null)
+                    {
+                        foreach (var item in QweryResult)
+                        {
+                            List.Add(new СomparisonNameID() { Name = item.Name, СomparisonName = item.СomparisonName[0], Id = item.Id });
+                        }
+                    }
+
+            }
+
+            Message.Obj = List;
+
+            return Message;
         }
     }
     [Serializable]
@@ -128,16 +183,21 @@ namespace Network.Item
             }
           
 
-            Image newImage = null;
+           // Image newImage = null;
 
-            if (Result.Image != null || Result.Image != "")
+            //if (Result.Image != null || Result.Image != "")
+            //{
+            //    newImage = ImageResize(Result, newImage);
+            //}
+
+
+
+            ItemPlusImageAndStorege itemNetStruct = new ItemPlusImageAndStorege()
             {
-                newImage = ImageResize(Result, newImage);
-            }
-
-
-
-            ItemPlusImageAndStorege itemNetStruct = new ItemPlusImageAndStorege() { Item = Result, Image = newImage , Storages = Storege };
+                Item = Result,
+             //   Image = newImage ,
+                Storages = Storege
+            };
 
             Message.Obj = itemNetStruct;
 
@@ -362,6 +422,124 @@ namespace Network.Item
 
     }
 
+    [Serializable]
+    public class TagGenerate : NetItem
+    {
+        public override TCPMessage Post(ApplicationContext Db, object Obj = null)
+        {
+            CashClass Cash = ((CashClass)Obj);
+
+            var Items = Db.Item.ToList();
+
+
+
+            var TagGenerator = new TagGenerator(Cash.Dictionaries);
+
+            for (int i = 0; i < Items.Count; i++)
+            {
+
+
+                Items[i] = TagGenerator.Generate(Items[i]);
+
+            }
+
+            foreach (var item in Items)
+            {
+                Db.Update(item);
+
+            }
+            Db.SaveChanges();
+            Message.Obj = true;
+            return Message;
+
+        }
+    }
+
+    [Serializable]
+    public class GetItemImage : NetQwerry
+    {
+        public override TCPMessage Post(ApplicationContext Db, object Obj = null)
+        {
+            int ID = Convert.ToInt32(this.Attach);
+            ItemDBStruct Result = Db.Item.First(item => item.Id == ID);
+            Storage[] Storege = null;
+
+            if (Result.StorageID != null && Result.StorageID.Count > 0)
+            {
+                Storege = (from X in Db.Storage where X.ItemID == ID select X).ToArray();
+
+                var Warehouses = Db.Warehouse.ToList();
+
+                foreach (var item in Storege)
+                {
+                    item.Warehouse = Warehouses.First(x => x.Id == item.WarehouseID);
+                }
+            }
+
+
+            Image newImage = null;
+
+            if (Result.Image != null || Result.Image != "")
+            {
+                newImage = ImageResize(Result, newImage);
+            }
+
+
+
+            ItemPlusImageAndStorege itemNetStruct = new ItemPlusImageAndStorege()
+            {
+                Item = Result,
+                Image = newImage ,
+                Storages = Storege
+            };
+
+            Message.Obj = itemNetStruct;
+
+            return Message;
+
+        }
+        private static Image ImageResize(ItemDBStruct Item, Image newImage)
+        {
+            if (File.Exists(Item.Image))
+            {
+                Image Img = Image.FromFile(Item.Image);
+
+                if (Img.Width > 799)
+                {
+                    newImage = ResizeImage(Img, 800, 800);
+                }
+                else
+                {
+                    newImage = Img;
+                }
+            }
+            return newImage;
+        }
+        public static Bitmap ResizeImage(Image image, int width, int height)
+        {
+            Rectangle destRect = new Rectangle(0, 0, width, height);
+            Bitmap destImage = new Bitmap(width, height);
+
+            destImage.SetResolution(image.HorizontalResolution, image.VerticalResolution);
+
+            using (Graphics graphics = Graphics.FromImage(destImage))
+            {
+                graphics.CompositingMode = CompositingMode.SourceCopy;
+                graphics.CompositingQuality = CompositingQuality.HighQuality;
+                graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                graphics.SmoothingMode = SmoothingMode.HighQuality;
+                graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
+
+                using (ImageAttributes wrapMode = new ImageAttributes())
+                {
+                    wrapMode.SetWrapMode(WrapMode.TileFlipXY);
+                    graphics.DrawImage(image, destRect, 0, 0, image.Width, image.Height, GraphicsUnit.Pixel, wrapMode);
+                }
+            }
+
+            return destImage;
+        }
+    }
 }
 
 
