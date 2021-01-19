@@ -105,6 +105,32 @@ namespace Network.Dictionary
             return Message;
         }
     }
+    [Serializable]
+    public class GetDictionaresByRelate : NetDictionares
+    {
+        public override TCPMessage Post(ApplicationContext Db, object Obj = null)
+        {
+            CashClass T = ((CashClass)Obj);
 
+            DictionaryRelate Relate = (DictionaryRelate)this.Attach;
+
+
+
+
+           var X = T.Dictionaries.GetDictionaryRelate(Relate);
+
+
+             Dictionaries _dictionaries = new Dictionaries();
+
+            foreach (var item in X)
+            {
+                _dictionaries.Add(item);
+            }
+
+            Message.Obj = _dictionaries;
+
+            return Message;
+        }
+    }
 }
 

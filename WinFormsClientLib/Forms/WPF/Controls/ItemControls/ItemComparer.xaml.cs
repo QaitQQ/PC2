@@ -104,13 +104,7 @@ namespace WinFormsClientLib.Forms.WPF.Controls.ItemControls
         } //возвращаем неприкаянные позиции
         private void ApplyAllButton_Click(object sender, RoutedEventArgs e)
         {
-
-            new Network.Item.Changes.AllowAllChanges().Get<List<string>>(new WrapNetClient());
-        
-        
-        
-        
-        
+            new Network.Item.Changes.AllowAllChanges().Get<List<string>>(new WrapNetClient());      
         }
         private void DelDuble_Click(object sender, RoutedEventArgs e) 
         {
@@ -128,7 +122,7 @@ namespace WinFormsClientLib.Forms.WPF.Controls.ItemControls
         private void Table_Button_Click(object sender, RoutedEventArgs e) // клик на позиции в таблице
         {
             int I = (int)(((Button)sender).Tag);
-            if (I < (CommonItemSourse.Count + 1) && CommonItemSourse.Count!= 0)
+            if (I < CommonItemSourse.Count && CommonItemSourse.Count!= 0)
             {
                 ItemChanges X = CommonItemSourse[I];
                 switch (FillTable)

@@ -108,6 +108,21 @@ namespace Server
                 });
 
             }
+            if (FindResult[0].PriceDC != item.Item.PriceDC && item.Item.PriceDC != 0)
+            {
+                Result.Add(new ItemChanges()
+                {
+                    DateTime = DateTime.Now,
+                    ItemID = FindResult[0].Id,
+                    NewValue = item.Item.PriceDC,
+                    OldValue = FindResult[0].PriceDC,
+                    FieldName = "PriceDC",
+                    ItemName = FindResult[0].Name,
+                    Source = item.Item.SourceName
+
+                });
+
+            }
             if (FindResult[0].Description != item.Item.Description)
             {
 

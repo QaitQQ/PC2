@@ -56,15 +56,24 @@ namespace Network.PriceService
             var StoregeInfo = ((PriceStorage)Attach);
             if (StoregeInfo.FilePath != null && File.Exists(StoregeInfo.FilePath))
             {
-                var fs = File.OpenRead(StoregeInfo.FilePath);
-                string Attb = string.Join(",", StoregeInfo.Attributes);
-                DB_list = Db.Item.ToList();
-                Cash = ((CashClass)Obj);
+                try
+                {
+                    var fs = File.OpenRead(StoregeInfo.FilePath);
+                    string Attb = string.Join(",", StoregeInfo.Attributes);
+                    DB_list = Db.Item.ToList();
+                    Cash = ((CashClass)Obj);
 
-                var lst = new PriceProcessingRules(fs, StoregeInfo.Name, Attb, Cash);
-                lst.СhangeResult += Comparer;
-                lst.Apply_rules();
-                Message.Obj = "Чтение";
+                    var lst = new PriceProcessingRules(fs, StoregeInfo.Name, Attb, Cash);
+                    lst.СhangeResult += Comparer;
+                    lst.Apply_rules();
+                    Message.Obj = "Чтение";
+                }
+                catch (Exception e)
+                {
+                    Message.Obj = e.Message;
+                }
+                
+                
             }
             else
             {

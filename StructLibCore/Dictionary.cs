@@ -32,6 +32,7 @@ namespace Object_Description
 
     }
     #endregion
+
     public interface IDictionaryPC
     {
         public int Id { get; set; }

@@ -19,7 +19,7 @@ namespace Server.Class.IntegrationSiteApi
         /// <summary>
         /// Apilink = Setting[0]; Key = Setting[1]; tokenfile = Setting[2];
         /// </summary>
-        public SiteItem(string[] ApiSetting, string[] FtpSetting) { GetToken(); Apilink = ApiSetting[0]; Key = ApiSetting[1]; FilePath = ApiSetting[2]; EndLoading = false; this.FtpSetting = FtpSetting; }
+        public SiteItem(string[] ApiSetting, string[] FtpSetting) { GetToken(); Apilink = ApiSetting[0]; Key = ApiSetting[1]; FilePath = ApiSetting[2]; this.FtpSetting = FtpSetting; }
         private readonly string Apilink;
         private readonly string Key;
         private readonly string FilePath;
@@ -32,7 +32,7 @@ namespace Server.Class.IntegrationSiteApi
         private bool Ok;
         private int product_id_in;
         private readonly List<KeyValuePair<int, bool>> Result = new List<KeyValuePair<int, bool>>();
-        private bool EndLoading;
+
         public event Action ItemListReady;
         public List<ItemDBStruct> GetItem(List<int> product_id)
         {
@@ -62,7 +62,7 @@ namespace Server.Class.IntegrationSiteApi
         }
         private void GetAllItem()
         {
-            EndLoading = false;
+            
             GetAllProduct();
 
             double RC = 0;
@@ -90,7 +90,7 @@ namespace Server.Class.IntegrationSiteApi
                 }
             }
             mapList = new List<Dictionary<string, string>>();
-            EndLoading = true;
+      
 
         }
         public async Task GetAllItemAsync()
