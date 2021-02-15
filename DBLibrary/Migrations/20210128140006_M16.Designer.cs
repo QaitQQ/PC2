@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Server;
@@ -10,9 +11,10 @@ using Server;
 namespace ServerCore.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    partial class ApplicationContextModelSnapshot : ModelSnapshot
+    [Migration("20210128140006_M16")]
+    partial class M16
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -334,38 +336,6 @@ namespace ServerCore.Migrations
                     b.ToTable("ManufactorSite");
                 });
 
-            modelBuilder.Entity("StructLibs.PriceСhangeHistory", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
-
-                    b.Property<DateTime>("DateСhange")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<int>("ItemID")
-                        .HasColumnType("integer");
-
-                    b.Property<int?>("PartnerIDId")
-                        .HasColumnType("integer");
-
-                    b.Property<double>("PriceDC")
-                        .HasColumnType("double precision");
-
-                    b.Property<double>("PriceRC")
-                        .HasColumnType("double precision");
-
-                    b.Property<string>("SourceName")
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("PartnerIDId");
-
-                    b.ToTable("PriceСhangeHistory");
-                });
-
             modelBuilder.Entity("StructLibs.Storage", b =>
                 {
                     b.Property<int>("ID")
@@ -445,13 +415,6 @@ namespace ServerCore.Migrations
                     b.HasOne("StructLibs.ItemDBStruct", null)
                         .WithMany("Details")
                         .HasForeignKey("ItemDBStructId");
-                });
-
-            modelBuilder.Entity("StructLibs.PriceСhangeHistory", b =>
-                {
-                    b.HasOne("CRMLibs.Partner", "PartnerID")
-                        .WithMany()
-                        .HasForeignKey("PartnerIDId");
                 });
 
             modelBuilder.Entity("StructLibs.Storage", b =>

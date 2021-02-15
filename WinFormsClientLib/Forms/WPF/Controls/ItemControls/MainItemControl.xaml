@@ -93,7 +93,7 @@
                     </ItemsControl>
                 </StackPanel>
             </Grid>
-            <ListBox Name="ItemSearchListBox" MinWidth="60" MaxWidth="300" Grid.Column="1"  SelectionChanged="ItemSearchListBox_SelectionChanged">
+            <ListBox Name="ItemSearchListBox" MinWidth="60" MaxWidth="300" Grid.Column="1"  SelectionChanged="ItemSearchListBox_SelectionChanged" SelectionMode="Extended">
                 <ListBox.ItemTemplate  >
                     <DataTemplate>
                         <TextBlock Text="{Binding Name}"></TextBlock>

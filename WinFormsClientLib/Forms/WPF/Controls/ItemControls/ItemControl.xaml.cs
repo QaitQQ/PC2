@@ -12,6 +12,7 @@ using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media.Imaging;
@@ -162,6 +163,9 @@ namespace WinFormsClientLib.Forms.WPF.ItemControls
         }
         private void SaveButton_Click(object sender, RoutedEventArgs e)
         {
+
+          Item.Item.SourceName = Main.ActiveUser;
+
           new Network.Item.EditItem().Get<bool>(new WrapNetClient(), Item.Item);
         }
         private void GoToSiteButton_Click(object sender, RoutedEventArgs e)
@@ -248,7 +252,7 @@ namespace WinFormsClientLib.Forms.WPF.ItemControls
 
 
             await System.Threading.Tasks.Task.Factory.StartNew(() => { Img = Qwery.Get<ItemPlusImageAndStorege>(new WrapNetClient(), Item.Item.Id.ToString()).Image; });
-            if (Img != null)
+            if (Img != null && Item != null)
             {
                 BitmapImage image = ConvertIMG(Img);
 
@@ -259,6 +263,20 @@ namespace WinFormsClientLib.Forms.WPF.ItemControls
                 Imagebox.Source = image;
                 Item.Image = Img;
             }
+        }
+        private void PriceChangeHistoryShow(object sender, RoutedEventArgs e)
+        {
+          var X =  new Network.Item.PriceChangeHistoryShow().Get<List<PriceСhangeHistory>>(new WrapNetClient(), Item.Item.Id);
+
+            string msg = null;
+
+            foreach (var item in X)
+            {
+                msg = msg + item.PriceRC.ToString() + " " + item.DateСhange.ToString() + " " + item.SourceName + "\n";
+            }
+
+
+            MessageBox.Show(msg);
         }
     }
 }

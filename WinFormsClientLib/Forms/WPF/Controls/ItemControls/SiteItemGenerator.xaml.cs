@@ -1,12 +1,10 @@
-﻿
-using Client;
-
+﻿using Client;
 using Object_Description;
-
 using StructLibs;
-
-using System.Drawing.Imaging;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -31,14 +29,17 @@ namespace WinFormsClientLib.Forms.WPF.Controls.ItemControls
             {
                 using System.Drawing.Image Img = Item.Image;
                 Image = ConvertIMG(Item.Image);
-                ImageStack.Children.Add(new System.Windows.Controls.Image() { Source = Image, Width = Image.Width });
+                if (Image != null)
+                {
+                    ImageStack.Children.Add(new System.Windows.Controls.Image() { Source = Image, Width = Image.Width });
+                }
+
             }
 
             ItemFieldStack.Children.Add(new FieldGrid(0, "Name", item.Item.Name));
             ItemFieldStack.Children.Add(new FieldGrid(0, "Description", item.Item.Description));
             ItemFieldStack.Children.Add(new FieldGrid(0, "Price", item.Item.PriceRC.ToString()));
             ItemFieldStack.Children.Add(new FieldGrid(0, "Manufactor", item.Item.ManufactorID.ToString()));
-
 
 
             ParseAttribeteFromDescription(Item.Item.Description);
@@ -56,21 +57,30 @@ namespace WinFormsClientLib.Forms.WPF.Controls.ItemControls
         }
         private BitmapImage ConvertIMG(System.Drawing.Image img)
         {
+            try
+            {
+                using MemoryStream memory = new MemoryStream();
+                img.Save(memory, System.Drawing.Imaging.ImageFormat.Jpeg);
+                memory.Position = 0;
+                BitmapImage bitmapImage = new BitmapImage();
+                bitmapImage.BeginInit();
+                bitmapImage.StreamSource = memory;
+                bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
+                bitmapImage.EndInit();
+                memory.Close();
+                return bitmapImage;
+            }
+            catch
+            {
 
-            using MemoryStream memory = new MemoryStream();
-            img.Save(memory, System.Drawing.Imaging.ImageFormat.Jpeg);
-            memory.Position = 0;
-            BitmapImage bitmapImage = new BitmapImage();
-            bitmapImage.BeginInit();
-            bitmapImage.StreamSource = memory;
-            bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
-            bitmapImage.EndInit();
-            memory.Close();
-            return bitmapImage;
+                return null;
+            }
+
+
         }
         private void ImagePlus_Click(object sender, RoutedEventArgs e)
         {
-            var D = new ContextMenu();
+            ContextMenu D = new ContextMenu();
             D.Items.Add(new TextBox() { Text = "Загрузить с сайта производителя" });
             D.Items.Add(new TextBox() { Text = "Загрузить с диска" });
             D.IsOpen = true;
@@ -78,24 +88,133 @@ namespace WinFormsClientLib.Forms.WPF.Controls.ItemControls
 
         private void ParseAttribeteFromDescription(string Desc)
         {
+            Desc = Desc.ToLower();
 
-          var Dictionary =  new Network.Dictionary.GetDictionaresByRelate().Get<Dictionaries>(new WrapNetClient(), DictionaryRelate.Attribute);
+            Desc = Desc.Replace("\n", "|");
+            Desc = Desc.Replace("\r", "|");
+            Desc = Desc.Replace("\t", "|");
+            Dictionaries Dictionary = new Network.Dictionary.GetDictionaresByRelate().Get<Dictionaries>(new WrapNetClient(), DictionaryRelate.Attribute);
 
-            foreach (var item in Dictionary.GetAll())
+            string[] DescMass = null;
+
+            if (Item.Item.DescriptionSeparator != null)
             {
-                if (Desc.Contains(item.Name))
+                DescMass = Desc.Split(Item.Item.DescriptionSeparator[0]);
+
+                List<string> Lst = DescMass.ToList();
+
+                for (int i = 0; i < Item.Item.DescriptionSeparator.Length; i++)
                 {
-                    ItemFieldStack.Children.Add(new FieldGrid(item.Id, item.Name, null));
+                    char sep = Item.Item.DescriptionSeparator[i];
+
+                    for (int t = 0; t < Lst.Count; t++)
+                    {
+                        if (Lst[t].Contains(sep))
+                        {
+
+                            string[] massstr = Lst[t].Split(sep);
+                            for (int c = 1; c < massstr.Length; c++)
+                            {
+                                Lst.Add(Lst[t].Split('|')[c]);
+                            }
+                            Lst[t] = Lst[t].Split(Item.Item.DescriptionSeparator[i])[0];
+                        }
+                        if (Lst[t].Contains("|"))
+                        {
+
+                            string[] massstr = Lst[t].Split('|');
+                            for (int c = 1; c < massstr.Length; c++)
+                            {
+                                Lst.Add(Lst[t].Split('|')[c]);
+                            }
+                            Lst[t] = Lst[t].Split('|')[0];
+                        }
+                    }
+                    DescMass = Lst.ToArray();
                 }
             }
 
-             Dictionary = new Network.Dictionary.GetDictionaresByRelate().Get<Dictionaries>(new WrapNetClient(), DictionaryRelate.Category);
-
-            foreach (var item in Dictionary.GetAll())
+            foreach (IDictionaryPC item in Dictionary.GetAll())
             {
-                if (Desc.Contains(item.Name))
+
+                string DescName = item.Name.ToLower();
+                string Value = null;
+                List<string> DescValues = item.Values;
+                if (DescValues == null || DescValues.Count == 0)
                 {
-                    ItemFieldStack.Children.Add(new FieldGrid(item.Id, item.Name, null));
+                    DescValues = new List<string>
+                    {
+                        DescName
+                    };
+                }
+
+                foreach (string DescVal in DescValues)
+                {
+                    string X = DescVal;
+                    string DefVal = null;
+                    bool Double_flag = false;
+                    if (X.Contains('|'))
+                    {
+                        DefVal = X.Split('|')[1];
+                        X = X.Split('|')[0];
+                    }
+                    Regex FX = new Regex(X, RegexOptions.IgnoreCase);
+
+                    if (FX.IsMatch(Desc))
+                    {
+                        if (DescMass != null)
+                        {
+                            foreach (string E in DescMass)
+                            {
+                                if (FX.IsMatch(E))
+                                {
+                                    MatchCollection D = FX.Matches(E);
+                                    Value = E.Trim();
+                                    if (DefVal != null)
+                                    {
+                                        Value = DefVal;
+                                    }
+                                    Double_flag = true;
+                                    break;
+                                }
+                            }
+                            
+                        }
+                        ItemFieldStack.Children.Add(new FieldGrid(item.Id, item.Name, Value));
+                        if (Double_flag)
+                        {
+                            break;
+                        }
+                    }
+                }
+            }
+
+            Dictionary = new Network.Dictionary.GetDictionaresByRelate().Get<Dictionaries>(new WrapNetClient(), DictionaryRelate.Category);
+
+
+
+            foreach (IDictionaryPC item in Dictionary.GetAll())
+            {
+                List<string> DescValues = item.Values;
+                if (DescValues != null && DescValues.Count != 0)
+                {
+                    bool Flag = true;
+
+                    foreach (var DescValue in DescValues)
+                    {
+                        Regex regex = new Regex(DescValue, RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
+
+                        if (!regex.IsMatch(Desc))
+                        {
+                            Flag = false;
+                            break;
+                        }
+                    }
+
+                    if (Flag)
+                    {
+                        ItemFieldStack.Children.Add(new FieldGrid(item.Id, item.Name, null));
+                    }
                 }
             }
         }
@@ -109,12 +228,12 @@ namespace WinFormsClientLib.Forms.WPF.Controls.ItemControls
 
             public string Description { get; set; }
 
-            public FieldGrid(int id, string fieldName, string description) 
+            public FieldGrid(int id, string fieldName, string description)
             {
                 ID = id; FieldName = fieldName; Description = description;
 
                 Binding binding = new Binding();
-                var BoxOne = new TextBox();
+                TextBox BoxOne = new TextBox();
                 binding.Source = this;
                 binding.Path = new PropertyPath("ID");
                 binding.Mode = BindingMode.TwoWay;
@@ -122,7 +241,7 @@ namespace WinFormsClientLib.Forms.WPF.Controls.ItemControls
                 Grid OneGrid = new Grid() { Children = { BoxOne } };
 
                 Binding binding2 = new Binding();
-                var BoxTwo = new TextBox();
+                TextBox BoxTwo = new TextBox();
                 binding2.Source = this;
                 binding2.Path = new PropertyPath("FieldName");
                 binding2.Mode = BindingMode.TwoWay;
@@ -130,22 +249,22 @@ namespace WinFormsClientLib.Forms.WPF.Controls.ItemControls
                 Grid TwoGrid = new Grid() { Children = { BoxTwo } };
 
                 Binding binding3 = new Binding();
-                var BoxThree = new TextBox();
+                TextBox BoxThree = new TextBox();
                 binding3.Source = this;
                 binding3.Path = new PropertyPath("Description");
                 binding3.Mode = BindingMode.TwoWay;
                 BoxThree.SetBinding(TextBox.TextProperty, binding3);
                 Grid ThreeGrid = new Grid() { Children = { BoxThree } };
 
-                this.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(20) });
-                this.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(80) });
-                this.ColumnDefinitions.Add(new ColumnDefinition());
+                ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(20) });
+                ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(80) });
+                ColumnDefinitions.Add(new ColumnDefinition());
                 Grid.SetColumn(OneGrid, 0);
                 Grid.SetColumn(TwoGrid, 1);
                 Grid.SetColumn(ThreeGrid, 3);
-                this.Children.Add(OneGrid);
-                this.Children.Add(TwoGrid);
-                this.Children.Add(ThreeGrid);
+                Children.Add(OneGrid);
+                Children.Add(TwoGrid);
+                Children.Add(ThreeGrid);
             }
 
 

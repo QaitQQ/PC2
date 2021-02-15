@@ -50,6 +50,7 @@ namespace Client
         public static string Token;
         public static string Server_IP;
         public static int Server_Port;
+        public static string ActiveUser;
 
         [STAThread]
         public void MainClient()

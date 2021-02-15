@@ -86,7 +86,7 @@ namespace WinFormsClientLib.Forms.WPF.ItemControls
         }
         private async void ItemSearchListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (e.AddedItems.Count > 0)
+            if (e.AddedItems.Count == 1)
             {
                 СomparisonNameID X = e.AddedItems[0] as СomparisonNameID;
                 using Network.Item.GetItemFromId Qwery = new Network.Item.GetItemFromId();
@@ -95,7 +95,6 @@ namespace WinFormsClientLib.Forms.WPF.ItemControls
                 ItemControl NewControl = new ItemControl(Obj);
                 NewControl.GoSite += ((Client.Forms.Mainform)Client.Main.CommonWindow).GoSite;
                 NewControl.GenSiteItem += (i) => { GenSiteItemList.Children.Add(new SiteItemGenerator(i)); SiteGeneratorGrid.Width = new GridLength(100); };
-
                 if (ItemDescriptionBox.Children.Count < 2)
                 {
                     if (ItemDescriptionBox.Children.Count == 0)

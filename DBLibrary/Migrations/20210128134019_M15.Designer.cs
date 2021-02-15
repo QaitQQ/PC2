@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Server;
@@ -10,9 +11,10 @@ using Server;
 namespace ServerCore.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    partial class ApplicationContextModelSnapshot : ModelSnapshot
+    [Migration("20210128134019_M15")]
+    partial class M15
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -254,6 +256,9 @@ namespace ServerCore.Migrations
                     b.Property<string>("DescriptionSeparator")
                         .HasColumnType("text");
 
+                    b.Property<int?>("HistoryIDId")
+                        .HasColumnType("integer");
+
                     b.Property<string>("Image")
                         .HasColumnType("text");
 
@@ -294,6 +299,8 @@ namespace ServerCore.Migrations
                         .HasColumnType("text[]");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("HistoryIDId");
 
                     b.ToTable("Item");
                 });
@@ -355,9 +362,6 @@ namespace ServerCore.Migrations
 
                     b.Property<double>("PriceRC")
                         .HasColumnType("double precision");
-
-                    b.Property<string>("SourceName")
-                        .HasColumnType("text");
 
                     b.HasKey("Id");
 
@@ -445,6 +449,13 @@ namespace ServerCore.Migrations
                     b.HasOne("StructLibs.ItemDBStruct", null)
                         .WithMany("Details")
                         .HasForeignKey("ItemDBStructId");
+                });
+
+            modelBuilder.Entity("StructLibs.ItemDBStruct", b =>
+                {
+                    b.HasOne("StructLibs.PriceСhangeHistory", "HistoryID")
+                        .WithMany()
+                        .HasForeignKey("HistoryIDId");
                 });
 
             modelBuilder.Entity("StructLibs.PriceСhangeHistory", b =>

@@ -22,6 +22,7 @@
             <Button  Content="на сайт производителя"   Name="GoToManufSiteButton" Click="GoToManufSiteButton_Click"  HorizontalAlignment="Left" VerticalAlignment="Top"></Button>
             <Button  Content="Найти производителя" Name="FindManuf" Click="FindManuf_Click" HorizontalAlignment="Left" VerticalAlignment="Top"></Button>
             <Button  Content="Генерация позии для сайта"  Name="SiteGen" Click="SiteGen_Click" HorizontalAlignment="Left" VerticalAlignment="Top"></Button>
+            <Button  Content="Показать историю изменения цены"  Name="PriceChangeHistory" Click="PriceChangeHistoryShow"  HorizontalAlignment="Left" VerticalAlignment="Top"></Button>
             <Grid VerticalAlignment="Top" Height="20">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="100"></ColumnDefinition>

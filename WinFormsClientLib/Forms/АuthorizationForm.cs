@@ -39,6 +39,8 @@ namespace Client.Forms
         {
            var Token = new Network.Аuthorization.SetToken().Get<string>(new WrapNetClient(),new object[] { Login, Pass });
 
+            Client.Main.ActiveUser = Login;
+
             if (Token != null)
             {
                 Main.Token = Token;

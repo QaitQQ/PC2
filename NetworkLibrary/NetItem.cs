@@ -11,11 +11,15 @@ using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Security.Cryptography.X509Certificates;
 
 namespace Network.Item
 {
     [Serializable]
     public abstract class NetItem : NetQwerry { }
+    /// <summary>
+    /// на входе массив из 2х объектов, где 0 это строка поиска, 1 это индекс поля по которому идет выборка, на выходе List_СomparisonNameID
+    /// </summary>
     [Serializable]
     public class ItemSearch : NetItem
     {
@@ -109,6 +113,9 @@ namespace Network.Item
             return QweryResult;
         }
     }
+    /// <summary>
+    /// это поиск соответсвия из списка ID, тоесть даем имя или свойство, и список ID, на входе массив объектов где 0 List_int ID's, 1 строка поиска, 2 номер свойства, на выходе List_СomparisonNameID
+    /// </summary>
     [Serializable]
     public class ItemSearchFromList : ItemSearch
     {
@@ -161,6 +168,9 @@ namespace Network.Item
             return Message;
         }
     }
+    /// <summary>
+    /// на входе инт или строка, на выходе ItemPlusImageAndStorege
+    /// </summary>
     [Serializable]
     public class GetItemFromId : NetQwerry
     {
@@ -180,22 +190,10 @@ namespace Network.Item
                 {
                     item.Warehouse = Warehouses.First(x => x.Id == item.WarehouseID);
                 }
-            }
-          
-
-           // Image newImage = null;
-
-            //if (Result.Image != null || Result.Image != "")
-            //{
-            //    newImage = ImageResize(Result, newImage);
-            //}
-
-
-
+            }        
             ItemPlusImageAndStorege itemNetStruct = new ItemPlusImageAndStorege()
             {
                 Item = Result,
-             //   Image = newImage ,
                 Storages = Storege
             };
 
@@ -221,7 +219,7 @@ namespace Network.Item
             }
             return newImage;
         }
-        public static Bitmap ResizeImage(Image image, int width, int height)
+        private static Bitmap ResizeImage(Image image, int width, int height)
         {
             Rectangle destRect = new Rectangle(0, 0, width, height);
             Bitmap destImage = new Bitmap(width, height);
@@ -267,6 +265,17 @@ namespace Network.Item
         public override TCPMessage Post(ApplicationContext Db, object Obj = null)
         {
             ItemDBStruct item = (ItemDBStruct)Attach;
+
+            ItemDBStruct OldItem = Db.Item.First(item => item.Id == item.Id);
+
+
+            if (item.PriceRC != OldItem.PriceRC)
+            {
+
+                    Db.Add(new PriceСhangeHistory {ItemID = item.Id, DateСhange = DateTime.Today, PriceRC = item.PriceRC, SourceName = item.SourceName });
+            }
+
+
             Db.Update(item);
             Db.SaveChanges();
             Message.Obj = true;
@@ -381,6 +390,7 @@ namespace Network.Item
 
     }
     /// <summary>
+    /// добавляет имена сравнения из 2го айтама, в первый, и удаляет второй
     /// на входе должен быть массив из 2х интов
     /// на выходе bool
     /// </summary>
@@ -421,7 +431,6 @@ namespace Network.Item
         }
 
     }
-
     [Serializable]
     public class TagGenerate : NetItem
     {
@@ -454,7 +463,6 @@ namespace Network.Item
 
         }
     }
-
     [Serializable]
     public class GetItemImage : NetQwerry
     {
@@ -540,6 +548,22 @@ namespace Network.Item
             return destImage;
         }
     }
+
+    [Serializable]
+    public class PriceChangeHistoryShow : NetItem
+    {
+        public override TCPMessage Post(ApplicationContext Db, object Obj = null)
+        {
+            int itemID = (int)Attach;
+
+            List<PriceСhangeHistory> PriceСhanges = (Db.PriceСhangeHistory.Where(x => x.ItemID == itemID)).ToList();
+
+            Message.Obj = PriceСhanges;
+            return Message;
+        }
+
+    }
+
 }
 
 

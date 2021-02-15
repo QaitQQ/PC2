@@ -19,6 +19,7 @@ namespace StructLibs
         public double PriceRC { get; set; }
         public double PriceDC { get; set; }
         public string Description { get; set; }
+        public string DescriptionSeparator { get; set; }
         public DateTime DateСhange { get; set; }
         public string Currency { get; set; }//валюта        
         public int ManufactorID { get; set; }
@@ -29,7 +30,6 @@ namespace StructLibs
         public bool SiteFlag { get; set; }
         public string PriceListName { get; set; }
         public List<DetailValue> Details { get; set; }
-        public PriceСhangeHistory HistoryID { get; set; }
         public List<string> Tags { get; set; }  
         private static string СomparisonNameGenerator(string NameString)
         {
@@ -81,7 +81,6 @@ namespace StructLibs
              
             }
         }
- 
         public ItemDBStruct()
         {
             DateСhange = DateTime.Now;
@@ -151,7 +150,12 @@ namespace StructLibs
     public class PriceСhangeHistory
     {
         public int Id { get; set; }
-        public List<KeyValuePair<DateTime, double>> History;
+        public int ItemID { get; set; }
+        public DateTime DateСhange { get; set; }
+        public double PriceRC { get; set; }
+        public double PriceDC { get; set; }
+        public string SourceName { get; set; }
+        public Partner PartnerID { get; set; }
     }
 }
 

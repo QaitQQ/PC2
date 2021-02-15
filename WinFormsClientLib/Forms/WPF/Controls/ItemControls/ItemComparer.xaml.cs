@@ -47,7 +47,6 @@ namespace WinFormsClientLib.Forms.WPF.Controls.ItemControls
             };
             ButtonStack.ItemsSource = Buttons;
         }
-
         private void SiteApiLoadAll_Click(object sender, EventArgs e)
         {
             Task.Factory.StartNew(() => SiteCompare(ButtonRenew, FillAtList, (Button)sender));
@@ -95,7 +94,20 @@ namespace WinFormsClientLib.Forms.WPF.Controls.ItemControls
         private void Retun_Compare_RC_Click(object sender, EventArgs e)
         {
             FillTable = FillTable.СhangedItemsTable;
-            FillAtList(new Network.Item.Changes.GetChanges().Get<List<ItemChanges>>(new WrapNetClient()));
+
+            var GG = new Network.Item.Changes.GetChanges().Get<List<ItemChanges>>(new WrapNetClient());
+
+            List<ItemChanges> RCFix = new List<ItemChanges>();
+            foreach (var item in GG)
+            {
+                if (item.FieldName == "PriceRC")
+                {
+                    RCFix.Add(item);
+                }
+               
+            }
+
+            FillAtList(RCFix);
         } // сравнение с базой данных разница только в рознице    
         private void Retun_New_Names_Click(object sender, EventArgs e)
         {
@@ -157,8 +169,11 @@ namespace WinFormsClientLib.Forms.WPF.Controls.ItemControls
                 }
 
                 Obj.Item.DateСhange = DateTime.Now;
-                new Network.Item.EditItem().Get<bool>(new WrapNetClient(), Obj.Item);
 
+                Obj.Item.SourceName = Item.NewValue.ToString() + "|" + Item.Source;
+
+
+                new Network.Item.EditItem().Get<bool>(new WrapNetClient(), Obj.Item);
                 new Network.Item.Changes.DelFromСhangedList().Get<bool>(new WrapNetClient(), Item);
             }  // обновление при FillTable = СhangedItemsTable
             void SetPrice(ItemChanges Item)
@@ -202,7 +217,6 @@ namespace WinFormsClientLib.Forms.WPF.Controls.ItemControls
         } // заполняем лист
         private void ButtonRenew(Button Button, string Str, bool IsEnabled) => Button.Dispatcher.Invoke(() => { Button.Content = Str; Button.IsEnabled = IsEnabled; });
         private void AddLogs(string Str) => Dispatcher.Invoke(() => LogList.Items.Add(Str));
-
         private void ClearButton_Click(object sender, RoutedEventArgs e)
         {
 

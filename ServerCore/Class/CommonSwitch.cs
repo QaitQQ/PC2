@@ -27,7 +27,6 @@ namespace Server
                 }
                 else if (Program.Cash.Tokens.Contains(Message.Token))
                 {
-
                         Message = ((INetQwerry)Message.Obj).Post(DB, Program.Cash);
 
                       
