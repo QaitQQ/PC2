@@ -1,47 +1,52 @@
-﻿<UserControl x:Class="WinFormsClientLib.Forms.WPF.Controls.DictionaryControls.PriceServiceControl"
+﻿<UserControl
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:WinFormsClientLib.Forms.WPF.Controls.DictionaryControls"
+             xmlns:Server="clr-namespace:Server;assembly=ItemProcessor" x:Class="WinFormsClientLib.Forms.WPF.Controls.DictionaryControls.PriceServiceControl"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.DataContext>
+        <Server:PriceStorage x:Name="ActDic"/>
+    </UserControl.DataContext>
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="0.3*"></ColumnDefinition>
-            <ColumnDefinition Width="0.4*"> </ColumnDefinition>
-            <ColumnDefinition></ColumnDefinition>
+            <ColumnDefinition Width="0.3*"/>
+            <ColumnDefinition Width="0.4*"/>
+            <ColumnDefinition/>
         </Grid.ColumnDefinitions>
         <StackPanel Grid.Column="0">
-            <ItemsControl Name="ButtonStack"></ItemsControl>
-            
+            <ItemsControl x:Name="ButtonStack"/>
+
         </StackPanel>
-        <ListView Name="NameFileList" Grid.Column="1" SelectionChanged="NameFileList_SelectionChanged">
+        <ListView x:Name="NameFileList" Grid.Column="1" SelectionChanged="NameFileList_SelectionChanged">
             <ListView.ItemTemplate>
                 <DataTemplate>
-                    <TextBlock Text="{Binding Name}"></TextBlock>
+                    <TextBlock Text="{Binding Name}"/>
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
- 
+
         <Grid Grid.Column="2">
             <Grid.RowDefinitions>
-                <RowDefinition></RowDefinition>
-                <RowDefinition></RowDefinition>
+                <RowDefinition/>
+                <RowDefinition/>
             </Grid.RowDefinitions>
             <StackPanel Grid.Row="0">
-                <ItemsControl  x:Name="InfoPrice"></ItemsControl>
-
+                <ItemsControl x:Name="InfoPrice">
+                
+                </ItemsControl>
             </StackPanel>
             <Grid Grid.Row="1">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition></ColumnDefinition>
-                    <ColumnDefinition></ColumnDefinition>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
                 </Grid.ColumnDefinitions>
                 <StackPanel Grid.Column="1" >
-                    <ItemsControl  x:Name="PriceBtns"></ItemsControl>
+                    <ItemsControl  x:Name="PriceBtns"/>
                 </StackPanel>
-                <TextBlock x:Name="MessageBox"></TextBlock>
+                <TextBlock x:Name="MessageBox"/>
             </Grid>
         </Grid>
     </Grid>

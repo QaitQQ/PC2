@@ -18,9 +18,6 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Apps", "Apps", "{CD3A5236-492F-461E-BB8F-D3418B36C817}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{9209AB4C-8813-48C6-A8CA-99C5CCEDBF5A}"
-	ProjectSection(SolutionItems) = preProject
-		План.txt = План.txt
-	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NetworkLibrary", "NetworkLibrary\NetworkLibrary.csproj", "{B96F58D1-DAEA-47F5-B087-B63799F281A0}"
 EndProject
@@ -30,9 +27,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ItemProcessor", "ItemProces
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SiteApi", "SiteApi\SiteApi.csproj", "{4F898126-88BF-471F-85E8-DD871A34A5F0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestConsole", "TestConsole\TestConsole.csproj", "{D6522B52-935E-44BA-B25C-9033AA0A20EA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestConsole", "TestConsole\TestConsole.csproj", "{D6522B52-935E-44BA-B25C-9033AA0A20EA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestForms", "TestForms\TestForms.csproj", "{3F932CFA-73B0-4F35-999E-E2C7D153363A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestForms", "TestForms\TestForms.csproj", "{3F932CFA-73B0-4F35-999E-E2C7D153363A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -2,7 +2,7 @@
 using Client;
 
 using CRMLibs;
-
+using Object_Description;
 using StructLibs;
 
 using System;
@@ -86,40 +86,48 @@ namespace WinFormsClientLib.Forms.WPF.ItemControls
         }
         private async void ItemSearchListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (e.AddedItems.Count == 1)
+            try
             {
-                СomparisonNameID X = e.AddedItems[0] as СomparisonNameID;
-                using Network.Item.GetItemFromId Qwery = new Network.Item.GetItemFromId();
-                ItemPlusImageAndStorege Obj = null;
-                await System.Threading.Tasks.Task.Factory.StartNew(() => Obj = Qwery.Get<ItemPlusImageAndStorege>(new WrapNetClient(), X.Id.ToString()));
-                ItemControl NewControl = new ItemControl(Obj);
-                NewControl.GoSite += ((Client.Forms.Mainform)Client.Main.CommonWindow).GoSite;
-                NewControl.GenSiteItem += (i) => { GenSiteItemList.Children.Add(new SiteItemGenerator(i)); SiteGeneratorGrid.Width = new GridLength(100); };
-                if (ItemDescriptionBox.Children.Count < 2)
+                if (e.AddedItems.Count == 1)
                 {
-                    if (ItemDescriptionBox.Children.Count == 0)
+                    СomparisonNameID X = e.AddedItems[0] as СomparisonNameID;
+                    using Network.Item.GetItemFromId Qwery = new Network.Item.GetItemFromId();
+                    ItemPlusImageAndStorege Obj = null;
+                    await System.Threading.Tasks.Task.Factory.StartNew(() => Obj = Qwery.Get<ItemPlusImageAndStorege>(new WrapNetClient(), X.Id.ToString()));
+                    ItemControl NewControl = new ItemControl(Obj);
+                    NewControl.GoSite += ((Client.Forms.Mainform)Client.Main.CommonWindow).GoSite;
+                    NewControl.GenSiteItem += (i) => { GenSiteItemList.Children.Add(new SiteItemGenerator(i)); SiteGeneratorGrid.Width = new GridLength(100); };
+                    if (ItemDescriptionBox.Children.Count < 2)
                     {
-                        ItemDescriptionBox.Children.Add(NewControl);
+                        if (ItemDescriptionBox.Children.Count == 0)
+                        {
+                            ItemDescriptionBox.Children.Add(NewControl);
+                        }
+                        else
+                        {
+                            UIElement GG = ItemDescriptionBox.Children[0];
+                            ItemDescriptionBox.Children.Clear();
+                            ItemDescriptionBox.Children.Add(NewControl);
+                            ItemDescriptionBox.Children.Add(GG);
+                        }
                     }
                     else
                     {
-                        UIElement GG = ItemDescriptionBox.Children[0];
+                        foreach (object item in ItemDescriptionBox.Children)
+                        {
+                            ((ItemControl)item).Dispose();
+                        }
                         ItemDescriptionBox.Children.Clear();
                         ItemDescriptionBox.Children.Add(NewControl);
-                        ItemDescriptionBox.Children.Add(GG);
+                        GC.Collect();
                     }
-                }
-                else
-                {
-                    foreach (object item in ItemDescriptionBox.Children)
-                    {
-                        ((ItemControl)item).Dispose();
-                    }
-                    ItemDescriptionBox.Children.Clear();
-                    ItemDescriptionBox.Children.Add(NewControl);
-                    GC.Collect();
                 }
             }
+            catch (Exception D)
+            {
+                MessageBox.Show(D.Message);
+            }
+          
         }
         private void SaleChange(object Obj, TextChangedEventArgs e)
         {
@@ -141,6 +149,7 @@ namespace WinFormsClientLib.Forms.WPF.ItemControls
         }
         private void AddFilterButton_Click(object sender, RoutedEventArgs e)
         {
+          
             FilterList.Add(new PropPair() { PropertyInfo = Prop.First(x => x.Name == PropertyInfoComboBox.SelectedItem.ToString()), Value = SearhTextBox.Text });
         }
         private void Search(string Str, string PropName)
@@ -159,8 +168,9 @@ namespace WinFormsClientLib.Forms.WPF.ItemControls
         private void SetSeleValue(int Sale, int MarkupBox) { ActiveValue.SaleValue = new int[] { Sale, MarkupBox }; }
         private void AppFilter(object Obj, NotifyCollectionChangedEventArgs e)
         {
-            if (e.Action == NotifyCollectionChangedAction.Add)
+            if (e.Action == NotifyCollectionChangedAction.Add || e.Action == NotifyCollectionChangedAction.Remove)
             {
+                SearchList.Clear();
 
                 if (FilterList.Count == 1)
                 {
@@ -170,38 +180,27 @@ namespace WinFormsClientLib.Forms.WPF.ItemControls
                         Search(X.Value.ToString(), X.PropertyInfo.Name);
                     }
                 }
-                else
+                else if(FilterList.Count > 1)
                 {
-                    var X = (PropPair)((e.NewItems)[0]);
-                    int i;
-                    for (i = 0; i < Prop.Length; i++)
-                    {
-                        if (Prop[i].Name == X.PropertyInfo.Name)
-                        {
-                            break;
-                        }
-                    }
-                    List<int> IDs = new List<int>();
+                    var G =  new List<string[]>();
 
-                    foreach (var item in SearchList)
+                    foreach (var item in FilterList)
                     {
-                        IDs.Add(item.Id);
+                        G.Add(new string[] { item.PropertyInfo.Name, item.Value.ToString()});
                     }
 
-                    List<СomparisonNameID> Search = new Network.Item.ItemSearchFromList().Get<List<СomparisonNameID>>(new WrapNetClient(), new object[] { IDs, X.Value, i });
-                    SearchList.Clear();
-                    foreach (СomparisonNameID item in Search) { SearchList.Add(item); }
+
+                    var X = new Network.Item.ItemSearchFromListPProp().Get<List<СomparisonNameID>>(new WrapNetClient(), G);
+
+                   foreach (СomparisonNameID item in X) { SearchList.Add(item); }
                 }
 
             }
         }
         private void RenewCash_Click(object sender, RoutedEventArgs e) { new Network.Item.RenewNameCash().Get<bool>(new WrapNetClient()); }
-
+        private void DelFilter(object sender, RoutedEventArgs e)
+        {
+            FilterList.Remove((PropPair)((Button)sender).DataContext);
+        }
     }
-
-
-
-
-
-
 }

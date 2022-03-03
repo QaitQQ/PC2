@@ -1,5 +1,7 @@
 ﻿using CRMLibs;
+
 using Pricecona;
+
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -8,6 +10,11 @@ using System.Reflection;
 
 namespace StructLibs
 {
+    [System.Serializable]
+    public enum FieldType
+    {
+        Name, Description, Price, Manufactor, Attribute, Category, СomparisonName, Image
+    }
     [System.Serializable]
     public class ItemDBStruct
     {
@@ -30,10 +37,10 @@ namespace StructLibs
         public bool SiteFlag { get; set; }
         public string PriceListName { get; set; }
         public List<DetailValue> Details { get; set; }
-        public List<string> Tags { get; set; }  
+        public List<string> Tags { get; set; }
         private static string СomparisonNameGenerator(string NameString)
         {
-          string  _СomparisonName = null;
+            string _СomparisonName = null;
             foreach (char item in NameString)
             {
                 if (char.IsDigit(item) || char.IsLetter(item) || item == '+')
@@ -52,17 +59,17 @@ namespace StructLibs
 
                 if (СomparisonName[0].Length <= 15)
                 {
-                    Imagelink = @"pic\" + СomparisonName;                  
+                    Imagelink = @"pic\" + СomparisonName;
                 }
                 else
                 {
-                     Imagelink = @"pic\" + СomparisonName[0].Remove(15, СomparisonName.Length);
-                                 
+                    Imagelink = @"pic\" + СomparisonName[0].Remove(15, СomparisonName.Length);
+
                 }
 
                 for (int i = 16; i < 50; i++)
                 {
-                    if (File.Exists(Imagelink+ "." + Pic.RawFormat))
+                    if (File.Exists(Imagelink + "." + Pic.RawFormat))
                     {
                         Imagelink += i.ToString();
 
@@ -74,11 +81,11 @@ namespace StructLibs
                     Pic.Save(Imagelink);
                     Image = Imagelink;
                 }
-                catch (Exception   e)
+                catch (Exception e)
                 {
                     Console.WriteLine(e.Message);
                 }
-             
+
             }
         }
         public ItemDBStruct()
@@ -90,7 +97,6 @@ namespace StructLibs
         }
         public static PropertyInfo[] GetProperties() => typeof(ItemDBStruct).GetProperties(BindingFlags.Public | BindingFlags.Instance);
     }
-
     [System.Serializable]
     public class DetailValue
     {
@@ -105,7 +111,6 @@ namespace StructLibs
         public int Id { get; set; }
         public string Name { get; set; }
     }
-
     [System.Serializable]
     public class ManufactorSite
     {
@@ -114,7 +119,6 @@ namespace StructLibs
         public string SiteLink { get; set; }
         public string SearchLink { get; set; }
     }
-
     [System.Serializable]
     public class Details
     {
@@ -156,6 +160,14 @@ namespace StructLibs
         public double PriceDC { get; set; }
         public string SourceName { get; set; }
         public Partner PartnerID { get; set; }
+    }
+    [System.Serializable]
+    public class SiteFieldDesc
+    {
+        public string id { get; set; }
+        public string Desc { get; set; }
+        public Image Obj { get; set; }
+        public FieldType Type { get; set; }
     }
 }
 

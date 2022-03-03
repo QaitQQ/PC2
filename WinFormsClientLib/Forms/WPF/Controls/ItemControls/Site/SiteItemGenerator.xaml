@@ -1,0 +1,46 @@
+﻿<UserControl x:Class="WinFormsClientLib.Forms.WPF.Controls.ItemControls.SiteItemGenerator"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:WinFormsClientLib.Forms.WPF.Controls.ItemControls"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <Grid x:Name="MainGrid" Height="20" >
+        <Grid.RowDefinitions>
+            <RowDefinition Height="20"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Button x:Name="MinimizeButton"  Grid.Row="0" Click="MinimizeButton_Click"></Button>
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+          <StackPanel  Grid.Row="1">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="20"></ColumnDefinition>
+                        <ColumnDefinition  Width="20"></ColumnDefinition>
+                        <ColumnDefinition></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    <Button Grid.Column="0" Content="✓" Click="Button_Click"></Button>
+                    <Button Grid.Column="1"  Content="+" x:Name="ImagePlus" Click="ImagePlus_Click"></Button>
+                    <StackPanel Grid.Column="2"  Orientation="Horizontal"  >
+                        <ItemsControl  x:Name="ImageStack" >
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid MouseDown="Grid_MouseDown">
+                                        <Image Source="{Binding Image}" Width="100" Height="100"></Image>
+                                    </Grid>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </StackPanel>
+                </Grid>
+                <StackPanel Orientation="Vertical" >
+                    <ItemsControl x:Name="FieldStack" >
+
+                    </ItemsControl>
+                </StackPanel>
+
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</UserControl>

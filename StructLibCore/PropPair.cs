@@ -2,8 +2,8 @@
 using System.ComponentModel;
 using System.Reflection;
 
-namespace WinFormsClientLib.Forms.WPF.ItemControls
-{
+namespace Object_Description
+{   [Serializable]
     public class PropPair : INotifyPropertyChanged, IDisposable
     {
         public PropertyInfo PropertyInfo { get; set; }
@@ -14,16 +14,13 @@ namespace WinFormsClientLib.Forms.WPF.ItemControls
             get => _name;
             set => _name = value;
         }
-
         public object Value { get => _Value; set => Setvalue(value); }
         private void Setvalue(object Value) { _Value = Value; OnPropertyChanged(nameof(PropPair)); }
-
         public event PropertyChangedEventHandler PropertyChanged;
         protected virtual void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
-
         public void Dispose()
         {
             PropertyInfo = null;

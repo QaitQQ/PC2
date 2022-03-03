@@ -8,7 +8,8 @@ namespace Server
     {
         public TCPMessage Result(TCPMessage Message)
         {
-
+            try
+            {
             using (ApplicationContext DB = new ApplicationContext())
             {
 
@@ -31,6 +32,12 @@ namespace Server
 
                       
                 }
+                }
+            }
+            catch (System.Exception e)
+            {
+                Program.Loging(e.Message);
+                return null;
             }
             return Message;
         }

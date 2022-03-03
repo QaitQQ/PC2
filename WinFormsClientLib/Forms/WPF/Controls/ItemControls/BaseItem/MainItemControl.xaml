@@ -11,8 +11,6 @@
             <Setter Property="BorderBrush" Value="AliceBlue" />
             <Setter Property="Margin" Value="1" />
         </Style>
-
-      
         <Style TargetType="TextBox">
             <Setter Property="Background" Value="White" />
             <Setter Property="BorderBrush" Value="White" />
@@ -28,11 +26,7 @@
         <Style TargetType="GridSplitter">
             <Setter Property="Background" Value="Blue" />
             <Setter Property="BorderBrush" Value="Blue" />
-
         </Style>
-
-
-
     </UserControl.Resources>
 
 
@@ -71,12 +65,30 @@
                     <Button Grid.Row="2"  Grid.ColumnSpan="2" Content="Add" Name="AddFilterButton" Click="AddFilterButton_Click" Foreground="Black"/>
                 </Grid>
                 <Grid Grid.Row="1" Margin="2">
-                    <DataGrid Name="FilterStack" AutoGenerateColumns="False" EnableRowVirtualization="False" EnableColumnVirtualization="False" HeadersVisibility="None">
-                        <DataGrid.Columns>
-                            <DataGridTextColumn  Binding="{Binding PropertyInfo.Name}" IsReadOnly ="True" ></DataGridTextColumn>
-                            <DataGridTextColumn Width="*" Binding="{Binding Value}" IsReadOnly ="True"></DataGridTextColumn>
-                        </DataGrid.Columns>
-                    </DataGrid>
+                    <StackPanel>
+                        <ItemsControl x:Name="FilterStack">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid >
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition></ColumnDefinition>
+                                            <ColumnDefinition Width="22"></ColumnDefinition>
+                                        </Grid.ColumnDefinitions>
+                                        <Label Content="{Binding Value}"></Label>
+                                        <Button Grid.Column="1"  Width="9" Height="9" VerticalAlignment="Center" Click="DelFilter">
+                                            <Button.Template>
+                                                <ControlTemplate>
+                                                    <Grid>
+                                                        <Ellipse Fill="OrangeRed"/>
+                                                    </Grid>
+                                                </ControlTemplate>
+                                            </Button.Template>
+                                        </Button>
+                                    </Grid>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </StackPanel>
                 </Grid>
                 <StackPanel Grid.Column="0" Grid.Row="2" >
                     <ItemsControl Name="ButtonStack">

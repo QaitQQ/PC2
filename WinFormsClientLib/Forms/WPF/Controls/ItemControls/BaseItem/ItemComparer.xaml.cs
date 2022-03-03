@@ -173,8 +173,15 @@ namespace WinFormsClientLib.Forms.WPF.Controls.ItemControls
                 Obj.Item.SourceName = Item.NewValue.ToString() + "|" + Item.Source;
 
 
-                new Network.Item.EditItem().Get<bool>(new WrapNetClient(), Obj.Item);
-                new Network.Item.Changes.DelFromСhangedList().Get<bool>(new WrapNetClient(), Item);
+              var ssuccess =  new Network.Item.EditItem().Get<bool>(new WrapNetClient(), Obj.Item);
+                if (ssuccess)
+                {
+                    new Network.Item.Changes.DelFromСhangedList().Get<bool>(new WrapNetClient(), Item);
+                }
+                else
+                {
+                    MessageBox.Show("Renew error");
+                }
             }  // обновление при FillTable = СhangedItemsTable
             void SetPrice(ItemChanges Item)
             {

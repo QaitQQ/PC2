@@ -1,4 +1,8 @@
-﻿using Server;
+﻿using HtmlAgilityPack;
+
+using Object_Description;
+
+using Server;
 using Server.Class.PriceProcessing;
 
 using StructLibs;
@@ -7,6 +11,10 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
 namespace Network.PriceService
 {
@@ -21,7 +29,82 @@ namespace Network.PriceService
             return Message;
         }
     }
+    [System.Serializable]
+    public class RemovePriceStorege : NetQwerry
+    {
+        public override TCPMessage Post(ApplicationContext Db, object Obj = null)
+        {
+            var activeprice = (PriceStorage)Attach;
+            var PriceStorageList = ((CashClass)Obj).PriceStorageList;
+            if (PriceStorageList.Exists(x => x.Name == activeprice.Name))
+            {
+                if (activeprice.FilePath!= "" && File.Exists(activeprice.FilePath))
+                {
+                    File.Delete(activeprice.FilePath);
+                }             
+                ((CashClass)Obj).PriceStorageList.Remove(((CashClass)Obj).PriceStorageList.First(x => x.Name == activeprice.Name && x.FilePath == activeprice.FilePath));
+                ((CashClass)Obj).PriceStorageList = ((CashClass)Obj).PriceStorageList;
+            }
 
+
+           Message.Obj =true;
+           return Message;
+
+
+        }
+    }
+    [System.Serializable]
+    public class DownloadPriceStorege : NetQwerry
+    {
+        public override TCPMessage Post(ApplicationContext Db, object Obj = null)
+        {
+            var activeprice = (PriceStorage)Attach;
+            var PriceStorageList = ((CashClass)Obj).PriceStorageList;
+            WebClient webClient = new WebClient();
+            string Path;
+            if (activeprice.FilePath == "")
+            {
+                Path = @"price_storage\\" + activeprice.Name + ".xlsx";
+            }
+            else
+            {
+                Path = activeprice.FilePath;
+            }
+
+            Task.Factory.StartNew(() => NewMethod(activeprice, Path));
+
+            activeprice.FilePath = Path;
+            activeprice.ReceivingData = DateTime.Now;
+
+            if (PriceStorageList.Exists(x => x.Name == activeprice.Name))
+            {
+                for (int i = 0; i < PriceStorageList.Count; i++)
+                {
+                    if (PriceStorageList[i].Name == activeprice.Name)
+                    {
+                        PriceStorageList[i] = activeprice;
+                    }
+                }
+            }
+            else
+            {
+                PriceStorageList.Add(activeprice);
+            }
+
+             ((CashClass)Obj).PriceStorageList = PriceStorageList;
+
+            Message.Obj = true;
+            return Message;
+
+
+        }
+
+        private static void NewMethod(PriceStorage activeprice, string Path)
+        {
+           WebClient client = new WebClient();
+           client.DownloadFileAsync(new Uri(activeprice.Link), activeprice.FilePath);         
+        }
+    }
     [System.Serializable]
     public class SavePriceStorege : NetQwerry
     {
@@ -31,13 +114,23 @@ namespace Network.PriceService
 
             var PriceStorageList = ((CashClass)Obj).PriceStorageList;
 
-            for (int i = 0; i < PriceStorageList.Count; i++)
+            if (PriceStorageList.Exists(x=>x.Name == PriceStorage.Name))
             {
-                if (PriceStorageList[i].Name == PriceStorage.Name)
+                for (int i = 0; i < PriceStorageList.Count; i++)
                 {
-                    PriceStorageList[i] = PriceStorage;
+                    if (PriceStorageList[i].Name == PriceStorage.Name)
+                    {
+                        PriceStorageList[i] = PriceStorage;
+                    }
                 }
             }
+            else 
+            {
+                PriceStorageList.Add(PriceStorage);
+            }
+
+
+
             ((CashClass)Obj).PriceStorageList = PriceStorageList;
 
 
@@ -53,7 +146,7 @@ namespace Network.PriceService
         CashClass Cash;
         public override TCPMessage Post(ApplicationContext Db, object Obj = null)
         {
-            var StoregeInfo = ((PriceStorage)Attach);
+            var StoregeInfo = (PriceStorage)Attach;
             if (StoregeInfo.FilePath != null && File.Exists(StoregeInfo.FilePath))
             {
                 try
@@ -89,5 +182,63 @@ namespace Network.PriceService
             cmpr.StartCompare();
         }
 
+    }
+    [System.Serializable]
+    public class SetTarget : NetQwerry
+    {
+        public override TCPMessage Post(ApplicationContext Db, object Obj = null)
+        {
+            var PriceStorage = (PriceStorage)Attach;
+
+            var PriceStorageList = ((CashClass)Obj).PriceStorageList;
+
+            if (PriceStorageList.Exists(x => x.Name == PriceStorage.Name))
+            {
+                for (int i = 0; i < PriceStorageList.Count; i++)
+                {
+                    if (PriceStorageList[i].Name == PriceStorage.Name)
+                    {
+                        PriceStorageList[i] = PriceStorage;
+                    }
+                }
+            }
+            else
+            {
+                PriceStorageList.Add(PriceStorage);
+            }
+
+            ((CashClass)Obj).PriceStorageList = PriceStorageList;
+
+
+            Message.Obj = true;
+            return Message;
+        }
+    }
+
+    [System.Serializable]
+    public class GetDic : NetQwerry
+    {
+        public override TCPMessage Post(ApplicationContext Db, object Obj = null)
+        {
+            var activeprice = (PriceStorage)Attach;
+
+            var Dictionaries = ((CashClass)Obj).Dictionaries.GetDictionaryRelate(Object_Description.DictionaryRelate.Price);
+
+            for (int i = 0; i < Dictionaries.Count(); i++)
+            {
+
+                if (Dictionaries.ToList()[i].Values.Contains(activeprice.Name))
+                {
+                    Message.Obj = Dictionaries.ToList()[i];
+                    break;
+                }
+
+                if (i == Dictionaries.Count()-1)
+                {
+                    Message.Obj = new DictionaryPrice("None", DictionaryRelate.Storage);
+                }
+            }
+            return Message;
+        }
     }
 }

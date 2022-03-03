@@ -5,7 +5,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="FreeSpire.XLS" Version="10.1.0" />
+    <Content Remove="C:\Users\qait\.nuget\packages\dotnetcore.npoi\1.2.3\contentFiles\any\netstandard2.0\NOTICE.TXT" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="DotNetCore.NPOI" Version="1.2.3" />
+    <PackageReference Include="FreeSpire.XLS" Version="10.10.0" />
+    <PackageReference Include="NPOI" Version="2.5.3" />
   </ItemGroup>
 
   <ItemGroup>

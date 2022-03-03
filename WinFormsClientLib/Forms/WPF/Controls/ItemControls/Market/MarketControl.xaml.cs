@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
@@ -11,31 +12,25 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace WinFormsClientLib.Forms
+namespace WinFormsClientLib.Forms.WPF.Controls.ItemControls
 {
     /// <summary>
     /// Логика взаимодействия для UserControl1.xaml
     /// </summary>
-    /// 
-
-
-    
-
-
-    public partial class СommonDictionaryControl : UserControl
+    public partial class MarketControl : UserControl
     {
-        public List<DictionaryControl> control_1s { get; set; }
-        public СommonDictionaryControl()
+        private ObservableCollection<object> Items;
+        public MarketControl()
         {
-            
             InitializeComponent();
-            control_1s = new List<DictionaryControl>();
-            ItemsControl_1.ItemsSource = control_1s;
 
-            control_1s.Add(new DictionaryControl());
-            control_1s.Add(new DictionaryControl());
-            control_1s.Add(new DictionaryControl());
+            Items = new ObservableCollection<object>();
 
+            Tabs.ItemsSource = Items;
+
+            var X = new MarketRenewer();
+
+            Items.Add(new TabItem() {Header = X.MarketName, Content = X } );
         }
     }
 }

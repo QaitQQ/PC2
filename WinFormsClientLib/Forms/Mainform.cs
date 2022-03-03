@@ -52,8 +52,11 @@ namespace Client.Forms
             AddNewForm("Сравнение", new EventHandler(Comparer_Win_Shown), видToolStripMenuItem);
             AddNewForm("Работа с прайсами", new EventHandler(PriceStorege_Win_Show), видToolStripMenuItem);
             AddNewForm("Работа с таблицами", new EventHandler(NewForm), видToolStripMenuItem);
+            AddNewForm("Работа со словорями", new EventHandler(DicForm), видToolStripMenuItem);
             AddNewForm("Дочернее окно", new EventHandler(ContainerForm), файлToolStripMenuItem);
             AddNewForm("Завершить сервер", new EventHandler(CloseServer), файлToolStripMenuItem);
+            AddNewForm("Работа с маркетами", new EventHandler(MarketControl), видToolStripMenuItem);
+            
 
             RightPanel.Visible = false;
             RightPanelSplitter.Visible = false;
@@ -93,9 +96,17 @@ namespace Client.Forms
         {
             new Config();
         }
+        private void DicForm(object sender, EventArgs e)
+        {
+            FormActivator(new UniversalWPFContainerForm(new DictionaryControl()) { CanClosed = true });
+        }
         private void Comparer_Win_Shown(object sender, EventArgs e)
         {
             FormActivator(new UniversalWPFContainerForm(new ItemComparer()) { CanClosed = true });
+        }
+        private void MarketControl(object sender, EventArgs e)
+        {
+            FormActivator(new UniversalWPFContainerForm(new MarketControl()) { CanClosed = true });
         }
         private void PriceStorege_Win_Show(object sender, EventArgs e)
         {
@@ -170,7 +181,16 @@ namespace Client.Forms
         }
         private void NewForm(object sender, EventArgs e)
         {
-            FormActivator(new UniversalWPFContainerForm(new UniversalDBItemFormControl()) { CanClosed = true });
+            try
+            {
+                FormActivator(new UniversalWPFContainerForm(new UniversalDBItemFormControl()) { CanClosed = true });
+            }
+            catch (Exception E)
+            {
+
+                MessageBox.Show(E.Message);
+            }
+            
         }
         private void RenewWebBrowser()
         {

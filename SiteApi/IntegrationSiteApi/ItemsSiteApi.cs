@@ -1,13 +1,11 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-
 using Pricecona;
-
 using StructLibs;
-
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net.Http;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Threading.Tasks;
@@ -19,7 +17,7 @@ namespace Server.Class.IntegrationSiteApi
         /// <summary>
         /// Apilink = Setting[0]; Key = Setting[1]; tokenfile = Setting[2];
         /// </summary>
-        public SiteItem(string[] ApiSetting, string[] FtpSetting) { GetToken(); Apilink = ApiSetting[0]; Key = ApiSetting[1]; FilePath = ApiSetting[2]; this.FtpSetting = FtpSetting; }
+        public SiteItem(string[] ApiSetting, string[] FtpSetting) {  Apilink = ApiSetting[0]; Key = ApiSetting[1]; FilePath = ApiSetting[2]; this.FtpSetting = FtpSetting; GetToken(); }
         private readonly string Apilink;
         private readonly string Key;
         private readonly string FilePath;
@@ -32,14 +30,11 @@ namespace Server.Class.IntegrationSiteApi
         private bool Ok;
         private int product_id_in;
         private readonly List<KeyValuePair<int, bool>> Result = new List<KeyValuePair<int, bool>>();
-
         public event Action ItemListReady;
         public List<ItemDBStruct> GetItem(List<int> product_id)
         {
-
             this.product_id = product_id;
             GetProduct();
-
             foreach (Dictionary<string, string> item in mapList)
             {
                 string f = item["name"];
@@ -52,12 +47,9 @@ namespace Server.Class.IntegrationSiteApi
                             Id = Convert.ToInt32(item["product_id"]),
                             Description = item["description"],
                             PriceRC = Convert.ToDouble(item["base_price"].Replace('.', ','))
-
                         });
                 }
             }
-
-
             return ItemList;
         }
         private void GetAllItem()
@@ -148,13 +140,7 @@ namespace Server.Class.IntegrationSiteApi
                 category = category.Trim('|');
 
             }
-
-
-
             // форматируем категории
-
-
-
             // собираем сообщение для отправки
             FormUrlEncodedContent Json = new FormUrlEncodedContent(new[]
             {
@@ -177,6 +163,87 @@ namespace Server.Class.IntegrationSiteApi
             NewProduct(response); // отправляем
 
             return product_id_in;
+
+        }
+        public int NewProductFromFieldList(List<SiteFieldDesc> fieldDescs)
+        {
+            product_id_in = 0; // зануляем возвращаемую переменную
+            // Имя
+            string Name = fieldDescs.First(x => x.Type == FieldType.Name).Desc;
+            // Описание
+            string Description = fieldDescs.First(x => x.Type == FieldType.Description).Desc;
+            // Цена
+            string Price = fieldDescs.First(x => x.Type == FieldType.Price).Desc;
+            // Цена
+            string СomparisonName = fieldDescs.First(x => x.Type == FieldType.СomparisonName).Desc;
+            // Производитель
+            string Manufactor = fieldDescs.First(x => x.Type == FieldType.Manufactor).Desc;
+            // Категории
+            string Categories = GetSTR(fieldDescs.FindAll(x => x.Type == FieldType.Category))?.Trim('|');
+            // Атребуты
+            string Attributes = GetSTR(fieldDescs.FindAll(x => x.Type == FieldType.Attribute));
+
+            //Картинка
+            string Imagelink = null;
+            var Image = (System.Drawing.Image)fieldDescs.Find(x => x.Type == FieldType.Image)?.Obj;
+
+            if (Image!= null)
+            {
+                FTP fTP = new FTP(FtpSetting);
+                var stream = new System.IO.MemoryStream();
+                Image.Save(stream, System.Drawing.Imaging.ImageFormat.Png);
+                stream.Position = 0;
+                fTP.FTPUploadStream(stream, СomparisonName + ".Png");
+                Imagelink = @"catalog/" + СomparisonName + ".Png";
+
+            }          
+            // собираем сообщение для отправки
+            FormUrlEncodedContent Json = new FormUrlEncodedContent(new[]
+            {
+
+                new KeyValuePair<string, string>("model", Name),
+                new KeyValuePair<string, string>("sku", 0.ToString()),
+                new KeyValuePair<string, string>("manufacturer_id", Manufactor),
+                new KeyValuePair<string, string>("price", Price),
+                new KeyValuePair<string, string>("name", Name),
+                new KeyValuePair<string, string>("description", Description),
+                new KeyValuePair<string, string>("attribute", Attributes),
+                new KeyValuePair<string, string>("image", Imagelink),
+                new KeyValuePair<string, string>("ComparisonName", СomparisonName),
+                new KeyValuePair<string, string>("Category", Categories)
+            }
+            );
+
+            var response = client.PostAsync(Apilink + $"/RC/newProduct/&token={token}", Json);
+            NewProduct(response);
+            return product_id_in;
+
+
+           static string GetSTR(List<SiteFieldDesc> fieldDescs) 
+            {
+
+                string Str = null;
+
+                foreach (var item in fieldDescs)
+                {
+                    if (item.Type == FieldType.Attribute)
+                    {
+                        Str = Str + item.id + "|" + item.Desc + ";";
+                    }
+                    else
+                    {
+                        Str = Str + item.id + "|";
+                    }
+                  
+                }
+
+
+                return Str;
+
+
+            }
+
+
 
         }
         public List<KeyValuePair<int, bool>> DeleteItem(List<int> product_id)
@@ -323,22 +390,30 @@ namespace Server.Class.IntegrationSiteApi
         }
         private async void NewProduct(Task<HttpResponseMessage> message)
         {
-
-
             using (StreamReader reader = new StreamReader(await message.Result.Content.ReadAsStreamAsync()))
             {
-                string B = reader.ToString();
-                JObject collection = (JObject)(JsonConvert.DeserializeObject(await reader.ReadToEndAsync()));
-
-                IJEnumerable<JToken> m = collection.Values();
-                foreach (JToken item in m)
+                var B = await reader.ReadToEndAsync();
+                try
                 {
-                    int product_id_in = Convert.ToInt32(item.ToString().Replace("{", "").Replace("}", ""));
-                    if (product_id_in != 0)
+                    JObject collection = (JObject)JsonConvert.DeserializeObject(B);
+
+                    IJEnumerable<JToken> m = collection.Values();
+                    foreach (JToken item in m)
                     {
-                        this.product_id_in = product_id_in;
+                        int product_id_in = Convert.ToInt32(item.ToString().Replace("{", "").Replace("}", ""));
+                        if (product_id_in != 0)
+                        {
+                            this.product_id_in = product_id_in;
+                        }
                     }
                 }
+                catch (Exception)
+                {
+
+                    throw;
+                }
+              
+
             }
 
 

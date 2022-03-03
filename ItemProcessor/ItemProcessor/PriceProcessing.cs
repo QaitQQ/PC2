@@ -44,8 +44,8 @@ namespace Server.Class.PriceProcessing
                     Task.Factory.StartNew(
                     () =>
                     {
-                        using XLS.XLS_To_Class X = new XLS.XLS_To_Class(_Attach);
-                        Result = (List<ItemPlusImageAndStorege>)X.Read(null, _Name, Identify.Value);
+                        using XLS.XLS_To_Class X = new XLS.XLS_To_Class();
+                        Result = (List<ItemPlusImageAndStorege>)X.Read(_Attach, null, _Name, Identify.Value);
                     });
 
                     break;

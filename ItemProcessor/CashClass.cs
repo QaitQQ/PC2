@@ -3,11 +3,15 @@
 using Server.Class.Base;
 using Server.Class.HDDClass;
 using Server.Class.ItemProcessor;
+using Server.Class.PriceProcessing;
+
+using StructLibCore;
 
 using StructLibs;
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -20,29 +24,39 @@ namespace Server
         public List<string> Tokens;
         private List<PriceStorage> priceStorageList;
         private List<ItemDBStruct> siteList;
-
         public List<QueueOfObj> ObjBuffer;
-
         public List<ItemDBStruct> SiteList
         {
             get => siteList;
             set { siteList = value; СhangeList?.Invoke(Settings.SiteList, siteList); }
         }
-
+        private List<Target> targets;
+        public List<Target> Targets
+        {
+            get => targets;
+            set
+            {
+                targets = value; СhangeList?.Invoke(Settings.TargetsList, targets);
+            }
+        }
         public string[] ApiSiteSettngs;
         public string[] FtpSiteSettngs;
         public List<PriceStorage> PriceStorageList
         {
             get => priceStorageList;
             set { priceStorageList = value; СhangeList?.Invoke(Settings.PriceStoragePath, PriceStorageList); }
-       
         }
         public bool MailCheckFlag { get; set; }
         private List<ItemPlusImageAndStorege> newItem;
         private List<ItemChanges> changedItems;
-
-
         private Dictionaries dictionaries;
+ 
+        private List<MarketItem> marketItems;
+        public List<MarketItem> MarketItems
+        {
+            get { return marketItems; }
+            set { if (value != null) { marketItems = value; СhangeList?.Invoke(Settings.MarketItems, marketItems); } }
+        }
         private event Action<string, object> СhangeList;
         public List<ItemPlusImageAndStorege> NewItem
         {
@@ -65,19 +79,21 @@ namespace Server
         }
         public CashClass()
         {
-
+            targets = new List<Target>();
             newItem = new List<ItemPlusImageAndStorege>();
             priceStorageList = new List<PriceStorage>();
             changedItems = new List<ItemChanges>();
             dictionaries = new Dictionaries();
             siteList = new List<ItemDBStruct>();
             Tokens = new List<string>();
+            marketItems = new List<MarketItem>();
             Serializer<object> Serializer = new Serializer<object>();
             MailCheckFlag = false;
             ObjBuffer = new List<QueueOfObj>();
             СhangeList += Serializer.Doit;
             ApiSiteSettngs = Settings.ApiSettngs;
             FtpSiteSettngs = Settings.FtpSettings;
+
         }
         public void LoadCash()
         {
@@ -86,6 +102,8 @@ namespace Server
             LoadFromFile(ref dictionaries, Settings.Dictionaries);
             LoadFromFile(ref priceStorageList, Settings.PriceStoragePath);
             LoadFromFile(ref siteList, Settings.SiteList);
+            LoadFromFile(ref targets, Settings.TargetsList);
+            LoadFromFile(ref marketItems, Settings.MarketItems);
             ReloadNameCash();
             // Gen_Dic();
         }
@@ -168,28 +186,71 @@ namespace Server
             }
 
         }
+        public void planedPriceWork(CashClass cash)
+        {
+            foreach (var item in PriceStorageList)
+            {
+                var key = item.Name + "_TargetDictionary";
+
+                if (item.PlanedRead)
+                {
+                    if (!TargetDictionary.Dictionarys.ContainsKey(key))
+                    {
+                        TargetDictionary.Dictionarys.Add(key, () => Download(item));
+
+                    }
+                    if (targets.FindAll(x => x.KeyTask == key).Count == 0)
+                    {
+                        targets.Add(new Target(key, Target.Regularity.by_time, item.PlanedTime));
+                    }
+                }
+                else
+                {
+                    if (TargetDictionary.Dictionarys.ContainsKey(key))
+                    {
+                        TargetDictionary.Dictionarys.Remove(key);
+                        targets.Remove(targets.Find(x => x.KeyTask == key));
+                    }
+                }
+            }
+            void Download(PriceStorage activeprice)
+            {
+                System.Net.WebClient client = new System.Net.WebClient();
+                client.DownloadFileAsync(new Uri(activeprice.Link), activeprice.FilePath);
+
+                client.DownloadFileCompleted += (a, e) => { Read(activeprice); };
+
+                foreach (var item in cash.PriceStorageList)
+                {
+                    if (item.Name == activeprice.Name)
+                    {
+                        item.ReceivingData = DateTime.Now;
+                    }
+                }
+                cash.PriceStorageList = cash.PriceStorageList;
+            }
+            List<ItemDBStruct> DB_list;
+
+            void Read(PriceStorage activeprice)
+            {
+                var fs = File.OpenRead(activeprice.FilePath);
+                string Attb = string.Join(",", activeprice.Attributes);
+                using (ApplicationContext DB = new ApplicationContext())
+                {
+                    DB_list = DB.Item.ToList();
+                    var lst = new PriceProcessingRules(fs, activeprice.Name, Attb, cash);
+                    lst.СhangeResult += Comparer;
+                    lst.Apply_rules();
+                }
+
+            }
+            void Comparer(object Lst)
+            {
+                var cmpr = new Сompare_NewPrice_with_DB((List<ItemPlusImageAndStorege>)Lst, DB_list, cash);
+                cmpr.StartCompare();
+            }
+
+        }
     }
-
-    [Serializable]
-    public class PriceStorage
-    {
-        public PriceStorage() { ReceivingData = DateTime.Now; Attributes = new List<string>(); }
-        public string Name { get; set; }
-        public string FilePath { get; set; }
-        public DateTime ReceivingData { get; set; }
-        public bool DefaultReading { get; set; }
-        public List<string> Attributes { get; set; }
-
-    }
-
-
-    public class QueueOfObj
-    {
-        public int ID { get; set; }
-        public object Object { get; set; }
-
-    }
-
-
-
 }
+

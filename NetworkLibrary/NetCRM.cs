@@ -2,6 +2,8 @@
 
 using Server;
 
+using StructLibs;
+
 using System.Linq;
 
 namespace Network.CRM
@@ -94,6 +96,45 @@ namespace Network.CRM
 
         }
     }
+    [System.Serializable]
+    public class GetStorage : NetCRM
+    {
+        public override TCPMessage Post(ApplicationContext Db, object Obj = null)
+        {
+            Message.Obj = Db.Warehouse.ToList();
+
+            return Message;
+
+        }
+    }
+    [System.Serializable]
+    public class RemoveStorage : NetCRM
+    {
+        public override TCPMessage Post(ApplicationContext Db, object Obj = null)
+        {
+
+            Warehouse war = (Warehouse)Attach;
+
+            var str = Db.Storage.Where(x => x.WarehouseID == war.Id);
+
+            foreach (var item in str)
+            {
+                Db.Storage.Remove(item);
+            }
+
+           var TWAR = Db.Warehouse.First(X => X.Id == war.Id);
+
+            Db.Warehouse.Remove(TWAR);
+            Db.SaveChanges();
+
+            Message.Obj =true;
+
+            return Message;
+
+        }
+    }
+
+
 }
 
 

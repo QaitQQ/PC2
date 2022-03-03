@@ -17,21 +17,16 @@ namespace WindowsFormsClientLibrary.Forms
         {
             InitializeComponent();
             Dictionaries = new Network.Dictionary.GetDictionares().Get<Dictionaries>(new WrapNetClient());
-
             comboBox1.DataSource = Enum.GetValues(typeof(DictionaryRelate));
             FillListBox();
-
             Show();
         }
         private void FillListBox()
         {
             listBox1.Items.Clear();
-
             DictionaryRelate Relate = (DictionaryRelate)comboBox1.SelectedItem;
             if (Relate != DictionaryRelate.None) { foreach (IDictionaryPC item in Dictionaries.GetDictionaryRelate(Relate)) { listBox1.Items.Add(item.Name); } }
             else { foreach (IDictionaryPC item in Dictionaries.GetAll()) { listBox1.Items.Add(item.Name); } }
-
-
         }
         private void ListBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -165,18 +160,10 @@ namespace WindowsFormsClientLibrary.Forms
             FillListBox();
         }
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e) { FillListBox(); }
-
-
         private void SiteSync_Click(object sender, EventArgs e)
         {
-
             new Network.Dictionary.SiteSync().Get<bool>(new WrapNetClient());
-
-
             Dictionaries = new Network.Dictionary.GetDictionares().Get<Dictionaries>(new WrapNetClient());
-
-
-
 
         }
     }

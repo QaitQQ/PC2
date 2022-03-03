@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Text;
 using System.Windows;
 using System.Windows.Forms;
+using System.Windows.Controls;
 
 namespace WinFormsClientLib.Forms
 {
@@ -18,9 +19,14 @@ namespace WinFormsClientLib.Forms
         {     
             InitializeComponent();
             Control = control;
+          
             ElementHost = new System.Windows.Forms.Integration.ElementHost();
             this.panel1.Controls.Add(this.ElementHost);
             this.ElementHost.TabIndex = 0;
+            if (Control is System.Windows.Controls.UserControl)
+            {
+                ((System.Windows.Controls.UserControl)Control).DataContext = this;
+            }
             ElementHost.Dock = DockStyle.Fill;
             ElementHost.Child = Control;
             this.splitContainer1.SplitterDistance = 10;

@@ -1,7 +1,7 @@
 ﻿using Client;
 
 using CRMLibs;
-
+using Object_Description;
 using StructLibs;
 
 using System;
@@ -39,13 +39,10 @@ namespace WinFormsClientLib.Forms.WPF.ItemControls
             if (Item.Image != null)
             {
 
-
-
             }
             else if (Item.Item.Image != null && Item.Item.Image != "")
             {
                 GetImage();
-
             }
 
 
@@ -248,8 +245,6 @@ namespace WinFormsClientLib.Forms.WPF.ItemControls
         {
             using Network.Item.GetItemImage Qwery = new Network.Item.GetItemImage();
             System.Drawing.Image Img = null;
-
-
 
             await System.Threading.Tasks.Task.Factory.StartNew(() => { Img = Qwery.Get<ItemPlusImageAndStorege>(new WrapNetClient(), Item.Item.Id.ToString()).Image; });
             if (Img != null && Item != null)

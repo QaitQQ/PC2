@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
+using System.Runtime.CompilerServices;
 
 namespace Object_Description
 {
@@ -39,11 +41,13 @@ namespace Object_Description
         public string Name { get; }
         public DictionaryRelate Relate { get; set; }
         public List<string> Values { get; set; }
-        public List<IDictionaryPC> Branches { get; }
+        public List<IDictionaryPC> Branches { get; set; }
         public bool Сontain(string Value);
         public IDictionaryPC Сontained(string Value);
         public IDictionaryPC GetBranchFromName(string Value);
         public void AddBranch(IDictionaryPC Branch);
+        public List<IDictionaryPC> GetAllBranches();
+        public PropertyInfo[] GetProperties();
 
     }
     [Serializable]
@@ -55,7 +59,7 @@ namespace Object_Description
         public void Add(IDictionaryPC Dictionary) => _Dictionaries.Add(Dictionary);
         public void Renew(IDictionaryPC Dictionary) { _Dictionaries = _Dictionaries.FindAll(x => x.Name != Dictionary.Name); _Dictionaries.Add(Dictionary); }
         public List<IDictionaryPC> GetAll() => _Dictionaries;
-        public IDictionaryPC Get(string name) { IEnumerable<IDictionaryPC> Result = _Dictionaries.Where(x => x.Name == name); return Result.First(); }
+        public IDictionaryPC Get(string name) { IEnumerable<IDictionaryPC> Result = _Dictionaries.Where(x => x.Name == name); return Result.First(); }       
         public bool Contains(string Name)
         {
             var X = _Dictionaries.FindAll(x => x.Name == Name);
@@ -77,6 +81,7 @@ namespace Object_Description
         public string Name { get; protected set; }
         public DictionaryRelate Relate { get; set; }
         public List<string> Values { get; set; }
+        public List<string> Patterns { get; set; }
         public List<IDictionaryPC> Branches { get; set; }
         public IDictionaryPC Сontained(string Value)
         {
@@ -88,15 +93,44 @@ namespace Object_Description
             if (Name == Value) { return this; } else { foreach (IDictionaryPC item in Branches) { return GetBranchFromName(Value); } }
             return null;
         }
-        public void AddBranch(IDictionaryPC Branch) => Branches.Add(Branch);
+        public void AddBranch(IDictionaryPC Branch)
+        {
+            if (Branches == null)
+            {
+                Branches = new List<IDictionaryPC>();
+            }
+            Branches.Add(Branch);
+        }
         public bool Сontain(string Value)
         {
             foreach (string item in Values) { if (Value.ToLower().Contains(item.ToLower())) { return true; } }
             return false;
         }
-        public DictionaryBase() => Values = new List<string>();
-        public DictionaryBase(string name, List<string> Values, DictionaryRelate Relate) { Name = name; this.Values = Values; this.Relate = Relate; }
-        public DictionaryBase(string name, DictionaryRelate Relate) { Name = name; this.Relate = Relate; Values = new List<string>(); }
+        public DictionaryBase() { Values = new List<string>(); Patterns = new List<string>(); Branches = new List<IDictionaryPC>(); }
+        public DictionaryBase(string name, List<string> Values, DictionaryRelate Relate) { Name = name; Patterns = new List<string>(); this.Values = Values; this.Relate = Relate; }
+        public DictionaryBase(string name, DictionaryRelate Relate) { Name = name; this.Relate = Relate; Patterns = new List<string>(); Values = new List<string>(); }
+        public List<IDictionaryPC> GetAllBranches() 
+        {
+            List<IDictionaryPC> branches = new List<IDictionaryPC>();
+            if (Branches != null)
+            {
+                foreach (var item in Branches)
+                {
+                    foreach (var X in item.GetAllBranches())
+                    {
+                        branches.Add(X);
+                    }
+                    branches.Add(item);
+                }
+            }
+           
+            return branches;
+        }
+        public  PropertyInfo[] GetProperties()
+        {   
+          return  typeof(DictionaryBase).GetProperties(BindingFlags.Public | BindingFlags.Instance);
+        }
+
     }
 
     [Serializable]
@@ -109,11 +143,19 @@ namespace Object_Description
         public void Set_Filling_method_coll(FillDefinitionPrice Key, int Value) => Filling_method_coll.Add(new KeyValuePair<FillDefinitionPrice, int>(Key, Value));
         public void Set_Filling_method_string(FillDefinitionPrice Key, string Value) => Filling_method_string.Add(new KeyValuePair<FillDefinitionPrice, string>(Key, Value));
         public List<KeyValuePair<FillDefinitionPrice, string>> GetFillingStringUnderRelate(FillDefinitionPrice Key) => Filling_method_string?.Where(x => x.Key == Key).ToList();
+        public static new PropertyInfo[] GetProperties()
+        {
+            return typeof(DictionaryPrice).GetProperties(BindingFlags.Public | BindingFlags.Instance);
+        }
     }
     [Serializable]
     public class DictionarySiteCategory : DictionaryBase
     {
         public int Parent_id { get; set; }
         public DictionarySiteCategory(string name, DictionaryRelate Relate) { Name = name; this.Relate = Relate; Values = new List<string>(); }
+        public static new PropertyInfo[] GetProperties()
+        {
+            return typeof(DictionarySiteCategory).GetProperties(BindingFlags.Public | BindingFlags.Instance);
+        }
     }
 }

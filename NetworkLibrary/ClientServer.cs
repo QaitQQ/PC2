@@ -35,12 +35,15 @@ namespace Network
         private byte[] ObjToBin(object Message)
         {
             using MemoryStream ms = new MemoryStream();
-            new BinaryFormatter().Serialize(ms, Message);
+            if (Message != null)
+            {
+                new BinaryFormatter().Serialize(ms, Message);
+            }          
             return ms.ToArray();
         }
         protected void Receive()
         {
-            Buffer = new byte[1048576];
+            Buffer = new byte[10485760];
             Client.Client.Receive(Buffer, Buffer.Length, SocketFlags.None);
             BinToObj(Buffer);
         }

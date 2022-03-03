@@ -1,4 +1,5 @@
-﻿using Server;
+﻿using Object_Description;
+using Server;
 using Server.Class.ItemProcessor;
 
 using StructLibs;
@@ -60,8 +61,6 @@ namespace Network.Item
                         }
                     }
                 }
-
-
             }
 
             Message.Obj = List;
@@ -94,28 +93,120 @@ namespace Network.Item
             return Xlist;
 
         }
-        protected List<ItemDBStruct> FindWithParameters(string Str, PropertyInfo Field, ApplicationContext Db)
+        protected List<ItemDBStruct> FindWithParameters(string Str, PropertyInfo Field, ApplicationContext Db, List<СomparisonNameID> List = null)
         {
             List<ItemDBStruct> QweryResult = null;
-
-            if (Field.PropertyType.Name.Contains("List"))
+            if (List == null)
             {
-                QweryResult = Db.Item.ToList();
-                QweryResult = QweryResult.FindAll(item => (Field.GetValue(item) as List<string>) != null && (Field.GetValue(item) as List<string>).Contains(Str));
+                if (Field.PropertyType.Name.Contains("List"))
+                {
+                    QweryResult = Db.Item.ToList();
+                    QweryResult = QweryResult.FindAll(item => (Field.GetValue(item) as List<string>) != null && (Field.GetValue(item) as List<string>).Contains(Str));
+                }
+                else
+                {
+                    QweryResult = Db.Item.ToList();
+                    QweryResult = QweryResult.FindAll(item => Field.GetValue(item).ToString().ToUpper().Contains(Str.ToUpper()));
+                }
             }
             else
             {
-                QweryResult = Db.Item.ToList();
-                QweryResult = QweryResult.FindAll(item => Field.GetValue(item).ToString().ToUpper().Contains(Str.ToUpper()));
+
+                List<int> Ids = new List<int>();
+                foreach (var item in List)
+                {
+                    Ids.Add(item.Id);
+                }
+
+
+                if (Field.PropertyType.Name.Contains("List"))
+                {
+                    QweryResult = Db.Item.ToList();
+                    QweryResult = QweryResult.FindAll(item => (Field.GetValue(item) as List<string>) != null && (Field.GetValue(item) as List<string>).Contains(Str) && Ids.Contains(item.Id));
+                }
+                else
+                {
+                    QweryResult = Db.Item.ToList();
+                    QweryResult = QweryResult.FindAll(item => Field.GetValue(item).ToString().ToUpper().Contains(Str.ToUpper()) && Ids.Contains(item.Id));
+                }
             }
 
 
             return QweryResult;
         }
+
+        protected PropertyInfo GetPropertyInfo(string Name)
+        {
+            foreach (var item in Prop)
+            {
+                if (item.Name == Name)
+                {
+                    return item;
+                }
+            }
+
+            return null;
+        }
+
     }
+
+    [Serializable]
+    public class ItemSearchFromListPProp : ItemSearch
+    {
+        public override TCPMessage Post(ApplicationContext Db, object Obj = null)
+        {
+            Prop = ItemDBStruct.GetProperties();
+            var List = new List<СomparisonNameID>();
+            List<string[]> DataMass = (List<string[]>)this.Attach;
+
+            bool FirstSearch = true;
+
+            foreach (var item in DataMass)
+            {
+                if (FirstSearch)
+                {
+                    if (item[0] == "Name")
+                    {
+                        List = ItemsNameFromCash(item[1], ((CashClass)Obj).ItemName);
+                    }
+                    else
+                    {
+                        var F = FindWithParameters(item[1], GetPropertyInfo(item[0]), Db);
+                        if (F != null)
+                        {
+                            foreach (var XC in F)
+                            {
+                                List.Add(new СomparisonNameID() { Name = XC.Name, СomparisonName = XC.СomparisonName[0], Id = XC.Id });
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    var F = FindWithParameters(item[1], GetPropertyInfo(item[0]), Db, List);
+                    if (F != null)
+                    {
+                        List = new List<СomparisonNameID>();
+                        foreach (var XC in F)
+                        {
+                            List.Add(new СomparisonNameID() { Name = XC.Name, СomparisonName = XC.СomparisonName[0], Id = XC.Id });
+                        }
+                    }
+                }
+                FirstSearch = false;
+            }
+
+            Message.Obj = List;
+
+            return Message;
+        }
+     
+    }
+
     /// <summary>
     /// это поиск соответсвия из списка ID, тоесть даем имя или свойство, и список ID, на входе массив объектов где 0 List_int ID's, 1 строка поиска, 2 номер свойства, на выходе List_СomparisonNameID
     /// </summary>
+    /// 
     [Serializable]
     public class ItemSearchFromList : ItemSearch
     {
@@ -268,17 +359,24 @@ namespace Network.Item
 
             ItemDBStruct OldItem = Db.Item.First(item => item.Id == item.Id);
 
-
             if (item.PriceRC != OldItem.PriceRC)
             {
-
                     Db.Add(new PriceСhangeHistory {ItemID = item.Id, DateСhange = DateTime.Today, PriceRC = item.PriceRC, SourceName = item.SourceName });
             }
-
-
-            Db.Update(item);
+            try
+            {
+                Db.Update(item);
+            }
+            catch 
+            {
+                Message.Obj = false;
+                return Message;
+            }
+          
             Db.SaveChanges();
             Message.Obj = true;
+
+
             return Message;
         }
 
@@ -492,13 +590,11 @@ namespace Network.Item
                 newImage = ImageResize(Result, newImage);
             }
 
-
-
             ItemPlusImageAndStorege itemNetStruct = new ItemPlusImageAndStorege()
             {
-                Item = Result,
+              //  Item = Result,
                 Image = newImage ,
-                Storages = Storege
+             //   Storages = Storege
             };
 
             Message.Obj = itemNetStruct;
@@ -508,19 +604,29 @@ namespace Network.Item
         }
         private static Image ImageResize(ItemDBStruct Item, Image newImage)
         {
-            if (File.Exists(Item.Image))
+            try
             {
-                Image Img = Image.FromFile(Item.Image);
+                if (File.Exists(Item.Image))
+                {
+                    Image Img = Image.FromFile(Item.Image);
 
-                if (Img.Width > 799)
-                {
-                    newImage = ResizeImage(Img, 800, 800);
-                }
-                else
-                {
-                    newImage = Img;
+                    if (Img.Width > 799)
+                    {
+                        newImage = ResizeImage(Img, 800, 800);
+                    }
+                    else
+                    {
+                        newImage = Img;
+                    }
                 }
             }
+            catch 
+            {
+
+             
+            }
+
+           
             return newImage;
         }
         public static Bitmap ResizeImage(Image image, int width, int height)
