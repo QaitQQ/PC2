@@ -13,7 +13,6 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
-using System.Linq;
 using System.Text.RegularExpressions;
 
 namespace XLS
@@ -30,14 +29,13 @@ namespace XLS
 
         private int FindStringValueCell(string Str)
         {
-            string tester = null;
             Str = Str.ToLower();
 
             for (int x = 1; x < 50; x++)
             {
                 for (int y = 1; y < 25; y++)
                 {
-                    tester = GetCellValue(x, y);
+                    string tester = GetCellValue(x, y);
                     if (tester == null || tester == "")
                     {
                         continue;
@@ -59,7 +57,7 @@ namespace XLS
         private int RCCellFind(ref int rowRCFin)
         {
             rowRCFin = 1;
-            string tester = "";
+            string tester;
             int cellRC = 4;
             int rowRC;
             for (rowRC = 1; rowRC < 30; rowRC++)
@@ -78,7 +76,7 @@ namespace XLS
                         {
                             cellRC = cell;
 
-                            var r = GetMergedRegion(_Worksheet, rowRC, cell);
+                            CellRangeAddress r = GetMergedRegion(_Worksheet, rowRC, cell);
                             if (r != null)
                             {
                                 int Testrow = rowRC;
@@ -136,7 +134,7 @@ namespace XLS
                             {
                                 cellDC = cell;
 
-                                var r = GetMergedRegion(_Worksheet, rowRC, cell);
+                                CellRangeAddress r = GetMergedRegion(_Worksheet, rowRC, cell);
 
                                 if (r != null)
                                 {
@@ -184,7 +182,16 @@ namespace XLS
                         {
                             for (int i = 1; i < 20; i++)
                             {
-                                String[i] = ReadStringToDouble(_Worksheet.GetRow(rowRCFin + m).GetCell(i).CellFormula?.ToString());
+
+                                if (_Worksheet.GetRow(rowRCFin + m).GetCell(i).CellType == CellType.Formula)
+
+                                {
+                                    String[i] = ReadStringToDouble(_Worksheet.GetRow(rowRCFin + m).GetCell(i).CellFormula?.ToString());
+                                }
+                                else
+                                {
+                                    String[i] = ReadStringToDouble(GetCellValue((rowRCFin + m), i));
+                                }
                             }
                         }
                         double smallest = String[0];
@@ -217,7 +224,7 @@ namespace XLS
         }//пытаемся определить наименьшую цену из ряда  
         private Image ImageFind(int Row)
         {
-            List<Image> image = new List<Image>();
+            _ = new List<Image>();
 
             // IDrawing Pictures = null;
             //try
@@ -342,10 +349,10 @@ namespace XLS
                                 x = tester.Length;
                                 tester = GetCellValue(m + 1, cell);
                                 if (tester == null || tester == "") { continue; }
-                                x = x + tester.Length;
+                                x += tester.Length;
                                 tester = GetCellValue(m + 2, cell);
                                 if (tester == null || tester == "") { continue; }
-                                x = x + tester.Length;
+                                x += tester.Length;
                                 if (x > 120)
                                 {
                                     DescPoz = cell;
@@ -413,7 +420,7 @@ namespace XLS
         {
             string Currency = null;
 
-            var X = _Worksheet.GetRow(row).GetCell(RCcell).CellStyle;
+            // var X = _Worksheet.GetRow(row).GetCell(RCcell).CellStyle;
 
             Currency = _Worksheet.GetRow(row).GetCell(RCcell).CellStyle.GetDataFormatString();
             Currency += GetCellValue(row, RCcell);
@@ -424,7 +431,7 @@ namespace XLS
             else if (Currency.Contains("USD")) { Currency = "USD"; }
             return Currency;
         }
-        private int cellCurrencyFind()
+        private int CellCurrencyFind()
         {
 
             for (int rowRC = 1; rowRC < 30; rowRC++)
@@ -452,16 +459,14 @@ namespace XLS
         public object Read(Stream stream, List<int> WorksheetsNumbers, string FileName = null, IDictionaryPC Dictionary = null)
         {
             _Dictionary = Dictionary;
-
-            XLS_To_ClassSpire X = null;
-
             Stream St2 = new MemoryStream();
 
             using (Stream Stream = stream)
+            {
                 try
                 {
                     stream.CopyTo(St2);
-                    X = new XLS_To_ClassSpire(stream);
+                    XLS_To_ClassSpire X = new XLS_To_ClassSpire(stream);
                     return X.Read(WorksheetsNumbers, FileName, Dictionary);
                 }
                 catch
@@ -474,12 +479,22 @@ namespace XLS
                     }
                     catch
                     {
-                        _workbook = new HSSFWorkbook(St2);
+                        try
+                        {
+                            _workbook = new HSSFWorkbook(St2);
+                        }
+                        catch
+                        {
+
+
+                        }
+
                     }
 
                 }
+            }
 
-            if (WorksheetsNumbers == null || WorksheetsNumbers.Count == 0) { WorksheetsNumbers = new List<int>(); for (int i = 0; i < _workbook.NumberOfSheets; i++) { WorksheetsNumbers.Add(i); } }
+            if ((WorksheetsNumbers == null || WorksheetsNumbers.Count == 0) && _workbook != null) { WorksheetsNumbers = new List<int>(); for (int i = 0; i < _workbook.NumberOfSheets; i++) { WorksheetsNumbers.Add(i); } }
 
             if (Dictionary.Relate == DictionaryRelate.Price)
             {
@@ -542,8 +557,10 @@ namespace XLS
                         }
 
                         Image Pic = ImageFind(Row);
-                        string SKU, DescriptionString, DCstring;
-
+                        string SKU
+                            //   DCstring
+                            ;
+                        string DescriptionString = "";
                         if (NameString == "" || NameString == " ") { Row++; continue; }
 
                         if (((DictionaryPrice)_Dictionary).GetFillingStringUnderRelate(FillDefinitionPrice.NamePattern).Count == 1)
@@ -571,20 +588,24 @@ namespace XLS
                         if (SKUcall != 0) { SKU = _Worksheet.GetRow(Row).GetCell(SKUcall).StringCellValue; } else { SKU = null; }
 
 
-                        if (_Worksheet.GetRow(Row).GetCell(cellDC).IsPartOfArrayFormulaGroup) { DCstring = _Worksheet.GetRow(Row).GetCell(cellDC).CellFormula; }
-                        else { DCstring = GetCellValue(Row, cellDC); }
-                        double PriceDC = ReadStringToDouble(DCstring);
+                        //  if (_Worksheet.GetRow(Row).GetCell(cellDC).IsPartOfArrayFormulaGroup) { DCstring = _Worksheet.GetRow(Row).GetCell(cellDC).CellFormula; }
+                        //   else { DCstring = GetCellValue(Row, cellDC); }
+                        double PriceDC = PriceRC;
+                        //  ReadStringToDouble(DCstring);
 
-                        if (_Worksheet.GetRow(Row).GetCell(DescPoz).IsMergedCell)
-                        {
-                            if (_Worksheet.GetRow(Row).GetCell(DescPoz).IsPartOfArrayFormulaGroup) { DescriptionString = _Worksheet.GetRow(Row).GetCell(DescPoz).CellFormula?.ToString(); }
-                            else { DescriptionString = GetMergedRegion(_Worksheet, Row, DescPoz).FormatAsString(); }
-                        }
-                        else
-                        {
-                            if (_Worksheet.GetRow(Row).GetCell(DescPoz).IsPartOfArrayFormulaGroup) { DescriptionString = _Worksheet.GetRow(Row).GetCell(DescPoz).CellFormula; }
-                            else { DescriptionString = GetCellValue(Row, DescPoz); }
-                        }
+                        //if (_Worksheet.GetRow(Row).GetCell(DescPoz).IsMergedCell)
+                        //{
+                        //    if (_Worksheet.GetRow(Row).GetCell(DescPoz).CellType == CellType.Formula) 
+
+                        //    { DescriptionString = _Worksheet.GetRow(Row).GetCell(DescPoz).CellFormula?.ToString(); }
+                        //    else { DescriptionString = GetMergedRegion(_Worksheet, Row, DescPoz).FormatAsString(); }
+                        //}
+                        //else
+                        //{
+                        //    if (_Worksheet.GetRow(Row).GetCell(DescPoz).IsPartOfArrayFormulaGroup) 
+                        //    { DescriptionString = _Worksheet.GetRow(Row).GetCell(DescPoz).CellFormula; }
+                        //    else { DescriptionString = GetCellValue(Row, DescPoz); }
+                        //}
                         string Currency = FindCurrency(Row, cellRC, cellCurrency);
 
                         List<Storage> stList = null;
@@ -595,7 +616,7 @@ namespace XLS
 
                             foreach (KeyValuePair<int, string> item in cellStorege)
                             {
-                                var X = GetCellValue(Row, item.Key);
+                                string X = GetCellValue(Row, item.Key);
                                 if (X != null)
                                 {
                                     stList.Add(new Storage()
@@ -641,6 +662,47 @@ namespace XLS
             return DataList;
             void ColumnPriceOrient(ref int rowRCFin, ref int cellRC, ref int NamePoz, ref int cellDC, ref int DescPoz, ref int MaxRow, ref int SKUcall, ref KeyValuePair<int, string>[] callsStorege, ref int cellCurrency)
             {
+                if (((DictionaryPrice)_Dictionary).Filling_method_coll?.Count > 0)
+                {
+                    foreach (KeyValuePair<FillDefinitionPrice, int> item in ((DictionaryPrice)_Dictionary).Filling_method_coll)
+                    {
+                        switch (item.Key)
+                        {
+                            case FillDefinitionPrice.Sku:
+                                SKUcall = item.Value;
+                                break;
+                            case FillDefinitionPrice.Name:
+                                NamePoz = item.Value;
+                                break;
+                            case FillDefinitionPrice.PriceRC:
+                                cellRC = item.Value;
+                                for (int i = 0; i < 40; i++)
+                                {
+                                    string X = GetCellValue(i, cellRC);
+
+                                    if (ReadStringToDouble(X) != 0)
+                                    {
+                                        rowRCFin = i;
+                                        break;
+                                    }
+                                }
+                                break;
+                            case FillDefinitionPrice.PriceDC:
+                                cellDC = item.Value;
+                                break;
+                            case FillDefinitionPrice.Description:
+                                DescPoz = item.Value;
+                                break;
+                            case FillDefinitionPrice.Currency:
+                                break;
+                            case FillDefinitionPrice.MaxRow:
+                                MaxRow = item.Value;
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                }
 
                 if (((DictionaryPrice)_Dictionary).Filling_method_string?.Count > 0)
                 {
@@ -649,7 +711,7 @@ namespace XLS
                     if (cellRC == 0) { cellRC = RCCellFind(ref rowRCFin); }
                     if (cellDC == 0) { cellDC = DC_CellFind(cellRC, rowRCFin); }
                     if (DescPoz == 0) { DescPoz = DescriptionFind(); }
-                    if (cellCurrency == 0) { cellCurrency = cellCurrencyFind(); }
+                    if (cellCurrency == 0) { cellCurrency = CellCurrencyFind(); }
 
                     if (callsStorege == null)
                     {
@@ -673,9 +735,6 @@ namespace XLS
                                 {
                                     Lst.Add(new KeyValuePair<int, string>(FindStringValueCell(item.Value), item.Value));
                                 }
-
-
-
                             }
 
                             callsStorege = Lst.ToArray();
@@ -691,44 +750,15 @@ namespace XLS
                         }
                     }
                 }
-                else if (((DictionaryPrice)_Dictionary).Filling_method_coll?.Count > 0)
-                {
-                    foreach (KeyValuePair<FillDefinitionPrice, int> item in ((DictionaryPrice)_Dictionary).Filling_method_coll)
-                    {
-                        switch (item.Key)
-                        {
-                            case FillDefinitionPrice.Sku:
-                                SKUcall = item.Value;
-                                break;
-                            case FillDefinitionPrice.Name:
-                                NamePoz = item.Value;
-                                break;
-                            case FillDefinitionPrice.PriceRC:
-                                cellRC = item.Value;
-                                break;
-                            case FillDefinitionPrice.PriceDC:
-                                cellDC = item.Value;
-                                break;
-                            case FillDefinitionPrice.Description:
-                                DescPoz = item.Value;
-                                break;
-                            case FillDefinitionPrice.Currency:
-                                break;
-                            case FillDefinitionPrice.MaxRow:
-                                MaxRow = item.Value;
-                                break;
-                            default:
-                                break;
-                        }
-                    }
-                }
+
             }
         }
-        CellRangeAddress GetMergedRegion(ISheet sheet, int rowNum, int cellNum)
+
+        private CellRangeAddress GetMergedRegion(ISheet sheet, int rowNum, int cellNum)
         {
-            for (var i = 0; i < sheet.NumMergedRegions; i++)
+            for (int i = 0; i < sheet.NumMergedRegions; i++)
             {
-                var merged = sheet.GetMergedRegion(i);
+                CellRangeAddress merged = sheet.GetMergedRegion(i);
                 if (merged.IsInRange(rowNum, cellNum))
                 {
                     return merged;
@@ -736,37 +766,29 @@ namespace XLS
             }
             return null;
         }
-        string GetCellValue(int Row, int Col)
+
+        private string GetCellValue(int Row, int Col)
         {
 
+            ICell X = _Worksheet.GetRow(Row)?.GetCell(Col);
 
-            var X = _Worksheet.GetRow(Row)?.GetCell(Col);
 
             if (X == null)
             {
                 return null;
             }
 
-            switch (X.CellType)
+            return X.CellType switch
             {
-                case CellType.Unknown:
-                    return null;
-                case CellType.Numeric:
-                    return X.NumericCellValue.ToString();
-                case CellType.String:
-                    return X.StringCellValue;
-                case CellType.Formula:
-                    return X.CellFormula;
-                case CellType.Blank:
-                    return "";
-                case CellType.Boolean:
-                    return X.BooleanCellValue.ToString();
-                case CellType.Error:
-                    return null;
-                default:
-                    return null;
-            }
-
+                CellType.Unknown => null,
+                CellType.Numeric => X.NumericCellValue.ToString(),
+                CellType.String => X.StringCellValue,
+                CellType.Formula => X.CellFormula,
+                CellType.Blank => "",
+                CellType.Boolean => X.BooleanCellValue.ToString(),
+                CellType.Error => null,
+                _ => null,
+            };
         }
 
         #region IDisposable Support
@@ -786,7 +808,10 @@ namespace XLS
                 disposedValue = true;
             }
         }
-        void IDisposable.Dispose() => Dispose(true);
+        void IDisposable.Dispose()
+        {
+            Dispose(true);
+        }
         #endregion
     }
 
@@ -800,14 +825,13 @@ namespace XLS
 
         private int FindStringValueCell(string Str)
         {
-            string tester = null;
             Str = Str.ToLower();
 
             for (int x = 1; x < 50; x++)
             {
                 for (int y = 1; y < 25; y++)
                 {
-                    tester = Convert.ToString(_Worksheet[x, y].Value);
+                    string tester = Convert.ToString(_Worksheet[x, y].Value);
 
                     if (tester.ToLower().Contains(Str))
                     {
@@ -824,14 +848,13 @@ namespace XLS
         private int RCCellFind(ref int rowRCFin)
         {
             rowRCFin = 1;
-            string tester = "";
             int cellRC = 4;
             int rowRC;
             for (rowRC = 1; rowRC < 30; rowRC++)
             {
                 for (int cell = 1; cell < 20; cell++)
                 {
-                    tester = Convert.ToString(_Worksheet[rowRC, cell].Value);
+                    string tester = Convert.ToString(_Worksheet[rowRC, cell].Value);
                     foreach (KeyValuePair<FillDefinitionPrice, string> item in ((DictionaryPrice)_Dictionary).GetFillingStringUnderRelate(FillDefinitionPrice.PriceRC))
                     {
                         if (tester.ToUpper().Contains(item.Value.ToUpper()))
@@ -969,7 +992,7 @@ namespace XLS
         {
             List<Image> image = new List<Image>();
 
-            Spire.Xls.Collections.PicturesCollection Pictures = null;
+            Spire.Xls.Collections.PicturesCollection Pictures;
             try
             {
                 Pictures = _Worksheet.Pictures;
@@ -1099,9 +1122,9 @@ namespace XLS
                                 tester = Convert.ToString(_Worksheet[m, cell].Value);
                                 x = tester.Length;
                                 tester = Convert.ToString(_Worksheet[m + 1, cell].Value);
-                                x = x + tester.Length;
+                                x += tester.Length;
                                 tester = Convert.ToString(_Worksheet[m + 2, cell].Value);
-                                x = x + tester.Length;
+                                x += tester.Length;
                                 if (x > 120)
                                 {
                                     DescPoz = cell;
@@ -1403,7 +1426,7 @@ namespace XLS
                         }
                     }
                 }
-               
+
             }
         }
         #region IDisposable Support
@@ -1423,7 +1446,10 @@ namespace XLS
                 disposedValue = true;
             }
         }
-        void IDisposable.Dispose() => Dispose(true);
+        void IDisposable.Dispose()
+        {
+            Dispose(true);
+        }
         #endregion
     }
 }

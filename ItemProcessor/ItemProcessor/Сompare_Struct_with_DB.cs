@@ -50,7 +50,7 @@ namespace Server
                 else if (FindResult.Count == 0)
                 {
 
-                    List<ItemPlusImageAndStorege> X = Cash.NewItem.FindAll(t => t.Item.СomparisonName.Intersect(item.Item.СomparisonName).Any()); if (X.Count == 0)  {   Cash.NewItem.Add(item);
+                 //   List<ItemPlusImageAndStorege> X = Cash.NewItem.FindAll(t => t.Item.СomparisonName.Intersect(item.Item.СomparisonName).Any()); if (X.Count == 0)  {   Cash.NewItem.Add(item);
 
                     //List<ItemDBStruct> FindResult2 = DB_list.FindAll(x => x.СomparisonName.Contains(item.Item.СomparisonName));
                     //if (FindResult2.Count == 1)
@@ -75,7 +75,7 @@ namespace Server
                     //    {
 
                     //    }
-                    }            
+                //    }            
                 }
             }
             if (storegeUpdateList.Count>0)

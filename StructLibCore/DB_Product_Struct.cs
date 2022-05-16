@@ -48,14 +48,13 @@ namespace StructLibs
                     _СomparisonName += item;
                 }
             }
-
             return _СomparisonName.ToLower();
         }
         public void AddPic(Image Pic)
         {
             if (Pic != null && СomparisonName != null)
             {
-                string Imagelink = null;
+                string Imagelink;
 
                 if (СomparisonName[0].Length <= 15)
                 {
@@ -64,7 +63,6 @@ namespace StructLibs
                 else
                 {
                     Imagelink = @"pic\" + СomparisonName[0].Remove(15, СomparisonName.Length);
-
                 }
 
                 for (int i = 16; i < 50; i++)
@@ -72,7 +70,6 @@ namespace StructLibs
                     if (File.Exists(Imagelink + "." + Pic.RawFormat))
                     {
                         Imagelink += i.ToString();
-
                     }
                 }
                 Imagelink = Imagelink + "." + Pic.RawFormat;
@@ -164,7 +161,7 @@ namespace StructLibs
     [System.Serializable]
     public class SiteFieldDesc
     {
-        public string id { get; set; }
+        public string Id { get; set; }
         public string Desc { get; set; }
         public Image Obj { get; set; }
         public FieldType Type { get; set; }

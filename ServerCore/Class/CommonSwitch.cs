@@ -10,8 +10,7 @@ namespace Server
         {
             try
             {
-            using (ApplicationContext DB = new ApplicationContext())
-            {
+                using ApplicationContext DB = new ApplicationContext();
 
                 if (((INetQwerry)Message.Obj) is Network.Аuthorization.NetАuthorization)
                 {
@@ -28,16 +27,15 @@ namespace Server
                 }
                 else if (Program.Cash.Tokens.Contains(Message.Token))
                 {
-                        Message = ((INetQwerry)Message.Obj).Post(DB, Program.Cash);
+                    Message = ((INetQwerry)Message.Obj).Post(DB, Program.Cash);
 
-                      
-                }
+
                 }
             }
             catch (System.Exception e)
             {
                 Program.Loging(e.Message);
-                return null;
+               
             }
             return Message;
         }

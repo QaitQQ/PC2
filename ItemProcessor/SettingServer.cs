@@ -26,7 +26,7 @@
         public static string[] ImapMail = { "price@sabsb.ru", "123456Q" };
         public static string[] ApiSettngs = { SiteLink, Key, tokenfile };
         public static string TargetsList = @"TargetsList.bin";
-        public static string MarketItems = @"MarketItems.bin";
+        public static string Marketplace = @"Marketplace.bin";
     }
 
 }

@@ -5,7 +5,7 @@ using Server.Class.HDDClass;
 using Server.Class.ItemProcessor;
 using Server.Class.PriceProcessing;
 
-using StructLibCore;
+using StructLibCore.Marketplace;
 
 using StructLibs;
 
@@ -17,6 +17,7 @@ using System.Threading.Tasks;
 
 namespace Server
 {
+
     public class CashClass
     {
         public List<СomparisonNameID> ItemName;
@@ -50,12 +51,11 @@ namespace Server
         private List<ItemPlusImageAndStorege> newItem;
         private List<ItemChanges> changedItems;
         private Dictionaries dictionaries;
- 
-        private List<MarketItem> marketItems;
-        public List<MarketItem> MarketItems
+        private MarketPlaceCash marketplace;
+        public MarketPlaceCash Marketplace
         {
-            get { return marketItems; }
-            set { if (value != null) { marketItems = value; СhangeList?.Invoke(Settings.MarketItems, marketItems); } }
+            get { return marketplace; }
+            set { if (value != null) { marketplace = value; СhangeList?.Invoke(Settings.Marketplace, marketplace); } }
         }
         private event Action<string, object> СhangeList;
         public List<ItemPlusImageAndStorege> NewItem
@@ -71,10 +71,8 @@ namespace Server
         public Dictionaries Dictionaries { get => dictionaries; set { if (value != null) { dictionaries = value; СhangeList?.Invoke(Settings.Dictionaries, dictionaries); } } }
         public void ReloadNameCash()
         {
-            using (ApplicationContext db = new ApplicationContext())
-            {
-                ItemName = (from Item in db.Item select new СomparisonNameID() { Name = Item.Name, СomparisonName = Item.СomparisonName[0], Id = Item.Id }).ToList();
-            }
+            using ApplicationContext db = new ApplicationContext();
+            ItemName = (from Item in db.Item select new СomparisonNameID() { Name = Item.Name, СomparisonName = Item.СomparisonName[0], Id = Item.Id }).ToList();
 
         }
         public CashClass()
@@ -86,7 +84,7 @@ namespace Server
             dictionaries = new Dictionaries();
             siteList = new List<ItemDBStruct>();
             Tokens = new List<string>();
-            marketItems = new List<MarketItem>();
+            Marketplace = new MarketPlaceCash();
             Serializer<object> Serializer = new Serializer<object>();
             MailCheckFlag = false;
             ObjBuffer = new List<QueueOfObj>();
@@ -103,80 +101,80 @@ namespace Server
             LoadFromFile(ref priceStorageList, Settings.PriceStoragePath);
             LoadFromFile(ref siteList, Settings.SiteList);
             LoadFromFile(ref targets, Settings.TargetsList);
-            LoadFromFile(ref marketItems, Settings.MarketItems);
-            ReloadNameCash();
+            LoadFromFile(ref marketplace, Settings.Marketplace);
+          //  ReloadNameCash();
             // Gen_Dic();
         }
-        private void Gen_Dic()
-        {
-            Dictionaries = new Dictionaries();
+        //private void Gen_Dic()
+        //{
+        //    Dictionaries = new Dictionaries();
 
-            Dictionaries.Add(new DictionaryPrice("DSSL_Price", new List<string> { "ДССЛ" }, DictionaryRelate.Price));
-            Dictionaries.Add(new DictionaryPrice("Hik_Price", new List<string> { "Хик" }, DictionaryRelate.Price));
-            Dictionaries.Add(new DictionaryPrice("GeoVision_Price", new List<string> { "GeoVision" }, DictionaryRelate.Price));
-            Dictionaries.Add(new DictionaryPrice("HiWatch_Price", new List<string> { "Хайвотч" }, DictionaryRelate.Price));
-            Dictionaries.Add(new DictionaryPrice("HIQ", new List<string> { "HIQ" }, DictionaryRelate.Price));
-            Dictionaries.Add(new DictionaryPrice("Dahua", new List<string> { "Dahua" }, DictionaryRelate.Price));
+        //    Dictionaries.Add(new DictionaryPrice("DSSL_Price", new List<string> { "ДССЛ" }, DictionaryRelate.Price));
+        //    Dictionaries.Add(new DictionaryPrice("Hik_Price", new List<string> { "Хик" }, DictionaryRelate.Price));
+        //    Dictionaries.Add(new DictionaryPrice("GeoVision_Price", new List<string> { "GeoVision" }, DictionaryRelate.Price));
+        //    Dictionaries.Add(new DictionaryPrice("HiWatch_Price", new List<string> { "Хайвотч" }, DictionaryRelate.Price));
+        //    Dictionaries.Add(new DictionaryPrice("HIQ", new List<string> { "HIQ" }, DictionaryRelate.Price));
+        //    Dictionaries.Add(new DictionaryPrice("Dahua", new List<string> { "Dahua" }, DictionaryRelate.Price));
 
-            Dictionaries.Add(new DictionaryPrice("DSSL_Storage", new List<string> { "Складская справка email" }, DictionaryRelate.Storage));
-            Dictionaries.Add(new DictionaryBase("xls", new List<string> { "xls", "xlsx" }, Relate: DictionaryRelate.Extension));
-            Dictionaries.Add(new DictionaryBase("NameEdit", new List<string> { "!", "(", ")", "новинка", "готовится к релизу", "снимается с продаж", "снимается с производства", "замена", "\n", "Доступен к заказу" }, DictionaryRelate.Extension));
-            Dictionaries.Add(new DictionaryBase("New", new List<string> { "новинка", "готовитсякрелизу" }, DictionaryRelate.Tags));
-            Dictionaries.Add(new DictionaryBase("Old", new List<string> { "снимаетсяспродаж", "снимаетсяспроизводства", "замена" }, DictionaryRelate.Tags));
-            Dictionaries.Add(new DictionaryBase("OnRequest", new List<string> { "подзаказ2месяца", "подзаказ2недели" }, DictionaryRelate.Tags));
-
-
-
-            DictionaryPrice DSSL_PriceDic = (DictionaryPrice)Dictionaries.Get("DSSL_Price");
-
-            DSSL_PriceDic.Set_Filling_method_string(FillDefinitionPrice.Name, "Модель");
-            DSSL_PriceDic.Set_Filling_method_string(FillDefinitionPrice.PriceRC, "розни");
-            DSSL_PriceDic.Set_Filling_method_string(FillDefinitionPrice.PriceRC, "ользователь");
-            DSSL_PriceDic.Set_Filling_method_string(FillDefinitionPrice.PriceRC, "EU");
-            DSSL_PriceDic.Set_Filling_method_string(FillDefinitionPrice.Description, "писание");
-            DSSL_PriceDic.Set_Filling_method_string(FillDefinitionPrice.PriceDC, "Дистрибьютор");
-            DSSL_PriceDic.Set_Filling_method_string(FillDefinitionPrice.MaxRow, "250");
+        //    Dictionaries.Add(new DictionaryPrice("DSSL_Storage", new List<string> { "Складская справка email" }, DictionaryRelate.Storage));
+        //    Dictionaries.Add(new DictionaryBase("xls", new List<string> { "xls", "xlsx" }, Relate: DictionaryRelate.Extension));
+        //    Dictionaries.Add(new DictionaryBase("NameEdit", new List<string> { "!", "(", ")", "новинка", "готовится к релизу", "снимается с продаж", "снимается с производства", "замена", "\n", "Доступен к заказу" }, DictionaryRelate.Extension));
+        //    Dictionaries.Add(new DictionaryBase("New", new List<string> { "новинка", "готовитсякрелизу" }, DictionaryRelate.Tags));
+        //    Dictionaries.Add(new DictionaryBase("Old", new List<string> { "снимаетсяспродаж", "снимаетсяспроизводства", "замена" }, DictionaryRelate.Tags));
+        //    Dictionaries.Add(new DictionaryBase("OnRequest", new List<string> { "подзаказ2месяца", "подзаказ2недели" }, DictionaryRelate.Tags));
 
 
-            DictionaryPrice Hik_PriceDic = (DictionaryPrice)Dictionaries.Get("Hik_Price");
 
-            Hik_PriceDic.Set_Filling_method_string(FillDefinitionPrice.Name, "Модель");
-            Hik_PriceDic.Set_Filling_method_string(FillDefinitionPrice.PriceRC, "Новая РРЦ");
-            Hik_PriceDic.Set_Filling_method_string(FillDefinitionPrice.Description, "Описание");
-            Hik_PriceDic.Set_Filling_method_string(FillDefinitionPrice.MaxRow, "250");
+        //    DictionaryPrice DSSL_PriceDic = (DictionaryPrice)Dictionaries.Get("DSSL_Price");
 
-            DictionaryPrice GeoVision_Price_PriceDic = (DictionaryPrice)Dictionaries.Get("GeoVision_Price");
+        //    DSSL_PriceDic.Set_Filling_method_string(FillDefinitionPrice.Name, "Модель");
+        //    DSSL_PriceDic.Set_Filling_method_string(FillDefinitionPrice.PriceRC, "розни");
+        //    DSSL_PriceDic.Set_Filling_method_string(FillDefinitionPrice.PriceRC, "ользователь");
+        //    DSSL_PriceDic.Set_Filling_method_string(FillDefinitionPrice.PriceRC, "EU");
+        //    DSSL_PriceDic.Set_Filling_method_string(FillDefinitionPrice.Description, "писание");
+        //    DSSL_PriceDic.Set_Filling_method_string(FillDefinitionPrice.PriceDC, "Дистрибьютор");
+        //    DSSL_PriceDic.Set_Filling_method_string(FillDefinitionPrice.MaxRow, "250");
 
-            GeoVision_Price_PriceDic.Set_Filling_method_string(FillDefinitionPrice.Name, @"Наименование");
-            GeoVision_Price_PriceDic.Set_Filling_method_string(FillDefinitionPrice.PriceRC, "Розн");
-            GeoVision_Price_PriceDic.Set_Filling_method_string(FillDefinitionPrice.PriceDC, "Дилер");
-            GeoVision_Price_PriceDic.Set_Filling_method_string(FillDefinitionPrice.Description, "Наименование");
-            GeoVision_Price_PriceDic.Set_Filling_method_string(FillDefinitionPrice.MaxRow, "250");
-            GeoVision_Price_PriceDic.Set_Filling_method_string(FillDefinitionPrice.NamePattern, @"^.*\s");
 
-            DictionaryPrice HiWatch_PriceDic = (DictionaryPrice)Dictionaries.Get("HiWatch_Price");
+        //    DictionaryPrice Hik_PriceDic = (DictionaryPrice)Dictionaries.Get("Hik_Price");
 
-            HiWatch_PriceDic.Set_Filling_method_string(FillDefinitionPrice.Name, "Модель");
-            HiWatch_PriceDic.Set_Filling_method_string(FillDefinitionPrice.PriceRC, "Розница 10.03");
-            HiWatch_PriceDic.Set_Filling_method_string(FillDefinitionPrice.Description, "Описание");
-            HiWatch_PriceDic.Set_Filling_method_string(FillDefinitionPrice.MaxRow, "250");
+        //    Hik_PriceDic.Set_Filling_method_string(FillDefinitionPrice.Name, "Модель");
+        //    Hik_PriceDic.Set_Filling_method_string(FillDefinitionPrice.PriceRC, "Новая РРЦ");
+        //    Hik_PriceDic.Set_Filling_method_string(FillDefinitionPrice.Description, "Описание");
+        //    Hik_PriceDic.Set_Filling_method_string(FillDefinitionPrice.MaxRow, "250");
 
-            DictionaryPrice HIQ_PriceDic = (DictionaryPrice)Dictionaries.Get("HIQ");
+        //    DictionaryPrice GeoVision_Price_PriceDic = (DictionaryPrice)Dictionaries.Get("GeoVision_Price");
 
-            HIQ_PriceDic.Set_Filling_method_string(FillDefinitionPrice.Name, "Наименование");
-            HIQ_PriceDic.Set_Filling_method_string(FillDefinitionPrice.PriceRC, "Розничная");
-            HIQ_PriceDic.Set_Filling_method_string(FillDefinitionPrice.Description, "Краткие характеристики");
-            HIQ_PriceDic.Set_Filling_method_string(FillDefinitionPrice.NamePattern, @"HIQ.*?\, ");
-            HIQ_PriceDic.Set_Filling_method_string(FillDefinitionPrice.MaxRow, "250");
+        //    GeoVision_Price_PriceDic.Set_Filling_method_string(FillDefinitionPrice.Name, @"Наименование");
+        //    GeoVision_Price_PriceDic.Set_Filling_method_string(FillDefinitionPrice.PriceRC, "Розн");
+        //    GeoVision_Price_PriceDic.Set_Filling_method_string(FillDefinitionPrice.PriceDC, "Дилер");
+        //    GeoVision_Price_PriceDic.Set_Filling_method_string(FillDefinitionPrice.Description, "Наименование");
+        //    GeoVision_Price_PriceDic.Set_Filling_method_string(FillDefinitionPrice.MaxRow, "250");
+        //    GeoVision_Price_PriceDic.Set_Filling_method_string(FillDefinitionPrice.NamePattern, @"^.*\s");
 
-            DictionaryPrice Dahua_PriceDic = (DictionaryPrice)Dictionaries.Get("Dahua");
-            Dahua_PriceDic.Set_Filling_method_string(FillDefinitionPrice.Name, "Наименование");
-            Dahua_PriceDic.Set_Filling_method_string(FillDefinitionPrice.PriceRC, "Розничная");
-            Dahua_PriceDic.Set_Filling_method_string(FillDefinitionPrice.Description, "Описание");
-            Dahua_PriceDic.Set_Filling_method_string(FillDefinitionPrice.MaxRow, "250");
-            Dahua_PriceDic.Set_Filling_method_string(FillDefinitionPrice.PriceRC, "РРЦ");
+        //    DictionaryPrice HiWatch_PriceDic = (DictionaryPrice)Dictionaries.Get("HiWatch_Price");
 
-        }
+        //    HiWatch_PriceDic.Set_Filling_method_string(FillDefinitionPrice.Name, "Модель");
+        //    HiWatch_PriceDic.Set_Filling_method_string(FillDefinitionPrice.PriceRC, "Розница 10.03");
+        //    HiWatch_PriceDic.Set_Filling_method_string(FillDefinitionPrice.Description, "Описание");
+        //    HiWatch_PriceDic.Set_Filling_method_string(FillDefinitionPrice.MaxRow, "250");
+
+        //    DictionaryPrice HIQ_PriceDic = (DictionaryPrice)Dictionaries.Get("HIQ");
+
+        //    HIQ_PriceDic.Set_Filling_method_string(FillDefinitionPrice.Name, "Наименование");
+        //    HIQ_PriceDic.Set_Filling_method_string(FillDefinitionPrice.PriceRC, "Розничная");
+        //    HIQ_PriceDic.Set_Filling_method_string(FillDefinitionPrice.Description, "Краткие характеристики");
+        //    HIQ_PriceDic.Set_Filling_method_string(FillDefinitionPrice.NamePattern, @"HIQ.*?\, ");
+        //    HIQ_PriceDic.Set_Filling_method_string(FillDefinitionPrice.MaxRow, "250");
+
+        //    DictionaryPrice Dahua_PriceDic = (DictionaryPrice)Dictionaries.Get("Dahua");
+        //    Dahua_PriceDic.Set_Filling_method_string(FillDefinitionPrice.Name, "Наименование");
+        //    Dahua_PriceDic.Set_Filling_method_string(FillDefinitionPrice.PriceRC, "Розничная");
+        //    Dahua_PriceDic.Set_Filling_method_string(FillDefinitionPrice.Description, "Описание");
+        //    Dahua_PriceDic.Set_Filling_method_string(FillDefinitionPrice.MaxRow, "250");
+        //    Dahua_PriceDic.Set_Filling_method_string(FillDefinitionPrice.PriceRC, "РРЦ");
+
+        //}
         private void LoadFromFile<T>(ref T Object, string Path)
         {
             T Obj = Task.Run(() => new Deserializer<T>(Path).Doit()).Result;
@@ -186,7 +184,7 @@ namespace Server
             }
 
         }
-        public void planedPriceWork(CashClass cash)
+        public void PlanedPriceWork(CashClass cash)
         {
             foreach (var item in PriceStorageList)
             {
@@ -235,13 +233,11 @@ namespace Server
             {
                 var fs = File.OpenRead(activeprice.FilePath);
                 string Attb = string.Join(",", activeprice.Attributes);
-                using (ApplicationContext DB = new ApplicationContext())
-                {
-                    DB_list = DB.Item.ToList();
-                    var lst = new PriceProcessingRules(fs, activeprice.Name, Attb, cash);
-                    lst.СhangeResult += Comparer;
-                    lst.Apply_rules();
-                }
+                using ApplicationContext DB = new ApplicationContext();
+                DB_list = DB.Item.ToList();
+                var lst = new PriceProcessingRules(fs, activeprice.Name, Attb, cash);
+                lst.СhangeResult += Comparer;
+                lst.Apply_rules();
 
             }
             void Comparer(object Lst)

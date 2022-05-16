@@ -22,7 +22,7 @@ namespace Client.Forms
             {
                 AutologinCheck.Checked = false;
             }
-            FillUserList();
+          //  FillUserList();
         }
         private void FillUserList()
         {
@@ -32,7 +32,7 @@ namespace Client.Forms
         }
         private void Ok_Button_Click(object sender, EventArgs e)
         {
-            if (textBox1.Text != null) { Login(comboBox1.SelectedItem.ToString(), textBox1.Text);   }
+            if (textBox1.Text != null) { Login(comboBox1.Text, textBox1.Text);   }
             else { Ok_Button.BackColor = System.Drawing.Color.Red; }
         }
         private void Login(string Login, string Pass)

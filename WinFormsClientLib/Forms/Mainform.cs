@@ -14,6 +14,7 @@ using WinFormsClientLib.Forms.WPF.Controls;
 using WinFormsClientLib.Forms.WPF.Controls.CRMControls;
 using WinFormsClientLib.Forms.WPF.Controls.DictionaryControls;
 using WinFormsClientLib.Forms.WPF.Controls.ItemControls;
+using WinFormsClientLib.Forms.WPF.Controls.ItemControls.Market;
 using WinFormsClientLib.Forms.WPF.Controls.Other;
 using WinFormsClientLib.Forms.WPF.ItemControls;
 
@@ -32,7 +33,7 @@ namespace Client.Forms
                  controls: new Control[]
                  {
                     new ElementHost() { Child = new MainItemControl()  },
-                 //   new ElementHost() { Child = new MainCRMControl()  },
+               
                  },
                  Orientation: Orientation.Horizontal
                  )
@@ -43,7 +44,6 @@ namespace Client.Forms
                 controls: new Control[]
                 {
                  new ElementHost() { Child = new TextPayEditor()  },
-
                 }
                 
                 
@@ -106,7 +106,7 @@ namespace Client.Forms
         }
         private void MarketControl(object sender, EventArgs e)
         {
-            FormActivator(new UniversalWPFContainerForm(new MarketControl()) { CanClosed = true });
+            FormActivator(new UniversalWPFContainerForm(new MainMarketPlaceControl()) { CanClosed = true });
         }
         private void PriceStorege_Win_Show(object sender, EventArgs e)
         {

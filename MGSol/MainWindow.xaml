@@ -1,0 +1,52 @@
+﻿<Window x:Class="MGSol.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:MGSol"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800">
+    <!--WindowStyle="None"
+        AllowsTransparency="True"-->
+        
+        
+  
+    <Window.Resources>
+        <Style TargetType="Button">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border MinWidth="35" MaxHeight="35"  BorderThickness="2" CornerRadius="3"  BorderBrush="{TemplateBinding Background}">
+                            <Grid x:Name="BtnGrd"  Background="{TemplateBinding Background }">
+                                <ContentPresenter  HorizontalAlignment="Center"  VerticalAlignment="Center"  RecognizesAccessKey="True"></ContentPresenter>
+                            </Grid>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="Button">
+                                <Border MinWidth="35" MaxHeight="35"  BorderThickness="2" CornerRadius="3"  BorderBrush="Gray">
+                                    <Grid x:Name="BtnGrd"  Background="Gray">
+                                        <ContentPresenter  HorizontalAlignment="Center"  VerticalAlignment="Center"  RecognizesAccessKey="True"></ContentPresenter>
+                                    </Grid>
+                                </Border>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+    </Window.Resources>
+    <Border  Width="Auto" Height="Auto" CornerRadius="10">
+        <Grid>
+        <TabControl x:Name="MainTabControl"  TabStripPlacement="Left">
+            
+        </TabControl>
+    </Grid>
+    </Border>
+</Window>

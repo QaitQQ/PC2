@@ -40,6 +40,9 @@ namespace Server
             if (arg.Contains("-Server"))
             {
                 Log("Server Start " + DateTime.Now);
+
+                Cash.ReloadNameCash();
+
                 GC.SuppressFinalize(Cash);
                 StartTargeHandler();
                 if (arg.Contains("-Bot"))
@@ -57,8 +60,16 @@ namespace Server
             }
             if (arg.Contains("-Client"))
             {
-                Log("Client Start " + DateTime.Now);
-                StartClient();
+                try
+                {
+                    Log("Client Start " + DateTime.Now);
+                    StartClient();
+                }
+                catch (Exception e)
+                {
+                    Log(e.ToString() + DateTime.Now);
+                }
+             
             }
             GC.Collect();
             if (Server != null)
@@ -74,7 +85,7 @@ namespace Server
             //  Class.Net.Imap_Checker ImapServer = new Class.Net.Imap_Checker();
             //  await Task.Factory.StartNew(() => ImapServer.Start_Check());
             TargetDictionary.Dictionarys.Add("Imap_Checker", new Action(() => new Imap_Checker().CheckAndSave()));
-            TargetDictionary.Dictionarys.Add("planedPriceWork", new Action(() => Cash.planedPriceWork(Cash)));
+            TargetDictionary.Dictionarys.Add("planedPriceWork", new Action(() => Cash.PlanedPriceWork(Cash)));
            // Cash.Targets.Add(new Target("planedPriceWork", Target.Regularity.after_time, PeriodTime: 300));
             //  Cash.Targets.Add(new Target("Imap_Checker", Target.Regularity.after_time, PeriodTime: 300));
             //  Cash.Targets = Cash.Targets;

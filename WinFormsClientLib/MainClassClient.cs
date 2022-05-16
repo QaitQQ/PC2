@@ -28,9 +28,17 @@ namespace Client
         private readonly int Port = Main.Server_Port;
         public TCPMessage Messaging(TCPMessage Data)
         {
-            using ClientTCP Client = new ClientTCP(IP, Port, Main.Token);
+            try
+            {
+                using ClientTCP Client = new ClientTCP(IP, Port, Main.Token);
+                return Client.Messaging(Data);
+            }
+            catch (Exception)
+            {
 
-            return Client.Messaging(Data);
+                throw;
+            }
+
         }
     }
     public class Ico

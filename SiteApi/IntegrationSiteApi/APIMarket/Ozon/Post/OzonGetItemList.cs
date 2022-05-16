@@ -1,16 +1,21 @@
 ﻿using Newtonsoft.Json;
 
+using Server.Class.IntegrationSiteApi.Market.Ozon.OzonPost;
+
+using StructLibCore.Marketplace;
+
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
 
 namespace Server.Class.IntegrationSiteApi.Market.Ozon
 {
-    public class OzonGetItemList : OzonPost
+    public class OzonGetItemList : Server.Class.IntegrationSiteApi.Market.Ozon.OzonPost.OzonPost
     {
-        public OzonGetItemList(string ClientID, string apiKey) : base(ClientID, apiKey)
+        public OzonGetItemList(APISetting aPISetting) : base(aPISetting)
         {
-        } 
+        }
+
         public List<Item> Get()
         {
             var httpWebRequest = GetRequest(@"v1/product/list");

@@ -18,13 +18,13 @@ using System.Windows.Media.Imaging;
 namespace WinFormsClientLib.Forms.WPF.Controls.ItemControls
 {
 
-    /// <summary>
-    /// Логика взаимодействия для SiteItemGenerator.xaml
-    /// </summary>
+   // <summary>
+   // Логика взаимодействия для SiteItemGenerator.xaml
+  // </summary>
     public partial class SiteItemGenerator : UserControl
     {
         public ItemPlusImageAndStorege Item;
-        private ObservableCollection<WrapImage> Images;
+        private ObservableCollection<WrapImage> Images { get; set; }
         private ObservableCollection<FieldGrid> StackSourse { get; set; }
         public SiteItemGenerator(ItemPlusImageAndStorege item)
         {
@@ -33,12 +33,12 @@ namespace WinFormsClientLib.Forms.WPF.Controls.ItemControls
             InitializeComponent();
             MinimizeButton.Content = Item.Item.Name;
             Images = new ObservableCollection<WrapImage>();
-            ImageStack.ItemsSource = Images;        
+            ImageStack.ItemsSource = Images;
             if (Item.Image != null)
             {
                 using System.Drawing.Image Img = Item.Image;
-                
-                if (item.Image != null)   { Images.Add(new WrapImage(item.Image));  }
+
+                if (item.Image != null) { Images.Add(new WrapImage(item.Image)); }
             }
 
             if (Item.Item.DescriptionSeparator == null)
@@ -56,7 +56,7 @@ namespace WinFormsClientLib.Forms.WPF.Controls.ItemControls
             {
                 if (X.Id == item.Item.ManufactorID)
                 {
-                    Desc = Desc + Item.Item.DescriptionSeparator+ X.Name;
+                    Desc = Desc + Item.Item.DescriptionSeparator + X.Name;
                     break;
                 }
             }
@@ -68,7 +68,7 @@ namespace WinFormsClientLib.Forms.WPF.Controls.ItemControls
             ParseAttribeteFromDescription(Desc);
         }
         private void ImageSearchButton_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
-        {        
+        {
 
         }
         private void MinimizeButton_Click(object sender, RoutedEventArgs e)
@@ -82,22 +82,20 @@ namespace WinFormsClientLib.Forms.WPF.Controls.ItemControls
                 MainGrid.Height = 20;
             }
         }
-        private System.Drawing.Image ConvertBitmapImage(BitmapImage img)
-        {
-            using (MemoryStream outStream = new MemoryStream())
-            {
-                BitmapEncoder enc = new BmpBitmapEncoder();
-                enc.Frames.Add(BitmapFrame.Create(img));     
-                enc.Save(outStream);            
-                System.Drawing.Image image = System.Drawing.Image.FromStream(outStream);
-                using var MS = new MemoryStream();
-                image.Save("123.png");
-                image.Save(MS, ImageFormat.Png);
-                System.Drawing.Image Img = System.Drawing.Image.FromStream(MS);
-                Img.Save("223.png");
-                return Img;
-            }
-        }
+        //private System.Drawing.Image ConvertBitmapImage(BitmapImage img)
+        //{
+        //    using MemoryStream outStream = new MemoryStream();
+        //    BitmapEncoder enc = new BmpBitmapEncoder();
+        //    enc.Frames.Add(BitmapFrame.Create(img));
+        //    enc.Save(outStream);
+        //    System.Drawing.Image image = System.Drawing.Image.FromStream(outStream);
+        //    using var MS = new MemoryStream();
+        //    image.Save("123.png");
+        //    image.Save(MS, ImageFormat.Png);
+        //    System.Drawing.Image Img = System.Drawing.Image.FromStream(MS);
+        //    Img.Save("223.png");
+        //    return Img;
+        //}
         private void ImagePlus_Click(object sender, RoutedEventArgs e)
         {
             System.Drawing.Image X = new Network.Item.SiteApi.NetImageParser().Get<System.Drawing.Image>(new WrapNetClient(), Item.Item);
@@ -132,7 +130,7 @@ namespace WinFormsClientLib.Forms.WPF.Controls.ItemControls
                             string[] massstr = Lst[t].Split(sep);
                             for (int c = 1; c < massstr.Length; c++)
                             {
-                                    Lst.Add(massstr[c]);                            
+                                Lst.Add(massstr[c]);
                             }
                             Lst[t] = Lst[t].Split(sep)[0];
                         }
@@ -257,7 +255,7 @@ namespace WinFormsClientLib.Forms.WPF.Controls.ItemControls
             List<SiteFieldDesc> lst = new List<SiteFieldDesc>();
             foreach (var item in StackSourse)
             {
-                lst.Add(new SiteFieldDesc() { id = item.ID.ToString(), Desc = item.Description, Type = item.Type });
+                lst.Add(new SiteFieldDesc() { Id = item.ID.ToString(), Desc = item.Description, Type = item.Type });
             }
             if (Images.Count > 0)
             {
@@ -265,7 +263,7 @@ namespace WinFormsClientLib.Forms.WPF.Controls.ItemControls
                 lst.Add(new SiteFieldDesc() { Obj = img, Type = FieldType.Image });
             }
 
-            var I = new Network.Item.SiteApi.AddNewPosition().Get<int>(new WrapNetClient(), lst);
+            new Network.Item.SiteApi.AddNewPosition().Get<int>(new WrapNetClient(), lst);
         }
         private void Grid_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
@@ -279,11 +277,11 @@ namespace WinFormsClientLib.Forms.WPF.Controls.ItemControls
                 menu.Items.Add(button);
                 ((Grid)sender).ContextMenu = menu;
             }
-             void Button_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+            void Button_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
             {
                 Images.Remove((WrapImage)((Image)((Grid)((ContextMenu)((TextBlock)sender).Parent).PlacementTarget).Children[0]).DataContext);
             }
-           
+
         }
         private static System.Drawing.Image ImageResize(ItemDBStruct Item, System.Drawing.Image newImage)
         {
@@ -317,11 +315,9 @@ namespace WinFormsClientLib.Forms.WPF.Controls.ItemControls
                 graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
                 graphics.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.HighQuality;
 
-                using (ImageAttributes wrapMode = new ImageAttributes())
-                {
-                    wrapMode.SetWrapMode(System.Drawing.Drawing2D.WrapMode.TileFlipXY);
-                    graphics.DrawImage(image, destRect, 0, 0, image.Width, image.Height, System.Drawing.GraphicsUnit.Pixel, wrapMode);
-                }
+                using ImageAttributes wrapMode = new ImageAttributes();
+                wrapMode.SetWrapMode(System.Drawing.Drawing2D.WrapMode.TileFlipXY);
+                graphics.DrawImage(image, destRect, 0, 0, image.Width, image.Height, System.Drawing.GraphicsUnit.Pixel, wrapMode);
             }
 
             return destImage;

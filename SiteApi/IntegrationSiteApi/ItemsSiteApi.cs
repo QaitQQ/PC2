@@ -228,11 +228,11 @@ namespace Server.Class.IntegrationSiteApi
                 {
                     if (item.Type == FieldType.Attribute)
                     {
-                        Str = Str + item.id + "|" + item.Desc + ";";
+                        Str = Str + item.Id + "|" + item.Desc + ";";
                     }
                     else
                     {
-                        Str = Str + item.id + "|";
+                        Str = Str + item.Id + "|";
                     }
                   
                 }
