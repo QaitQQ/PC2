@@ -2,13 +2,9 @@
 using NPOI.SS.UserModel;
 using NPOI.SS.Util;
 using NPOI.XSSF.UserModel;
-
 using Object_Description;
-
 using Spire.Xls;
-
 using StructLibs;
-
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -535,8 +531,6 @@ namespace XLS
 
                 for (int Row = rowRCFin; Row < MaxRow; Row++)
                 {
-
-
                     if (nullstr > 50)
                     {
                         break;
@@ -753,7 +747,6 @@ namespace XLS
 
             }
         }
-
         private CellRangeAddress GetMergedRegion(ISheet sheet, int rowNum, int cellNum)
         {
             for (int i = 0; i < sheet.NumMergedRegions; i++)
@@ -766,7 +759,6 @@ namespace XLS
             }
             return null;
         }
-
         private string GetCellValue(int Row, int Col)
         {
 
@@ -814,7 +806,6 @@ namespace XLS
         }
         #endregion
     }
-
     public class XLS_To_ClassSpire : IDisposable
     {
         private Workbook _workbook;

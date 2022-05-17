@@ -1,8 +1,6 @@
 ﻿namespace Server
 {
     internal class XLS_Save
-
-
     {
         //public void SaveXLSX ( DataGridView priceData )
         //{

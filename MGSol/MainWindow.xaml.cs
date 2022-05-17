@@ -21,9 +21,9 @@ namespace MGSol
             InitializeComponent();
             MModel = new MainModel();
             MainTabControl.ItemsSource = MModel.Tabs;
-            MModel.Tabs.Add(new TabItem() { Content = new Panel.OrdersControl(MModel), Header = new TextBlock() {Text = "Заказы"/*, Background =  new SolidColorBrush(System.Windows.Media.Color.FromRgb(102,204,0))*/}, LayoutTransform = new RotateTransform { Angle = -90 } });
+          //  MModel.Tabs.Add(new TabItem() { Content = new Panel.OrdersControl(MModel), Header = new TextBlock() {Text = "Заказы"/*, Background =  new SolidColorBrush(System.Windows.Media.Color.FromRgb(102,204,0))*/}, LayoutTransform = new RotateTransform { Angle = -90 } });
             MModel.Tabs.Add(new TabItem() { Content = new Panel.ItemControl(MModel), Header = new TextBlock() { Text = "Товары" }, LayoutTransform = new RotateTransform { Angle = -90 } });
-            MModel.Tabs.Add(new TabItem() { Content = new Panel.OptionControl(MModel), Header = new TextBlock() { Text = "Настройки" }, LayoutTransform = new RotateTransform { Angle = -90 } });
+          //  MModel.Tabs.Add(new TabItem() { Content = new Panel.OptionControl(MModel), Header = new TextBlock() { Text = "Настройки" }, LayoutTransform = new RotateTransform { Angle = -90 } });
             MModel.Tabs.Add(new TabItem() { Content = new Panel.ReportControl(MModel), Header = new TextBlock() { Text = "Отчеты" }, LayoutTransform = new RotateTransform { Angle = -90 } });
 
         }
@@ -42,6 +42,7 @@ namespace MGSol
             set { options = value; СhangeList?.Invoke("Option.bin", options); }
         }
         internal ObservableCollection<Control> Tabs { get; set; }
+        public void Save() { СhangeList?.Invoke("Option.bin", options); }
         public MainModel() 
         { 
             Tabs = new ObservableCollection<Control>();

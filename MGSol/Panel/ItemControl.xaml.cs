@@ -95,6 +95,7 @@ namespace MGSol.Panel
         private void Button_Save(object sender, RoutedEventArgs e)
         {
             _model.Option.MarketItems = ItemsList;
+            _model.Save();
             //new Network.Item.MarketApi.SaveItemsList().Get<bool>(new Client.WrapNetClient(), ItemsList.ToArray().ToList());
         }
         #endregion

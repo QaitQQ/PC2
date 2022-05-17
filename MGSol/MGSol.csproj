@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\ItemProcessor\ItemProcessor.csproj" />
     <ProjectReference Include="..\SiteApi\SiteApi.csproj" />
     <ProjectReference Include="..\StructLibCore\StructLibCore.csproj" />
   </ItemGroup>
