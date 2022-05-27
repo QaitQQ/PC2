@@ -213,12 +213,11 @@ namespace MGSol.Panel
 
             BNavi(Z);
         }
-
         private void BNavi(string Z)
         {
             string y = AppDomain.CurrentDomain.BaseDirectory;
 
-            if (!Z.Contains("none"))
+            if (Z == null ||!Z.Contains("none") )
             {
                 Browser.Navigate(@"file:///" + y + Z);
             }
@@ -228,6 +227,4 @@ namespace MGSol.Panel
             }
         }
     }
-
-
 }

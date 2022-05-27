@@ -1,22 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
 using System.IO;
 using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using System.Xml;
 using System.Xml.Serialization;
 
 namespace MGSol.Panel
@@ -27,14 +18,18 @@ namespace MGSol.Panel
     public partial class ReportControl : UserControl
     {
         private MainModel mModel { get; set; }
-        List<List<DataValue>> ListStr;
-        List<ItemCell> ItemCells;
-        ParamsColl paramsColl;
+
+        private ParamsColl paramsColl;
+        private string[][] ReadMass;
+        private List<ItemCell> ItemCells;
+
         public ReportControl(MainModel Model)
         {
-            paramsColl = new ParamsColl();
-            paramsColl.Npos = new SpanCells();
-            this.mModel = Model;
+            paramsColl = new ParamsColl
+            {
+                Npos = new SpanCells()
+            };
+            mModel = Model;
             ItemCells = new List<ItemCell>();
             string y = AppDomain.CurrentDomain.BaseDirectory;
             DirectoryInfo dir = new DirectoryInfo(y + @"/Report");
@@ -52,65 +47,117 @@ namespace MGSol.Panel
         private void FileList_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             string t = (string)((System.Windows.Controls.ListBox)sender).SelectedItem;
-            var Z = new ItemProcessor.XLS.XLS_ReadReport().Read(t);
-            ListStr = new List<List<DataValue>>();
+            string[][] Z = new ItemProcessor.XLS.XLS_ReadReport().Read(t);
+            var blst = new List<string[]>();
 
             for (int i = 0; i < Z.Length - 1; i++)
             {
-                ListStr.Add(new List<DataValue>());
-
+                string n = null;
                 for (int u = 0; u < Z[i].Length - 1; u++)
                 {
-                    ListStr[i].Add(new DataValue() { x = i, y = u, Value = Z[i][u] });
+                    n = n + Z[i][u];
+                }
+                if (n != "")
+                {
+                    blst.Add(Z[i]);
                 }
             }
-            lst.ItemsSource = ListStr;
+            Z = blst.ToArray();
 
+            var LsLsZ = new List<string>[Z.Length];
+
+            for (int i = 0; i < LsLsZ.Length; i++)
+            {
+                LsLsZ[i] = Z[i].ToList();
+            }
+
+            RemoveEmpyCol( LsLsZ);
+
+            blst = new List<string[]>();
+
+            for (int i = 0; i < LsLsZ.Length; i++)
+            {
+                blst.Add(LsLsZ[i].ToArray());
+            }
+
+            Z = blst.ToArray();
+
+            for (int i = 0; i < Z[0].Length; i++)
+            {
+                var col = new DataGridTextColumn();
+                col.Header = "Column " + i;
+                col.Binding = new Binding(string.Format("[{0}]", i));
+                Dtgreed.Columns.Add(col);
+            }
+
+            ReadMass = Z;
+
+            Dtgreed.ItemsSource = ReadMass;
         }
-        void addBtn(ContextMenu menu, string BtnCont, MouseButtonEventHandler handler)
+
+        private static void RemoveEmpyCol(List<string>[] LsLsZ)
         {
-            var X = new Label() { Content = BtnCont };
+            for (int x = 0; x < LsLsZ[0].Count - 1; x++)
+            {
+                string n = null;
+                for (int y = 0; y < LsLsZ.Length - 1; y++)
+                {
+                    n = n + LsLsZ[y][x];
+                }
+                if (n == "")
+                {
+                    foreach (var item in LsLsZ)
+                    {
+                        item.RemoveAt(x);
+                    }
+                    RemoveEmpyCol( LsLsZ);
+                }
+            }
+        }
+
+        private void addBtn(ContextMenu menu, string BtnCont, MouseButtonEventHandler handler)
+        {
+            Label X = new Label() { Content = BtnCont };
             X.MouseLeftButtonDown += handler;
             menu.Items.Add(X);
         }
-        private void TextBlock_MouseRightButtonUp(object sender, MouseButtonEventArgs e)
+        private void ContextMenuShow(int X, int Y)
         {
+            ContextMenu M = new ContextMenu();
 
-            var box = (System.Windows.Controls.TextBlock)sender;
-            MGSol.Panel.ReportControl.DataValue dc = (MGSol.Panel.ReportControl.DataValue)box.DataContext;
-            var M = new ContextMenu();
-
-            addBtn(M, "Номер Позиции Начало", (x, y) => { paramsColl.Npos.Start = dc.x; });
-            addBtn(M, "Номер Позиции Конец", (x, y) => { paramsColl.Npos.End = dc.x; });
-            addBtn(M, "Колонка Цены", (x, y) => { paramsColl.PriceCol = dc.y; });
-            addBtn(M, "Колонка SKU", (x, y) => { paramsColl.SkuCol = dc.y; });
-            addBtn(M, "Колонка Количество", (x, y) => { paramsColl.CountCol = dc.y; });
-            addBtn(M, "Колонка Дата", (x, y) => { paramsColl.DateCol = dc.y; });
-            addBtn(M, "Колонка Номер отправления", (x, y) => { paramsColl.NPostCol = dc.y; });
+            addBtn(M, "Номер Позиции Начало", (x, y) => { paramsColl.Npos.Start =Y; });
+            addBtn(M, "Номер Позиции Конец", (x, y) => { paramsColl.Npos.End = Y; });
+            addBtn(M, "Колонка Цены", (x, y) => { paramsColl.PriceCol = X; });
+            addBtn(M, "Колонка SKU", (x, y) => { paramsColl.SkuCol = X; });
+            addBtn(M, "Колонка Количество", (x, y) => { paramsColl.CountCol = X; });
+            addBtn(M, "Колонка Дата", (x, y) => { paramsColl.DateCol = X; });
+            addBtn(M, "Колонка Номер отправления", (x, y) => { paramsColl.NPostCol = X; });
 
             M.IsOpen = true;
             PriceColBox.Text = paramsColl.PriceCol.ToString();
             SkuColBox.Text = paramsColl.SkuCol.ToString();
             CountColBox.Text = paramsColl.CountCol.ToString();
+
+
+       
         }
-        class DataValue
+        private class DataValue
         {
             public int x;
             public int y;
             public string Value { get; set; }
         }
-
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             for (int i = paramsColl.Npos.Start; i < paramsColl.Npos.End; i++)
             {
                 ItemCells.Add(new ItemCell()
                 {
-                    SKU = ListStr[i][paramsColl.SkuCol].Value,
-                    Count = ListStr[i][paramsColl.CountCol].Value,
-                    Price = ListStr[i][paramsColl.PriceCol].Value,
-                    Date = ListStr[i][paramsColl.DateCol].Value,
-                    NPost = ListStr[i][paramsColl.NPostCol].Value
+                    SKU = ReadMass[i][paramsColl.SkuCol],
+                    Count = ReadMass[i][paramsColl.CountCol],
+                    Price = ReadMass[i][paramsColl.PriceCol],
+                    Date = ReadMass[i][paramsColl.DateCol],
+                    NPost = ReadMass[i][paramsColl.NPostCol]
                 });
 
             }
@@ -125,19 +172,15 @@ namespace MGSol.Panel
             }
 
         }
-
         private void Button_Click_2(object sender, RoutedEventArgs e)
         {
             XmlSerializer xmlSerializer = new XmlSerializer(typeof(ParamsColl));
-
             // десериализуем объект
             using (FileStream fs = new FileStream("paramsColl.xml", FileMode.OpenOrCreate))
             {
                 paramsColl = xmlSerializer.Deserialize(fs) as ParamsColl;
-              
             }
         }
-
         private void Button_Click_3(object sender, RoutedEventArgs e)
         {
             XmlSerializer xmlSerializer = new XmlSerializer(typeof(ParamsColl));
@@ -147,15 +190,67 @@ namespace MGSol.Panel
                 xmlSerializer.Serialize(fs, paramsColl);
             }
         }
+        private void DataGrid_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (e.RightButton == MouseButtonState.Pressed)
+            {
+                DependencyObject dep = (DependencyObject)e.OriginalSource;
+
+         //Шаг через визуальное дерево
+                while ((dep != null) && !(dep is DataGridCell))
+                {
+                    dep = VisualTreeHelper.GetParent(dep);
+                }
+
+                //Является ли dep ячейкой или находится за пределами Window1?
+
+                    DataGridCell cell = new DataGridCell();
+                    cell = (DataGridCell)dep;
+                    while ((dep != null) && !(dep is DataGridRow))
+                    {
+                        dep = VisualTreeHelper.GetParent(dep);
+                    }
+
+                    if (dep == null)
+                    {
+                        return;
+                    }
+                    
+                    int X = cell.Column.DisplayIndex;
+
+                    DataGridRow row = dep as DataGridRow;
+                    int Y = Dtgreed.ItemContainerGenerator.IndexFromContainer(row);
+
+                ContextMenuShow(X, Y);
+            }
+        }
+        private void Button_Click_4(object sender, RoutedEventArgs e)
+        {
+            foreach (var item in ItemCells)
+            {
+                var x = mModel.Option.MarketItems.Find(x => x.SKU == item.SKU);
+                if (x != null)
+                {
+                    item.Article1C = x.Art1C;
+                }
+                else
+                {
+                    MessageBox.Show("Не найден товар с SKU:" + item.SKU);
+                }
+
+            }
+
+        }
     }
     [Serializable]
     public class ItemCell
     {
+        public string Article1C;
         public string SKU;
         public string Price;
         public string Count;
         public string Date;
-        public string NPost;
+        public string NPost;    
     }
     [Serializable]
     public class SpanCells

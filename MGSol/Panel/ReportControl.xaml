@@ -10,7 +10,7 @@
     <UserControl.Resources>
         <DataTemplate x:Key="DataTemplate_Level2">
             <Border BorderBrush="Black" BorderThickness="1">
-                <TextBlock Text="{Binding Value}" Height="Auto" Width="50" Margin="1" MouseRightButtonUp="TextBlock_MouseRightButtonUp"/>
+                <TextBlock Text="{Binding Value}" Height="20" Width="60" Margin="1"                   />
             </Border>
         </DataTemplate>
         <DataTemplate x:Key="DataTemplate_Level1">
@@ -32,9 +32,7 @@
             <RowDefinition/>
         </Grid.RowDefinitions>
         <ListBox x:Name="FileList" MouseDoubleClick="FileList_MouseDoubleClick"></ListBox>
-        <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Visible"  HorizontalScrollBarVisibility="Visible">
-            <ItemsControl x:Name="lst" ItemTemplate="{DynamicResource DataTemplate_Level1}"/>
-        </ScrollViewer>
+        <DataGrid Grid.Row="2"  x:Name="Dtgreed" MouseRightButtonDown ="DataGrid_MouseDown" SelectionMode="Single"></DataGrid>
         <StackPanel Grid.Row="1" Orientation="Horizontal">
             <Label Content="PriceCol"></Label>
             <TextBlock x:Name="PriceColBox"></TextBlock>
@@ -46,7 +44,8 @@
             <Button Content="Сохранить в XML" Click="Button_Click_1"></Button>
             <Button Content="Загрузить Параметры" Click="Button_Click_2"></Button>
             <Button Content="Сохранить Параметры" Click="Button_Click_3"></Button>
+            <Button Content="Сапоставить с Артиклами" Click="Button_Click_4"></Button>
         </StackPanel>
     </Grid>
-    
+
 </UserControl>

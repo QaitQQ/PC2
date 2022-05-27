@@ -13,12 +13,13 @@
   
     <Window.Resources>
         <Style TargetType="Button">
+            <Setter Property="Margin" Value="2"></Setter>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
-                        <Border MinWidth="35" MaxHeight="35"  BorderThickness="2" CornerRadius="3"  BorderBrush="{TemplateBinding Background}">
+                        <Border MinWidth="35"   BorderThickness="2" CornerRadius="3"   BorderBrush="{TemplateBinding Background}">
                             <Grid x:Name="BtnGrd"  Background="{TemplateBinding Background }">
-                                <ContentPresenter  HorizontalAlignment="Center"  VerticalAlignment="Center"  RecognizesAccessKey="True"></ContentPresenter>
+                                <ContentPresenter HorizontalAlignment="Center"  VerticalAlignment="Center" RecognizesAccessKey="True"></ContentPresenter>
                             </Grid>
                         </Border>
                     </ControlTemplate>
@@ -29,7 +30,7 @@
                     <Setter Property="Template">
                         <Setter.Value>
                             <ControlTemplate TargetType="Button">
-                                <Border MinWidth="35" MaxHeight="35"  BorderThickness="2" CornerRadius="3"  BorderBrush="Gray">
+                                <Border MinWidth="35"  BorderThickness="2" CornerRadius="3"  BorderBrush="Gray">
                                     <Grid x:Name="BtnGrd"  Background="Gray">
                                         <ContentPresenter  HorizontalAlignment="Center"  VerticalAlignment="Center"  RecognizesAccessKey="True"></ContentPresenter>
                                     </Grid>

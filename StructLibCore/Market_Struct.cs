@@ -66,8 +66,10 @@ namespace StructLibCore.Marketplace
         public string Id { get; set; }
         public string SKU { get; set; }
         public int BaseID { get; set; }
+        public string Art1C { get; set; }
 
-        [NonSerialized]
+
+    [NonSerialized]
         private ObservableCollection<StructLibCore.Marketplace.IMarketItem> items;
         public ObservableCollection<StructLibCore.Marketplace.IMarketItem> Items
         {
