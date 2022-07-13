@@ -3,42 +3,86 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:System="clr-namespace:System;assembly=mscorlib"
+             xmlns:StructLibCore="clr-namespace:StructLibCore.Marketplace;assembly=StructLibCore"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
+
+    <UserControl.Resources>
+        <ObjectDataProvider x:Key="dataFromEnum" MethodName="GetValues"
+                            ObjectType="{x:Type System:Enum}">
+            <ObjectDataProvider.MethodParameters>
+                <x:Type TypeName="StructLibCore:MarketName"/>
+            </ObjectDataProvider.MethodParameters>
+        </ObjectDataProvider>
+
+    </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="30"/>
+            <RowDefinition Height="40"/>
             <RowDefinition/>
         </Grid.RowDefinitions>
         <Grid Grid.Row="0">
             <StackPanel Orientation="Horizontal" Margin="1" >
                 <Button Click ="AddButton_Click"  x:Name="AddButton" Content="+" FontFamily="Arial" FontSize="22" FontWeight="Bold" Background="#FFB5E0A5" />
+                <Button  Content="&#128190;" Background="BurlyWood" FontSize="20" FontFamily="Arial" FontWeight="Bold" Click="Button_Save"/>
             </StackPanel>
         </Grid>
-        <StackPanel Grid.Row="1">
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Visible" >
+            <StackPanel >
+       
+        <StackPanel >
             <ItemsControl x:Name="OptionList">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
                         <Grid Background="Bisque" Margin="2" MouseRightButtonDown="Grid_MouseRightButtonDown">
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="47"/>
+                                <ColumnDefinition />
                                 <ColumnDefinition/>
                                 <ColumnDefinition/>
-                                <ColumnDefinition/>
+                                <ColumnDefinition Width="50"/>
                             </Grid.ColumnDefinitions>
-                            <Button Content="X" Margin="5" Click="DelButtonClick_Click" VerticalAlignment="Top" Background="DarkRed">
-
-                            </Button>
-                            <StackPanel Grid.Column="1">
+                                   <Button Grid.Column="3" Margin="2" Height="25"  Content="x" Background="#FF991717" FontSize="15" FontFamily="Arial" FontWeight="Bold" HorizontalAlignment="Left"  Click="DelButtonClick_Click"></Button>
+                            <StackPanel Grid.Column="0">
                                 <TextBlock Text="{Binding Name}" ></TextBlock>
                                 <CheckBox IsChecked="{Binding Active}"/>
                             </StackPanel>
-                            <TextBlock Text="{Binding Type}" Grid.Column="2"></TextBlock>
-                            <ListBox ItemsSource="{Binding ApiString}"  Grid.Column="3"></ListBox>
+                            <TextBlock Text="{Binding Type}" Grid.Column="1"></TextBlock>
+                            <ListBox ItemsSource="{Binding ApiString}"  Grid.Column="2"></ListBox>
                         </Grid>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
         </StackPanel>
+               
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="40"/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                <StackPanel Orientation="Horizontal" Grid.Row="0">
+                    <Button Click="AddButton_Click_1"  x:Name="AddButton_1" Content="+" FontFamily="Arial" FontSize="22" FontWeight="Bold" Background="#FFB5E0A5" ></Button>
+                </StackPanel>
+            <StackPanel Background="Bisque"  Grid.Row="1" Height="200">
+                <ItemsControl x:Name="InnSalerBox">
+                    <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Grid>  
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition />
+                                        <ColumnDefinition/>
+                                            <ColumnDefinition Width="50"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Button Grid.Column="2" Margin="2" Content="x" Background="#FF991717" FontSize="15" FontFamily="Arial" FontWeight="Bold" HorizontalAlignment="Left" Click="RemoveInnButton_Click" x:Name="RemoveInnButton"/>
+                                    <ComboBox Grid.Column="0"  SelectedItem="{Binding MarketName}" ItemsSource="{Binding Source={StaticResource dataFromEnum}}"></ComboBox>
+                                    <TextBox  Grid.Column="1" Text="{Binding INN}" ></TextBox>
+                                </Grid>
+                            </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </StackPanel>
+            </Grid>
+        </StackPanel>
+        </ScrollViewer>
     </Grid>
 </UserControl>

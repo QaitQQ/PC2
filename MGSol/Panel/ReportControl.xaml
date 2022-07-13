@@ -3,14 +3,15 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:MGSol.Panel"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
+             d:DesignHeight="450" d:DesignWidth="800"
+             xmlns:MainModel ="clr-namespace:MGSol"
+             >
 
     <UserControl.Resources>
         <DataTemplate x:Key="DataTemplate_Level2">
             <Border BorderBrush="Black" BorderThickness="1">
-                <TextBlock Text="{Binding Value}" Height="20" Width="60" Margin="1"                   />
+                <TextBlock Text="{Binding Value}" Height="20" Width="60" Margin="1"/>
             </Border>
         </DataTemplate>
         <DataTemplate x:Key="DataTemplate_Level1">
@@ -22,30 +23,105 @@
                 </ItemsControl.ItemsPanel>
             </ItemsControl>
         </DataTemplate>
-
-
+        <ObjectDataProvider x:Key="AnyApi" MethodName="GetApi" ObjectType="{x:Type MainModel:MainModel}"/>
+        <ObjectDataProvider x:Key="AnyByerINN" MethodName="GetINN" ObjectType="{x:Type MainModel:MainModel}"/>
     </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition/>
+            <RowDefinition Height="180"/>
+            <RowDefinition Height="5"/>
             <RowDefinition Height="35"/>
             <RowDefinition/>
         </Grid.RowDefinitions>
-        <ListBox x:Name="FileList" MouseDoubleClick="FileList_MouseDoubleClick"></ListBox>
-        <DataGrid Grid.Row="2"  x:Name="Dtgreed" MouseRightButtonDown ="DataGrid_MouseDown" SelectionMode="Single"></DataGrid>
-        <StackPanel Grid.Row="1" Orientation="Horizontal">
-            <Label Content="PriceCol"></Label>
-            <TextBlock x:Name="PriceColBox"></TextBlock>
-            <Label Content="SkuCol"></Label>
-            <TextBlock x:Name="SkuColBox"></TextBlock>
-            <Label Content="CountCol"></Label>
-            <TextBlock x:Name="CountColBox"></TextBlock>
-            <Button Content="Конвертировать" Click="Button_Click"></Button>
-            <Button Content="Сохранить в XML" Click="Button_Click_1"></Button>
-            <Button Content="Загрузить Параметры" Click="Button_Click_2"></Button>
-            <Button Content="Сохранить Параметры" Click="Button_Click_3"></Button>
-            <Button Content="Сапоставить с Артиклами" Click="Button_Click_4"></Button>
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="200"/>
+            </Grid.ColumnDefinitions>
+            <ScrollViewer>
+                <StackPanel>
+                    <ItemsControl x:Name="FileList">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Border Margin="2" BorderBrush="Black" BorderThickness="2" CornerRadius="2">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition/>
+                                            <ColumnDefinition Width="0.2*"/>
+                                            <ColumnDefinition Width="0.2*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBox Grid.Column="0" Text="{Binding FileName}" ></TextBox>
+                                        <ComboBox Grid.Column="1" SelectedItem="{Binding APISetting.Name}" ItemsSource="{Binding Source={StaticResource ResourceKey=AnyApi}}" SelectionChanged="ComboBox_SelectionChanged"></ComboBox>
+                                        <ComboBox Grid.Column="2" x:Name="ByerComboBoxINN" SelectedItem="{Binding InnStringName, Mode=OneWay}" ItemsSource="{Binding Source={StaticResource ResourceKey=AnyByerINN}}" SelectionChanged="ByerComboBoxINN_SelectionChanged"></ComboBox>
+                                        <StackPanel Grid.Column="3" Orientation="Horizontal">
+                                            <Button x:Name="Read_file_button"  Content="Прочитать" Click="Read_file_button_Click"></Button>
+                                            <Button Content="Загрузить Настройки" Click="Load_options"></Button>
+                                        </StackPanel>
+                                        <TextBox Grid.Column="4" Text="{Binding Description}"></TextBox>
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
+            </ScrollViewer>
+            <ScrollViewer Grid.Column="1" VerticalScrollBarVisibility="Visible">
+                <StackPanel Orientation="Vertical">
+                    <Button Content="Конвертировать" Click="Button_Click"></Button>
+                    <Button Content="Сохранить Настройки" Click="Save_Options"></Button>
+                </StackPanel>
+            </ScrollViewer>
+        </Grid>
+        <StackPanel Grid.Row="2" Orientation="Horizontal" x:Name="STKBTN" Background="#e3e8e6" Margin="3">
+            <ItemsControl x:Name="ButtonFieldStack">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Border >
+                            <Button Content="{Binding [0]}" Background="{Binding [1], Mode=TwoWay}" Click="Border_Click"></Button>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <StackPanel Orientation="Horizontal"></StackPanel>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+            </ItemsControl>
         </StackPanel>
+        <GridSplitter Grid.Row="1"  IsEnabled="True" Height="20" HorizontalAlignment="Stretch"  VerticalAlignment="Center" Background="#b5b5b5"></GridSplitter>
+        <ScrollViewer  Grid.Row="3" VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Visible">
+            <StackPanel Orientation="Horizontal">
+                <ItemsControl x:Name="DTtable">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel >
+                                <ItemsControl ItemsSource="{Binding}">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <Border BorderBrush="Black" BorderThickness="1">
+                                                <TextBlock Text="{Binding Value}" Background="{Binding Color , Mode=TwoWay}" Height="20"  Width="100" MouseLeftButtonDown="Table_MouseDown">
+                                                    <TextBlock.ToolTip>
+                                                        <ToolTip>
+                                                            <TextBlock Width="300" Text="{Binding Value}" />
+                                                        </ToolTip>
+                                                    </TextBlock.ToolTip>
+                                                </TextBlock>
+                                            </Border>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                    <ItemsControl.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <StackPanel Orientation="Horizontal"></StackPanel>
+                                        </ItemsPanelTemplate>
+                                    </ItemsControl.ItemsPanel>
+                                </ItemsControl>
+                            </StackPanel>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </StackPanel>
+        </ScrollViewer>
     </Grid>
-
 </UserControl>

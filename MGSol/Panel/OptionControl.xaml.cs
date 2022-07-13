@@ -1,17 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace MGSol.Panel
 {
@@ -20,9 +11,9 @@ namespace MGSol.Panel
     /// </summary>
     public partial class OptionControl : UserControl
     {
-        MainModel _model { get; set; }
-        ObservableCollection<StructLibCore.Marketplace.APISetting> ListOption { get; set; }
-
+        private MainModel _model { get; set; }
+        private ObservableCollection<StructLibCore.Marketplace.APISetting> ListOption { get; set; }
+        private ObservableCollection<StructLibCore.Marketplace.InnString> innStrings;
         public OptionControl(MainModel model)
         {
             InitializeComponent();
@@ -30,15 +21,24 @@ namespace MGSol.Panel
             _model = model;
 
             ListOption = new ObservableCollection<StructLibCore.Marketplace.APISetting>();
+            innStrings = new ObservableCollection<StructLibCore.Marketplace.InnString>();
 
-            foreach (var item in _model.Option.APISettings)
+            foreach (var item in _model.Option.SellerINN)
+            {
+                innStrings.Add(item);
+            }
+
+
+            InnSalerBox.ItemsSource = innStrings;
+
+            foreach (StructLibCore.Marketplace.APISetting item in _model.Option.APISettings)
             {
                 ListOption.Add(item);
             }
             ListOption.CollectionChanged += (x, y) =>
             {
-                var lst = new List<StructLibCore.Marketplace.APISetting>();
-                foreach (var item in ListOption)
+                List<StructLibCore.Marketplace.APISetting> lst = new List<StructLibCore.Marketplace.APISetting>();
+                foreach (StructLibCore.Marketplace.APISetting item in ListOption)
                 {
                     lst.Add(item);
                 }
@@ -50,7 +50,7 @@ namespace MGSol.Panel
         }
         private void AddButton_Click(object sender, RoutedEventArgs e)
         {
-            var OptionAddBox = new OptionAddBox();
+            OptionAddBox OptionAddBox = new OptionAddBox();
             if ((bool)OptionAddBox.ShowDialog())
             {
                 ListOption.Add(OptionAddBox.Setting);
@@ -63,13 +63,37 @@ namespace MGSol.Panel
         private void Grid_MouseRightButtonDown(object sender, MouseButtonEventArgs e)
         {
             Grid grid = (Grid)sender;
-            var OptionAddBox = new OptionAddBox((StructLibCore.Marketplace.APISetting)grid.DataContext);
 
+            StructLibCore.Marketplace.APISetting api = (StructLibCore.Marketplace.APISetting)grid.DataContext;
+
+            OptionAddBox OptionAddBox = new OptionAddBox(api);
 
             if ((bool)OptionAddBox.ShowDialog())
             {
-                ListOption.Add(OptionAddBox.Setting);
+                if (OptionAddBox.Qadd)
+                {
+                    ListOption.Add(OptionAddBox.Setting);
+                }
+                else
+                {
+                    api = OptionAddBox.Setting;
+                }
             }
+        }
+        private void Button_Save(object sender, RoutedEventArgs e)
+        {
+            _model.Save();
+        }
+        private void AddButton_Click_1(object sender, RoutedEventArgs e)
+        {
+            innStrings.Add(new StructLibCore.Marketplace.InnString(StructLibCore.Marketplace.MarketName.Ozon, "123455"));
+            _model.Option.SellerINN.Add(new StructLibCore.Marketplace.InnString(StructLibCore.Marketplace.MarketName.Ozon, "123455"));
+        }
+        private void RemoveInnButton_Click(object sender, RoutedEventArgs e)
+        {
+           var inn = (StructLibCore.Marketplace.InnString)((System.Windows.Controls.Button)sender).DataContext;
+            innStrings.Remove(inn);
+            _model.Option.SellerINN.Remove(inn);
         }
     }
 }

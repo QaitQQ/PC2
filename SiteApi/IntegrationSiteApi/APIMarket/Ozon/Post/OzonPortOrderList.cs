@@ -1,40 +1,25 @@
 ﻿using Newtonsoft.Json;
-
 using StructLibCore.Marketplace;
-
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Text;
-
 namespace Server.Class.IntegrationSiteApi.Market.Ozon.OzonPortOrderList
 {
-    public class OzonPortOrderList : Server.Class.IntegrationSiteApi.Market.Ozon.OzonPost.OzonPost
+    public class OzonPortOrderList : OzonPost.OzonPost
     {
-        public OzonPortOrderList(APISetting aPISetting) : base(aPISetting)
-        {
-        }
+        public OzonPortOrderList(APISetting aPISetting) : base(aPISetting){}
         public List<object> Get()
         {
-            var httpWebRequest = GetRequest(@"v3/posting/fbs/unfulfilled/list");
-            var root = new PostList() { Limit = 100, Offset = 0, Dir = "ASC", Filter = new Filter() { CutoffFrom =  DateTime.Now.AddMonths(-1), CutoffTo = DateTime.Now.AddDays(10) }, With = new With() { AnalyticsData = true, Barcodes = true, FinancialData = true, Translit = true } };
-            using (var streamWriter = new StreamWriter(httpWebRequest.GetRequestStream()))
-            {
-                var json = JsonConvert.SerializeObject(root); streamWriter.Write(json);            
-            }
-            var httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
+            HttpWebRequest httpWebRequest = GetRequest(@"v3/posting/fbs/unfulfilled/list");
+            PostList root = new PostList() { Limit = 100, Offset = 0, Dir = "ASC", Filter = new Filter() { CutoffFrom =  DateTime.Now.AddMonths(-1), CutoffTo = DateTime.Now.AddDays(10) }, With = new With() { AnalyticsData = true, Barcodes = true, FinancialData = true, Translit = true } };
+            using (var streamWriter = new StreamWriter(httpWebRequest.GetRequestStream())) {  var json = JsonConvert.SerializeObject(root); streamWriter.Write(json);}
+            HttpWebResponse httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
             using (var streamReader = new StreamReader(httpResponse.GetResponseStream())) { result = streamReader.ReadToEnd(); }
             OrderList OrderList = JsonConvert.DeserializeObject<OrderList>(result);
-
-            var X = new List<object>();
-
-            foreach (var item in OrderList.Result.Postings)
-            {
-                item.APISetting = aPISetting;
-                X.Add(item);
-            }
-
+            List<object> X = new List<object>();
+            foreach (var item in OrderList.Result.Postings) {item.APISetting = aPISetting;X.Add(item);}
             return X;
         }
     }
@@ -43,19 +28,14 @@ namespace Server.Class.IntegrationSiteApi.Market.Ozon.OzonPortOrderList
     {
         [JsonProperty("cutoff_from")]
         public DateTime CutoffFrom;
-
         [JsonProperty("cutoff_to")]
         public DateTime CutoffTo;
-
         [JsonProperty("delivery_method_id")]
         public List<object> DeliveryMethodId;
-
         [JsonProperty("provider_id")]
         public List<object> ProviderId;
-
         [JsonProperty("status")]
         public string Status;
-
         [JsonProperty("warehouse_id")]
         public List<object> WarehouseId;
     }
@@ -64,13 +44,10 @@ namespace Server.Class.IntegrationSiteApi.Market.Ozon.OzonPortOrderList
     {
         [JsonProperty("analytics_data")]
         public bool AnalyticsData;
-
         [JsonProperty("barcodes")]
         public bool Barcodes;
-
         [JsonProperty("financial_data")]
         public bool FinancialData;
-
         [JsonProperty("translit")]
         public bool Translit;
     }
@@ -79,38 +56,28 @@ namespace Server.Class.IntegrationSiteApi.Market.Ozon.OzonPortOrderList
     {
         [JsonProperty("dir")]
         public string Dir;
-
         [JsonProperty("filter")]
         public Filter Filter;
-
         [JsonProperty("limit")]
         public int Limit;
-
         [JsonProperty("offset")]
         public int Offset;
-
         [JsonProperty("with")]
         public With With;
     }
-
     [Serializable]
     public class DeliveryMethod
     {
         [JsonProperty("id")]
         public long Id;
-
         [JsonProperty("name")]
         public string Name;
-
         [JsonProperty("warehouse_id")]
         public long WarehouseId;
-
         [JsonProperty("warehouse")]
         public string Warehouse;
-
         [JsonProperty("tpl_provider_id")]
         public int TplProviderId;
-
         [JsonProperty("tpl_provider")]
         public string TplProvider;
     }
@@ -119,19 +86,14 @@ namespace Server.Class.IntegrationSiteApi.Market.Ozon.OzonPortOrderList
     {
         [JsonProperty("cancel_reason_id")]
         public int CancelReasonId;
-
         [JsonProperty("cancel_reason")]
         public string CancelReason;
-
         [JsonProperty("cancellation_type")]
         public string CancellationType;
-
         [JsonProperty("cancelled_after_ship")]
         public bool CancelledAfterShip;
-
         [JsonProperty("affect_cancellation_rating")]
         public bool AffectCancellationRating;
-
         [JsonProperty("cancellation_initiator")]
         public string CancellationInitiator;
     }
@@ -140,52 +102,36 @@ namespace Server.Class.IntegrationSiteApi.Market.Ozon.OzonPortOrderList
     {
         [JsonProperty("price")]
         public double Price;
-
         [JsonProperty("offer_id")]
         public string OfferId;
-
         [JsonProperty("name")]
         public string Name;
-
         [JsonProperty("sku")]
         public int Sku;
-
         [JsonProperty("quantity")]
         public int Quantity;
-
         [JsonProperty("mandatory_mark")]
         public List<object> MandatoryMark;
-
         [JsonProperty("commission_amount")]
         public int CommissionAmount;
-
         [JsonProperty("commission_percent")]
         public int CommissionPercent;
-
         [JsonProperty("payout")]
         public int Payout;
-
         [JsonProperty("product_id")]
         public int ProductId;
-
         [JsonProperty("old_price")]
-        public int OldPrice;
-
+        public double OldPrice;
         [JsonProperty("total_discount_value")]
-        public int TotalDiscountValue;
-
+        public double TotalDiscountValue;
         [JsonProperty("total_discount_percent")]
         public double TotalDiscountPercent;
-
         [JsonProperty("actions")]
         public List<string> Actions;
-
         [JsonProperty("picking")]
         public object Picking;
-
         [JsonProperty("client_price")]
         public string ClientPrice;
-
         [JsonProperty("item_services")]
         public ItemServices ItemServices;
     }
@@ -194,7 +140,6 @@ namespace Server.Class.IntegrationSiteApi.Market.Ozon.OzonPortOrderList
     {
         [JsonProperty("upper_barcode")]
         public string UpperBarcode;
-
         [JsonProperty("lower_barcode")]
         public string LowerBarcode;
     }
@@ -203,37 +148,26 @@ namespace Server.Class.IntegrationSiteApi.Market.Ozon.OzonPortOrderList
     {
         [JsonProperty("region")]
         public string Region;
-
         [JsonProperty("city")]
         public string City;
-
         [JsonProperty("delivery_type")]
         public string DeliveryType;
-
         [JsonProperty("is_premium")]
         public bool IsPremium;
-
         [JsonProperty("payment_type_group_name")]
         public string PaymentTypeGroupName;
-
         [JsonProperty("warehouse_id")]
         public long WarehouseId;
-
         [JsonProperty("warehouse")]
         public string Warehouse;
-
         [JsonProperty("tpl_provider_id")]
         public int TplProviderId;
-
         [JsonProperty("tpl_provider")]
         public string TplProvider;
-
         [JsonProperty("delivery_date_begin")]
-        public DateTime DeliveryDateBegin;
-
+        public string DeliveryDateBegin;
         [JsonProperty("delivery_date_end")]
-        public DateTime DeliveryDateEnd;
-
+        public string DeliveryDateEnd;
         [JsonProperty("is_legal")]
         public bool IsLegal;
     }
@@ -242,34 +176,24 @@ namespace Server.Class.IntegrationSiteApi.Market.Ozon.OzonPortOrderList
     {
         [JsonProperty("marketplace_service_item_fulfillment")]
         public int MarketplaceServiceItemFulfillment;
-
         [JsonProperty("marketplace_service_item_pickup")]
         public int MarketplaceServiceItemPickup;
-
         [JsonProperty("marketplace_service_item_dropoff_pvz")]
         public int MarketplaceServiceItemDropoffPvz;
-
         [JsonProperty("marketplace_service_item_dropoff_sc")]
         public int MarketplaceServiceItemDropoffSc;
-
         [JsonProperty("marketplace_service_item_dropoff_ff")]
         public int MarketplaceServiceItemDropoffFf;
-
         [JsonProperty("marketplace_service_item_direct_flow_trans")]
         public int MarketplaceServiceItemDirectFlowTrans;
-
         [JsonProperty("marketplace_service_item_return_flow_trans")]
         public int MarketplaceServiceItemReturnFlowTrans;
-
         [JsonProperty("marketplace_service_item_deliv_to_customer")]
         public int MarketplaceServiceItemDelivToCustomer;
-
         [JsonProperty("marketplace_service_item_return_not_deliv_to_customer")]
         public int MarketplaceServiceItemReturnNotDelivToCustomer;
-
         [JsonProperty("marketplace_service_item_return_part_goods_customer")]
         public int MarketplaceServiceItemReturnPartGoodsCustomer;
-
         [JsonProperty("marketplace_service_item_return_after_deliv_to_customer")]
         public int MarketplaceServiceItemReturnAfterDelivToCustomer;
     }
@@ -278,34 +202,24 @@ namespace Server.Class.IntegrationSiteApi.Market.Ozon.OzonPortOrderList
     {
         [JsonProperty("marketplace_service_item_fulfillment")]
         public int MarketplaceServiceItemFulfillment;
-
         [JsonProperty("marketplace_service_item_pickup")]
         public int MarketplaceServiceItemPickup;
-
         [JsonProperty("marketplace_service_item_dropoff_pvz")]
         public int MarketplaceServiceItemDropoffPvz;
-
         [JsonProperty("marketplace_service_item_dropoff_sc")]
         public int MarketplaceServiceItemDropoffSc;
-
         [JsonProperty("marketplace_service_item_dropoff_ff")]
         public int MarketplaceServiceItemDropoffFf;
-
         [JsonProperty("marketplace_service_item_direct_flow_trans")]
         public int MarketplaceServiceItemDirectFlowTrans;
-
         [JsonProperty("marketplace_service_item_return_flow_trans")]
         public int MarketplaceServiceItemReturnFlowTrans;
-
         [JsonProperty("marketplace_service_item_deliv_to_customer")]
         public int MarketplaceServiceItemDelivToCustomer;
-
         [JsonProperty("marketplace_service_item_return_not_deliv_to_customer")]
         public int MarketplaceServiceItemReturnNotDelivToCustomer;
-
         [JsonProperty("marketplace_service_item_return_part_goods_customer")]
         public int MarketplaceServiceItemReturnPartGoodsCustomer;
-
         [JsonProperty("marketplace_service_item_return_after_deliv_to_customer")]
         public int MarketplaceServiceItemReturnAfterDelivToCustomer;
     }
@@ -314,7 +228,6 @@ namespace Server.Class.IntegrationSiteApi.Market.Ozon.OzonPortOrderList
     {
         [JsonProperty("products")]
         public List<Product> Products;
-
         [JsonProperty("posting_services")]
         public PostingServices PostingServices;
     }
@@ -323,7 +236,6 @@ namespace Server.Class.IntegrationSiteApi.Market.Ozon.OzonPortOrderList
     {
         [JsonProperty("products_requiring_gtd")]
         public List<object> ProductsRequiringGtd;
-
         [JsonProperty("products_requiring_country")]
         public List<object> ProductsRequiringCountry;
     }
@@ -332,83 +244,56 @@ namespace Server.Class.IntegrationSiteApi.Market.Ozon.OzonPortOrderList
     {
         [JsonProperty("posting_number")]
         public string PostingNumber;
-
         [JsonProperty("order_id")]
         public string OrderId;
-
         [JsonProperty("order_number")]
         public string OrderNumber;
-
         [JsonProperty("status")]
-        public string Status;
-
+        public string status;
         [JsonProperty("delivery_method")]
         public DeliveryMethod DeliveryMethod;
-
         [JsonProperty("tracking_number")]
         public string TrackingNumber;
-
         [JsonProperty("tpl_integration_type")]
         public string TplIntegrationType;
-
         [JsonProperty("in_process_at")]
         public DateTime InProcessAt;
-
         [JsonProperty("shipment_date")]
         public DateTime ShipmentDate;
-
         [JsonProperty("delivering_date")]
         public object DeliveringDate;
-
         [JsonProperty("cancellation")]
         public Cancellation Cancellation;
-
         [JsonProperty("customer")]
         public object Customer;
-
         [JsonProperty("products")]
         public List<Product> Products;
-
         [JsonProperty("addressee")]
         public object Addressee;
-
         [JsonProperty("barcodes")]
         public Barcodes Barcodes;
-
         [JsonProperty("analytics_data")]
         public AnalyticsData AnalyticsData;
-
         [JsonProperty("financial_data")]
         public FinancialData FinancialData;
-
         [JsonProperty("is_express")]
         public bool IsExpress;
-
         [JsonProperty("requirements")]
         public Requirements Requirements;
-
         public string Id { get { return OrderId; } }
-
         public APISetting APISetting { get; set; }
-
-        OrderStatus IOrder.Status { get
-            {
-
-                return Status switch
-                {
-                    ("awaiting_deliver") => OrderStatus.READY_TO_SHIP,
-                    ("awaiting_packaging") => OrderStatus.PROCESSING_STARTED,
-                    ("delivering") => OrderStatus.DELIVERED,
-                    _ => OrderStatus.NONE,
-                };
-            } }
-
+        public OrderStatus Status => status switch
+        {
+            ("awaiting_deliver") => OrderStatus.READY_TO_SHIP,
+            ("awaiting_packaging") => OrderStatus.PROCESSING_STARTED,
+            ("delivering") => OrderStatus.DELIVERED,
+            _ => OrderStatus.NONE,
+        };
         public List<string> Items
         {
             get
             {
                 var X = new List<string>();
-
                 foreach (var item in Products)
                 {
                     X.Add(item.Name + "\t" + item.Quantity.ToString() + "шт.\t"+ item.OfferId+"\t"+ item.Price.ToString() +"р.");
@@ -416,9 +301,7 @@ namespace Server.Class.IntegrationSiteApi.Market.Ozon.OzonPortOrderList
                 return X;
             } 
         }
-
         public string Date { get { return InProcessAt.ToString(); } }
-
         public string DeliveryDate { get { return ShipmentDate.ToShortDateString(); } }
     }
     [Serializable]
@@ -426,7 +309,6 @@ namespace Server.Class.IntegrationSiteApi.Market.Ozon.OzonPortOrderList
     {
         [JsonProperty("postings")]
         public List<Order> Postings;
-
         [JsonProperty("count")]
         public int Count;
     }
@@ -436,7 +318,4 @@ namespace Server.Class.IntegrationSiteApi.Market.Ozon.OzonPortOrderList
         [JsonProperty("result")]
         public Result Result;
     }
-
-
 }
-

@@ -1,6 +1,4 @@
-﻿
-using Server;
-
+﻿using Server;
 using System;
 
 namespace Network
@@ -24,18 +22,14 @@ namespace Network
             Message.Obj = this;
             Message.Code = new object[] { 2 };
             return (T)Client.Messaging(Message).Obj;
-
-
         }
         public virtual TCPMessage Post(ApplicationContext Db, object Obj = null) { throw new NotImplementedException(); }
-
         public void Dispose()
         {
             Attach = null;
             Message = null;
         }
     }
-
 }
 
 

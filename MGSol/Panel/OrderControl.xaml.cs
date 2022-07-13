@@ -3,11 +3,12 @@ using StructLibCore.Marketplace;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Globalization;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-
 namespace MGSol.Panel
 {
     /// <summary>
@@ -17,7 +18,7 @@ namespace MGSol.Panel
     {
         private List<APISetting> Options;
         private ObservableCollection<IOrder> orderList;
-        private ObservableCollection<IGrouping<string, IOrder>> VisOrderList;
+        private ObservableCollection<IGrouping<DateTime, IOrder>> VisOrderList;
         private event Action<List<IOrder>> LoadOrders;
         private MainModel model;
         public ObservableCollection<IOrder> OrderList { get => orderList; set => orderList = value; }
@@ -31,14 +32,14 @@ namespace MGSol.Panel
             InitializeComponent();
             Options = model.Option.APISettings;
             orderList = new ObservableCollection<StructLibCore.Marketplace.IOrder>();
-            VisOrderList = new ObservableCollection<IGrouping<string, StructLibCore.Marketplace.IOrder>>();
+            VisOrderList = new ObservableCollection<IGrouping<DateTime, StructLibCore.Marketplace.IOrder>>();
             Task.Factory.StartNew(() => LoadNetOrders(Options));
             OrderStack.ItemsSource = VisOrderList;
             StatusBox.ItemsSource = Enum.GetValues(typeof(StructLibCore.Marketplace.OrderStatus));
             LoadOrders += FillOrders;
             PrintActBtnStack.ItemsSource = Options;
         }
-        private void FillOrders(List<StructLibCore.Marketplace.IOrder> orders)
+        private void FillOrders(List<IOrder> orders)
         {
             orderList.Clear();
             foreach (IOrder order in orders)
@@ -54,10 +55,9 @@ namespace MGSol.Panel
                 StatusBox_SelectionChanged(null, null);
             }
         }
-        private void LoadNetOrders(List<StructLibCore.Marketplace.APISetting> aPIs)
+        private void LoadNetOrders(List<APISetting> aPIs)
         {
             List<IOrder> F = new();
-
             foreach (APISetting item in aPIs)
             {
                 if (item.Active)
@@ -85,10 +85,7 @@ namespace MGSol.Panel
                     }
                 }
             }
-
-
             Dispatcher.Invoke(() => LoadOrders(F));
-
         }
         private void Fill_VOrders(object sender, RoutedEventArgs e)
         {
@@ -98,9 +95,11 @@ namespace MGSol.Panel
         private void StatusBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             VisOrderList.Clear();
-            IEnumerable<StructLibCore.Marketplace.IOrder> X = from x in orderList where x.Status == (StructLibCore.Marketplace.OrderStatus)StatusBox.SelectedItem orderby x.DeliveryDate select x;
-            IEnumerable<IGrouping<string, StructLibCore.Marketplace.IOrder>> Z = from x in X group x by x.DeliveryDate;
-            foreach (IGrouping<string, IOrder> item in Z)
+            Thread.CurrentThread.CurrentCulture = new CultureInfo("ru-RU");
+            IEnumerable<IOrder> X = from x in orderList where x.Status == (OrderStatus)StatusBox.SelectedItem orderby x.DeliveryDate select x;
+            IEnumerable<IGrouping<DateTime, IOrder>> Z = from x in X group x by DateTime.Parse(x.DeliveryDate, new CultureInfo("ru-RU"));
+            Z = Z.OrderByDescending(x => x.Key);
+            foreach (IGrouping<DateTime, IOrder> item in Z)
             {
                 VisOrderList.Add(item);
             }
@@ -126,30 +125,34 @@ namespace MGSol.Panel
         private void Ship_Click(object sender, RoutedEventArgs e)
         {
             Button btn = (Button)sender;
-
             IOrder X = (IOrder)btn.DataContext;
             bool Z = false;
-            switch (X.APISetting.Type)
+            try
             {
-                case MarketName.Yandex:
-                    Z = new SiteApi.IntegrationSiteApi.APIMarket.Yandex.YandexPUTShip(X.APISetting).Get(X);
-                    break;
-                case MarketName.Ozon:
-                    Z = new SiteApi.IntegrationSiteApi.APIMarket.Ozon.Post.OzonPostShip(X.APISetting).Get(X);
-                    break;
-                case MarketName.Avito:
-                    break;
-                case MarketName.Sber:
-                    break;
-                default:
-                    break;
+                switch (X.APISetting.Type)
+                {
+                    case MarketName.Yandex:
+                        Z = new SiteApi.IntegrationSiteApi.APIMarket.Yandex.YandexPUTShip(X.APISetting).Get(X);
+                        break;
+                    case MarketName.Ozon:
+                        Z = new SiteApi.IntegrationSiteApi.APIMarket.Ozon.Post.OzonPostShip(X.APISetting).Get(X);
+                        break;
+                    case MarketName.Avito:
+                        break;
+                    case MarketName.Sber:
+                        break;
+                    default:
+                        break;
+                }
+                if (Z)
+                {
+                    btn.Content = "✅";
+                }
             }
-
-            if (Z)
+            catch (Exception E)
             {
-                btn.Content = "✅";
+                MessageBox.Show(E.Message);
             }
-
         }
         private void Label_Click(object sender, RoutedEventArgs e)
         {
@@ -172,7 +175,6 @@ namespace MGSol.Panel
                 default:
                     break;
             }
-
             BNavi(Z);
         }
         private void Browser_hide(object sender, RoutedEventArgs e)
@@ -192,7 +194,6 @@ namespace MGSol.Panel
             APISetting X = (StructLibCore.Marketplace.APISetting)btn.DataContext;
             Browser.Navigate("http://localhost/");
             string Z = null;
-
             switch (X.Type)
             {
                 case MarketName.Yandex:
@@ -201,7 +202,7 @@ namespace MGSol.Panel
                 case MarketName.Ozon:
                     IEnumerable<IOrder> t = from c in orderList where c.APISetting == X && c.Status == OrderStatus.READY_TO_SHIP select c;
                     List<IOrder> m = t.ToList();
-                    if (m.Count > 0) {Z = new SiteApi.IntegrationSiteApi.APIMarket.Ozon.Post.OzonPostAct(X).Get(m);}
+                    if (m.Count > 0) { Z = new SiteApi.IntegrationSiteApi.APIMarket.Ozon.Post.OzonPostAct(X).Get(m); }
                     break;
                 case MarketName.Avito:
                     break;
@@ -210,14 +211,12 @@ namespace MGSol.Panel
                 default:
                     break;
             }
-
             BNavi(Z);
         }
         private void BNavi(string Z)
         {
             string y = AppDomain.CurrentDomain.BaseDirectory;
-
-            if (Z == null ||!Z.Contains("none") )
+            if (Z == null || !Z.Contains("none"))
             {
                 Browser.Navigate(@"file:///" + y + Z);
             }
@@ -225,6 +224,19 @@ namespace MGSol.Panel
             {
                 Browser.NavigateToString(Z);
             }
+        }
+        private void Search_Click(object sender, RoutedEventArgs e)
+        {
+            VisOrderList.Clear();
+            Thread.CurrentThread.CurrentCulture = new CultureInfo("ru-RU");
+            IEnumerable<IOrder> X = from x in orderList where x.Id.Contains(SearchBox.Text) orderby x.DeliveryDate select x;
+            IEnumerable<IGrouping<DateTime, IOrder>> Z = from x in X orderby x.DeliveryDate group x by DateTime.Parse(x.DeliveryDate, new CultureInfo("ru-RU"));
+            Z = Z.OrderByDescending(x => x.Key);
+            foreach (IGrouping<DateTime, IOrder> item in Z)
+            {
+                VisOrderList.Add(item);
+            }
+            GC.Collect();
         }
     }
 }

@@ -33,10 +33,9 @@ namespace Client
                 using ClientTCP Client = new ClientTCP(IP, Port, Main.Token);
                 return Client.Messaging(Data);
             }
-            catch (Exception)
+            catch (Exception e)
             {
-
-                throw;
+                return null;
             }
 
         }

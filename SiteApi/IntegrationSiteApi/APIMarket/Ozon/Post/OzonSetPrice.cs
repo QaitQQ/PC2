@@ -10,52 +10,105 @@ using System.Text.Json.Serialization;
 
 namespace Server.Class.IntegrationSiteApi.Market.Ozon
 {
-    //public class OzonSetPrice : OzonPost
-    //{
-    //    public OzonSetPrice(StructLibCore.Marketplace.IMarketItem[] Lst) { this.Lst = Lst; }
-    //    private StructLibCore.Marketplace.IMarketItem[] Lst { get; set; }
-    //    public List<object> Get()
-    //    {
-    //        var LST = ConvertListApi();
-    //        foreach (var item in LST)
-    //        {
-    //            ClientID = item.Key.ApiString[0];
-    //            apiKey = item.Key.ApiString[1];
+    public class OzonSetPrice : OzonPost.OzonPost
+    {
+        public OzonSetPrice(StructLibCore.Marketplace.APISetting aPISetting) : base(aPISetting)
+        {
+        }
+        public object Get(StructLibCore.Marketplace.IMarketItem[] List)
+        {
+            Root itemsRoot = new Root();
+            foreach (Server.Class.IntegrationSiteApi.Market.Ozon.OzonPost.OzonItemDesc item in List)
+            {
+                itemsRoot.Prices.Add(new PriceItem(item));
+            }
+                var httpWebRequest = GetRequest(@"v1/product/import/prices");
+                using (var streamWriter = new StreamWriter(httpWebRequest.GetRequestStream()))
+                {
+                    var root = JsonConvert.SerializeObject(itemsRoot);
+                    streamWriter.Write(root);
+                }
+                var httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
+                using var streamReader = new StreamReader(httpResponse.GetResponseStream()); result = streamReader.ReadToEnd();
 
-    //            var httpWebRequest = GetRequest(@"v2/product/import");
+                var Rst = JsonConvert.DeserializeObject<ResultRoot>(result);
 
-    //            Root items = new Root() { items = ConverItems(item.ToList()) };
+            return Rst.Result;
+        }
+        public enum AutoActionEnabled { UNKNOWN, ENABLED, DISABLED }
 
-    //            using (var streamWriter = new StreamWriter(httpWebRequest.GetRequestStream()))
-    //            {
-    //                var root = JsonConvert.SerializeObject(items);
-    //                streamWriter.Write(root);
-    //            }
-    //            var httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
-    //            using var streamReader = new StreamReader(httpResponse.GetResponseStream()); result = streamReader.ReadToEnd();
-    //        }
-    //        return new List<object>();
-    //    }
 
-    //    private List<IGrouping<StructLibCore.Marketplace.APISetting, StructLibCore.Marketplace.IMarketItem>> ConvertListApi()
-    //    {
-    //        IEnumerable<IGrouping<StructLibCore.Marketplace.APISetting, StructLibCore.Marketplace.IMarketItem>> X = Lst.GroupBy(x => x.APISetting);
-    //        List<IGrouping<StructLibCore.Marketplace.APISetting, StructLibCore.Marketplace.IMarketItem>> A = X.ToList();
-    //        return A;
-    //    }
-    //    private List<SetOzonItem> ConverItems(List<StructLibCore.Marketplace.IMarketItem> lst)
-    //    {
-    //        List<SetOzonItem> Nlst = new List<SetOzonItem>();
+        public class PriceItem
+        {
+            [JsonProperty("auto_action_enabled")]
+            public AutoActionEnabled AutoActionEnabled;
 
-    //        foreach (var item in lst)
-    //        {
-    //            Nlst.Add(new SetOzonItem((OzonItemDesc)item));
-    //        }
+            [JsonProperty("min_price")]
+            public string MinPrice;
 
-    //        return Nlst;
-    //    }
-    
-    //}
+            [JsonProperty("offer_id")]
+            public string OfferId;
+
+            [JsonProperty("old_price")]
+            public string OldPrice;
+
+            [JsonProperty("price")]
+            public string Price;
+
+            [JsonProperty("product_id")]
+            public int ProductId;
+
+            public PriceItem(Server.Class.IntegrationSiteApi.Market.Ozon.OzonPost.OzonItemDesc ozonItemDesc, AutoActionEnabled autoActionEnabled = AutoActionEnabled.UNKNOWN)
+            {
+                MinPrice = ozonItemDesc.min_price;
+                OfferId = ozonItemDesc.offer_id;
+                OldPrice = ozonItemDesc.old_price;
+                Price = ozonItemDesc.price;
+                ProductId = ozonItemDesc.id;
+            }
+        }
+        public class Root
+        {
+            [JsonProperty("prices")]
+            public List<PriceItem> Prices;
+
+            public Root()
+            {
+                Prices = new List<PriceItem>();
+            }
+        }
+
+        public class Result
+        {
+            [JsonProperty("fbs_sku")]
+            public int FbsSku;
+
+            [JsonProperty("present")]
+            public int Present;
+
+            [JsonProperty("product_id")]
+            public int ProductId;
+
+            [JsonProperty("reserved")]
+            public int Reserved;
+
+            [JsonProperty("warehouse_id")]
+            public int WarehouseId;
+
+            [JsonProperty("warehouse_name")]
+            public string WarehouseName;
+        }
+
+        public class ResultRoot
+        {
+            [JsonProperty("result")]
+            public List<Result> Result;
+        }
+
+
+
+
+    }
 }
 
 

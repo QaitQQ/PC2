@@ -1,55 +1,73 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Xml.Serialization;
-
 namespace MGSol.Panel
 {
-    /// <summary>
-    /// Логика взаимодействия для ReportControl.xaml
-    /// </summary>
     public partial class ReportControl : UserControl
     {
         private MainModel mModel { get; set; }
-
-        private ParamsColl paramsColl;
-        private string[][] ReadMass;
-        private List<ItemCell> ItemCells;
-
+        private ObservableCollection<ObservableCollection<ColorCell>> colorCellsList { get; set; }
+        private FileInfo[] FolderFile;
+        private ObservableCollection<FileOption> InfoFolderFile;
+        private object PressBtn;
+        private TextBlock ColtextBlock;
+        private ObservableCollection<ColorCell> ParamStack { get; set; }
+        private List<object[]> ParamButtons { get; set; }
+        private FileOption ActiveFile;
+        public static List<object[]> RetunList()
+        {
+            List<object[]> lst = new List<object[]>();
+            foreach (object item in Enum.GetValues(typeof(ParamEnum)))
+            {
+                object[] mass = new object[2] { item, new SolidColorBrush(Color.FromRgb((byte)new Random().Next(255), (byte)new Random().Next(255), (byte)new Random().Next(255))) };
+                lst.Add(mass);
+            }
+            return lst;
+        }
         public ReportControl(MainModel Model)
         {
-            paramsColl = new ParamsColl
-            {
-                Npos = new SpanCells()
-            };
             mModel = Model;
-            ItemCells = new List<ItemCell>();
+            InfoFolderFile = new ObservableCollection<FileOption>();
             string y = AppDomain.CurrentDomain.BaseDirectory;
             DirectoryInfo dir = new DirectoryInfo(y + @"/Report");
-
+            FolderFile = dir.GetFiles();
+            ParamStack = new ObservableCollection<ColorCell>();
             InitializeComponent();
-
-            foreach (FileInfo file in dir.GetFiles())
+            ParamButtons = RetunList();
+            ButtonFieldStack.ItemsSource = ParamButtons;
+            foreach (FileInfo file in FolderFile)
             {
-                if (file.Name.Contains("xlsx"))
+                if (file.Name.Contains("xlsx") && !file.Name.Contains("#"))
                 {
-                    FileList.Items.Add(file.FullName);
+                    FileOption FL = new FileOption() { FileName = file.Name, FullPath = file.FullName };
+                    if (File.Exists(file.FullName.Replace("xlsx", "xml")))
+                    {
+                        FL = LoadFileOptioins(FL);
+                    }
+                    InfoFolderFile.Add(FL);
                 }
             }
+            FileList.ItemsSource = InfoFolderFile;
         }
-        private void FileList_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        private static string[][][] ReadFileToMass(string t)
         {
-            string t = (string)((System.Windows.Controls.ListBox)sender).SelectedItem;
-            string[][] Z = new ItemProcessor.XLS.XLS_ReadReport().Read(t);
-            var blst = new List<string[]>();
-
+            string[][][] Z = new ItemProcessor.XLS.XLS_ReadReport().Read(t);
+            for (int i = 0; i < Z.Length; i++)
+            {
+                Z[i] = RemNullStr(Z[i]);
+            }
+            return Z;
+        }
+        private static string[][] RemNullStr(string[][] Z)
+        {
+            List<string[]> blst = new List<string[]>();
             for (int i = 0; i < Z.Length - 1; i++)
             {
                 string n = null;
@@ -63,38 +81,20 @@ namespace MGSol.Panel
                 }
             }
             Z = blst.ToArray();
-
-            var LsLsZ = new List<string>[Z.Length];
-
+            List<string>[] LsLsZ = new List<string>[Z.Length];
             for (int i = 0; i < LsLsZ.Length; i++)
             {
                 LsLsZ[i] = Z[i].ToList();
             }
-
-            RemoveEmpyCol( LsLsZ);
-
+            RemoveEmpyCol(LsLsZ);
             blst = new List<string[]>();
-
             for (int i = 0; i < LsLsZ.Length; i++)
             {
                 blst.Add(LsLsZ[i].ToArray());
             }
-
             Z = blst.ToArray();
-
-            for (int i = 0; i < Z[0].Length; i++)
-            {
-                var col = new DataGridTextColumn();
-                col.Header = "Column " + i;
-                col.Binding = new Binding(string.Format("[{0}]", i));
-                Dtgreed.Columns.Add(col);
-            }
-
-            ReadMass = Z;
-
-            Dtgreed.ItemsSource = ReadMass;
+            return Z;
         }
-
         private static void RemoveEmpyCol(List<string>[] LsLsZ)
         {
             for (int x = 0; x < LsLsZ[0].Count - 1; x++)
@@ -106,167 +106,426 @@ namespace MGSol.Panel
                 }
                 if (n == "")
                 {
-                    foreach (var item in LsLsZ)
+                    foreach (List<string> item in LsLsZ)
                     {
                         item.RemoveAt(x);
                     }
-                    RemoveEmpyCol( LsLsZ);
+                    RemoveEmpyCol(LsLsZ);
                 }
             }
-        }
-
-        private void addBtn(ContextMenu menu, string BtnCont, MouseButtonEventHandler handler)
-        {
-            Label X = new Label() { Content = BtnCont };
-            X.MouseLeftButtonDown += handler;
-            menu.Items.Add(X);
-        }
-        private void ContextMenuShow(int X, int Y)
-        {
-            ContextMenu M = new ContextMenu();
-
-            addBtn(M, "Номер Позиции Начало", (x, y) => { paramsColl.Npos.Start =Y; });
-            addBtn(M, "Номер Позиции Конец", (x, y) => { paramsColl.Npos.End = Y; });
-            addBtn(M, "Колонка Цены", (x, y) => { paramsColl.PriceCol = X; });
-            addBtn(M, "Колонка SKU", (x, y) => { paramsColl.SkuCol = X; });
-            addBtn(M, "Колонка Количество", (x, y) => { paramsColl.CountCol = X; });
-            addBtn(M, "Колонка Дата", (x, y) => { paramsColl.DateCol = X; });
-            addBtn(M, "Колонка Номер отправления", (x, y) => { paramsColl.NPostCol = X; });
-
-            M.IsOpen = true;
-            PriceColBox.Text = paramsColl.PriceCol.ToString();
-            SkuColBox.Text = paramsColl.SkuCol.ToString();
-            CountColBox.Text = paramsColl.CountCol.ToString();
-
-
-       
-        }
-        private class DataValue
-        {
-            public int x;
-            public int y;
-            public string Value { get; set; }
         }
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            for (int i = paramsColl.Npos.Start; i < paramsColl.Npos.End; i++)
+            try
             {
-                ItemCells.Add(new ItemCell()
+                if (ActiveFile != null)
                 {
-                    SKU = ReadMass[i][paramsColl.SkuCol],
-                    Count = ReadMass[i][paramsColl.CountCol],
-                    Price = ReadMass[i][paramsColl.PriceCol],
-                    Date = ReadMass[i][paramsColl.DateCol],
-                    NPost = ReadMass[i][paramsColl.NPostCol]
-                });
-
-            }
-        }
-        private void Button_Click_1(object sender, RoutedEventArgs e)
-        {
-            XmlSerializer xmlSerializer = new XmlSerializer(typeof(List<ItemCell>));
-
-            using (FileStream fs = new FileStream("out.xml", FileMode.OpenOrCreate))
-            {
-                xmlSerializer.Serialize(fs, ItemCells);
-            }
-
-        }
-        private void Button_Click_2(object sender, RoutedEventArgs e)
-        {
-            XmlSerializer xmlSerializer = new XmlSerializer(typeof(ParamsColl));
-            // десериализуем объект
-            using (FileStream fs = new FileStream("paramsColl.xml", FileMode.OpenOrCreate))
-            {
-                paramsColl = xmlSerializer.Deserialize(fs) as ParamsColl;
-            }
-        }
-        private void Button_Click_3(object sender, RoutedEventArgs e)
-        {
-            XmlSerializer xmlSerializer = new XmlSerializer(typeof(ParamsColl));
-
-            using (FileStream fs = new FileStream("paramsColl.xml", FileMode.OpenOrCreate))
-            {
-                xmlSerializer.Serialize(fs, paramsColl);
-            }
-        }
-        private void DataGrid_MouseDown(object sender, MouseButtonEventArgs e)
-        {
-            if (e.RightButton == MouseButtonState.Pressed)
-            {
-                DependencyObject dep = (DependencyObject)e.OriginalSource;
-
-         //Шаг через визуальное дерево
-                while ((dep != null) && !(dep is DataGridCell))
-                {
-                    dep = VisualTreeHelper.GetParent(dep);
-                }
-
-                //Является ли dep ячейкой или находится за пределами Window1?
-
-                    DataGridCell cell = new DataGridCell();
-                    cell = (DataGridCell)dep;
-                    while ((dep != null) && !(dep is DataGridRow))
+                    Document Document = GenDocument();
+                    string[][] byerSFmass = null;
+                    bool editNonber = false;
+                    Order FindPost;
+                    for (int i = GiveColorCell(ParamEnum.НачСтрок).X; i < GiveColorCell(ParamEnum.КонецСтрок).X + 1; i++)
                     {
-                        dep = VisualTreeHelper.GetParent(dep);
-                    }
+                        string OrderPrice = colorCellsList[i][GiveColorCell(ParamEnum.ЦенаПродажи).Y].Value;
+                        string Count = colorCellsList[i][GiveColorCell(ParamEnum.Количество).Y].Value;
+                        string NPost = colorCellsList[i][GiveColorCell(ParamEnum.НомерЗаказа).Y].Value;
+                        string Date = colorCellsList[i][GiveColorCell(ParamEnum.Дата).Y].Value;
+                        FindPost = Document.Orders.Find(x => x.DepartureNumber == NPost);
+                        SF SchetFaktura = null;
+                        if (ActiveFile.APISetting.Type == StructLibCore.Marketplace.MarketName.Ozon)
+                        {
+                            string SFNomber = colorCellsList[i][GiveColorCell(ParamEnum.НомерСФ).Y].Value;
+                            string Bonus = colorCellsList[i][GiveColorCell(ParamEnum.Бонус).Y].Value;
+                            if (Bonus != "" && Bonus != null)
+                            {
+                                OrderPrice = ((double.Parse(OrderPrice) * double.Parse(Count) + double.Parse(Bonus)) / double.Parse(Count)).ToString();
+                            }
+                            if (SFNomber != "")
+                            {
+                                SchetFaktura = GetSchetFaktura(Document.Nomber, SFNomber, ref byerSFmass);
+                            }
+                            SiteApi.IntegrationSiteApi.APIMarket.Ozon.Post.OzonPostOrdrInfo.Result Info = (SiteApi.IntegrationSiteApi.APIMarket.Ozon.Post.OzonPostOrdrInfo.Result)new SiteApi.IntegrationSiteApi.APIMarket.Ozon.Post.OzonPostOrdrInfo(ActiveFile.APISetting).Get(NPost);
+                            if (Info != null)
+                            {
+                                Date = Info.ShipmentDate.Split("T")[0];
+                            }
+                        }
+                        if (!editNonber && ActiveFile.APISetting.Type == StructLibCore.Marketplace.MarketName.Yandex)
+                        {
+                            string z = DateTime.Parse(Date).Month.ToString();
+                            char p = DateTime.Parse(Date).Year.ToString().Last();
+                            Document.Nomber = Document.Nomber + z + p;
+                            editNonber = true;
+                        }
+                        if (OrderPrice != "")
+                        {
+                            OrderItem NOrderItem = new()
+                            {
+                                Count = Count,
+                                Price = OrderPrice,
+                                SKU = colorCellsList[i][GiveColorCell(ParamEnum.SKU).Y].Value,
+                                Type = OrdersTaypeEnum.Продажа
+                            };
+                            if (NOrderItem.SKU == "100001")
+                            {
+                                NOrderItem.SKU = "1001";
+                            }
 
-                    if (dep == null)
+                            if (NOrderItem.SKU == "10078")
+                            {
+                                NOrderItem.SKU = "1128";
+                            }
+                            NOrderItem.Article1C = FindArt1C(NOrderItem.SKU);
+                            AddItem(Document, NPost, Date, FindPost, NOrderItem, SchetFaktura);
+                        }
+                        if (ActiveFile.APISetting.Type == StructLibCore.Marketplace.MarketName.Ozon) // Возврат работает только для озона
+                        {
+                            string OrderReturnPrice = colorCellsList[i][GiveColorCell(ParamEnum.ВозвратСумма).Y].Value;
+                            if (OrderReturnPrice != "" && ActiveFile.APISetting.Type == StructLibCore.Marketplace.MarketName.Ozon)
+                            {
+                                FindPost = Document.Orders.Find(x => x.DepartureNumber == NPost);
+                                OrderItem NOrderItem = new()
+                                {
+                                    Count = colorCellsList[i][GiveColorCell(ParamEnum.Количество).Y].Value,
+                                    Price = (double.Parse(OrderReturnPrice) / double.Parse(colorCellsList[i][GiveColorCell(ParamEnum.ВозвратКолич).Y].Value)).ToString(),
+                                    SKU = colorCellsList[i][GiveColorCell(ParamEnum.SKU).Y].Value,
+                                    Type = OrdersTaypeEnum.Возврат
+                                };
+                                NOrderItem.Article1C = mModel.Option.MarketItems.First(x => x.SKU == NOrderItem.SKU).Art1C;
+                                AddItem(Document, NPost, Date, FindPost, NOrderItem, SchetFaktura);
+                            }
+                        }
+                    }
+                    if (ActiveFile.APISetting.Type == StructLibCore.Marketplace.MarketName.Yandex) // Возврат для Яндекса 
                     {
-                        return;
+                        for (int i = GiveColorCell(ParamEnum.НачСтрокВозврат).X; i < GiveColorCell(ParamEnum.КонСтрокВозврат).X + 1; i++)
+                        {
+                            string OrderReturnPrice = colorCellsList[i][GiveColorCell(ParamEnum.ВозвратСумма).Y].Value;
+                            if (OrderReturnPrice != "0" && OrderReturnPrice != "")
+                            {
+                                string NPost = colorCellsList[i][GiveColorCell(ParamEnum.НомерВозврата).Y].Value;
+                                string Date = DateTime.Now.ToString().Split(" ")[0];
+                                SF SchetFaktura = null;
+                                if (OrderReturnPrice != "")
+                                {
+                                    FindPost = Document.Orders.Find(x => x.DepartureNumber == NPost);
+                                    OrderItem NOrderItem = new()
+                                    {
+                                        Count = colorCellsList[i][GiveColorCell(ParamEnum.ВозвратКолич).Y].Value,
+                                        Price = (double.Parse(OrderReturnPrice) / double.Parse(colorCellsList[i][GiveColorCell(ParamEnum.ВозвратКолич).Y].Value)).ToString(),
+                                        SKU = colorCellsList[i][GiveColorCell(ParamEnum.SKU).Y].Value,
+                                        Type = OrdersTaypeEnum.Возврат
+                                    };
+                                    if (NOrderItem.SKU == "100001")
+                                    {
+                                        NOrderItem.SKU = "1001";
+                                    }
+
+                                    if (NOrderItem.SKU == "10078")
+                                    {
+                                        NOrderItem.SKU = "1128";
+                                    }
+
+                                    NOrderItem.Article1C = mModel.Option.MarketItems.First(x => x.SKU == NOrderItem.SKU).Art1C;
+                                    AddItem(Document, NPost, Date, FindPost, NOrderItem, SchetFaktura);
+                                }
+                            }
+                        }
                     }
-                    
-                    int X = cell.Column.DisplayIndex;
-
-                    DataGridRow row = dep as DataGridRow;
-                    int Y = Dtgreed.ItemContainerGenerator.IndexFromContainer(row);
-
-                ContextMenuShow(X, Y);
+                    SaveDocument(Document);
+                }
+                static void AddItem(Document Document, string NPost, string Date, Order FindPost, OrderItem NOrderItem, SF SchetFaktura)
+                {
+                    if (FindPost != null)
+                    {
+                        FindPost.Items.Add(NOrderItem);
+                    }
+                    else
+                    {
+                        Order NOrder = new Order() { DepartureNumber = NPost, DepartureDate = Date, SchetFaktura = SchetFaktura };
+                        NOrder.Items.Add(NOrderItem);
+                        Document.Orders.Add(NOrder);
+                    }
+                }
             }
-        }
-        private void Button_Click_4(object sender, RoutedEventArgs e)
-        {
-            foreach (var item in ItemCells)
+            catch (Exception E)
             {
-                var x = mModel.Option.MarketItems.Find(x => x.SKU == item.SKU);
-                if (x != null)
+                TestParamStack();
+                MessageBox.Show(E.Message);
+            }
+        }
+        private string FindArt1C(string sKU)
+        {
+            string X = mModel.Option.MarketItems.First(x => x.SKU == sKU).Art1C;
+            if (X == "")
+            {
+                MessageBox.Show("Не найден артикул для SKU" + sKU);
+            }
+            return X;
+        }
+        private static void SaveDocument(Document Document)
+        {
+            XmlSerializer xmlSerializer = new XmlSerializer(typeof(Document));
+            using (FileStream fs = new FileStream(Document.Nomber + ".xml", FileMode.OpenOrCreate))
+            {
+                xmlSerializer.Serialize(fs, Document);
+            }
+        }
+        private SF GetSchetFaktura(string NNomer, string SFNomber, ref string[][] byerSFmass)
+        {
+            FileInfo Fn = FolderFile.First(x => x.Name.Contains(NNomer) && x.Name.Contains("DocumentB2BSales") && !x.Name.Contains("#"));
+            if (byerSFmass == null) { try { byerSFmass = ReadFileToMass(Fn.FullName)[0]; } catch { MessageBox.Show("Не удалось загрузить файл B2B"); } }
+            string[] nameCollstring = byerSFmass.First(x => x.Contains("Наименование покупателя"));
+            int ind = Array.IndexOf(nameCollstring, "Наименование покупателя");
+            string[] valString = byerSFmass.First(x => x.Contains(SFNomber));
+            string NameVal = valString[ind];
+            ind = Array.IndexOf(nameCollstring, "ИНН");
+            string INNVal = valString[ind];
+            ind = Array.IndexOf(nameCollstring, "Дата\nсчета-фактуры\nпродавца");
+            string DataVal = valString[ind];
+            return new SF() { NameBuyer = NameVal, Date = DataVal, INN = INNVal, Nomber = SFNomber };
+        }
+        private Document GenDocument()
+        {
+            try
+            {
+                string Nomber = GiveColorCell(ParamEnum.НомерОтчета).Value;
+                string NNomer = null;
+                DateTime date = DateTime.Now;
+                foreach (char item in Nomber)
                 {
-                    item.Article1C = x.Art1C;
+                    if (char.IsDigit(item))
+                    {
+                        NNomer += item;
+                    }
                 }
-                else
+                string INN_Byer = ActiveFile.InnString.INN;
+                string INN_Seller = ActiveFile.APISetting.INN;
+                Document Document = new Document
                 {
-                    MessageBox.Show("Не найден товар с SKU:" + item.SKU);
-                }
-
+                    INN_Byer = INN_Byer,
+                    INN_Seller = INN_Seller,
+                    Nomber = NNomer,
+                    Data = date.ToString()
+                };
+                return Document;
+            }
+            catch (Exception E)
+            {
+                MessageBox.Show(E.Message);
+                return null;
             }
 
         }
-    }
-    [Serializable]
-    public class ItemCell
-    {
-        public string Article1C;
-        public string SKU;
-        public string Price;
-        public string Count;
-        public string Date;
-        public string NPost;    
-    }
-    [Serializable]
-    public class SpanCells
-    {
-        public int Start;
-        public int End;
-    }
-    [Serializable]
-    public class ParamsColl
-    {
-        public SpanCells Npos;
-        public int PriceCol;
-        public int SkuCol;
-        public int CountCol;
-        public int DateCol;
-        public int NPostCol;
+        private void TestParamStack()
+        {
+            foreach (object[] item in ParamButtons)
+            {
+                IEnumerable<ColorCell> X = from x in ParamStack where x.Param == (ParamEnum)item[0] select x;
+                if (X.Count() == 0)
+                {
+                    MessageBox.Show("Не заполнен " + ((ParamEnum)item[0]).ToString());
+                    break;
+                }
+           }
+
+        }
+        private void Save_Options(object sender, RoutedEventArgs e)
+        {
+            if (ActiveFile != null)
+            {
+                XmlSerializer xmlSerializer = new XmlSerializer(typeof(FileOption));
+                ActiveFile.ParamsColl = new List<ParamsColl>();
+                foreach (ColorCell item in ParamStack)
+                {
+                    ActiveFile.ParamsColl.Add(new ParamsColl() { Param = item.Param, X = item.X, Y = item.Y });
+                }
+                if (File.Exists(ActiveFile.FullPath.Replace("xlsx", "xml")))
+                {
+                    File.Delete(ActiveFile.FullPath.Replace("xlsx", "xml"));
+                }
+                using (FileStream fs = new FileStream(ActiveFile.FullPath.Replace("xlsx", "xml"), FileMode.OpenOrCreate))
+                {
+                    xmlSerializer.Serialize(fs, ActiveFile);
+                }
+            }
+        }
+        private void Load_options(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                FileOption FL = (MGSol.Panel.FileOption)((Button)sender).DataContext;
+                FL = LoadFileOptioins(FL);
+                ReFiilParamsCol(FL);
+            }
+            catch
+            {
+                MessageBox.Show("Не удалось загрузить настройки");
+            }
+          
+        }
+        private FileOption LoadFileOptioins(FileOption FL)
+        {
+            try
+            {
+                XmlSerializer xmlSerializer = new XmlSerializer(typeof(FileOption));
+                using (FileStream fs = new FileStream(FL.FullPath.Replace("xlsx", "xml"), FileMode.OpenOrCreate))
+                {
+                    return FL = xmlSerializer.Deserialize(fs) as FileOption;
+                }
+            }
+            catch (Exception E)
+            {
+                MessageBox.Show("Не удалось прочитать"+ FL.FullPath.Replace("xlsx", "xml"));
+                return null;
+            }
+        }
+        private void ReFiilParamsCol(FileOption FL)
+        {
+            if (colorCellsList != null)
+            {
+                ParamStack = new ObservableCollection<ColorCell>();
+                foreach (ParamsColl item in FL.ParamsColl)
+                {
+                    foreach (object[] btn in ParamButtons)
+                    {
+                        try
+                        {
+                            if ((ParamEnum)btn[0] == item.Param)
+                            {
+                                colorCellsList[item.X][item.Y].Color = (SolidColorBrush)btn[1];
+                                colorCellsList[item.X][item.Y].Param = (ParamEnum)btn[0];
+                                ParamStack.Add(colorCellsList[item.X][item.Y]);
+                                break;
+                            }
+                        }
+                        catch{MessageBox.Show("Не удалось разместить" + item.Param.ToString());}
+                    }
+                }
+            }
+        }
+        private void Table_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (PressBtn != null)
+            {
+                TextBlock txtbox = (TextBlock)sender;
+                txtbox.Background = null;
+                Button btn = (Button)PressBtn;
+                ColorCell val = (ColorCell)txtbox.DataContext;
+                val.Color = btn.Background;
+                ParamEnum paramsColl = (ParamEnum)((object[])btn.DataContext)[0];
+                List<ColorCell> fnd = (from x in ParamStack where x.Param == paramsColl select x).ToList();
+                if (fnd.Count > 0)
+                {
+                    ColorCell TM = fnd[0];
+                    while (fnd.Count() > 0)
+                    {
+                        fnd[0].Color = null;
+                        if (ColtextBlock != null)
+                        {
+                            ColtextBlock.Background = null;
+                        }
+                        ParamStack.Remove(fnd[0]);
+                        fnd = (from x in ParamStack where x.Param == paramsColl select x).ToList();
+                    }
+                    if (TM != val)
+                    {
+                        val.Param = paramsColl;
+                        txtbox.Background = val.Color;
+                        ParamStack.Add(val);
+                    }
+                }
+                else if (fnd.Count == 0)
+                {
+                    val.Param = paramsColl;
+                    txtbox.Background = val.Color;
+                    ParamStack.Add(val);
+                }
+                ColtextBlock = txtbox;
+            }
+        }
+        private void Border_Click(object sender, RoutedEventArgs e)
+        {
+            Border borber = ((Border)((Button)sender).Parent);
+            if (borber.BorderThickness.Left != 2)
+            {
+                borber.BorderBrush = Brushes.Green;
+                borber.BorderThickness = new Thickness(2);
+                borber.CornerRadius = new CornerRadius(3);
+                if (PressBtn != null && PressBtn != sender)
+                {
+                    Border_Click(PressBtn, null);
+                }
+                PressBtn = sender;
+            }
+            else
+            {
+                borber.BorderThickness = new Thickness(0);
+                borber.CornerRadius = new CornerRadius(0);
+                PressBtn = null;
+            }
+        }
+        private ColorCell GiveColorCell(ParamEnum param)
+        {
+            foreach (ColorCell item in ParamStack)
+            {
+                if (item.Param == param)
+                {
+                    return item;
+                }
+            }
+            return null;
+        }
+        private void Read_file_button_Click(object sender, RoutedEventArgs e)
+        {
+            FileOption FileI = (FileOption)((Button)sender).DataContext;
+            ActiveFile = FileI;
+            string[][][] Z = ReadFileToMass(FileI.FullPath);
+            colorCellsList = new ObservableCollection<ObservableCollection<ColorCell>>();
+            int D = 0;
+ 
+
+            for (int i = 0; i < Z.Length; i++)
+            {
+                if (ActiveFile.APISetting != null && ActiveFile.APISetting.Type == StructLibCore.Marketplace.MarketName.Yandex)
+                {
+                    if (i == 0)
+                    {
+                        i = 2;
+                    }
+                    if (i == 3)
+                    {
+                        i = 4;
+                    }
+                }
+
+                for (int p = 0; p < Z[i].Length; p++)
+                {
+                    colorCellsList.Add(new ObservableCollection<ColorCell>());
+                    for (int x = 0; x < Z[i][p].Length; x++)
+                    {
+                        colorCellsList[D].Add(new ColorCell() { Value = Z[i][p][x], X = D, Y = x, Lst = i });
+                    }
+                    D++;
+                }
+            }
+            DTtable.ItemsSource = colorCellsList;
+        }
+        private void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (e.AddedItems.Count == 1)
+            {
+                FileOption FL = (MGSol.Panel.FileOption)((ComboBox)sender).DataContext;
+                FL.APISetting = mModel.GetApiFromName(e.AddedItems[0].ToString());
+            }
+        }
+        private void ByerComboBoxINN_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (e.AddedItems.Count == 1)
+            {
+                FileOption FL = (MGSol.Panel.FileOption)((ComboBox)sender).DataContext;
+                FL.InnString = mModel.GetInnFromName(e.AddedItems[0].ToString());
+            }
+        }
     }
 }
-

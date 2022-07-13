@@ -8,10 +8,26 @@ namespace StructLibCore.Marketplace
     public enum OrderStatus { NONE, PROCESSING_STARTED, PROCESSING_SHIPPED, DELIVERED, CANCELLED, READY_TO_SHIP }
 
     [Serializable]
+    public class InnString
+    {
+        public InnString(MarketName marketName, string iNN)
+        {
+            MarketName = marketName;
+            INN = iNN;
+        }
+
+        public InnString() { MarketName = MarketName.Ozon; }
+        public MarketName MarketName { get; set; }
+        public string INN { get; set; }
+    }
+
+
+    [Serializable]
     public class MarketPlaceCash
     {
         public List<MarketItem> MarketItems { get; set; }
         public List<APISetting> APISettings { get; set; }
+        public List<InnString> SellerINN { get; set; }
         public List<IOrder> Orders { get; set; }
         public MarketPlaceCash() { MarketItems = new List<MarketItem>(); APISettings = new List<APISetting>(); Orders = new List<IOrder>(); }
     }
@@ -31,6 +47,7 @@ namespace StructLibCore.Marketplace
         public MarketName Type { get; set; }
         public string[] ApiString { get; set; }
         public bool Active { get; set; }
+        public string INN { get; set; }
     }
     [Serializable]
     public enum MarketName { Yandex, Ozon, Avito, Sber }

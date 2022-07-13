@@ -267,7 +267,16 @@ namespace Network.Item
     {
         public override TCPMessage Post(ApplicationContext Db, object Obj = null)
         {
-            int ID = Convert.ToInt32(this.Attach);
+            string Str = null;
+            foreach (var item in this.Attach.ToString())
+            {
+                if (Char.IsDigit(item))
+                {
+                    Str = Str + item;
+                }
+            }
+
+            int ID = int.Parse(Str);
             ItemDBStruct Result = Db.Item.First(item => item.Id == ID);
             Storage[] Storege = null;
 

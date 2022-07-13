@@ -34,13 +34,8 @@ namespace SiteApi.IntegrationSiteApi.APIMarket.Yandex
                 streamWriter.Write(Root);
             }
             var httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
-
-
-
             return true;
         }
-
-
         public class Order
         {
             [JsonProperty("status")]

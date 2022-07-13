@@ -32,15 +32,24 @@ namespace SiteApi.IntegrationSiteApi.APIMarket.Ozon.Post
            {
                var json = JsonConvert.SerializeObject(root); streamWriter.Write(json);
             }
-
-            var httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
-            using (var streamReader = new StreamReader(httpResponse.GetResponseStream())) { result = streamReader.ReadToEnd(); }
-
-            if (result.Contains(Or.PostingNumber))
+            try
             {
-                return true;
+                var httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
+                using (var streamReader = new StreamReader(httpResponse.GetResponseStream())) { result = streamReader.ReadToEnd(); }
+
+                if (result.Contains(Or.PostingNumber))
+                {
+                    return true;
+                }
+            }
+            catch 
+
+            {
+
+                return false;
             }
             return false;
+
         }
 
 

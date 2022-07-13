@@ -21,7 +21,7 @@ namespace Server.Class.IntegrationSiteApi.Market.Ozon
             var httpWebRequest = GetRequest(@"v2/product/info/list");
             var Lst = new OzonGetItemList(this.aPISetting).Get();
             ItemQ itemQ = new ItemQ();
-            foreach (var item in Lst) { itemQ.offer_id.Add(item.offer_id); }
+            foreach (var item in Lst) { itemQ.offer_id.Add(item.offer_id);}
             using (var streamWriter = new StreamWriter(httpWebRequest.GetRequestStream())) { var root = JsonConvert.SerializeObject(itemQ); streamWriter.Write(root); }
             var httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
             using (var streamReader = new StreamReader(httpResponse.GetResponseStream())) { result = streamReader.ReadToEnd(); }

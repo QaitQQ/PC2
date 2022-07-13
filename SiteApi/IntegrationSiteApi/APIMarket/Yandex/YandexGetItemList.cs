@@ -1,13 +1,10 @@
 ﻿using Newtonsoft.Json;
-
-using SiteApi.IntegrationSiteApi;
-
 using StructLibCore.Marketplace;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
-using System.Text;
+using System.Linq;
 
 namespace Server.Class.IntegrationSiteApi.Market.Yandex.YandexGetName
 {
@@ -16,7 +13,7 @@ namespace Server.Class.IntegrationSiteApi.Market.Yandex.YandexGetName
         public YandexGetItemList(APISetting APISetting) : base(APISetting){}
         public List<object> Get()
         {
-            var httpWebRequest = GetRequest(@"/campaigns/" + ClientID + "/offer-mapping-entries.json", "GET");
+            var httpWebRequest = GetRequest(@"/campaigns/" + ClientID + "/offer-mapping-entries.json?limit=200", "GET");
             var httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
 
             using (var streamReader = new StreamReader(httpResponse.GetResponseStream())) { result = streamReader.ReadToEnd(); }
@@ -25,21 +22,36 @@ namespace Server.Class.IntegrationSiteApi.Market.Yandex.YandexGetName
             var Lst = new List<object>();
             var Prises = new YandexGetPrice.YandexGetPrice(aPISetting).Get();
 
-            foreach (var item in root.result.offerMappingEntries)
+            Mapped(root, Lst, Prises);
+
+            if (root.result.paging.nextPageToken != null)
             {
-                foreach (var prise in Prises)
-                {
-                    if (((IMarketItem)prise).SKU == item.offer.SKU)
-                    {
-                        item.offer.Price = ((IMarketItem)prise).Price;
-                        item.offer.Yprice = ((Server.Class.IntegrationSiteApi.Market.Yandex.YandexGetPrice.YandexItem)prise).price;
-                    }
-                }
-                Lst.Add(item.offer);
+                httpWebRequest = GetRequest(@"/campaigns/" + ClientID + "/offer-mapping-entries.json?page_token=" + root.result.paging.nextPageToken, "GET");
+                httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
+                using (var streamReader = new StreamReader(httpResponse.GetResponseStream())) { result = streamReader.ReadToEnd(); }
+                root = JsonConvert.DeserializeObject<Root>(result);
+                Mapped(root, Lst, Prises);
             }
 
             return Lst;
         }
+
+        private static void Mapped(Root root, List<object> Lst, List<object> Prises)
+        {
+            foreach (var item in root.result.offerMappingEntries)
+            {
+
+                IEnumerable<object> z = from prise in Prises where ((IMarketItem)prise).SKU == item.offer.SKU select prise;
+
+                if (z.Count() > 0)
+                {
+                    item.offer.Price = ((IMarketItem)z.First()).Price;
+                    item.offer.Yprice = ((Server.Class.IntegrationSiteApi.Market.Yandex.YandexGetPrice.YandexItem)z.First()).price;
+                }
+                Lst.Add(item.offer);
+            }
+        }
+
         [Serializable]
         public class Paging
         {
