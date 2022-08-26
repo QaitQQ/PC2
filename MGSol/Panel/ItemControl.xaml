@@ -31,14 +31,14 @@
                     <ItemsControl x:Name="VItemsList">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <Grid Margin ="2" >
+                                <Grid  >
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="25"/>
                                         <RowDefinition  />
                                     </Grid.RowDefinitions>
                                     <StackPanel Orientation="Horizontal" Grid.Row="0">
                                         <Button Margin="2" Content="+" Background="#FF64B067" FontSize="16" FontFamily="Arial" FontWeight="Bold" Click="MiniClick" HorizontalAlignment="Left"/>
-                                       
+                                        <TextBox  TextAlignment="Left" Width="40" Margin ="2" Background="Beige" TextWrapping="Wrap" Text="{Binding Price}" TextChanged="BaseIDBox_TextChanged"></TextBox>
                                         <TextBox TextAlignment="Left" Width="40" Margin ="2" Background="Beige" TextWrapping="Wrap" Text="{Binding SKU}"></TextBox>
                                         <TextBox TextAlignment="Left" Width="550" Margin ="2" Background="Beige" TextWrapping="Wrap" Text="{Binding Name}"></TextBox>
                                         <Grid>
@@ -73,7 +73,7 @@
                                                 </ItemsControl>
                                             </StackPanel>
                                         </Border>
-                                        <TextBox TextAlignment="Left" Margin ="2" Background="Beige" TextWrapping="Wrap" Text="{Binding BaseID}"></TextBox>
+                                        <TextBox x:Name="BaseIDBox" TextAlignment="Left" Margin ="2" Background="Beige" TextWrapping="Wrap" Text="{Binding BaseID}" TextChanged="BaseIDBox_TextChanged"></TextBox>
                                         <Button Margin="2" Content="x" Background="#FF991717" FontSize="15" FontFamily="Arial" FontWeight="Bold" Click="RemClick" HorizontalAlignment="Left"/>
 
                                     </StackPanel>
@@ -97,7 +97,7 @@
                                                             </StackPanel>
                                                             <StackPanel Grid.Column="1">
                                                                 <Button Content="&#128504;" Background="Green" Click="Renew_click"></Button>
-                                                                <Button Content="&#43;" Background="Green" Click="Add_Click"></Button>
+                                                                <!--<Button Content="&#43;" Background="Green" Click="Add_Click"></Button>-->
                                                             </StackPanel>
 
                                                         </Grid>
@@ -111,7 +111,6 @@
                                             </ItemsControl>
                                         </StackPanel>
                                     </Grid>
-
                                 </Grid>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>

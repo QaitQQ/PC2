@@ -9,9 +9,9 @@ using System.Net;
 
 namespace Server.Class.IntegrationSiteApi.Market.Ozon
 {
-    public class OzonSetItem : Server.Class.IntegrationSiteApi.Market.Ozon.OzonPost.OzonPost
+    public class OzonPostSetItem : Server.Class.IntegrationSiteApi.Market.Ozon.OzonPost.OzonPost
     {
-        public OzonSetItem(StructLibCore.Marketplace.APISetting aPISetting) : base(aPISetting)
+        public OzonPostSetItem(StructLibCore.Marketplace.APISetting aPISetting) : base(aPISetting)
         {
         }
 

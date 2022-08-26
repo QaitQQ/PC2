@@ -12,15 +12,23 @@ namespace Server.Class.IntegrationSiteApi.Market.Ozon.OzonPortOrderList
         public OzonPortOrderList(APISetting aPISetting) : base(aPISetting){}
         public List<object> Get()
         {
-            HttpWebRequest httpWebRequest = GetRequest(@"v3/posting/fbs/unfulfilled/list");
-            PostList root = new PostList() { Limit = 100, Offset = 0, Dir = "ASC", Filter = new Filter() { CutoffFrom =  DateTime.Now.AddMonths(-1), CutoffTo = DateTime.Now.AddDays(10) }, With = new With() { AnalyticsData = true, Barcodes = true, FinancialData = true, Translit = true } };
-            using (var streamWriter = new StreamWriter(httpWebRequest.GetRequestStream())) {  var json = JsonConvert.SerializeObject(root); streamWriter.Write(json);}
-            HttpWebResponse httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
-            using (var streamReader = new StreamReader(httpResponse.GetResponseStream())) { result = streamReader.ReadToEnd(); }
-            OrderList OrderList = JsonConvert.DeserializeObject<OrderList>(result);
-            List<object> X = new List<object>();
-            foreach (var item in OrderList.Result.Postings) {item.APISetting = aPISetting;X.Add(item);}
-            return X;
+            try
+            {
+                HttpWebRequest httpWebRequest = GetRequest(@"v3/posting/fbs/unfulfilled/list");
+                PostList root = new PostList() { Limit = 100, Offset = 0, Dir = "ASC", Filter = new Filter() { CutoffFrom = DateTime.Now.AddMonths(-1), CutoffTo = DateTime.Now.AddDays(10) }, With = new With() { AnalyticsData = true, Barcodes = true, FinancialData = true, Translit = true } };
+                using (var streamWriter = new StreamWriter(httpWebRequest.GetRequestStream())) { var json = JsonConvert.SerializeObject(root); streamWriter.Write(json); }
+                HttpWebResponse httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
+                using (var streamReader = new StreamReader(httpResponse.GetResponseStream())) { result = streamReader.ReadToEnd(); }
+                OrderList OrderList = JsonConvert.DeserializeObject<OrderList>(result);
+                List<object> X = new List<object>();
+                foreach (var item in OrderList.Result.Postings) { item.APISetting = aPISetting; X.Add(item); }
+                return X;
+            }
+            catch 
+            {
+                return null;
+            }
+
         }
     }
     [Serializable]
@@ -65,6 +73,7 @@ namespace Server.Class.IntegrationSiteApi.Market.Ozon.OzonPortOrderList
         [JsonProperty("with")]
         public With With;
     }
+
     [Serializable]
     public class DeliveryMethod
     {
@@ -280,11 +289,11 @@ namespace Server.Class.IntegrationSiteApi.Market.Ozon.OzonPortOrderList
         public bool IsExpress;
         [JsonProperty("requirements")]
         public Requirements Requirements;
-        public string Id { get { return OrderId; } }
+        public string Id { get { return PostingNumber; } }
         public APISetting APISetting { get; set; }
         public OrderStatus Status => status switch
         {
-            ("awaiting_deliver") => OrderStatus.READY_TO_SHIP,
+            ("awaiting_deliver") => OrderStatus.READY,
             ("awaiting_packaging") => OrderStatus.PROCESSING_STARTED,
             ("delivering") => OrderStatus.DELIVERED,
             _ => OrderStatus.NONE,

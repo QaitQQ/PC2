@@ -30,10 +30,11 @@ namespace SiteApi.IntegrationSiteApi.APIMarket.Ozon.Post
                 using (var streamReader = new StreamReader(httpResponse.GetResponseStream())) { result = streamReader.ReadToEnd(); }
 
                 ResultRoot OrderList = JsonConvert.DeserializeObject<ResultRoot>(result);
+                OrderList.Result.APISetting = aPISetting;
 
                 return OrderList.Result;
             }
-            catch 
+            catch
             {
                 return null;
             }
@@ -168,85 +169,11 @@ namespace SiteApi.IntegrationSiteApi.APIMarket.Ozon.Post
             public List<object> ProductsRequiringRnpt;
         }
 
-        public class Result
-        {
-            [JsonProperty("posting_number")]
-            public string PostingNumber;
-
-            [JsonProperty("order_id")]
-            public int OrderId;
-
-            [JsonProperty("order_number")]
-            public string OrderNumber;
-
-            [JsonProperty("status")]
-            public string Status;
-
-            [JsonProperty("delivery_method")]
-            public DeliveryMethod DeliveryMethod;
-
-            [JsonProperty("tracking_number")]
-            public string TrackingNumber;
-
-            [JsonProperty("tpl_integration_type")]
-            public string TplIntegrationType;
-
-            [JsonProperty("in_process_at")]
-            public string InProcessAt;
-
-            [JsonProperty("shipment_date")]
-            public string ShipmentDate;
-
-            [JsonProperty("delivering_date")]
-            public string DeliveringDate;
-
-            [JsonProperty("provider_status")]
-            public string ProviderStatus;
-
-            [JsonProperty("delivery_price")]
-            public string DeliveryPrice;
-
-            [JsonProperty("cancellation")]
-            public Cancellation Cancellation;
-
-            [JsonProperty("customer")]
-            public object Customer;
-
-            [JsonProperty("addressee")]
-            public object Addressee;
-
-            [JsonProperty("products")]
-            public List<Product> Products;
-
-            [JsonProperty("barcodes")]
-            public object Barcodes;
-
-            [JsonProperty("analytics_data")]
-            public object AnalyticsData;
-
-            [JsonProperty("financial_data")]
-            public object FinancialData;
-
-            [JsonProperty("additional_data")]
-            public List<object> AdditionalData;
-
-            [JsonProperty("is_express")]
-            public bool IsExpress;
-
-            [JsonProperty("requirements")]
-            public Requirements Requirements;
-
-            [JsonProperty("product_exemplars")]
-            public object ProductExemplars;
-
-            [JsonProperty("courier")]
-            public object Courier;
-        }
 
         public class ResultRoot
         {
             [JsonProperty("result")]
-            public Result Result;
+            public Server.Class.IntegrationSiteApi.Market.Ozon.OzonPortOrderList.Order Result;
         }
 
 

@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 
 namespace Server.Class.HDDClass
@@ -15,12 +16,15 @@ namespace Server.Class.HDDClass
                 try
                 {
                     using Stream openFileStream = File.OpenRead(_FilePath);
+
+                    long T = openFileStream.Seek(0, SeekOrigin.Begin);
                     BinaryFormatter deserializer = new BinaryFormatter();
                     _Obj = (T)deserializer.Deserialize(openFileStream);
                     openFileStream.Close();
                 }
-                catch
+                catch (Exception E)
                 {
+
                 }
 
             }

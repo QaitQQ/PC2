@@ -10,9 +10,9 @@ using System.Text.Json.Serialization;
 
 namespace Server.Class.IntegrationSiteApi.Market.Ozon
 {
-    public class OzonSetPrice : OzonPost.OzonPost
+    public class OzonPostSetStoks : OzonPost.OzonPost
     {
-        public OzonSetPrice(StructLibCore.Marketplace.APISetting aPISetting) : base(aPISetting)
+        public OzonPostSetStoks(StructLibCore.Marketplace.APISetting aPISetting) : base(aPISetting)
         {
         }
         public object Get(StructLibCore.Marketplace.IMarketItem[] List)

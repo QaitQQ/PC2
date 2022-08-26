@@ -5,14 +5,24 @@
     <TargetFramework>net5.0-windows</TargetFramework>
     <UseWPF>true</UseWPF>
     <ApplicationIcon>Ico.ico</ApplicationIcon>
+    <NoWin32Manifest>true</NoWin32Manifest>
+  <Configuration>
+    <runtime>
+      <assemblyBinding xmlns="urn:schemas-microsoft-com:asm.v1">
+      <probing privatePath="lib"></probing>
+    </assemblyBinding>
+    </runtime>
+  </Configuration>
   </PropertyGroup>
-
+  
   <ItemGroup>
     <PackageReference Include="System.Reactive" Version="5.0.0" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\ClientClass\ClientClass.csproj" />
     <ProjectReference Include="..\ItemProcessor\ItemProcessor.csproj" />
+    <ProjectReference Include="..\NetworkLibrary\NetworkLibrary.csproj" />
     <ProjectReference Include="..\SiteApi\SiteApi.csproj" />
     <ProjectReference Include="..\StructLibCore\StructLibCore.csproj" />
   </ItemGroup>

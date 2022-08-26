@@ -18,11 +18,19 @@ namespace SiteApi.IntegrationSiteApi.APIMarket.Yandex
         public List<object> Get(string Id)
         {
             var httpWebRequest = GetRequest(@"/campaigns/" + ClientID + "/orders/"+ Id + ".json", "GET");
-            var httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
-            using (var streamReader = new StreamReader(httpResponse.GetResponseStream())) { result = streamReader.ReadToEnd(); }
-           // Root root = JsonConvert.DeserializeObject<Root>(result);
-            var Lst = new List<object>();
-            return Lst;
+            try
+            {
+                var httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
+                using (var streamReader = new StreamReader(httpResponse.GetResponseStream())) { result = streamReader.ReadToEnd(); }
+                // Root root = JsonConvert.DeserializeObject<Root>(result);
+                var Lst = new List<object>();
+                return Lst;
+            }
+            catch
+            {
+
+                return null;
+            }
 
         }
     }

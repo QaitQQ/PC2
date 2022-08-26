@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -64,7 +65,10 @@ namespace MGSol.Panel
 
                         if ((bool)MB.ShowDialog())
                         {
-                            listBox.Items.Add(MB.STR);
+                            List<string> lst = Setting.ApiString.ToList();
+                            lst.Add(MB.STR);
+                            Setting.ApiString = lst.ToArray();
+                            listBox.ItemsSource = Setting.ApiString;
                             MB.Close();
                         };
                     };

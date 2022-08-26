@@ -1,5 +1,7 @@
 ﻿using StructLibCore.Marketplace;
 
+using StructLibs;
+
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -11,7 +13,6 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Xml.Serialization;
-
 namespace MGSol.Panel
 {
     /// <summary>
@@ -29,7 +30,7 @@ namespace MGSol.Panel
             Model = model;
             InitializeComponent();
             VisItemsList = new ObservableCollection<MarketItem>();
-            Options = model.Option.APISettings;
+            Options = model.OptionMarketPlace.APISettings;
             System.Threading.Tasks.Task.Factory.StartNew(() => Dispatcher.Invoke(() => LoadList()));
             VItemsList.ItemsSource = VisItemsList;
             SortedBox.ItemsSource = typeof(MarketItem).GetProperties(BindingFlags.Public | BindingFlags.Instance);
@@ -48,13 +49,11 @@ namespace MGSol.Panel
         {
             IMarketItem[] mass = new IMarketItem[] { ((Button)sender).DataContext as IMarketItem };
             //  new Network.Item.MarketApi.RenewItemMarket().Get<List<object>>(new Client.WrapNetClient(), mass);
-
             RenewPrice(mass);
         }
         private void Add_Click(object sender, RoutedEventArgs e)
         {
             ContextMenu M = new ContextMenu() { DataContext = (IMarketItem)((StackPanel)((Button)sender).Parent).DataContext };
-
             foreach (APISetting item in Options)
             {
                 TextBlock X = new TextBlock() { Text = item.Name, DataContext = item };
@@ -73,7 +72,6 @@ namespace MGSol.Panel
                 };
                 M.Items.Add(X);
             }
-
             M.IsOpen = true;
         }
         private void MiniClick(object sender, RoutedEventArgs e)
@@ -87,18 +85,17 @@ namespace MGSol.Panel
             {
                 grid.Children[1].Visibility = Visibility.Collapsed;
             }
-
         }
         private void Button_Save(object sender, RoutedEventArgs e)
         {
-            Model.Option.MarketItems = ItemsList;
+            Model.OptionMarketPlace.MarketItems = ItemsList;
             Model.Save();
             //new Network.Item.MarketApi.SaveItemsList().Get<bool>(new Client.WrapNetClient(), ItemsList.ToArray().ToList());
         }
         private void LoadBaseItem_Click(object sender, RoutedEventArgs e)
         {
             XmlSerializer xmlSerializer = new XmlSerializer(typeof(Выгрузка));
-            using (FileStream fs = new FileStream("Выгрузка.xml", FileMode.OpenOrCreate)){ items1C = xmlSerializer.Deserialize(fs) as Выгрузка;  }
+            using (FileStream fs = new FileStream("Выгрузка.xml", FileMode.OpenOrCreate)) { items1C = xmlSerializer.Deserialize(fs) as Выгрузка; }
         }
         private void RemClick(object sender, RoutedEventArgs e)
         {
@@ -115,7 +112,6 @@ namespace MGSol.Panel
         private void Fill_Vlist(IEnumerable<MarketItem> selectionItem)
         {
             VisItemsList.Clear();
-
             foreach (MarketItem item in selectionItem)
             {
                 VisItemsList.Add(item);
@@ -129,16 +125,13 @@ namespace MGSol.Panel
                 case "System.String name":
                     Fill_Vlist(from lst in ItemsList orderby lst.Name select lst);
                     break;
-
                 case "System.String SKU":
                     Fill_Vlist(from lst in ItemsList orderby lst.SKU select lst);
                     break;
                 default:
                     break;
             }
-
         }
-
         #endregion
         private void SyncItemList()
         {
@@ -166,24 +159,19 @@ namespace MGSol.Panel
                         default:
                             break;
                     }
-
                     foreach (object item in Result)
                     {
                         IMarketItem It = (IMarketItem)item;
                         It.APISetting = Option;
                         MarketItem X = null;
                         X = ItemsList.FirstOrDefault(x => x.SKU == It.SKU);
-
                         if (X != null && X.SKU.Contains("1057"))
                         {
-
                         }
-
                         if (X != null && X.Name == null)
                         {
                             X.Name = It.Name;
                         }
-
                         if (X != null)
                         {
                             Dispatcher.Invoke(() => { X.Items.Add(It); });
@@ -218,7 +206,7 @@ namespace MGSol.Panel
         }
         private void LoadList()
         {
-            ItemsList = Model.Option.MarketItems;
+            ItemsList = Model.OptionMarketPlace.MarketItems;
             if (ItemsList != null)
             {
                 foreach (MarketItem item in ItemsList)
@@ -231,7 +219,6 @@ namespace MGSol.Panel
         private static string ImportItems(IMarketItem[] mass)
         {
             IMarketItem[] X = mass;
-
             static List<IGrouping<APISetting, IMarketItem>> ConvertListApi(IMarketItem[] Lst)
             {
                 IEnumerable<IGrouping<APISetting, IMarketItem>> X = Lst.GroupBy(x => x.APISetting);
@@ -240,7 +227,6 @@ namespace MGSol.Panel
             }
             List<IGrouping<APISetting, IMarketItem>> Z = ConvertListApi(X);
             object R = null;
-
             foreach (IGrouping<APISetting, IMarketItem> item in Z)
             {
                 switch (item.Key.Type)
@@ -249,7 +235,7 @@ namespace MGSol.Panel
                         R = new SiteApi.IntegrationSiteApi.APIMarket.Yandex.YandexPostImport.YandexPostImport(item.Key).Get(item.ToArray());
                         break;
                     case MarketName.Ozon:
-                        R = new Server.Class.IntegrationSiteApi.Market.Ozon.OzonSetItem(item.Key).Get(item.ToArray());
+                        R = new Server.Class.IntegrationSiteApi.Market.Ozon.OzonPostSetItem(item.Key).Get(item.ToArray());
                         break;
                     case MarketName.Avito:
                         break;
@@ -271,17 +257,16 @@ namespace MGSol.Panel
                 return A;
             }
             List<IGrouping<APISetting, IMarketItem>> Z = ConvertListApi(X);
-            object R = null;
-
             foreach (IGrouping<APISetting, IMarketItem> item in Z)
             {
                 switch (item.Key.Type)
                 {
                     case StructLibCore.Marketplace.MarketName.Yandex:
-                        R = new Server.Class.IntegrationSiteApi.Market.Yandex.YandexPostItemPrice.YandexPostItemPrice(item.Key).Get(item.ToArray());
+                        new Server.Class.IntegrationSiteApi.Market.Yandex.YandexPostItemPrice.YandexPostItemPrice(item.Key).Get(item.ToArray());
                         break;
                     case StructLibCore.Marketplace.MarketName.Ozon:
-                        R = new Server.Class.IntegrationSiteApi.Market.Ozon.OzonSetPrice(item.Key).Get(item.ToArray());
+                        new Server.Class.IntegrationSiteApi.Market.Ozon.OzonPostSetPrice(item.Key).Get(item.ToArray());
+                        new Server.Class.IntegrationSiteApi.Market.Ozon.OzonPostSetStoks(item.Key).Get(item.ToArray());
                         break;
                     case StructLibCore.Marketplace.MarketName.Avito:
                         break;
@@ -302,14 +287,11 @@ namespace MGSol.Panel
         {
             MarketItem X = ((StructLibCore.Marketplace.MarketItem)((Button)sender).DataContext);
             ContextMenu M = new ContextMenu();
-
             if (items1C == null)
             {
                 LoadBaseItem_Click(null, null);
             }
-
             IEnumerable<Номенклатура> T = from O in items1C?.Номенклатура where O.Наименование.ToLower().Contains(X.Art1C) select O;
-
             foreach (Номенклатура item in items1C.Номенклатура)
             {
                 if (item.Наименование.ToLower().Contains(X.Art1C.ToLower()))
@@ -322,7 +304,6 @@ namespace MGSol.Panel
         private void PlusPricePercent(object sender, RoutedEventArgs e)
         {
             List<IMarketItem> mass = new List<IMarketItem>();
-
             foreach (MarketItem item in ItemsList)
             {
                 foreach (IMarketItem X in item.Items)
@@ -333,22 +314,18 @@ namespace MGSol.Panel
                         {
                             X.Price = X.Price.Replace(".", ",");
                         }
-
                         double Z = double.Parse(X.Price, System.Globalization.NumberStyles.AllowDecimalPoint);
                         double P = double.Parse(ProcessingPanelPercentBox.Text);
-
                         X.Price = ((P / 100 + 1) * Z).ToString();
                         mass.Add(X);
                     }
                 }
-
             }
             RenewPrice(mass.ToArray());
         }
         private void MinusPricePercent(object sender, RoutedEventArgs e)
         {
             List<IMarketItem> mass = new List<IMarketItem>();
-
             foreach (MarketItem item in ItemsList)
             {
                 foreach (IMarketItem X in item.Items)
@@ -359,19 +336,31 @@ namespace MGSol.Panel
                         {
                             X.Price = X.Price.Replace(".", ",");
                         }
-
                         double Z = double.Parse(X.Price, System.Globalization.NumberStyles.AllowDecimalPoint);
                         double P = double.Parse(ProcessingPanelPercentBox.Text);
-
                         X.Price = (Z - ((P / 100) * Z)).ToString();
                         mass.Add(X);
                     }
                 }
-
             }
             RenewPrice(mass.ToArray());
         }
+        private void BaseIDBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            MarketItem X = (MarketItem)((TextBox)sender).DataContext;
+            if (X.BaseID == 0)
+            {
+                List<СomparisonNameID> Search = new Network.Item.ItemSearch().Get<List<СomparisonNameID>>(Model.GetClient(), new object[] { ((System.Windows.Controls.TextBox)sender).Text, 3 });
+                ContextMenu M = new();
+                
+                foreach (СomparisonNameID item in Search)
+                {
+                    AddBtn(M, item.Name, (e, x) => { X.BaseID = item.Id; (sender as TextBox).Text = item.Id.ToString(); }); ;
+                }
+                M.IsOpen = true;
+            }
+
+
+        }
     }
-
-
 }

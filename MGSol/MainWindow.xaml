@@ -3,20 +3,26 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:MGSol"
         mc:Ignorable="d"
-        Title="Маркетплейс" Height="450" Width="800">
-    <!--WindowStyle="None"
-        AllowsTransparency="True"-->
+        Title="Маркетплейс" Height="450" Width="800"
+        Background="Transparent"
+        WindowStyle="None"
+        >
     <Window.Resources>
         <Style TargetType="TabItem">
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="TabItem">
-                        <Border  BorderThickness="1" CornerRadius="3,3,0,0" BorderBrush="Gray">
-                            <Label x:Name="L2"  Content="{TemplateBinding Header}" VerticalAlignment="Bottom" Height="25"></Label>
+                        <Border  BorderThickness="2,1,1,1" CornerRadius="0,0,0,0" BorderBrush="Gray" Margin="0,-2,-2,-2">
+                            <Label x:Name="L2"  Content="{TemplateBinding Header}" VerticalAlignment="Bottom"  Height="25">
+                                <Label.Background>
+                                    <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                                        <GradientStop Color="#FFDCE9F7"/>
+                                        <GradientStop Color="#FFC3DEFB"/>
+                                    </LinearGradientBrush>
+                                </Label.Background>
+                            </Label>
                         </Border>
-
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsSelected" Value="True">
                                 <Setter TargetName="L2" Property="Background" Value="#9999ff"/>
@@ -26,56 +32,27 @@
                 </Setter.Value>
             </Setter>
         </Style>
-
-        <Style x:Key="ScrollViewer"
-       TargetType="{x:Type ScrollViewer}">
-            <Setter Property="OverridesDefaultStyle"
-          Value="True" />
-            <Setter Property="Template">
+        <Style TargetType="TabControl">
+            <Setter Property="Background">
                 <Setter.Value>
-                    <ControlTemplate TargetType="{x:Type ScrollViewer}">
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto" />
-                                <ColumnDefinition />
-                            </Grid.ColumnDefinitions>
-                            <Grid.RowDefinitions>
-                                <RowDefinition />
-                                <RowDefinition Height="Auto" />
-                            </Grid.RowDefinitions>
-                            <Border Grid.Column="1"
-                  BorderThickness="0,1,1,1">
-                                <Border.BorderBrush>
-                                    <SolidColorBrush Color="{DynamicResource BorderMediumColor}" />
-                                </Border.BorderBrush>
-                                <ScrollContentPresenter CanContentScroll="{TemplateBinding CanContentScroll}" />
-                            </Border>
-                            <ScrollBar x:Name="PART_VerticalScrollBar"
-                     Value="{TemplateBinding VerticalOffset}"
-                     Maximum="{TemplateBinding ScrollableHeight}"
-                     ViewportSize="{TemplateBinding ViewportHeight}"
-                     Visibility="{TemplateBinding ComputedVerticalScrollBarVisibility}"/>
-                            <ScrollBar x:Name="PART_HorizontalScrollBar"
-                     Orientation="Horizontal"
-                     Grid.Row="1"
-                     Grid.Column="1"
-                     Value="{TemplateBinding HorizontalOffset}"
-                     Maximum="{TemplateBinding ScrollableWidth}"
-                     ViewportSize="{TemplateBinding ViewportWidth}"
-                     Visibility="{TemplateBinding ComputedHorizontalScrollBarVisibility}"/>
-
-                        </Grid>
-                    </ControlTemplate>
+                    <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                        <GradientStop Color="#FFDCE9F7"/>
+                        <GradientStop Color="#FFC3DEFB"/>
+                    </LinearGradientBrush>
                 </Setter.Value>
             </Setter>
         </Style>
-
+        <Style TargetType="{x:Type RepeatButton}">
+            <Setter Property="Background" Value="Red">
+            </Setter>
+        </Style>
         <Style TargetType="Button">
             <Setter Property="Margin" Value="2"></Setter>
+            <Setter Property="MinWidth" Value="35"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
-                        <Border MinWidth="35"   BorderThickness="2" CornerRadius="3"   BorderBrush="{TemplateBinding Background}">
+                        <Border BorderThickness="2" CornerRadius="3"   BorderBrush="{TemplateBinding Background}">
                             <Grid x:Name="BtnGrd"  Background="{TemplateBinding Background }">
                                 <ContentPresenter HorizontalAlignment="Center"  VerticalAlignment="Center" RecognizesAccessKey="True"></ContentPresenter>
                             </Grid>
@@ -88,7 +65,7 @@
                     <Setter Property="Template">
                         <Setter.Value>
                             <ControlTemplate TargetType="Button">
-                                <Border MinWidth="35"  BorderThickness="2" CornerRadius="3"  BorderBrush="Gray">
+                                <Border BorderThickness="2" CornerRadius="3"  BorderBrush="Gray">
                                     <Grid x:Name="BtnGrd"  Background="Gray">
                                         <ContentPresenter  HorizontalAlignment="Center"  VerticalAlignment="Center"  RecognizesAccessKey="True"></ContentPresenter>
                                     </Grid>
@@ -99,13 +76,70 @@
                 </Trigger>
             </Style.Triggers>
         </Style>
-
+        <Style TargetType="ScrollViewer">
+            <Setter Property="OverridesDefaultStyle" Value="True"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type ScrollViewer}">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                            <Border Grid.Column="1" BorderThickness="0,1,1,1">
+                                <ScrollContentPresenter CanContentScroll="{TemplateBinding CanContentScroll}" />
+                            </Border>
+                            <ScrollBar x:Name="PART_VerticalScrollBar"
+                     Value="{TemplateBinding VerticalOffset}"
+                     Maximum="{TemplateBinding ScrollableHeight}"
+                     ViewportSize="{TemplateBinding ViewportHeight}"
+                     Visibility="{TemplateBinding ComputedVerticalScrollBarVisibility}"
+                                       >
+                                <ScrollBar.Background>
+                                    <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                                        <GradientStop Color="#FFA3CFFF"/>
+                                        <GradientStop Color="#FF6BADF3"/>
+                                    </LinearGradientBrush>
+                                </ScrollBar.Background>
+                            </ScrollBar>
+                            <ScrollBar x:Name="PART_HorizontalScrollBar"
+                     Orientation="Horizontal"
+                     Grid.Row="1"
+                     Grid.Column="1"
+                     Value="{TemplateBinding HorizontalOffset}"
+                     Maximum="{TemplateBinding ScrollableWidth}"
+                     ViewportSize="{TemplateBinding ViewportWidth}"
+                     Visibility="{TemplateBinding ComputedHorizontalScrollBarVisibility}">
+                                <ScrollBar.Background>
+                                    <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                                        <GradientStop Color="#FFA3CFFF"/>
+                                        <GradientStop Color="#FF6BADF3"/>
+                                    </LinearGradientBrush>
+                                </ScrollBar.Background>
+                            </ScrollBar>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
     </Window.Resources>
-    <Border  Width="Auto" Height="Auto" CornerRadius="10">
-        <Grid Background="White">
+    <Grid Background="White">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="20"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <Grid Grid.Row="0" Background="Blue" x:Name="Heading" MouseLeftButtonDown="Heading_MouseLeftButtonDown">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                <Button Content="X" Background="Red" x:Name="Сlose_Button" MinWidth="20" Opacity="0.9" Width="20" Click="Сlose_Button_Click" HorizontalAlignment="Center" FontSize="9"></Button>
+            </StackPanel>
+        </Grid>
+        <Grid Background="Transparent" Grid.Row="1">
             <TabControl x:Name="MainTabControl"  TabStripPlacement="Left">
-
             </TabControl>
         </Grid>
-    </Border>
+    </Grid>
 </Window>

@@ -5,7 +5,7 @@ using System.Text;
 
 namespace StructLibCore.Marketplace
 {
-    public enum OrderStatus { NONE, PROCESSING_STARTED, PROCESSING_SHIPPED, DELIVERED, CANCELLED, READY_TO_SHIP }
+    public enum OrderStatus { NONE, PROCESSING_STARTED, PROCESSING_SHIPPED, DELIVERED, CANCELLED, READY }
 
     [Serializable]
     public class InnString
@@ -80,6 +80,7 @@ namespace StructLibCore.Marketplace
    public class MarketItem 
     {
         public string Name { get; set; }
+        public double Price { get; set; }
         public string Id { get; set; }
         public string SKU { get; set; }
         public int BaseID { get; set; }

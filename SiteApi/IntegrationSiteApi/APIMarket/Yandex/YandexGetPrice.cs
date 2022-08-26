@@ -22,19 +22,14 @@ namespace Server.Class.IntegrationSiteApi.Market.Yandex.YandexGetPrice
         public List<object> Get()
         {
             var httpWebRequest = GetRequest(@"/campaigns/" + ClientID + "/offer-prices.json", "GET");
-
-            var httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
-            
+            var httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();          
             using (var streamReader = new StreamReader(httpResponse.GetResponseStream())) { result = streamReader.ReadToEnd(); }
             Root root = JsonConvert.DeserializeObject<Root>(result);
-
-           var Lst = new List<object>();
-
+            var Lst = new List<object>();
             foreach (var item in root.result.offers)
             {
                 Lst.Add(item);
             }
-
             return Lst;
         }
     }

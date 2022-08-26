@@ -13,7 +13,8 @@ namespace Server.Class.IntegrationSiteApi.Market.Yandex.YandexGetItemOrders
         }
         public List<object> Get()
         {
-            HttpWebRequest httpWebRequest = GetRequest(@"/campaigns/" + ClientID + "/orders.json", "GET");
+            var date = DateTime.Now.AddDays(-10).ToString("dd-MM-yyyy");
+            HttpWebRequest httpWebRequest = GetRequest(@"/campaigns/" + ClientID + "/orders.json?fromDate="+ date, "GET");
             HttpWebResponse httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
             using (StreamReader streamReader = new StreamReader(httpResponse.GetResponseStream())) { result = streamReader.ReadToEnd(); }
             Root root = JsonConvert.DeserializeObject<Root>(result);
@@ -271,7 +272,7 @@ namespace Server.Class.IntegrationSiteApi.Market.Yandex.YandexGetItemOrders
                             "PROCESSING_SHIPPED" => OrderStatus.PROCESSING_SHIPPED,
                             "DELIVERED_DELIVERY_SERVICE_DELIVERED" => OrderStatus.PROCESSING_SHIPPED,
                             "PROCESSING_STARTED" => OrderStatus.PROCESSING_STARTED,
-                            "PROCESSING_READY_TO_SHIP" => OrderStatus.READY_TO_SHIP,
+                            "PROCESSING_READY_TO_SHIP" => OrderStatus.READY,
                             "PICKUP_PICKUP_SERVICE_RECEIVED" => OrderStatus.PROCESSING_SHIPPED,
                             "DELIVERY_USER_RECEIVED" => OrderStatus.DELIVERED,
                             "DELIVERY_DELIVERY_SERVICE_RECEIVED" => OrderStatus.DELIVERED,

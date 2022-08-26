@@ -1,5 +1,7 @@
 ﻿using SiteApi.IntegrationSiteApi.APIMarket.Yandex;
+
 using StructLibCore.Marketplace;
+
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -9,6 +11,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
+
 namespace MGSol.Panel
 {
     /// <summary>
@@ -16,24 +20,20 @@ namespace MGSol.Panel
     /// </summary>
     public partial class OrdersControl : UserControl
     {
-        private List<APISetting> Options;
+        private ObservableCollection<APISetting> Options;
         private ObservableCollection<IOrder> orderList;
         private ObservableCollection<IGrouping<DateTime, IOrder>> VisOrderList;
         private event Action<List<IOrder>> LoadOrders;
         private MainModel model;
         public ObservableCollection<IOrder> OrderList { get => orderList; set => orderList = value; }
-        private void SetModel(MainModel value)
-        {
-            model = value;
-        }
         public OrdersControl(MainModel Model)
         {
-            SetModel(Model);
+            model = Model;
             InitializeComponent();
-            Options = model.Option.APISettings;
+            Options = new ObservableCollection<APISetting>();
             orderList = new ObservableCollection<StructLibCore.Marketplace.IOrder>();
             VisOrderList = new ObservableCollection<IGrouping<DateTime, StructLibCore.Marketplace.IOrder>>();
-            Task.Factory.StartNew(() => LoadNetOrders(Options));
+            Task.Factory.StartNew(() => LoadNetOrders(model.OptionMarketPlace.APISettings));
             OrderStack.ItemsSource = VisOrderList;
             StatusBox.ItemsSource = Enum.GetValues(typeof(StructLibCore.Marketplace.OrderStatus));
             LoadOrders += FillOrders;
@@ -57,6 +57,7 @@ namespace MGSol.Panel
         }
         private void LoadNetOrders(List<APISetting> aPIs)
         {
+            Dispatcher.Invoke(() => Options.Clear());
             List<IOrder> F = new();
             foreach (APISetting item in aPIs)
             {
@@ -78,11 +79,14 @@ namespace MGSol.Panel
                         default:
                             break;
                     }
-                    //  var X = new Network.Item.MarketApi.GetListOrders().Get<List<object>>(new WrapNetClient(), item);
-                    foreach (object t in Result)
+                    if (Result != null)
                     {
-                        F.Add((StructLibCore.Marketplace.IOrder)t);
-                    }
+                        Dispatcher.Invoke(() => Options.Add(item));
+                        foreach (object t in Result)
+                        {
+                            F.Add((StructLibCore.Marketplace.IOrder)t);
+                        }
+                    }//  var X = new Network.Item.MarketApi.GetListOrders().Get<List<object>>(new WrapNetClient(), item);
                 }
             }
             Dispatcher.Invoke(() => LoadOrders(F));
@@ -90,7 +94,7 @@ namespace MGSol.Panel
         private void Fill_VOrders(object sender, RoutedEventArgs e)
         {
             VisOrderList.Clear();
-            Task.Factory.StartNew(() => LoadNetOrders(Options));
+            Task.Factory.StartNew(() => LoadNetOrders(model.OptionMarketPlace.APISettings));
         }
         private void StatusBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
@@ -190,7 +194,7 @@ namespace MGSol.Panel
         }
         private void GetActClick(object sender, RoutedEventArgs e)
         {
-            Button btn = (Button)sender;
+            Grid btn = (Grid)sender;
             APISetting X = (StructLibCore.Marketplace.APISetting)btn.DataContext;
             Browser.Navigate("http://localhost/");
             string Z = null;
@@ -200,7 +204,7 @@ namespace MGSol.Panel
                     Z = new YandexGETAct(X).Get();
                     break;
                 case MarketName.Ozon:
-                    IEnumerable<IOrder> t = from c in orderList where c.APISetting == X && c.Status == OrderStatus.READY_TO_SHIP select c;
+                    IEnumerable<IOrder> t = from c in orderList where c.APISetting == X && c.Status == OrderStatus.READY select c;
                     List<IOrder> m = t.ToList();
                     if (m.Count > 0) { Z = new SiteApi.IntegrationSiteApi.APIMarket.Ozon.Post.OzonPostAct(X).Get(m); }
                     break;
@@ -232,11 +236,55 @@ namespace MGSol.Panel
             IEnumerable<IOrder> X = from x in orderList where x.Id.Contains(SearchBox.Text) orderby x.DeliveryDate select x;
             IEnumerable<IGrouping<DateTime, IOrder>> Z = from x in X orderby x.DeliveryDate group x by DateTime.Parse(x.DeliveryDate, new CultureInfo("ru-RU"));
             Z = Z.OrderByDescending(x => x.Key);
-            foreach (IGrouping<DateTime, IOrder> item in Z)
+            if (!Z.Any())
             {
-                VisOrderList.Add(item);
+                List<IOrder> R = new List<IOrder>();
+                foreach (APISetting item in model.OptionMarketPlace.APISettings)
+                {
+                    object P = null;
+                    switch (item.Type)
+                    {
+                        case MarketName.Yandex:
+                            P = new YandexGetOrder(item).Get(SearchBox.Text);
+                            break;
+                        case MarketName.Ozon:
+                            P = new SiteApi.IntegrationSiteApi.APIMarket.Ozon.Post.OzonPostOrdrInfo(item).Get(SearchBox.Text);
+                            break;
+                        case MarketName.Avito:
+                            break;
+                        case MarketName.Sber:
+                            break;
+                        default:
+                            break;
+                    }
+                    if (P != null)
+                    {
+                        R.Add((IOrder)P);
+                    }
+                }
+                Z = from x in R orderby x.DeliveryDate group x by DateTime.Parse(x.DeliveryDate, new CultureInfo("ru-RU"));
+                Z = Z.OrderByDescending(x => x.Key);
+                foreach (IGrouping<DateTime, IOrder> item in Z) { VisOrderList.Add(item); }
+            }
+            else
+            {
+                foreach (IGrouping<DateTime, IOrder> item in Z)
+                {
+                    VisOrderList.Add(item);
+                }
             }
             GC.Collect();
+        }
+        private void ActButton_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
+        {
+            var Btn = (Grid)sender;
+            Btn.Background = new SolidColorBrush(Color.FromRgb(168, 125, 125));
+        }
+
+        private void ActButton_MouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
+        {
+            var Btn = (Grid)sender;
+            Btn.Background = new SolidColorBrush(Color.FromRgb(173, 247, 139));
         }
     }
 }

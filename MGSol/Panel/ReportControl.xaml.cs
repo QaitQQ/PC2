@@ -144,10 +144,10 @@ namespace MGSol.Panel
                             {
                                 SchetFaktura = GetSchetFaktura(Document.Nomber, SFNomber, ref byerSFmass);
                             }
-                            SiteApi.IntegrationSiteApi.APIMarket.Ozon.Post.OzonPostOrdrInfo.Result Info = (SiteApi.IntegrationSiteApi.APIMarket.Ozon.Post.OzonPostOrdrInfo.Result)new SiteApi.IntegrationSiteApi.APIMarket.Ozon.Post.OzonPostOrdrInfo(ActiveFile.APISetting).Get(NPost);
+                            Server.Class.IntegrationSiteApi.Market.Ozon.OzonPortOrderList.Order Info = (Server.Class.IntegrationSiteApi.Market.Ozon.OzonPortOrderList.Order)new SiteApi.IntegrationSiteApi.APIMarket.Ozon.Post.OzonPostOrdrInfo(ActiveFile.APISetting).Get(NPost);
                             if (Info != null)
                             {
-                                Date = Info.ShipmentDate.Split("T")[0];
+                                Date = Info.ShipmentDate.ToString();
                             }
                         }
                         if (!editNonber && ActiveFile.APISetting.Type == StructLibCore.Marketplace.MarketName.Yandex)
@@ -178,20 +178,28 @@ namespace MGSol.Panel
                             NOrderItem.Article1C = FindArt1C(NOrderItem.SKU);
                             AddItem(Document, NPost, Date, FindPost, NOrderItem, SchetFaktura);
                         }
+                        if (colorCellsList[i][GiveColorCell(ParamEnum.SKU).Y].Value == "1162")
+                        {
+
+                        }
+
                         if (ActiveFile.APISetting.Type == StructLibCore.Marketplace.MarketName.Ozon) // Возврат работает только для озона
                         {
                             string OrderReturnPrice = colorCellsList[i][GiveColorCell(ParamEnum.ВозвратСумма).Y].Value;
+                            var u = GiveColorCell(ParamEnum.ВозвратКолич).Y;
+                            Count = colorCellsList[i][u].Value;
+
                             if (OrderReturnPrice != "" && ActiveFile.APISetting.Type == StructLibCore.Marketplace.MarketName.Ozon)
                             {
                                 FindPost = Document.Orders.Find(x => x.DepartureNumber == NPost);
                                 OrderItem NOrderItem = new()
                                 {
-                                    Count = colorCellsList[i][GiveColorCell(ParamEnum.Количество).Y].Value,
+                                    Count = Count,
                                     Price = (double.Parse(OrderReturnPrice) / double.Parse(colorCellsList[i][GiveColorCell(ParamEnum.ВозвратКолич).Y].Value)).ToString(),
                                     SKU = colorCellsList[i][GiveColorCell(ParamEnum.SKU).Y].Value,
                                     Type = OrdersTaypeEnum.Возврат
                                 };
-                                NOrderItem.Article1C = mModel.Option.MarketItems.First(x => x.SKU == NOrderItem.SKU).Art1C;
+                                NOrderItem.Article1C = mModel.OptionMarketPlace.MarketItems.First(x => x.SKU == NOrderItem.SKU).Art1C;
                                 AddItem(Document, NPost, Date, FindPost, NOrderItem, SchetFaktura);
                             }
                         }
@@ -226,7 +234,7 @@ namespace MGSol.Panel
                                         NOrderItem.SKU = "1128";
                                     }
 
-                                    NOrderItem.Article1C = mModel.Option.MarketItems.First(x => x.SKU == NOrderItem.SKU).Art1C;
+                                    NOrderItem.Article1C = mModel.OptionMarketPlace.MarketItems.First(x => x.SKU == NOrderItem.SKU).Art1C;
                                     AddItem(Document, NPost, Date, FindPost, NOrderItem, SchetFaktura);
                                 }
                             }
@@ -256,7 +264,7 @@ namespace MGSol.Panel
         }
         private string FindArt1C(string sKU)
         {
-            string X = mModel.Option.MarketItems.First(x => x.SKU == sKU).Art1C;
+            string X = mModel.OptionMarketPlace.MarketItems.First(x => x.SKU == sKU).Art1C;
             if (X == "")
             {
                 MessageBox.Show("Не найден артикул для SKU" + sKU);

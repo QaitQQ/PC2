@@ -22,7 +22,9 @@ namespace Server.Class.IntegrationSiteApi.Market.Yandex.YandexGetName
             var Lst = new List<object>();
             var Prises = new YandexGetPrice.YandexGetPrice(aPISetting).Get();
 
-            Mapped(root, Lst, Prises);
+            var Stocks = new YandexGetPrice.YandexPostStocks(aPISetting).Get(Prises);
+
+            Mapped(root, Lst, Prises, Stocks);
 
             if (root.result.paging.nextPageToken != null)
             {
@@ -30,24 +32,30 @@ namespace Server.Class.IntegrationSiteApi.Market.Yandex.YandexGetName
                 httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
                 using (var streamReader = new StreamReader(httpResponse.GetResponseStream())) { result = streamReader.ReadToEnd(); }
                 root = JsonConvert.DeserializeObject<Root>(result);
-                Mapped(root, Lst, Prises);
+                Mapped(root, Lst, Prises, Stocks);
             }
 
             return Lst;
         }
 
-        private static void Mapped(Root root, List<object> Lst, List<object> Prises)
+        private static void Mapped(Root root, List<object> Lst, List<object> Prises, List<object> Stocks)
         {
             foreach (var item in root.result.offerMappingEntries)
             {
-
                 IEnumerable<object> z = from prise in Prises where ((IMarketItem)prise).SKU == item.offer.SKU select prise;
 
                 if (z.Count() > 0)
                 {
                     item.offer.Price = ((IMarketItem)z.First()).Price;
-                    item.offer.Yprice = ((Server.Class.IntegrationSiteApi.Market.Yandex.YandexGetPrice.YandexItem)z.First()).price;
+                    item.offer.Yprice = ((YandexGetPrice.YandexItem)z.First()).price;
                 }
+                IEnumerable<object> o = from Stock in Stocks where ((KeyValuePair<string,string>)Stock).Key == item.offer.SKU select Stock;
+                if (o.Count() > 0)
+                {
+                    item.offer.Stocks = ((KeyValuePair<string, string>)o.First()).Value;
+                   
+                }
+
                 Lst.Add(item.offer);
             }
         }

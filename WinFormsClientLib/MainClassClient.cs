@@ -6,9 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
-
 using WindowsFormsClientLibrary.Class;
-
 namespace Client
 {
     public static class ActiveValue
@@ -19,9 +17,7 @@ namespace Client
         public static int[] SaleValue { get => saleValue; set { saleValue = value; ChangeSale?.Invoke(saleValue[0], saleValue[1]); } }
         public static event Action<Partner> ChangedPartner;
         public static event Action<int, int> ChangeSale;
-
     }
-
     public class WrapNetClient : INetClient
     {
         private readonly string IP = Main.Server_IP;
@@ -37,7 +33,6 @@ namespace Client
             {
                 return null;
             }
-
         }
     }
     public class Ico
@@ -58,7 +53,6 @@ namespace Client
         public static string Server_IP;
         public static int Server_Port;
         public static string ActiveUser;
-
         [STAThread]
         public void MainClient()
         {
@@ -72,7 +66,6 @@ namespace Client
                     new KeyValuePair<string, string>("Port", "12001")
                 };
             }
-
             Server_IP = ClientConfig.GetValue("Server_IP");
             Server_Port = Convert.ToInt32(ClientConfig.GetValue("Port"));
             Application.EnableVisualStyles();
