@@ -29,6 +29,7 @@ namespace CRMLibs
         public DateTime DateОccurred { get; set; }
         public int СontactPersonID { get; set; }
         public int PartnerID { get; set; }
+        public int UserID { get; set; }
     }
     [System.Serializable]
     public class СontactPerson

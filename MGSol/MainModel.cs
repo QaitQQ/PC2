@@ -19,11 +19,11 @@ namespace MGSol
         private string Token;
         public INetClient GetClient()
         {
-            if (Token== null)
+            if (Token == null)
             {
                 Token = new Network.Аuthorization.SetToken().Get<string>(new WrapNetClient(baseApi.AddressPort.Address, baseApi.AddressPort.Port, Token), new object[] { baseApi.LogPass.User, baseApi.LogPass.Pass });
             }
-            return new WrapNetClient(baseApi.AddressPort.Address, baseApi.AddressPort.Port, Token); 
+            return new WrapNetClient(baseApi.AddressPort.Address, baseApi.AddressPort.Port, Token);
         }
         public BaseInfoPrice BaseInfoPrice
         {
@@ -38,16 +38,20 @@ namespace MGSol
         internal ObservableCollection<Control> Tabs { get; set; }
         public List<string> GetApi()
         {
-            List<string> lst = new System.Collections.Generic.List<string>();
+            List<string> lst = new();
             foreach (APISetting item in options.APISettings)
             {
-                lst.Add(item.Name);
+                if (item != null)
+                {
+                    lst.Add(item.Name);
+                }
+
             }
             return lst;
         }
         public List<string> GetINN()
         {
-            List<string> lst = new System.Collections.Generic.List<string>();
+            List<string> lst = new();
             foreach (InnString item in options.SellerINN)
             {
                 lst.Add(item.MarketName.ToString());
@@ -69,7 +73,7 @@ namespace MGSol
             }
             СhangeList += Serializer.Doit;
         }
-        private Serializer<object> Serializer = new Serializer<object>();
+        private Serializer<object> Serializer = new();
         private static void LoadFromFile<T>(ref T Object, string Path)
         {
             T Obj = Task.Run(() => new Deserializer<T>(Path).Doit()).Result;

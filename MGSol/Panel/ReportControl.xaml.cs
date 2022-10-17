@@ -12,8 +12,8 @@ namespace MGSol.Panel
 {
     public partial class ReportControl : UserControl
     {
-        private MainModel mModel { get; set; }
-        private ObservableCollection<ObservableCollection<ColorCell>> colorCellsList { get; set; }
+        private MainModel MModel { get; set; }
+        private ObservableCollection<ObservableCollection<ColorCell>> ColorCellsList { get; set; }
         private FileInfo[] FolderFile;
         private ObservableCollection<FileOption> InfoFolderFile;
         private object PressBtn;
@@ -23,7 +23,7 @@ namespace MGSol.Panel
         private FileOption ActiveFile;
         public static List<object[]> RetunList()
         {
-            List<object[]> lst = new List<object[]>();
+            List<object[]> lst = new();
             foreach (object item in Enum.GetValues(typeof(ParamEnum)))
             {
                 object[] mass = new object[2] { item, new SolidColorBrush(Color.FromRgb((byte)new Random().Next(255), (byte)new Random().Next(255), (byte)new Random().Next(255))) };
@@ -33,10 +33,10 @@ namespace MGSol.Panel
         }
         public ReportControl(MainModel Model)
         {
-            mModel = Model;
+            MModel = Model;
             InfoFolderFile = new ObservableCollection<FileOption>();
             string y = AppDomain.CurrentDomain.BaseDirectory;
-            DirectoryInfo dir = new DirectoryInfo(y + @"/Report");
+            DirectoryInfo dir = new(y + @"/Report");
             FolderFile = dir.GetFiles();
             ParamStack = new ObservableCollection<ColorCell>();
             InitializeComponent();
@@ -46,7 +46,8 @@ namespace MGSol.Panel
             {
                 if (file.Name.Contains("xlsx") && !file.Name.Contains("#"))
                 {
-                    FileOption FL = new FileOption() { FileName = file.Name, FullPath = file.FullName };
+                    FileOption fileOption = new();
+                    FileOption FL = fileOption;
                     if (File.Exists(file.FullName.Replace("xlsx", "xml")))
                     {
                         FL = LoadFileOptioins(FL);
@@ -67,13 +68,13 @@ namespace MGSol.Panel
         }
         private static string[][] RemNullStr(string[][] Z)
         {
-            List<string[]> blst = new List<string[]>();
+            List<string[]> blst = new();
             for (int i = 0; i < Z.Length - 1; i++)
             {
                 string n = null;
                 for (int u = 0; u < Z[i].Length - 1; u++)
                 {
-                    n = n + Z[i][u];
+                    n += Z[i][u];
                 }
                 if (n != "")
                 {
@@ -102,7 +103,7 @@ namespace MGSol.Panel
                 string n = null;
                 for (int y = 0; y < LsLsZ.Length - 1; y++)
                 {
-                    n = n + LsLsZ[y][x];
+                    n += LsLsZ[y][x];
                 }
                 if (n == "")
                 {
@@ -126,16 +127,16 @@ namespace MGSol.Panel
                     Order FindPost;
                     for (int i = GiveColorCell(ParamEnum.НачСтрок).X; i < GiveColorCell(ParamEnum.КонецСтрок).X + 1; i++)
                     {
-                        string OrderPrice = colorCellsList[i][GiveColorCell(ParamEnum.ЦенаПродажи).Y].Value;
-                        string Count = colorCellsList[i][GiveColorCell(ParamEnum.Количество).Y].Value;
-                        string NPost = colorCellsList[i][GiveColorCell(ParamEnum.НомерЗаказа).Y].Value;
-                        string Date = colorCellsList[i][GiveColorCell(ParamEnum.Дата).Y].Value;
+                        string OrderPrice = ColorCellsList[i][GiveColorCell(ParamEnum.ЦенаПродажи).Y].Value;
+                        string Count = ColorCellsList[i][GiveColorCell(ParamEnum.Количество).Y].Value;
+                        string NPost = ColorCellsList[i][GiveColorCell(ParamEnum.НомерЗаказа).Y].Value;
+                        string Date = ColorCellsList[i][GiveColorCell(ParamEnum.Дата).Y].Value;
                         FindPost = Document.Orders.Find(x => x.DepartureNumber == NPost);
                         SF SchetFaktura = null;
                         if (ActiveFile.APISetting.Type == StructLibCore.Marketplace.MarketName.Ozon)
                         {
-                            string SFNomber = colorCellsList[i][GiveColorCell(ParamEnum.НомерСФ).Y].Value;
-                            string Bonus = colorCellsList[i][GiveColorCell(ParamEnum.Бонус).Y].Value;
+                            string SFNomber = ColorCellsList[i][GiveColorCell(ParamEnum.НомерСФ).Y].Value;
+                            string Bonus = ColorCellsList[i][GiveColorCell(ParamEnum.Бонус).Y].Value;
                             if (Bonus != "" && Bonus != null)
                             {
                                 OrderPrice = ((double.Parse(OrderPrice) * double.Parse(Count) + double.Parse(Bonus)) / double.Parse(Count)).ToString();
@@ -163,7 +164,7 @@ namespace MGSol.Panel
                             {
                                 Count = Count,
                                 Price = OrderPrice,
-                                SKU = colorCellsList[i][GiveColorCell(ParamEnum.SKU).Y].Value,
+                                SKU = ColorCellsList[i][GiveColorCell(ParamEnum.SKU).Y].Value,
                                 Type = OrdersTaypeEnum.Продажа
                             };
                             if (NOrderItem.SKU == "100001")
@@ -175,19 +176,23 @@ namespace MGSol.Panel
                             {
                                 NOrderItem.SKU = "1128";
                             }
+                            if (NOrderItem.SKU == "10035")
+                            {
+                                NOrderItem.SKU = "1021";
+                            }
                             NOrderItem.Article1C = FindArt1C(NOrderItem.SKU);
                             AddItem(Document, NPost, Date, FindPost, NOrderItem, SchetFaktura);
                         }
-                        if (colorCellsList[i][GiveColorCell(ParamEnum.SKU).Y].Value == "1162")
+                        if (ColorCellsList[i][GiveColorCell(ParamEnum.SKU).Y].Value == "1162")
                         {
 
                         }
 
                         if (ActiveFile.APISetting.Type == StructLibCore.Marketplace.MarketName.Ozon) // Возврат работает только для озона
                         {
-                            string OrderReturnPrice = colorCellsList[i][GiveColorCell(ParamEnum.ВозвратСумма).Y].Value;
+                            string OrderReturnPrice = ColorCellsList[i][GiveColorCell(ParamEnum.ВозвратСумма).Y].Value;
                             var u = GiveColorCell(ParamEnum.ВозвратКолич).Y;
-                            Count = colorCellsList[i][u].Value;
+                            Count = ColorCellsList[i][u].Value;
 
                             if (OrderReturnPrice != "" && ActiveFile.APISetting.Type == StructLibCore.Marketplace.MarketName.Ozon)
                             {
@@ -195,50 +200,81 @@ namespace MGSol.Panel
                                 OrderItem NOrderItem = new()
                                 {
                                     Count = Count,
-                                    Price = (double.Parse(OrderReturnPrice) / double.Parse(colorCellsList[i][GiveColorCell(ParamEnum.ВозвратКолич).Y].Value)).ToString(),
-                                    SKU = colorCellsList[i][GiveColorCell(ParamEnum.SKU).Y].Value,
+                                    Price = (double.Parse(OrderReturnPrice) / double.Parse(ColorCellsList[i][GiveColorCell(ParamEnum.ВозвратКолич).Y].Value)).ToString(),
+                                    SKU = ColorCellsList[i][GiveColorCell(ParamEnum.SKU).Y].Value,
                                     Type = OrdersTaypeEnum.Возврат
                                 };
-                                NOrderItem.Article1C = mModel.OptionMarketPlace.MarketItems.First(x => x.SKU == NOrderItem.SKU).Art1C;
+                                NOrderItem.Article1C = MModel.OptionMarketPlace.MarketItems.First(x => x.SKU == NOrderItem.SKU).Art1C;
                                 AddItem(Document, NPost, Date, FindPost, NOrderItem, SchetFaktura);
                             }
                         }
                     }
                     if (ActiveFile.APISetting.Type == StructLibCore.Marketplace.MarketName.Yandex) // Возврат для Яндекса 
                     {
-                        for (int i = GiveColorCell(ParamEnum.НачСтрокВозврат).X; i < GiveColorCell(ParamEnum.КонСтрокВозврат).X + 1; i++)
+                        var I = GiveColorCell(ParamEnum.НачСтрокВозврат);
+
+                        int Y = 0;
+
+                        if (I != null)
                         {
-                            string OrderReturnPrice = colorCellsList[i][GiveColorCell(ParamEnum.ВозвратСумма).Y].Value;
+                            Y = I.X;
+                        }
+
+                        for (int i = Y; i < GiveColorCell(ParamEnum.КонСтрокВозврат).X + 1; i++)
+                        {
+                            string OrderReturnPrice;
+                            try
+                            {
+                                OrderReturnPrice = ColorCellsList[i][GiveColorCell(ParamEnum.ВозвратСумма).Y].Value;
+                            }
+                            catch
+                            {
+
+                                break;
+                            }
+
                             if (OrderReturnPrice != "0" && OrderReturnPrice != "")
                             {
-                                string NPost = colorCellsList[i][GiveColorCell(ParamEnum.НомерВозврата).Y].Value;
+                                string NPost = ColorCellsList[i][GiveColorCell(ParamEnum.НомерВозврата).Y]?.Value;
                                 string Date = DateTime.Now.ToString().Split(" ")[0];
                                 SF SchetFaktura = null;
-                                if (OrderReturnPrice != "")
+                                try
                                 {
-                                    FindPost = Document.Orders.Find(x => x.DepartureNumber == NPost);
-                                    OrderItem NOrderItem = new()
+                                    if (OrderReturnPrice != "")
                                     {
-                                        Count = colorCellsList[i][GiveColorCell(ParamEnum.ВозвратКолич).Y].Value,
-                                        Price = (double.Parse(OrderReturnPrice) / double.Parse(colorCellsList[i][GiveColorCell(ParamEnum.ВозвратКолич).Y].Value)).ToString(),
-                                        SKU = colorCellsList[i][GiveColorCell(ParamEnum.SKU).Y].Value,
-                                        Type = OrdersTaypeEnum.Возврат
-                                    };
-                                    if (NOrderItem.SKU == "100001")
-                                    {
-                                        NOrderItem.SKU = "1001";
-                                    }
+                                        FindPost = Document.Orders.Find(x => x.DepartureNumber == NPost);
+                                        OrderItem NOrderItem = new()
+                                        {
+                                            Count = ColorCellsList[i][GiveColorCell(ParamEnum.ВозвратКолич).Y].Value,
+                                            Price = (double.Parse(OrderReturnPrice) / double.Parse(ColorCellsList[i][GiveColorCell(ParamEnum.ВозвратКолич).Y].Value)).ToString(),
+                                            SKU = ColorCellsList[i][GiveColorCell(ParamEnum.SKU).Y].Value,
+                                            Type = OrdersTaypeEnum.Возврат
+                                        };
+                                        if (NOrderItem.SKU == "100001")
+                                        {
+                                            NOrderItem.SKU = "1001";
+                                        }
 
-                                    if (NOrderItem.SKU == "10078")
-                                    {
-                                        NOrderItem.SKU = "1128";
-                                    }
+                                        if (NOrderItem.SKU == "10078")
+                                        {
+                                            NOrderItem.SKU = "1128";
+                                        }
 
-                                    NOrderItem.Article1C = mModel.OptionMarketPlace.MarketItems.First(x => x.SKU == NOrderItem.SKU).Art1C;
-                                    AddItem(Document, NPost, Date, FindPost, NOrderItem, SchetFaktura);
+
+
+                                        NOrderItem.Article1C = MModel.OptionMarketPlace.MarketItems.First(x => x.SKU == NOrderItem.SKU).Art1C;
+                                        AddItem(Document, NPost, Date, FindPost, NOrderItem, SchetFaktura);
+                                    }
                                 }
+                                catch
+                                {
+
+                                    MessageBox.Show("Не распознан Возврат");
+                                }
+
                             }
                         }
+
                     }
                     SaveDocument(Document);
                 }
@@ -250,7 +286,7 @@ namespace MGSol.Panel
                     }
                     else
                     {
-                        Order NOrder = new Order() { DepartureNumber = NPost, DepartureDate = Date, SchetFaktura = SchetFaktura };
+                        Order NOrder = new();
                         NOrder.Items.Add(NOrderItem);
                         Document.Orders.Add(NOrder);
                     }
@@ -264,8 +300,8 @@ namespace MGSol.Panel
         }
         private string FindArt1C(string sKU)
         {
-            string X = mModel.OptionMarketPlace.MarketItems.First(x => x.SKU == sKU).Art1C;
-            if (X == "")
+            string X = MModel.OptionMarketPlace.MarketItems.FirstOrDefault(x => x.SKU == sKU)?.Art1C;
+            if (X == "" || X == null)
             {
                 MessageBox.Show("Не найден артикул для SKU" + sKU);
             }
@@ -273,25 +309,33 @@ namespace MGSol.Panel
         }
         private static void SaveDocument(Document Document)
         {
-            XmlSerializer xmlSerializer = new XmlSerializer(typeof(Document));
-            using (FileStream fs = new FileStream(Document.Nomber + ".xml", FileMode.OpenOrCreate))
-            {
-                xmlSerializer.Serialize(fs, Document);
-            }
+            XmlSerializer xmlSerializer = new(typeof(Document));
+            using FileStream fs = new(Document.Nomber + DateTime.Now.Second + ".xml", FileMode.OpenOrCreate);
+            xmlSerializer.Serialize(fs, Document);
         }
         private SF GetSchetFaktura(string NNomer, string SFNomber, ref string[][] byerSFmass)
         {
-            FileInfo Fn = FolderFile.First(x => x.Name.Contains(NNomer) && x.Name.Contains("DocumentB2BSales") && !x.Name.Contains("#"));
-            if (byerSFmass == null) { try { byerSFmass = ReadFileToMass(Fn.FullName)[0]; } catch { MessageBox.Show("Не удалось загрузить файл B2B"); } }
-            string[] nameCollstring = byerSFmass.First(x => x.Contains("Наименование покупателя"));
-            int ind = Array.IndexOf(nameCollstring, "Наименование покупателя");
-            string[] valString = byerSFmass.First(x => x.Contains(SFNomber));
-            string NameVal = valString[ind];
-            ind = Array.IndexOf(nameCollstring, "ИНН");
-            string INNVal = valString[ind];
-            ind = Array.IndexOf(nameCollstring, "Дата\nсчета-фактуры\nпродавца");
-            string DataVal = valString[ind];
-            return new SF() { NameBuyer = NameVal, Date = DataVal, INN = INNVal, Nomber = SFNomber };
+            try
+            {
+                FileInfo Fn = FolderFile.First(x => x.Name.Contains(NNomer) && x.Name.Contains("DocumentB2BSales") && !x.Name.Contains("#"));
+                if (byerSFmass == null) { try { byerSFmass = ReadFileToMass(Fn.FullName)[0]; } catch { MessageBox.Show("Не удалось загрузить файл B2B"); } }
+                string[] nameCollstring = byerSFmass.First(x => x.Contains("Наименование покупателя"));
+                int ind = Array.IndexOf(nameCollstring, "Наименование покупателя");
+                string[] valString = byerSFmass.First(x => x.Contains(SFNomber));
+                string NameVal = valString[ind];
+                ind = Array.IndexOf(nameCollstring, "ИНН");
+                string INNVal = valString[ind];
+                ind = Array.IndexOf(nameCollstring, "Дата\nсчета-фактуры\nпродавца");
+                string DataVal = valString[ind];
+                return new SF() { NameBuyer = NameVal, Date = DataVal, INN = INNVal, Nomber = SFNomber };
+            }
+            catch
+            {
+
+                MessageBox.Show("Ненайден файл с счетфактурами");
+            }
+
+            return null;
         }
         private Document GenDocument()
         {
@@ -309,7 +353,7 @@ namespace MGSol.Panel
                 }
                 string INN_Byer = ActiveFile.InnString.INN;
                 string INN_Seller = ActiveFile.APISetting.INN;
-                Document Document = new Document
+                Document Document = new()
                 {
                     INN_Byer = INN_Byer,
                     INN_Seller = INN_Seller,
@@ -330,19 +374,19 @@ namespace MGSol.Panel
             foreach (object[] item in ParamButtons)
             {
                 IEnumerable<ColorCell> X = from x in ParamStack where x.Param == (ParamEnum)item[0] select x;
-                if (X.Count() == 0)
+                if (!X.Any())
                 {
                     MessageBox.Show("Не заполнен " + ((ParamEnum)item[0]).ToString());
                     break;
                 }
-           }
+            }
 
         }
         private void Save_Options(object sender, RoutedEventArgs e)
         {
             if (ActiveFile != null)
             {
-                XmlSerializer xmlSerializer = new XmlSerializer(typeof(FileOption));
+                XmlSerializer xmlSerializer = new(typeof(FileOption));
                 ActiveFile.ParamsColl = new List<ParamsColl>();
                 foreach (ColorCell item in ParamStack)
                 {
@@ -352,10 +396,8 @@ namespace MGSol.Panel
                 {
                     File.Delete(ActiveFile.FullPath.Replace("xlsx", "xml"));
                 }
-                using (FileStream fs = new FileStream(ActiveFile.FullPath.Replace("xlsx", "xml"), FileMode.OpenOrCreate))
-                {
-                    xmlSerializer.Serialize(fs, ActiveFile);
-                }
+                using FileStream fs = new(ActiveFile.FullPath.Replace("xlsx", "xml"), FileMode.OpenOrCreate);
+                xmlSerializer.Serialize(fs, ActiveFile);
             }
         }
         private void Load_options(object sender, RoutedEventArgs e)
@@ -370,27 +412,25 @@ namespace MGSol.Panel
             {
                 MessageBox.Show("Не удалось загрузить настройки");
             }
-          
+
         }
-        private FileOption LoadFileOptioins(FileOption FL)
+        private static FileOption LoadFileOptioins(FileOption FL)
         {
             try
             {
-                XmlSerializer xmlSerializer = new XmlSerializer(typeof(FileOption));
-                using (FileStream fs = new FileStream(FL.FullPath.Replace("xlsx", "xml"), FileMode.OpenOrCreate))
-                {
-                    return FL = xmlSerializer.Deserialize(fs) as FileOption;
-                }
+                XmlSerializer xmlSerializer = new(typeof(FileOption));
+                using FileStream fs = new(FL.FullPath.Replace("xlsx", "xml"), FileMode.OpenOrCreate);
+                return FL = xmlSerializer.Deserialize(fs) as FileOption;
             }
-            catch (Exception E)
+            catch 
             {
-                MessageBox.Show("Не удалось прочитать"+ FL.FullPath.Replace("xlsx", "xml"));
+                MessageBox.Show("Не удалось прочитать" + FL.FullPath.Replace("xlsx", "xml"));
                 return null;
             }
         }
         private void ReFiilParamsCol(FileOption FL)
         {
-            if (colorCellsList != null)
+            if (ColorCellsList != null && FL != null)
             {
                 ParamStack = new ObservableCollection<ColorCell>();
                 foreach (ParamsColl item in FL.ParamsColl)
@@ -401,13 +441,13 @@ namespace MGSol.Panel
                         {
                             if ((ParamEnum)btn[0] == item.Param)
                             {
-                                colorCellsList[item.X][item.Y].Color = (SolidColorBrush)btn[1];
-                                colorCellsList[item.X][item.Y].Param = (ParamEnum)btn[0];
-                                ParamStack.Add(colorCellsList[item.X][item.Y]);
+                                ColorCellsList[item.X][item.Y].Color = (SolidColorBrush)btn[1];
+                                ColorCellsList[item.X][item.Y].Param = (ParamEnum)btn[0];
+                                ParamStack.Add(ColorCellsList[item.X][item.Y]);
                                 break;
                             }
                         }
-                        catch{MessageBox.Show("Не удалось разместить" + item.Param.ToString());}
+                        catch { MessageBox.Show("Не удалось разместить" + item.Param.ToString()); }
                     }
                 }
             }
@@ -426,7 +466,7 @@ namespace MGSol.Panel
                 if (fnd.Count > 0)
                 {
                     ColorCell TM = fnd[0];
-                    while (fnd.Count() > 0)
+                    while (fnd.Count > 0)
                     {
                         fnd[0].Color = null;
                         if (ColtextBlock != null)
@@ -482,16 +522,16 @@ namespace MGSol.Panel
                     return item;
                 }
             }
-            return null;
+            return new ColorCell();
         }
         private void Read_file_button_Click(object sender, RoutedEventArgs e)
         {
             FileOption FileI = (FileOption)((Button)sender).DataContext;
             ActiveFile = FileI;
             string[][][] Z = ReadFileToMass(FileI.FullPath);
-            colorCellsList = new ObservableCollection<ObservableCollection<ColorCell>>();
+            ColorCellsList = new ObservableCollection<ObservableCollection<ColorCell>>();
             int D = 0;
- 
+
 
             for (int i = 0; i < Z.Length; i++)
             {
@@ -509,22 +549,22 @@ namespace MGSol.Panel
 
                 for (int p = 0; p < Z[i].Length; p++)
                 {
-                    colorCellsList.Add(new ObservableCollection<ColorCell>());
+                    ColorCellsList.Add(new ObservableCollection<ColorCell>());
                     for (int x = 0; x < Z[i][p].Length; x++)
                     {
-                        colorCellsList[D].Add(new ColorCell() { Value = Z[i][p][x], X = D, Y = x, Lst = i });
+                        ColorCellsList[D].Add(new ColorCell() { Value = Z[i][p][x], X = D, Y = x, Lst = i });
                     }
                     D++;
                 }
             }
-            DTtable.ItemsSource = colorCellsList;
+            DTtable.ItemsSource = ColorCellsList;
         }
         private void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (e.AddedItems.Count == 1)
             {
                 FileOption FL = (MGSol.Panel.FileOption)((ComboBox)sender).DataContext;
-                FL.APISetting = mModel.GetApiFromName(e.AddedItems[0].ToString());
+                FL.APISetting = MModel.GetApiFromName(e.AddedItems[0].ToString());
             }
         }
         private void ByerComboBoxINN_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -532,7 +572,7 @@ namespace MGSol.Panel
             if (e.AddedItems.Count == 1)
             {
                 FileOption FL = (MGSol.Panel.FileOption)((ComboBox)sender).DataContext;
-                FL.InnString = mModel.GetInnFromName(e.AddedItems[0].ToString());
+                FL.InnString = MModel.GetInnFromName(e.AddedItems[0].ToString());
             }
         }
     }

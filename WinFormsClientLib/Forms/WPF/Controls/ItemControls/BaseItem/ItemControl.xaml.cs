@@ -161,7 +161,7 @@ namespace WinFormsClientLib.Forms.WPF.ItemControls
         private void SaveButton_Click(object sender, RoutedEventArgs e)
         {
 
-          Item.Item.SourceName = Main.ActiveUser;
+         // Item.Item.SourceName = Main.ActiveUser;
 
           new Network.Item.EditItem().Get<bool>(new WrapNetClient(), Item.Item);
         }

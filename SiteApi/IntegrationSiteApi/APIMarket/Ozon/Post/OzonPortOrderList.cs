@@ -24,8 +24,9 @@ namespace Server.Class.IntegrationSiteApi.Market.Ozon.OzonPortOrderList
                 foreach (var item in OrderList.Result.Postings) { item.APISetting = aPISetting; X.Add(item); }
                 return X;
             }
-            catch 
+            catch (Exception e) 
             {
+                
                 return null;
             }
 
@@ -46,6 +47,13 @@ namespace Server.Class.IntegrationSiteApi.Market.Ozon.OzonPortOrderList
         public string Status;
         [JsonProperty("warehouse_id")]
         public List<object> WarehouseId;
+
+        public Filter()
+        {
+            DeliveryMethodId = new List<object>();
+            ProviderId = new List<object>();
+            WarehouseId = new List<object>();
+        }
     }
     [Serializable]
     public class With

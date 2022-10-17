@@ -29,7 +29,7 @@ namespace Client
                 using ClientTCP Client = new ClientTCP(IP, Port, Main.Token);
                 return Client.Messaging(Data);
             }
-            catch (Exception e)
+            catch
             {
                 return null;
             }
@@ -52,7 +52,7 @@ namespace Client
         public static string Token;
         public static string Server_IP;
         public static int Server_Port;
-        public static string ActiveUser;
+        public static int ActiveUser;
         [STAThread]
         public void MainClient()
         {

@@ -61,7 +61,7 @@ namespace MGSol.Panel
             List<IOrder> F = new();
             foreach (APISetting item in aPIs)
             {
-                if (item.Active)
+                if (item != null && item.Active)
                 {
                     List<object> Result = new();
                     switch (item.Type)

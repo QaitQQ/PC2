@@ -34,7 +34,6 @@ namespace Client.Forms
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.файлToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.видToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.cRMToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ItemsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.EventsBox = new System.Windows.Forms.ToolStripMenuItem();
             this.configformToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -77,19 +76,11 @@ namespace Client.Forms
             // видToolStripMenuItem
             // 
             this.видToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.cRMToolStripMenuItem,
             this.ItemsToolStripMenuItem,
             this.EventsBox});
             this.видToolStripMenuItem.Name = "видToolStripMenuItem";
             this.видToolStripMenuItem.Size = new System.Drawing.Size(39, 20);
             this.видToolStripMenuItem.Text = "Вид";
-            // 
-            // cRMToolStripMenuItem
-            // 
-            this.cRMToolStripMenuItem.Name = "cRMToolStripMenuItem";
-            this.cRMToolStripMenuItem.Size = new System.Drawing.Size(155, 22);
-            this.cRMToolStripMenuItem.Text = "Партнеры";
-            this.cRMToolStripMenuItem.Click += new System.EventHandler(this.CRMToolStripMenuItem_Click);
             // 
             // ItemsToolStripMenuItem
             // 

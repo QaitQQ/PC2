@@ -1,11 +1,10 @@
 ﻿using CRMLibs;
-
 using Server;
-
 using StructLibs;
 
+using System;
+using System.Collections.Generic;
 using System.Linq;
-
 namespace Network.CRM
 {
     [System.Serializable]
@@ -28,7 +27,6 @@ namespace Network.CRM
             return Message;
         }
     }
-
     [System.Serializable]
     public class GetEventsFromPartnerID : NetCRM
     {
@@ -47,7 +45,6 @@ namespace Network.CRM
             Db.Add((Event)Attach);
             Db.SaveChanges();
             Message.Obj = true;
-
             return Message;
         }
     }
@@ -78,22 +75,16 @@ namespace Network.CRM
     {
         public override TCPMessage Post(ApplicationContext Db, object Obj = null)
         {
-
             Partner partner = (Partner)Attach;
-
             Db.Remove(partner);
-
             System.Collections.Generic.List<Event> events = Db.Events.Where(x => x.PartnerID == partner.Id).ToList();
-
             foreach (var item in events)
             {
                 Db.Remove(item);
             }
-
             Db.SaveChanges();
             Message.Obj = true;
             return Message;
-
         }
     }
     [System.Serializable]
@@ -102,9 +93,7 @@ namespace Network.CRM
         public override TCPMessage Post(ApplicationContext Db, object Obj = null)
         {
             Message.Obj = Db.Warehouse.ToList();
-
             return Message;
-
         }
     }
     [System.Serializable]
@@ -112,31 +101,39 @@ namespace Network.CRM
     {
         public override TCPMessage Post(ApplicationContext Db, object Obj = null)
         {
-
             Warehouse war = (Warehouse)Attach;
-
             var str = Db.Storage.Where(x => x.WarehouseID == war.Id);
-
             foreach (var item in str)
             {
                 Db.Storage.Remove(item);
             }
-
            var TWAR = Db.Warehouse.First(X => X.Id == war.Id);
-
             Db.Warehouse.Remove(TWAR);
             Db.SaveChanges();
-
             Message.Obj =true;
-
+            return Message;
+        }
+    }
+    [System.Serializable]
+    public class GetEventFromDateОccurred : NetCRM
+    {
+        public override TCPMessage Post(ApplicationContext Db, object Obj = null)
+        {
+            var att = (KeyValuePair<int, DateTime>)Attach;
+            Message.Obj = Db.Events.Where(item => item.DateОccurred.Year == att.Value.Year && item.DateОccurred.Month == att.Value.Month && item.DateОccurred.Day == att.Value.Day && item.UserID == att.Key).ToList();
             return Message;
 
         }
     }
+    [System.Serializable]
+    public class GetEventFromDateDatePlanned : NetCRM
+    {
+        public override TCPMessage Post(ApplicationContext Db, object Obj = null)
+        {
+            var att = (KeyValuePair<int, DateTime>)Attach;
+            Message.Obj = Db.Events.Where(item => item.DatePlanned.Year == att.Value.Year && item.DatePlanned.Month == att.Value.Month && item.DatePlanned.Day == att.Value.Day && item.UserID == att.Key).ToList();
+            return Message;
 
-
+        }
+    }
 }
-
-
-
-

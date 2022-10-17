@@ -56,13 +56,16 @@ namespace Client.Forms
             AddNewForm("Дочернее окно", new EventHandler(ContainerForm), файлToolStripMenuItem);
             AddNewForm("Завершить сервер", new EventHandler(CloseServer), файлToolStripMenuItem);
             AddNewForm("Работа с маркетами", new EventHandler(MarketControl), видToolStripMenuItem);
-            
+            AddNewForm("Партнеры", new EventHandler((x,r)=> { FormActivator(new UniversalWPFContainerForm(new MainCRMControl()) { CanClosed = true }); }), видToolStripMenuItem);
 
             RightPanel.Visible = false;
             RightPanelSplitter.Visible = false;
             LeftPanel.Visible = false;
             LeftPanelSplitter.Visible = false;
         }
+
+
+
         private void CloseServer(object sender, EventArgs e)
         {
             System.Environment.Exit(0);
@@ -162,6 +165,11 @@ namespace Client.Forms
                 RightPanelSplitter.Visible = true;
                 RightPanel.Visible = true;
                 Thread.Sleep(100);
+            }
+            if (webBrowser == null)
+            {
+                webBrowser = new WebBrowser();
+
             }
             webBrowser.Navigate(Url);
         }

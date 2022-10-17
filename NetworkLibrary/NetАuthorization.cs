@@ -55,6 +55,43 @@ namespace Network.Аuthorization
         }
     }
 
+
+    [Serializable]
+    public class GetUserIDFromName : NetАuthorization
+    {
+
+        public override TCPMessage Post(ApplicationContext Db, object Obj = null)
+        {
+            string Name = (string)this.Attach;
+
+            Obj = (from User in Db.User where User.Name == Name select User.Id).ToList().First();
+            Message.Obj = Obj;
+            Message.Code = new Object[] { 1 };
+            return Message;
+        }
+
+    }
+
+    [Serializable]
+    public class GetUserIDList : NetАuthorization
+    {
+        public override TCPMessage Post(ApplicationContext Db, object Obj = null)
+        {
+            var lst = new List<KeyValuePair<int, string>>();
+
+            var Users = (from User in Db.User select User).ToList();
+
+            foreach (var item in Users)
+            {
+                lst.Add(new KeyValuePair<int, string>(item.Id, item.Name));
+            }
+
+            Message.Obj = lst;
+            Message.Code = new Object[] { 1 };
+            return Message;
+        }
+
+    }
 }
 
 

@@ -24,7 +24,7 @@ namespace Server.Class.IntegrationSiteApi.Market.Ozon.OzonPost
         }
         internal HttpWebRequest GetRequest(string Url)
         {
-            string url = @"http://api-seller.ozon.ru/" + Url;
+            string url = @"https://api-seller.ozon.ru/" + Url;
             var httpWebRequest = (HttpWebRequest)WebRequest.Create(url);
             httpWebRequest.ContentType = "application/json";
             httpWebRequest.Method = "POST";

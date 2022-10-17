@@ -36,7 +36,11 @@ namespace MGSol.Panel
             SortedBox.ItemsSource = typeof(MarketItem).GetProperties(BindingFlags.Public | BindingFlags.Instance);
             foreach (APISetting item in Options)
             {
-                ProcessingPanelApiBox.Items.Add(item.Name);
+                if (item != null)
+                {
+                    ProcessingPanelApiBox.Items.Add(item.Name);
+                }
+              
             }
         }
         #region Кнопки
@@ -53,10 +57,10 @@ namespace MGSol.Panel
         }
         private void Add_Click(object sender, RoutedEventArgs e)
         {
-            ContextMenu M = new ContextMenu() { DataContext = (IMarketItem)((StackPanel)((Button)sender).Parent).DataContext };
+            ContextMenu M = new() { DataContext = (IMarketItem)((StackPanel)((Button)sender).Parent).DataContext };
             foreach (APISetting item in Options)
             {
-                TextBlock X = new TextBlock() { Text = item.Name, DataContext = item };
+                TextBlock X = new() { Text = item.Name, DataContext = item };
                 X.MouseLeftButtonDown += (x, y) =>
                 {
                     IMarketItem X = (IMarketItem)((ContextMenu)((TextBlock)x).Parent).DataContext;
@@ -94,8 +98,8 @@ namespace MGSol.Panel
         }
         private void LoadBaseItem_Click(object sender, RoutedEventArgs e)
         {
-            XmlSerializer xmlSerializer = new XmlSerializer(typeof(Выгрузка));
-            using (FileStream fs = new FileStream("Выгрузка.xml", FileMode.OpenOrCreate)) { items1C = xmlSerializer.Deserialize(fs) as Выгрузка; }
+            XmlSerializer xmlSerializer = new(typeof(Выгрузка));
+            using FileStream fs = new("Выгрузка.xml", FileMode.OpenOrCreate); items1C = xmlSerializer.Deserialize(fs) as Выгрузка;
         }
         private void RemClick(object sender, RoutedEventArgs e)
         {
@@ -142,6 +146,7 @@ namespace MGSol.Panel
             foreach (APISetting Option in Options)
             {
                 List<object> Result = null;
+
                 if (Option.Active)
                 {
                     switch (Option.Type)
@@ -196,7 +201,9 @@ namespace MGSol.Panel
                                 Dispatcher.Invoke(() => { X.Items.Add(It); });
                             }
                         }
+
                     }
+
                 }
             }
             Dispatcher.Invoke(() =>
@@ -279,14 +286,14 @@ namespace MGSol.Panel
         }
         private static void AddBtn(ContextMenu menu, string BtnCont, MouseButtonEventHandler handler)
         {
-            Label X = new Label() { Content = BtnCont };
+            Label X = new();
             X.MouseLeftButtonDown += handler;
             menu.Items.Add(X);
         }
         private void SearchItemIn1CBase_Click(object sender, RoutedEventArgs e)
         {
             MarketItem X = ((StructLibCore.Marketplace.MarketItem)((Button)sender).DataContext);
-            ContextMenu M = new ContextMenu();
+            ContextMenu M = new();
             if (items1C == null)
             {
                 LoadBaseItem_Click(null, null);
@@ -303,7 +310,7 @@ namespace MGSol.Panel
         }
         private void PlusPricePercent(object sender, RoutedEventArgs e)
         {
-            List<IMarketItem> mass = new List<IMarketItem>();
+            List<IMarketItem> mass = new();
             foreach (MarketItem item in ItemsList)
             {
                 foreach (IMarketItem X in item.Items)
@@ -325,7 +332,7 @@ namespace MGSol.Panel
         }
         private void MinusPricePercent(object sender, RoutedEventArgs e)
         {
-            List<IMarketItem> mass = new List<IMarketItem>();
+            List<IMarketItem> mass = new();
             foreach (MarketItem item in ItemsList)
             {
                 foreach (IMarketItem X in item.Items)

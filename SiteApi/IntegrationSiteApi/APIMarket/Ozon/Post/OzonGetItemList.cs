@@ -18,7 +18,7 @@ namespace Server.Class.IntegrationSiteApi.Market.Ozon
 
         public List<Item> Get()
         {
-            var httpWebRequest = GetRequest(@"v1/product/list");
+            var httpWebRequest = GetRequest(@"v2/product/list");
 
             using (var streamWriter = new StreamWriter(httpWebRequest.GetRequestStream()))
             {

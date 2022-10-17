@@ -67,10 +67,10 @@ namespace MGSol
         {
             try
             {
-                using ClientTCP Client = new ClientTCP(IP, Port, Token);
+                using ClientTCP Client = new(IP, Port, Token);
                 return Client.Messaging(Data);
             }
-            catch (Exception e)
+            catch 
             {
                 return null;
             }

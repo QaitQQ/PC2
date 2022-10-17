@@ -39,8 +39,6 @@ namespace Client.Forms
         {
            var Token = new Network.Аuthorization.SetToken().Get<string>(new WrapNetClient(),new object[] { Login, Pass });
 
-            Client.Main.ActiveUser = Login;
-
             if (Token != null)
             {
                 Main.Token = Token;
@@ -49,6 +47,8 @@ namespace Client.Forms
                 this.Hide();
             }
             else { Ok_Button.BackColor = System.Drawing.Color.Red; }
+
+            Client.Main.ActiveUser = new Network.Аuthorization.GetUserIDFromName().Get<int>(new WrapNetClient(), Login);
         }
         private void button3_Click(object sender, EventArgs e)
         {

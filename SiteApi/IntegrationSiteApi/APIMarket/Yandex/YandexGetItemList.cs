@@ -1,65 +1,55 @@
 ﻿using Newtonsoft.Json;
+
 using StructLibCore.Marketplace;
+
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Net;
 using System.Linq;
-
+using System.Net;
 namespace Server.Class.IntegrationSiteApi.Market.Yandex.YandexGetName
 {
     public class YandexGetItemList : SiteApi.IntegrationSiteApi.APIMarket.Yandex.YandexApiClass
     {
-        public YandexGetItemList(APISetting APISetting) : base(APISetting){}
+        public YandexGetItemList(APISetting APISetting) : base(APISetting) { }
         public List<object> Get()
         {
-            var httpWebRequest = GetRequest(@"/campaigns/" + ClientID + "/offer-mapping-entries.json?limit=200", "GET");
-            var httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
-
-            using (var streamReader = new StreamReader(httpResponse.GetResponseStream())) { result = streamReader.ReadToEnd(); }
+            HttpWebRequest httpWebRequest = GetRequest(@"/campaigns/" + ClientID + "/offer-mapping-entries.json?limit=200", "GET");
+            HttpWebResponse httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
+            using (StreamReader streamReader = new StreamReader(httpResponse.GetResponseStream())) { result = streamReader.ReadToEnd(); }
             Root root = JsonConvert.DeserializeObject<Root>(result);
-
-            var Lst = new List<object>();
-            var Prises = new YandexGetPrice.YandexGetPrice(aPISetting).Get();
-
-            var Stocks = new YandexGetPrice.YandexPostStocks(aPISetting).Get(Prises);
-
+            List<object> Lst = new List<object>();
+            List<object> Prises = new YandexGetPrice.YandexGetPrice(aPISetting).Get();
+            List<object> Stocks = new YandexGetPrice.YandexPostStocks(aPISetting).Get(Prises);
             Mapped(root, Lst, Prises, Stocks);
-
             if (root.result.paging.nextPageToken != null)
             {
                 httpWebRequest = GetRequest(@"/campaigns/" + ClientID + "/offer-mapping-entries.json?page_token=" + root.result.paging.nextPageToken, "GET");
                 httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
-                using (var streamReader = new StreamReader(httpResponse.GetResponseStream())) { result = streamReader.ReadToEnd(); }
+                using (StreamReader streamReader = new StreamReader(httpResponse.GetResponseStream())) { result = streamReader.ReadToEnd(); }
                 root = JsonConvert.DeserializeObject<Root>(result);
                 Mapped(root, Lst, Prises, Stocks);
             }
-
             return Lst;
         }
-
         private static void Mapped(Root root, List<object> Lst, List<object> Prises, List<object> Stocks)
         {
-            foreach (var item in root.result.offerMappingEntries)
+            foreach (OfferMappingEntry item in root.result.offerMappingEntries)
             {
                 IEnumerable<object> z = from prise in Prises where ((IMarketItem)prise).SKU == item.offer.SKU select prise;
-
                 if (z.Count() > 0)
                 {
                     item.offer.Price = ((IMarketItem)z.First()).Price;
                     item.offer.Yprice = ((YandexGetPrice.YandexItem)z.First()).price;
                 }
-                IEnumerable<object> o = from Stock in Stocks where ((KeyValuePair<string,string>)Stock).Key == item.offer.SKU select Stock;
+                IEnumerable<object> o = from Stock in Stocks where ((KeyValuePair<string, string>)Stock).Key == item.offer.SKU select Stock;
                 if (o.Count() > 0)
                 {
                     item.offer.Stocks = ((KeyValuePair<string, string>)o.First()).Value;
-                   
                 }
-
                 Lst.Add(item.offer);
             }
         }
-
         [Serializable]
         public class Paging
         {
@@ -103,17 +93,16 @@ namespace Server.Class.IntegrationSiteApi.Market.Yandex.YandexGetName
             public List<string> manufacturerCountries { get; set; }
             public int? guaranteePeriodDays { get; set; }
             public GuaranteePeriod guaranteePeriod { get; set; }
-            public string Name { get { return name; } set { name = value; } }
+            public string Name { get => name; set => name = value; }
             public string Price { get; set; }
-            public string SKU { get { return shopSku; } set { shopSku = value; } }
+            public string SKU { get => shopSku; set => shopSku = value; }
             public string Stocks { get; set; }
             public StructLibCore.Marketplace.APISetting APISetting { get; set; }
             public Server.Class.IntegrationSiteApi.Market.Yandex.YandexGetPrice.Price Yprice { get; set; }
-
             public string MinPrice { get; set; }
             public APISetting APISettingSource { get; set; }
-            public string Pic { get { return pictures[0]; } set { pictures[0] = value; } }
-            public string Barcode { get { return barcodes[0]; } set { barcodes[0] = value; } }
+            public string Pic { get => pictures[0]; set => pictures[0] = value; }
+            public string Barcode { get => barcodes[0]; set => barcodes[0] = value; }
         }
         [Serializable]
         public class Mapping
