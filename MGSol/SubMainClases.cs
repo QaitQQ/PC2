@@ -70,7 +70,7 @@ namespace MGSol
                 using ClientTCP Client = new(IP, Port, Token);
                 return Client.Messaging(Data);
             }
-            catch 
+            catch
             {
                 return null;
             }

@@ -2,15 +2,9 @@
 
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.IO;
-using System.Linq;
-using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Input;
 using System.Windows.Media;
-using System.Xml.Serialization;
 
 namespace MGSol.Panel
 {
@@ -75,7 +69,7 @@ namespace MGSol.Panel
         [NonSerialized]
         private TextBlock textBlockLink;
         public string Value { get => value; set => this.value = value; }
-        public Brush Color { get {return color; } set { PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("color")); color = value; } }
+        public Brush Color { get => color; set { PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("color")); color = value; } }
         public int X { get => x; set => x = value; }
         public int Y { get => y; set => y = value; }
         public int Lst { get => lst; set => lst = value; }
@@ -110,8 +104,8 @@ namespace MGSol.Panel
 
         public APISetting APISetting
         {
-            get { return aPISetting; }
-            set { aPISetting = value; }
+            get => aPISetting;
+            set => aPISetting = value;
         }
         private string description;
         public string FullPath { get; set; }
@@ -130,9 +124,10 @@ namespace MGSol.Panel
                 {
                     return "";
                 }
-            
-            } }
-        public string Description { get { return description; } set { description = value; PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Description")); } }
+
+            }
+        }
+        public string Description { get => description; set { description = value; PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Description))); } }
 
         public event PropertyChangedEventHandler PropertyChanged;
     }

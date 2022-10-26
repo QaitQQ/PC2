@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net5.0-windows</TargetFramework>
+    <TargetFramework>net6.0-windows</TargetFramework>
     <UseWPF>true</UseWPF>
     <ApplicationIcon>Ico.ico</ApplicationIcon>
     <NoWin32Manifest>true</NoWin32Manifest>
@@ -13,9 +13,21 @@
     </assemblyBinding>
     </runtime>
   </Configuration>
+  <StartupObject />
+  <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
   </PropertyGroup>
   
   <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="5.0.14">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="5.0.14">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="System.Data.Odbc" Version="6.0.1" />
+    <PackageReference Include="System.Data.OleDb" Version="7.0.0-rc.2.22472.3" />
     <PackageReference Include="System.Reactive" Version="5.0.0" />
   </ItemGroup>
 

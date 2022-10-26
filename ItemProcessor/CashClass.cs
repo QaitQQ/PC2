@@ -72,7 +72,8 @@ namespace Server
         public void ReloadNameCash()
         {
             using ApplicationContext db = new ApplicationContext();
-            ItemName = (from Item in db.Item select new СomparisonNameID() { Name = Item.Name, СomparisonName = Item.СomparisonName[0], Id = Item.Id }).ToList();
+
+           ItemName = (from Item in db.Item select new СomparisonNameID() { Name = Item.Name, СomparisonName = Item.СomparisonName[0], Id = Item.Id }).ToList();
 
         }
         public CashClass()

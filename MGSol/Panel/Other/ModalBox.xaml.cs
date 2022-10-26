@@ -1,15 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Text;
+﻿using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace MGSol.Panel
 {
@@ -28,7 +19,7 @@ namespace MGSol.Panel
 
         public string STR
         {
-            get { return _STR; }
+            get => _STR;
             set
             {
                 if (value != _STR)
@@ -41,17 +32,17 @@ namespace MGSol.Panel
         public ModalBox()
         {
             InitializeComponent();
-   
+
 
         }
 
         private void Accept_Click(object sender, RoutedEventArgs e)
         {
-            this.DialogResult = true;
+            DialogResult = true;
         }
         private void Cancel_Click(object sender, RoutedEventArgs e)
         {
-            this.Close();        
+            Close();
         }
 
         private void STRTexBox_TextChanged(object sender, TextChangedEventArgs e)

@@ -277,13 +277,13 @@ namespace MGSol.Panel
         }
         private void ActButton_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
         {
-            var Btn = (Grid)sender;
+            Grid Btn = (Grid)sender;
             Btn.Background = new SolidColorBrush(Color.FromRgb(168, 125, 125));
         }
 
         private void ActButton_MouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
         {
-            var Btn = (Grid)sender;
+            Grid Btn = (Grid)sender;
             Btn.Background = new SolidColorBrush(Color.FromRgb(173, 247, 139));
         }
     }

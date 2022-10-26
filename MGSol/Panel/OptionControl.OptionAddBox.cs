@@ -14,7 +14,7 @@ namespace MGSol.Panel
             public OptionAddBox(StructLibCore.Marketplace.APISetting Setting = null)
             {
                 Qadd = false;
-                this.ApiSetting = Setting;
+                ApiSetting = Setting;
                 Grid MainGrid = new();
                 Height = 150;
                 MainGrid.RowDefinitions.Add(new RowDefinition());
@@ -42,7 +42,9 @@ namespace MGSol.Panel
                     if (Setting == null)
                     {
                         Setting = new StructLibCore.Marketplace.APISetting();
-                    } Setting.INN = INNBOX.Text; };
+                    }
+                    Setting.INN = INNBOX.Text;
+                };
                 ComboBox Type = new()
                 {
                     ItemsSource = Enum.GetValues(typeof(StructLibCore.Marketplace.MarketName))
@@ -93,10 +95,10 @@ namespace MGSol.Panel
                     {
                         mass.Add(item.ToString());
                     }
-                    this.ApiSetting = new StructLibCore.Marketplace.APISetting() { ApiString = mass.ToArray(), Name = NameBox.Text };
+                    ApiSetting = new StructLibCore.Marketplace.APISetting() { ApiString = mass.ToArray(), Name = NameBox.Text };
                     if (Type.SelectedItem != null)
                     {
-                        this.ApiSetting.Type = (StructLibCore.Marketplace.MarketName)Type.SelectedItem;
+                        ApiSetting.Type = (StructLibCore.Marketplace.MarketName)Type.SelectedItem;
                     }
                     Qadd = true;
                     DialogResult = true; Close();
@@ -106,7 +108,7 @@ namespace MGSol.Panel
                 Save.Click += (x, y) =>
                 {
 
-                    if(ApiSetting == null) { ApiSetting = new StructLibCore.Marketplace.APISetting(); }
+                    if (ApiSetting == null) { ApiSetting = new StructLibCore.Marketplace.APISetting(); }
 
                     if (NameBox.Text != "")
                     {
@@ -116,17 +118,17 @@ namespace MGSol.Panel
                     {
                         ApiSetting.Type = (StructLibCore.Marketplace.MarketName)Type.SelectedItem;
                     }
-                    
+
 
                     if (INNBOX.Text != "")
                     {
                         ApiSetting.INN = INNBOX.Text;
                     }
 
-                    if (listBox.Items.Count >0)
+                    if (listBox.Items.Count > 0)
                     {
                         List<string> lst = new();
-                        foreach (var item in listBox.Items)
+                        foreach (object item in listBox.Items)
                         {
                             lst.Add(item.ToString());
                         }

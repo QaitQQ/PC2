@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -20,6 +21,21 @@ namespace MGSol
             AddTab(new Panel.ReturnControl(MModel), "Возвраты");
             AddTab(new Panel.ReportControl(MModel), "Отчеты");
             AddTab(new Panel.OptionControl(MModel), "Настройки");
+
+
+
+            //using (ApplicationContext dbContext = new ApplicationContext())
+            //{
+
+            //    //foreach (Company c in dbContext.Companies)
+            //    //{
+
+
+
+            //    //}
+
+            //}
+
         }
         private void AddTab(UserControl control, string Header)
         {
@@ -49,7 +65,7 @@ namespace MGSol
             Close();
         }
 
-        bool isWiden = false;
+        private bool isWiden = false;
         private void window_initiateWiden(object sender, System.Windows.Input.MouseEventArgs e)
         {
             isWiden = true;
@@ -70,18 +86,21 @@ namespace MGSol
             {
                 rect.CaptureMouse();
                 double newWidth = e.GetPosition(this).X + 5;
-                if (newWidth > 0) this.Width = newWidth;
+                if (newWidth > 0)
+                {
+                    Width = newWidth;
+                }
             }
         }
 
         private void titleBar_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            this.DragMove();
+            DragMove();
         }
 
         private void cmdClose_Click(object sender, RoutedEventArgs e)
         {
-            this.Close();
+            Close();
         }
 
 

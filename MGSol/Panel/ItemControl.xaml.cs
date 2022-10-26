@@ -40,7 +40,7 @@ namespace MGSol.Panel
                 {
                     ProcessingPanelApiBox.Items.Add(item.Name);
                 }
-              
+
             }
         }
         #region Кнопки
@@ -359,7 +359,7 @@ namespace MGSol.Panel
             {
                 List<СomparisonNameID> Search = new Network.Item.ItemSearch().Get<List<СomparisonNameID>>(Model.GetClient(), new object[] { ((System.Windows.Controls.TextBox)sender).Text, 3 });
                 ContextMenu M = new();
-                
+
                 foreach (СomparisonNameID item in Search)
                 {
                     AddBtn(M, item.Name, (e, x) => { X.BaseID = item.Id; (sender as TextBox).Text = item.Id.ToString(); }); ;
