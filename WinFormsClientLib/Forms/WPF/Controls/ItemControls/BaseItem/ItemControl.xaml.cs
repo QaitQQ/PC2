@@ -146,17 +146,26 @@ namespace WinFormsClientLib.Forms.WPF.ItemControls
         }
         private void RenewPriceDC(int Sale, int Markup)
         {
-            if (Values != null)
+            try
             {
-                PropPair RC = Values.First(x => x.PropertyInfo.Name.Contains("PriceRC"));
-                double FinDC = ((double)RC.Value);
-                FinDC = FinDC * (1 - ((double)Sale / 100));
-                FinDC = FinDC * (1 + ((double)Markup / 100));
-                FinDC = Math.Round(FinDC, 2);
-                PropPair DC = Values.First(x => x.PropertyInfo.Name.Contains("PriceDC"));
-                DC.Value = FinDC;
-                PropInfo.Items.Refresh();
+                if (Values != null)
+                {
+                    PropPair RC = Values.First(x => x.PropertyInfo.Name.Contains("PriceRC"));
+                    double FinDC = ((double)RC.Value);
+                    FinDC = FinDC * (1 - ((double)Sale / 100));
+                    FinDC = FinDC * (1 + ((double)Markup / 100));
+                    FinDC = Math.Round(FinDC, 2);
+                    PropPair DC = Values.First(x => x.PropertyInfo.Name.Contains("PriceDC"));
+                    DC.Value = FinDC;
+                    PropInfo.Items.Refresh();
+                }
             }
+            catch (Exception E)
+            {
+
+                MessageBox.Show(E.Message);
+            }
+
         }
         private void SaveButton_Click(object sender, RoutedEventArgs e)
         {

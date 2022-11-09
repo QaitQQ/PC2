@@ -1,7 +1,5 @@
 ﻿using Client;
-
 using CRMLibs;
-
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -49,6 +47,7 @@ namespace WinFormsClientLib.Forms.WPF.Controls.CRMControls
             EventsLst.ItemsSource = PartnerEventsList;
             TimeEvent.ItemsSource = TimeEventsList;
             Users = new Network.Аuthorization.GetUserIDList().Get<List<KeyValuePair<int, string>>>(new WrapNetClient());
+            UsersBox2.ItemsSource = Users;
             UsersBox.ItemsSource = Users;
             UsersBox.SelectedIndex = 0;
         }
@@ -59,6 +58,7 @@ namespace WinFormsClientLib.Forms.WPF.Controls.CRMControls
         private void RenewEvents()
         {
             ActivePartner = (Partner)Partners.SelectedItem;
+            CompanyInfoGrid.DataContext = ActivePartner;
             if (ActivePartner != null)
             {
                 PartnerEventsList.Clear();
@@ -111,7 +111,7 @@ namespace WinFormsClientLib.Forms.WPF.Controls.CRMControls
         private void RenewActivePartner(Partner Partner) { ActiveValue.ActivePartner = Partner; }
         private void AddPartner(object Obj, RoutedEventArgs e)
         {
-            System.Windows.Forms.Form PW = NewPartnerWindow();
+            System.Windows.Forms.Form PW = NewPartnerWindow;
             if (PW.DialogResult == System.Windows.Forms.DialogResult.OK)
             {
                 Partner NewPartner = new Partner() { Name = ((System.Windows.Forms.TextBox)PW.Controls[1]).Text };
@@ -131,107 +131,77 @@ namespace WinFormsClientLib.Forms.WPF.Controls.CRMControls
         }
         private void AddEvent(object Obj, RoutedEventArgs e)
         {
-            System.Windows.Forms.Form EW = NewEventWindow();
+            System.Windows.Forms.Form EW = NewEventWindow;
             if (EW.DialogResult == System.Windows.Forms.DialogResult.OK)
             {
-                Event NewEvent = new Event() { Сontent = ((System.Windows.Forms.RichTextBox)EW.Controls[1]).Text, DateОccurred = DateTime.Now, DatePlanned= ((System.Windows.Forms.DateTimePicker)EW.Controls[3]).Value, PartnerID = ActivePartner.Id, UserID = Main.ActiveUser };
+                Event NewEvent = new Event() { Сontent = ((System.Windows.Forms.RichTextBox)EW.Controls[1]).Text, DateОccurred = DateTime.Now, DatePlanned = ((System.Windows.Forms.DateTimePicker)EW.Controls[3]).Value, PartnerID = ActivePartner.Id, UserID = Main.ActiveUser };
                 if (new Network.CRM.AddEvent().Get<bool>(new WrapNetClient(), NewEvent))
                 {
                     RenewEvents();
                 }
             }
         }
-        private System.Windows.Forms.Form NewEventWindow()
+        private System.Windows.Forms.Form NewEventWindow
         {
-            System.Windows.Forms.Form form = new System.Windows.Forms.Form
+            get
             {
-                Width = 480,
-                Height = 200,
-            };
-            System.Windows.Forms.Button OK = new System.Windows.Forms.Button
-            {
-                Text = "ОК",
-                Location = new System.Drawing.Point(400, 115),
-                Size = new System.Drawing.Size(50, 30),
-                DialogResult = System.Windows.Forms.DialogResult.OK
-            };
-            form.Controls.Add(OK);
-            System.Windows.Forms.DateTimePicker date1 = new System.Windows.Forms.DateTimePicker() {Location = new System.Drawing.Point(5, 5) };
-            date1.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
-            date1.CustomFormat = "dd/MM/yyyy hh:mm:ss";
-            System.Windows.Forms.DateTimePicker date2 = new System.Windows.Forms.DateTimePicker() {Location = new System.Drawing.Point(250, 5)};
-            date2.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
-            date2.CustomFormat = "dd/MM/yyyy hh:mm:ss";
-            System.Windows.Forms.RichTextBox box = new System.Windows.Forms.RichTextBox
-            {
-                Location = new System.Drawing.Point(3, 50),
-                Size = new System.Drawing.Size(450, 60),
-
-            };
-            form.Controls.Add(box);
-            form.Controls.Add(date1);
-            form.Controls.Add(date2);
-            form.ShowDialog();
-            return form;
-        }
-        private System.Windows.Forms.Form NewPartnerWindow()
-        {
-            System.Windows.Forms.Form form = new System.Windows.Forms.Form
-            {
-                Width = 300,
-                Height = 100
-            };
-            System.Windows.Forms.Button OK = new System.Windows.Forms.Button
-            {
-                Text = "ОК",
-                Location = new System.Drawing.Point(50, 30),
-                Size = new System.Drawing.Size(50, 30),
-                DialogResult = System.Windows.Forms.DialogResult.OK
-            };
-            form.Controls.Add(OK);
-            System.Windows.Forms.TextBox box = new System.Windows.Forms.TextBox
-            {
-                Location = new System.Drawing.Point(3, 3),
-                Size = new System.Drawing.Size(280, 25)
-            };
-            form.Controls.Add(box);
-            form.ShowDialog();
-            return form;
-        }
-        public class VisEvent
-        {
-            public VisEvent(Event Ev, List<KeyValuePair<int, string>> Users, ObservableCollection<Partner> PartnerList)
-            {
-                Id = Ev.Id;
-                Сontent = Ev.Сontent;
-                TypeID = Ev.TypeID;
-                DatePlanned = Ev.DatePlanned;
-                DateОccurred = Ev.DateОccurred;
-                UserID = Ev.UserID;
-                PartnerID = Ev.PartnerID;
-                KeyValuePair<int, string> Un = Users.FirstOrDefault(x => x.Key == UserID);
-                if (Un.Value == null)
+                System.Windows.Forms.Form form = new System.Windows.Forms.Form
                 {
-                    UserName = "None";
-                }
-                else
+                    Width = 480,
+                    Height = 200,
+                };
+                System.Windows.Forms.Button OK = new System.Windows.Forms.Button
                 {
-                    UserName = Un.Value;
-                }
-                if (PartnerID != 0)
+                    Text = "ОК",
+                    Location = new System.Drawing.Point(400, 115),
+                    Size = new System.Drawing.Size(50, 30),
+                    DialogResult = System.Windows.Forms.DialogResult.OK
+                };
+                form.Controls.Add(OK);
+                System.Windows.Forms.DateTimePicker date1 = new System.Windows.Forms.DateTimePicker() { Location = new System.Drawing.Point(5, 5) };
+                date1.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
+                date1.CustomFormat = "dd/MM/yyyy hh:mm:ss";
+                System.Windows.Forms.DateTimePicker date2 = new System.Windows.Forms.DateTimePicker() { Location = new System.Drawing.Point(250, 5) };
+                date2.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
+                date2.CustomFormat = "dd/MM/yyyy hh:mm:ss";
+                System.Windows.Forms.RichTextBox box = new System.Windows.Forms.RichTextBox
                 {
-                    Patrner = PartnerList.FirstOrDefault(x => x.Id == PartnerID).Name;
-                }
+                    Location = new System.Drawing.Point(3, 50),
+                    Size = new System.Drawing.Size(450, 60),
+                };
+                form.Controls.Add(box);
+                form.Controls.Add(date1);
+                form.Controls.Add(date2);
+                form.ShowDialog();
+                return form;
             }
-            public int Id { get; set; }
-            public string Сontent { get; set; }
-            public int TypeID { get; set; }
-            public DateTime DatePlanned { get; set; }
-            public DateTime DateОccurred { get; set; }
-            public int UserID { get; set; }
-            public string UserName { get; set; }
-            public int PartnerID { get; set; }
-            public string Patrner { get; set; }
+        }
+        private System.Windows.Forms.Form NewPartnerWindow
+        {
+            get
+            {
+                System.Windows.Forms.Form form = new System.Windows.Forms.Form
+                {
+                    Width = 300,
+                    Height = 100
+                };
+                System.Windows.Forms.Button OK = new System.Windows.Forms.Button
+                {
+                    Text = "ОК",
+                    Location = new System.Drawing.Point(50, 30),
+                    Size = new System.Drawing.Size(50, 30),
+                    DialogResult = System.Windows.Forms.DialogResult.OK
+                };
+                form.Controls.Add(OK);
+                System.Windows.Forms.TextBox box = new System.Windows.Forms.TextBox
+                {
+                    Location = new System.Drawing.Point(3, 3),
+                    Size = new System.Drawing.Size(280, 25)
+                };
+                form.Controls.Add(box);
+                form.ShowDialog();
+                return form;
+            }
         }
         private void TimeCal_SelectedDatesChanged(object sender, SelectionChangedEventArgs e)
         {
@@ -241,29 +211,41 @@ namespace WinFormsClientLib.Forms.WPF.Controls.CRMControls
                 {
                     TimeCal.SelectedDate = DateTime.Now;
                 }
-
                 DateTime Dat = (DateTime)TimeCal.SelectedDate;
                 List<Event> Events;
-                if (PlanedBox.SelectedIndex == 1)
+                if (UsersBox != null)
                 {
-                    Events = new Network.CRM.GetEventFromDateОccurred().Get<List<Event>>(new WrapNetClient(), new KeyValuePair<int, DateTime>(((KeyValuePair<int, string>)UsersBox.SelectedItem).Key, Dat));
-                }
-                else
-                {
-                    Events = new Network.CRM.GetEventFromDateDatePlanned().Get<List<Event>>(new WrapNetClient(), new KeyValuePair<int, DateTime>(((KeyValuePair<int, string>)UsersBox.SelectedItem).Key, Dat));
-                }
-                if (Events != null)
-                {
-                    TimeEventsList.Clear();
-                    foreach (Event item in Events)
+                    if (PlanedBox.SelectedIndex == 1)
                     {
-                        TimeEventsList.Add(new VisEvent(item, Users, PartnerList));
+                        Events = new Network.CRM.GetEventFromDateОccurred().Get<List<Event>>(new WrapNetClient(), new KeyValuePair<int, DateTime>(((KeyValuePair<int, string>)UsersBox.SelectedItem).Key, Dat));
+                    }
+                    else
+                    {
+                        Events = new Network.CRM.GetEventFromDateDatePlanned().Get<List<Event>>(new WrapNetClient(), new KeyValuePair<int, DateTime>(((KeyValuePair<int, string>)UsersBox.SelectedItem).Key, Dat));
+                    }
+                    if (Events != null)
+                    {
+                        TimeEventsList.Clear();
+                        foreach (Event item in Events)
+                        {
+                            TimeEventsList.Add(new VisEvent(item, Users, PartnerList));
+                        }
                     }
                 }
             }
         }
         private void EditButton_Click(object sender, RoutedEventArgs e)
         {
+
+            var btn = (Button)sender;
+
+            var ViEv = (VisEvent)btn.DataContext;
+
+            if (ViEv != null) { EventGrid.DataContext = ViEv; }
+
+            EventInfoRow.Height = new GridLength(150);
+
+           
         }
         private void Partners_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
         {
@@ -280,16 +262,48 @@ namespace WinFormsClientLib.Forms.WPF.Controls.CRMControls
                 {
                     if (!endSearch)
                     {
-                        VPartnerList.Clear();
-                        IEnumerable<Partner> S = PartnerList.Where(x => x.Name.ToLower().Contains(SearchBox.Text.ToLower()));
-                        foreach (Partner item in S)
+                        try
                         {
-                            VPartnerList.Add(item);
+                            VPartnerList.Clear();
+                            IEnumerable<Partner> S = PartnerList.Where(x => x.Name.ToLower().Contains(SearchBox.Text.ToLower()));
+                            foreach (Partner item in S)
+                            {
+                                VPartnerList.Add(item);
+                            }
+                            endSearch = true;
                         }
-                        endSearch = true;
+                        catch { }
                     }
                 };
             }
+        }
+        private void GridSplitter_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            if (e.RoutedEvent.Name == "MouseDoubleClick" || e.ClickCount == 2)
+            {
+                if (ComranyInfoRow.Height.Value == 0)
+                {
+                    ComranyInfoRow.Height = new GridLength(100);
+                }
+                else
+                {
+                    ComranyInfoRow.Height = new GridLength(0);
+                }
+            }
+        }
+        private void CityName_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            TextBox TB = (TextBox)sender;
+            Partner Partner = (CRMLibs.Partner)TB.DataContext;
+            if (Partner.City == null && TB.Text != "")
+            {
+                Partner.City = new City() { Name = TB.Text };
+            }
+        }
+        private void SaveEventButton_Click(object sender, RoutedEventArgs e)
+        {
+            EventInfoRow.Height = new GridLength(0);
+
         }
     }
 }

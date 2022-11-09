@@ -32,8 +32,12 @@ namespace Network.CRM
     {
         public override TCPMessage Post(ApplicationContext Db, object Obj = null)
         {
-            int ID = (int)Attach;
-            Message.Obj = Db.Events.Where(item => item.PartnerID == ID).ToList();
+           int ID = (int)Attach;
+           var X = Db.Events;
+
+           var Z = X.Where(item => item.PartnerID == ID).ToList();
+
+            Message.Obj = Z;
             return Message;
         }
     }

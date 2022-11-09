@@ -1,5 +1,4 @@
 ﻿using System;
-
 namespace Client.Forms
 {
     partial class Mainform
@@ -8,7 +7,6 @@ namespace Client.Forms
         /// Required designer variable.
         /// </summary>
         private System.ComponentModel.IContainer components = null;
-
         /// <summary>
         /// Clean up any resources being used.
         /// </summary>
@@ -21,9 +19,7 @@ namespace Client.Forms
             }
             base.Dispose(disposing);
         }
-
         #region Windows Form Designer generated code
-
         /// <summary>
         /// Required method for Designer support - do not modify
         /// the contents of this method with the code editor.
@@ -34,12 +30,9 @@ namespace Client.Forms
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.файлToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.видToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.ItemsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.EventsBox = new System.Windows.Forms.ToolStripMenuItem();
             this.configformToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.словариToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.сетевыеToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.ClientConfig = new System.Windows.Forms.ToolStripMenuItem();
             this.WindowToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.RightPanel = new System.Windows.Forms.Panel();
             this.LeftPanel = new System.Windows.Forms.Panel();
@@ -75,32 +68,16 @@ namespace Client.Forms
             // 
             // видToolStripMenuItem
             // 
-            this.видToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.ItemsToolStripMenuItem,
-            this.EventsBox});
             this.видToolStripMenuItem.Name = "видToolStripMenuItem";
             this.видToolStripMenuItem.Size = new System.Drawing.Size(39, 20);
             this.видToolStripMenuItem.Text = "Вид";
-            // 
-            // ItemsToolStripMenuItem
-            // 
-            this.ItemsToolStripMenuItem.Name = "ItemsToolStripMenuItem";
-            this.ItemsToolStripMenuItem.Size = new System.Drawing.Size(155, 22);
-            this.ItemsToolStripMenuItem.Text = "Номенклатура";
-            this.ItemsToolStripMenuItem.Click += new System.EventHandler(this.ItemToolStripMenuItem_Click);
-            // 
-            // EventsBox
-            // 
-            this.EventsBox.Name = "EventsBox";
-            this.EventsBox.Size = new System.Drawing.Size(155, 22);
-            this.EventsBox.Text = "Задачи";
+
             // 
             // configformToolStripMenuItem
             // 
             this.configformToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.словариToolStripMenuItem,
-            this.сетевыеToolStripMenuItem,
-            this.ClientConfig});
+            this.сетевыеToolStripMenuItem});
             this.configformToolStripMenuItem.Name = "configformToolStripMenuItem";
             this.configformToolStripMenuItem.Size = new System.Drawing.Size(82, 20);
             this.configformToolStripMenuItem.Text = " Настройки";
@@ -110,7 +87,7 @@ namespace Client.Forms
             this.словариToolStripMenuItem.Name = "словариToolStripMenuItem";
             this.словариToolStripMenuItem.Size = new System.Drawing.Size(181, 22);
             this.словариToolStripMenuItem.Text = "Словари";
-            this.словариToolStripMenuItem.Click += new System.EventHandler(this.DictionariesToolStripMenuItem_Click);
+            this.словариToolStripMenuItem.Click += new System.EventHandler(DictionariesToolStripMenuItem_Click);
             // 
             // сетевыеToolStripMenuItem
             // 
@@ -118,13 +95,6 @@ namespace Client.Forms
             this.сетевыеToolStripMenuItem.Size = new System.Drawing.Size(181, 22);
             this.сетевыеToolStripMenuItem.Text = "Сетевые";
             this.сетевыеToolStripMenuItem.Click += new System.EventHandler(this.NetToolStripMenuItem_Click);
-            // 
-            // ClientConfig
-            // 
-            this.ClientConfig.Name = "ClientConfig";
-            this.ClientConfig.Size = new System.Drawing.Size(181, 22);
-            this.ClientConfig.Text = "Настройки клиента";
-            this.ClientConfig.Click += new System.EventHandler(this.ClientConfigMenuItem_Click);
             // 
             // WindowToolStripMenuItem
             // 
@@ -236,24 +206,14 @@ namespace Client.Forms
             this.panel1.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
-
         }
-
-
-
-
         #endregion
-
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.ToolStripMenuItem файлToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem видToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem WindowToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem cRMToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem ItemsToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem EventsBox;
         private System.Windows.Forms.ToolStripMenuItem configformToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem словариToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem ClientConfig;
         private System.Windows.Forms.ToolStripMenuItem сетевыеToolStripMenuItem;
         private System.Windows.Forms.Panel RightPanel;
         private System.Windows.Forms.Panel LeftPanel;

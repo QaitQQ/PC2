@@ -2,7 +2,17 @@
   "profiles": {
     "1_ServerCore": {
       "commandName": "Project",
-      "commandLineArgs": "-Server -Client -Bot",
+      "commandLineArgs": "-Server -Client -Bot -Port:12001",
+      "nativeDebugging": false
+    },
+    "Клиент": {
+      "commandName": "Project",
+      "commandLineArgs": "-Client",
+      "nativeDebugging": false
+    },
+    "Сервер": {
+      "commandName": "Project",
+      "commandLineArgs": "-Server",
       "nativeDebugging": false
     }
   }

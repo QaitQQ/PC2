@@ -7,44 +7,229 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition></ColumnDefinition>
-            <ColumnDefinition Width="200"/>
-        </Grid.ColumnDefinitions>
-        <Grid Grid.Column="0">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="300"/>
-                <RowDefinition Height="3"/>
-                <RowDefinition/>
-            </Grid.RowDefinitions>
-            <Grid Grid.Row="0" MinHeight="200">
-                <Grid.RowDefinitions>
-                    <RowDefinition MinHeight="100" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition MinHeight="100" />
-                </Grid.RowDefinitions>
-                <ListBox Grid.Row="0" Name="Partners" SelectionChanged="Partners_SelectionChanged" KeyDown="Partners_KeyDown">
-                    <ListBox.ItemTemplate  >
-                        <DataTemplate>
-                            <TextBlock Text="{Binding Name}"></TextBlock>
-                        </DataTemplate>
-                    </ListBox.ItemTemplate>
-                    <ListBox.ContextMenu>
-                        <ContextMenu  Background="Transparent">
-                            <TextBox x:Name="SearchBox" Width="200"></TextBox>
-                        </ContextMenu>
-                    </ListBox.ContextMenu>
-                </ListBox>
-                <GridSplitter Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Center" ShowsPreview="True" Height="3" />
-                <Grid  Grid.Row ="2">
+        <TabControl>
+            <TabItem Header="Компании">
+                <Grid>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition ></ColumnDefinition>
-                        <ColumnDefinition Width="80"></ColumnDefinition>
+                        <ColumnDefinition></ColumnDefinition>
+                        <ColumnDefinition Width="200"/>
                     </Grid.ColumnDefinitions>
-                    <Grid  Grid.Column="0" >
-                        <ScrollViewer VerticalScrollBarVisibility="Visible">
-                            <StackPanel>
-                                <ItemsControl x:Name="EventsLst">
+                    <Grid Grid.Column="0">
+                        <Grid Grid.Row="0" MinHeight="300">
+                            <Grid.RowDefinitions>
+                                <RowDefinition MinHeight="100" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition x:Name="ComranyInfoRow" Height="0"  />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition MinHeight="100" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition x:Name="EventInfoRow" Height="0" />
+                            </Grid.RowDefinitions>
+                            <ListBox Grid.Row="0" Name="Partners" SelectionChanged="Partners_SelectionChanged" KeyDown="Partners_KeyDown">
+                                <ListBox.ItemTemplate  >
+                                    <DataTemplate>
+                                        <StackPanel Orientation="Horizontal">
+                                        <TextBlock MouseDown="GridSplitter_MouseDoubleClick" Text="{Binding Name}" Width="500"></TextBlock>
+                                        <TextBlock  Text="{Binding City.Name}" HorizontalAlignment="Center" Width="200"></TextBlock>
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                                <ListBox.ContextMenu>
+                                    <ContextMenu  Background="Transparent">
+                                        <TextBox x:Name="SearchBox" Width="200"></TextBox>
+                                    </ContextMenu>
+                                </ListBox.ContextMenu>
+                            </ListBox>
+                            <GridSplitter MouseDoubleClick="GridSplitter_MouseDoubleClick" Background="Gainsboro" Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Center" ShowsPreview="True" Height="6" />
+                            <Grid Grid.Row="2">
+                                <Grid x:Name="CompanyInfoGrid">
+                                    <Grid.Resources>
+                                    </Grid.Resources>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition />
+                                        <ColumnDefinition Width="150"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Grid Grid.Column="0" >
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition/>
+                                            <ColumnDefinition/>
+                                        </Grid.ColumnDefinitions>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition/>
+                                            <RowDefinition/>
+                                            <RowDefinition/>
+                                            <RowDefinition/>
+                                        </Grid.RowDefinitions>
+                                        <Grid Grid.Row="0"  Grid.Column="0">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition/>
+                                                <ColumnDefinition/>
+                                            </Grid.ColumnDefinitions>
+                                            <Label  Content="Название"  />
+                                            <TextBox Text="{Binding Name}" Grid.Column="1"/>
+                                        </Grid>
+                                        <Grid Grid.Row="0"  Grid.Column="1">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition/>
+                                                <ColumnDefinition/>
+                                            </Grid.ColumnDefinitions>
+                                            <Label  Content="Регион"  />
+                                            <TextBox Text="{Binding City.Name}" TextChanged="CityName_TextChanged" Grid.Column="1"/>
+                                        </Grid>
+                                        <Grid Grid.Row="1"  Grid.Column="0">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition/>
+                                                <ColumnDefinition/>
+                                            </Grid.ColumnDefinitions>
+                                            <Label  Content="ИНН"  />
+                                            <TextBox Text="{Binding INN}" Grid.Column="1"/>
+                                        </Grid>
+                                        <Grid  Grid.Column="0" Grid.Row="2">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition/>
+                                                <ColumnDefinition/>
+                                            </Grid.ColumnDefinitions>
+                                            <Label Content="Адрес"/>
+                                            <TextBox Text="{Binding Adress}" Grid.Column="1"/>
+                                        </Grid>
+                                        <Grid  Grid.Column="0" Grid.Row="3" >
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition/>
+                                                <ColumnDefinition/>
+                                            </Grid.ColumnDefinitions>
+                                            <Label Content="Телефон"/>
+                                            <TextBox Text="{Binding Phone}" Grid.Column="1"/>
+                                        </Grid>
+                                        <Grid Grid.Row="1" Grid.Column="1">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition/>
+                                                <ColumnDefinition/>
+                                            </Grid.ColumnDefinitions>
+                                            <Label Content="E-mail"/>
+                                            <TextBox Text="{Binding Email}"  Grid.Column="1"/>
+                                        </Grid>
+                                        <Grid Grid.Row="2" Grid.Column="1">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition/>
+                                                <ColumnDefinition/>
+                                            </Grid.ColumnDefinitions>
+                                            <Label Content="Контакт 1"/>
+                                            <TextBox Text="{Binding Contact_1}" Grid.Column="1"/>
+                                        </Grid>
+                                        <Grid Grid.Row="3" Grid.Column="1">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition/>
+                                                <ColumnDefinition/>
+                                            </Grid.ColumnDefinitions>
+                                            <Label Content="Контакт 2"/>
+                                            <TextBox Text="{Binding Contact_2}" Grid.Column="1"/>
+                                        </Grid>
+                                    </Grid>
+                                </Grid>
+                            </Grid>
+                            <GridSplitter Background="Gainsboro" Grid.Row="3" HorizontalAlignment="Stretch" VerticalAlignment="Center" ShowsPreview="True" Height="3" />
+                            <Grid  Grid.Row ="4">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition ></ColumnDefinition>
+                                    <ColumnDefinition Width="80"></ColumnDefinition>
+                                </Grid.ColumnDefinitions>
+                                <Grid  Grid.Column="0" >
+                                    <ScrollViewer VerticalScrollBarVisibility="Visible">
+                                        <StackPanel>
+                                            <ItemsControl x:Name="EventsLst">
+                                                <ItemsControl.ItemTemplate>
+                                                    <DataTemplate>
+                                                        <Border BorderThickness="1" BorderBrush="Black">
+                                                            <StackPanel Margin="2"  Orientation="Horizontal">
+                                                                <TextBlock Text="{Binding DatePlanned, StringFormat='{}{0:dd.MM.yyyy}'}" Width="80"></TextBlock>
+                                                                <TextBlock Text="{Binding DateОccurred, StringFormat='{}{0:dd.MM.yyyy}'}" Width="80"></TextBlock>
+                                                                <TextBlock Text="{Binding Сontent}" Width="300" TextWrapping="Wrap"></TextBlock>
+                                                                <TextBlock Text="{Binding UserName}"  Width="50"></TextBlock>
+                                                                <Button x:Name="EditButton" Height="20" Content="📝" Click="EditButton_Click"></Button>
+                                                            </StackPanel>
+                                                        </Border>
+                                                    </DataTemplate>
+                                                </ItemsControl.ItemTemplate>
+                                            </ItemsControl>
+                                        </StackPanel>
+                                    </ScrollViewer>
+                                </Grid>
+                                <StackPanel  Grid.Column="1">
+                                    <ItemsControl Margin="2" Name="EventInteractionPanel"></ItemsControl>
+                                </StackPanel>
+                            </Grid>
+                            <GridSplitter Grid.Row="5"  Background="Gainsboro"  HorizontalAlignment="Stretch" VerticalAlignment="Center" ShowsPreview="True" Height="6" />
+                            <Grid x:Name="EventGrid" Grid.Row="6">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="120"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="50"/>
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Grid.Column="0">
+                                <DatePicker Text="{Binding DatePlanned}" Width="120"></DatePicker>
+                                <DatePicker Text="{Binding DateОccurred}" Width="120"></DatePicker>
+                                </StackPanel>
+                                <StackPanel VerticalAlignment="Top"  Grid.Column="1" Orientation="Horizontal">
+                                <TextBox Text="{Binding Сontent}" MinWidth  ="300"  Height="150" TextWrapping="Wrap"></TextBox>
+                                    <ComboBox VerticalAlignment="Top" Name="UsersBox2" Height="20" SelectedIndex="{Binding IndexUser}">
+                                    <ComboBox.ItemTemplate>
+                                        <DataTemplate>
+                                                <TextBlock Text="{Binding Value}"></TextBlock>
+                                        </DataTemplate>
+                                    </ComboBox.ItemTemplate>
+                                </ComboBox>
+                                </StackPanel>
+                                <Button VerticalAlignment="Top" Grid.Column="2" Width="40" Height="40" x:Name="SaveEventButton" Click="SaveEventButton_Click"></Button>
+                                
+                            </Grid>
+                        </Grid>
+                    </Grid>
+                    <Grid Grid.Column="1">
+                        <StackPanel>
+                            <ItemsControl  Height="auto" Margin="2" Name="PartnerInteractionPanel">
+                            </ItemsControl>
+                        </StackPanel>
+                    </Grid>
+                </Grid>
+            </TabItem>
+            <TabItem Header="События">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="176"/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+                    <Grid Grid.Row="0" Height="auto">
+                        <StackPanel  Height="auto">
+                            <Calendar x:Name="TimeCal" SelectedDatesChanged="TimeCal_SelectedDatesChanged"></Calendar>
+                        </StackPanel>
+                    </Grid>
+                    <Grid Grid.Row="1" Grid.ColumnSpan="2">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="25"/>
+                            <RowDefinition/>
+                        </Grid.RowDefinitions>
+                        <Border  BorderThickness="1" BorderBrush="Black">
+                            <StackPanel Orientation="Horizontal">
+                                <ComboBox SelectedIndex="0" x:Name="PlanedBox"  SelectionChanged="TimeCal_SelectedDatesChanged">
+                                    <ComboBoxItem Content="Запланировано"/>
+                                    <ComboBoxItem Content="Состаялось"/>
+                                </ComboBox>
+                                <ComboBox Name="UsersBox">
+                                    <ComboBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding Value}"></TextBlock>
+                                        </DataTemplate>
+                                    </ComboBox.ItemTemplate>
+                                </ComboBox>
+                            </StackPanel>
+                        </Border>
+                        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Visible">
+                            <StackPanel >
+                                <ItemsControl x:Name="TimeEvent">
                                     <ItemsControl.ItemTemplate>
                                         <DataTemplate>
                                             <Border BorderThickness="1" BorderBrush="Black">
@@ -52,6 +237,7 @@
                                                     <TextBlock Text="{Binding DatePlanned, StringFormat='{}{0:dd.MM.yyyy}'}" Width="80"></TextBlock>
                                                     <TextBlock Text="{Binding DateОccurred, StringFormat='{}{0:dd.MM.yyyy}'}" Width="80"></TextBlock>
                                                     <TextBlock Text="{Binding Сontent}" Width="300" TextWrapping="Wrap"></TextBlock>
+                                                    <TextBlock Text="{Binding Patrner}" Width="300" TextWrapping="Wrap"></TextBlock>
                                                     <TextBlock Text="{Binding UserName}"  Width="50"></TextBlock>
                                                     <Button x:Name="EditButton" Height="20" Content="📝" Click="EditButton_Click"></Button>
                                                 </StackPanel>
@@ -62,58 +248,8 @@
                             </StackPanel>
                         </ScrollViewer>
                     </Grid>
-                    <StackPanel  Grid.Column="1">
-                        <ItemsControl Margin="2" Name="EventInteractionPanel"></ItemsControl>
-                    </StackPanel>
                 </Grid>
-            </Grid>
-            <GridSplitter Background="Red" Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Center" ShowsPreview="True" Height="3" />
-            <Grid Grid.Row="2">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="25"/>
-                    <RowDefinition/>
-                </Grid.RowDefinitions>
-                <Border  BorderThickness="1" BorderBrush="Black">
-                    <StackPanel Orientation="Horizontal">
-                        <ComboBox SelectedIndex="0" x:Name="PlanedBox"  SelectionChanged="TimeCal_SelectedDatesChanged">
-                            <ComboBoxItem Content="Запланировано"/>
-                            <ComboBoxItem Content="Состаялось"/>
-                        </ComboBox>
-                        <ComboBox Name="UsersBox">
-                            <ComboBox.ItemTemplate>
-                                <DataTemplate>
-                                    <TextBlock Text="{Binding Value}"></TextBlock>
-                                </DataTemplate>
-                            </ComboBox.ItemTemplate>
-                        </ComboBox>
-                    </StackPanel>
-                </Border>
-                <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Visible">
-                    <StackPanel >
-                        <ItemsControl x:Name="TimeEvent">
-                            <ItemsControl.ItemTemplate>
-                                <DataTemplate>
-                                    <Border BorderThickness="1" BorderBrush="Black">
-                                        <StackPanel Margin="2"  Orientation="Horizontal">
-                                            <TextBlock Text="{Binding DatePlanned, StringFormat='{}{0:dd.MM.yyyy}'}" Width="80"></TextBlock>
-                                            <TextBlock Text="{Binding DateОccurred, StringFormat='{}{0:dd.MM.yyyy}'}" Width="80"></TextBlock>
-                                            <TextBlock Text="{Binding Сontent}" Width="300" TextWrapping="Wrap"></TextBlock>
-                                            <TextBlock Text="{Binding Patrner}" Width="300" TextWrapping="Wrap"></TextBlock>
-                                            <TextBlock Text="{Binding UserName}"  Width="50"></TextBlock>
-                                            <Button x:Name="EditButton" Height="20" Content="📝" Click="EditButton_Click"></Button>
-                                        </StackPanel>
-                                    </Border>
-                                </DataTemplate>
-                            </ItemsControl.ItemTemplate>
-                        </ItemsControl>
-                    </StackPanel>
-                </ScrollViewer>
-            </Grid>
-        </Grid>
-        <StackPanel Grid.Column="2" >
-            <ItemsControl Margin="2" Name="PartnerInteractionPanel">
-            </ItemsControl>
-            <Calendar x:Name="TimeCal" SelectedDatesChanged="TimeCal_SelectedDatesChanged"></Calendar>
-        </StackPanel>
+            </TabItem>
+        </TabControl>
     </Grid>
 </UserControl>

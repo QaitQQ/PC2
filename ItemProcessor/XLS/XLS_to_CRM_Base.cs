@@ -38,7 +38,7 @@ namespace Server
                     List<Partner> FindPartner = FinList.FindAll(x => x.Name == Sheet[i, 1].Value);
 
                     if (FindPartner.Count == 0)
-                    { Partner = new Partner() { Name = Sheet[i, 1].Value, Аddress = Sheet[i, 3].Value + Sheet[i, 2].Value, Phone = Sheet[i, 4].Value, СontacPersons = new List<СontactPerson>(), Events = new List<Event>() }; }
+                    { Partner = new Partner() { Name = Sheet[i, 1].Value,  Phone = Sheet[i, 4].Value, СontacPersons = new List<СontactPerson>(), Events = new List<Event>() }; }
                     else
                     {
                         Partner = FindPartner[0];
@@ -56,7 +56,9 @@ namespace Server
                     try { DateОccurred = Convert.ToDateTime(Sheet[i, 10].Value); }
                     catch { }
 
-                    Event = new Event() { Сontent = Sheet[i, 7].Value, DateОccurred = DateОccurred, PartnerID = Partner.Id, СontactPersonID = Person.Id };
+                    Event = new Event() { Сontent = Sheet[i, 7].Value,
+                     //   DateОccurred = DateОccurred, 
+                        PartnerID = Partner.Id, СontactPersonID = Person.Id };
                     Partner.Events.Add(Event);
 
                     FinList.Add(Partner);

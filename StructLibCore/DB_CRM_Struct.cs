@@ -1,16 +1,31 @@
 ﻿using System;
 using System.Collections.Generic;
-
 using static Object_Description.DB_Access_Struct;
-
 namespace CRMLibs
 {
+    [System.Serializable]
+    public class SphereOfActivity
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+    }
+    [System.Serializable]
+    public class City
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+    }
     [System.Serializable]
     public class Partner
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        public string Аddress { get; set; }
+        public string Contact_1 { get; set; }
+        public string Contact_2 { get; set; }
+        public City City { get; set; }
+        public string Adress { get; set; }
+        public string INN { get; set; }
+        public SphereOfActivity SphereOfActivity { get; set; }
         public string Phone { get; set; }
         public string Email { get; set; }
         public List<СontactPerson> СontacPersons { get; set; }
@@ -57,19 +72,4 @@ namespace CRMLibs
         public int Id { get; set; }
         public string Name { get; set; }
     }
-
-    public class Task
-    {
-
-        public int Id { get; set; }
-        public string Сontent { get; set; }
-        public DateTime DatePlanned { get; set; }
-        public DateTime DateОccurred { get; set; }
-        public User Implementer { get; set; }
-        public User Curator { get; set; }
-        public Status Status { get; set; }
-    }
-
-
-
 }

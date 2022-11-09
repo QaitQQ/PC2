@@ -1,18 +1,19 @@
 ﻿using Network;
+
 using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
+
 using WindowsFormsClientLibrary.Class;
 using WindowsFormsClientLibrary.Forms;
-
 namespace Client.Forms
 {
     public partial class АuthorizationForm : Form
     {
+        event Action Loading;
         public АuthorizationForm()
         {
             InitializeComponent();
-
             int X = Convert.ToInt32(ClientConfig.GetValue("AutologinCheck"));
             if (X == 1)
             {
@@ -22,7 +23,7 @@ namespace Client.Forms
             {
                 AutologinCheck.Checked = false;
             }
-          //  FillUserList();
+            Loading += () => { FillUserList(); };
         }
         private void FillUserList()
         {
@@ -32,13 +33,12 @@ namespace Client.Forms
         }
         private void Ok_Button_Click(object sender, EventArgs e)
         {
-            if (textBox1.Text != null) { Login(comboBox1.Text, textBox1.Text);   }
+            if (textBox1.Text != null) { Login(comboBox1.Text, textBox1.Text); }
             else { Ok_Button.BackColor = System.Drawing.Color.Red; }
         }
         private void Login(string Login, string Pass)
         {
-           var Token = new Network.Аuthorization.SetToken().Get<string>(new WrapNetClient(),new object[] { Login, Pass });
-
+            var Token = new Network.Аuthorization.SetToken().Get<string>(new WrapNetClient(), new object[] { Login, Pass });
             if (Token != null)
             {
                 Main.Token = Token;
@@ -47,14 +47,13 @@ namespace Client.Forms
                 this.Hide();
             }
             else { Ok_Button.BackColor = System.Drawing.Color.Red; }
-
             Client.Main.ActiveUser = new Network.Аuthorization.GetUserIDFromName().Get<int>(new WrapNetClient(), Login);
         }
         private void button3_Click(object sender, EventArgs e)
         {
             new Config();
         }
-        private void АuthorizationForm_KeyPress(object sender, KeyPressEventArgs e) {    }
+        private void АuthorizationForm_KeyPress(object sender, KeyPressEventArgs e) { }
         private void AutologinCheck_CheckedChanged(object sender, EventArgs e)
         {
             if (AutologinCheck.Checked)
@@ -70,9 +69,27 @@ namespace Client.Forms
         {
             if (AutologinCheck.Checked)
             {
-                string Log = ClientConfig.GetValue("AutoLogin");
-                string Pass = ClientConfig.GetValue("AutoPass");
-                Login(Log, Pass);
+                try
+                {
+                    string Log = ClientConfig.GetValue("AutoLogin");
+                    string Pass = ClientConfig.GetValue("AutoPass");
+                    Login(Log, Pass);
+                }
+                catch
+                {
+                    AutologinCheck.Checked = false;
+                    MessageBox.Show("Автовход  не удался");
+                }
+            }
+            else
+            {
+                try
+                {
+                    Loading();
+                }
+                catch
+                {
+                }
             }
         }
     }

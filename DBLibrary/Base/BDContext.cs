@@ -26,7 +26,11 @@ namespace Server
         public DbSet<Category> Category { get; set; }
         public DbSet<Warehouse> Warehouse { get; set; }
         public DbSet<PriceСhangeHistory> PriceСhangeHistory { get; set; }
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) => optionsBuilder.UseNpgsql("Host=localhost;Port=5432;Database=mydb;Username=postgres;Password=3011656");
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) 
+        { 
+            optionsBuilder.UseNpgsql("Host=localhost;Port=5432;Database=mydb;Username=postgres;Password=3011656;");
+          
+        }
 
     }
 }
