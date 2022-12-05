@@ -174,13 +174,5 @@ namespace Client.Forms
             this.webBrowser.DocumentCompleted += new System.Windows.Forms.WebBrowserDocumentCompletedEventHandler(this.WebBrowser_DocumentCompleted);
         }
         private static void ContainerForm(object sender, EventArgs e) { new ContainerForm().Show(); }
-        class WebB : WebBrowser
-        {
-            public void Disp() { Dispose(true); }
-            protected override void Dispose(bool disposing)
-            {
-                base.Dispose(disposing);
-            }
-        }
     }
 }

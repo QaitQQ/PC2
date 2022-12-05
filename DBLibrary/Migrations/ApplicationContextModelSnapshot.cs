@@ -142,6 +142,9 @@ namespace ServerCore.Migrations
                     b.Property<string>("INN")
                         .HasColumnType("text");
 
+                    b.Property<int?>("LeadManagerId")
+                        .HasColumnType("integer");
+
                     b.Property<string>("Name")
                         .HasColumnType("text");
 
@@ -157,6 +160,8 @@ namespace ServerCore.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("CityId");
+
+                    b.HasIndex("LeadManagerId");
 
                     b.HasIndex("SphereOfActivityId");
 
@@ -503,11 +508,17 @@ namespace ServerCore.Migrations
                         .WithMany()
                         .HasForeignKey("CityId");
 
+                    b.HasOne("Object_Description.DB_Access_Struct+User", "LeadManager")
+                        .WithMany()
+                        .HasForeignKey("LeadManagerId");
+
                     b.HasOne("CRMLibs.SphereOfActivity", "SphereOfActivity")
                         .WithMany()
                         .HasForeignKey("SphereOfActivityId");
 
                     b.Navigation("City");
+
+                    b.Navigation("LeadManager");
 
                     b.Navigation("SphereOfActivity");
                 });

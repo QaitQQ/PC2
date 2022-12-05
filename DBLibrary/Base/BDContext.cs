@@ -15,6 +15,7 @@ namespace Server
         public DbSet<Directory> Directory { get; set; }
         public DbSet<Status> Status { get; set; }
         public DbSet<Partner> Partner { get; set; }
+        public DbSet<City> City { get; set; }
         public DbSet<Event> Events { get; set; }
         public DbSet<EventType> EventType { get; set; }
         public DbSet<ItemDBStruct> Item { get; set; }

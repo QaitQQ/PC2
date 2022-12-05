@@ -1,5 +1,9 @@
 ﻿using CRMLibs;
+
+using Microsoft.EntityFrameworkCore;
+
 using Server;
+
 using StructLibs;
 
 using System;
@@ -14,7 +18,7 @@ namespace Network.CRM
     {
         public override TCPMessage Post(ApplicationContext Db, object Obj = null)
         {
-            Message.Obj = Db.Partner.ToList();
+            Message.Obj = Db.Partner.Include("City").ToList();
             return Message;
         }
     }
@@ -23,7 +27,7 @@ namespace Network.CRM
     {
         public override TCPMessage Post(ApplicationContext Db, object Obj = null)
         {
-            Message.Obj = Db.Partner.Where(x => x.Name.Contains((string)Attach)).ToList() ;
+            Message.Obj = Db.Partner.Where(x => x.Name.Contains((string)Attach)).ToList();
             return Message;
         }
     }
@@ -32,10 +36,10 @@ namespace Network.CRM
     {
         public override TCPMessage Post(ApplicationContext Db, object Obj = null)
         {
-           int ID = (int)Attach;
-           var X = Db.Events;
+            int ID = (int)Attach;
+            var X = Db.Events;
 
-           var Z = X.Where(item => item.PartnerID == ID).ToList();
+            var Z = X.Where(item => item.PartnerID == ID).ToList();
 
             Message.Obj = Z;
             return Message;
@@ -47,6 +51,17 @@ namespace Network.CRM
         public override TCPMessage Post(ApplicationContext Db, object Obj = null)
         {
             Db.Add((Event)Attach);
+            Db.SaveChanges();
+            Message.Obj = true;
+            return Message;
+        }
+    }
+    [System.Serializable]
+    public class SaveEvent : NetCRM
+    {
+        public override TCPMessage Post(ApplicationContext Db, object Obj = null)
+        {
+            Db.Update((Event)Attach);
             Db.SaveChanges();
             Message.Obj = true;
             return Message;
@@ -69,6 +84,29 @@ namespace Network.CRM
         public override TCPMessage Post(ApplicationContext Db, object Obj = null)
         {
             Db.Add((Partner)Attach);
+            Db.SaveChanges();
+            Message.Obj = true;
+            return Message;
+        }
+    }
+    [System.Serializable]
+    public class UpdatePartner : NetCRM
+    {
+        public override TCPMessage Post(ApplicationContext Db, object Obj = null)
+        {
+            var Pa = (Partner)Attach;
+
+            if (Pa.City != null)
+            {
+                var Ct = Db.City.FirstOrDefault(x => x.Name == Pa.City.Name);
+                if (Ct != null)
+                {
+                    Pa.City = Ct;
+                }
+            }
+
+
+            Db.Update(Pa);
             Db.SaveChanges();
             Message.Obj = true;
             return Message;
@@ -111,10 +149,10 @@ namespace Network.CRM
             {
                 Db.Storage.Remove(item);
             }
-           var TWAR = Db.Warehouse.First(X => X.Id == war.Id);
+            var TWAR = Db.Warehouse.First(X => X.Id == war.Id);
             Db.Warehouse.Remove(TWAR);
             Db.SaveChanges();
-            Message.Obj =true;
+            Message.Obj = true;
             return Message;
         }
     }

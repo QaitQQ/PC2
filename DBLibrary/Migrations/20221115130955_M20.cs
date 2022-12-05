@@ -15,7 +15,7 @@ namespace ServerCore.Migrations
             migrationBuilder.RenameColumn(
                 name: "Аddress",
                 table: "Partner",
-                newName: "Contact_2");
+                newName: "INN");
 
             migrationBuilder.AlterColumn<DateTime>(
                 name: "DateСhange",
@@ -33,6 +33,12 @@ namespace ServerCore.Migrations
                 oldClrType: typeof(DateTime),
                 oldType: "timestamp without time zone");
 
+            migrationBuilder.AddColumn<string>(
+                name: "Adress",
+                table: "Partner",
+                type: "text",
+                nullable: true);
+
             migrationBuilder.AddColumn<int>(
                 name: "CityId",
                 table: "Partner",
@@ -41,6 +47,12 @@ namespace ServerCore.Migrations
 
             migrationBuilder.AddColumn<string>(
                 name: "Contact_1",
+                table: "Partner",
+                type: "text",
+                nullable: true);
+
+            migrationBuilder.AddColumn<string>(
+                name: "Contact_2",
                 table: "Partner",
                 type: "text",
                 nullable: true);
@@ -152,6 +164,10 @@ namespace ServerCore.Migrations
                 table: "Partner");
 
             migrationBuilder.DropColumn(
+                name: "Adress",
+                table: "Partner");
+
+            migrationBuilder.DropColumn(
                 name: "CityId",
                 table: "Partner");
 
@@ -160,11 +176,15 @@ namespace ServerCore.Migrations
                 table: "Partner");
 
             migrationBuilder.DropColumn(
+                name: "Contact_2",
+                table: "Partner");
+
+            migrationBuilder.DropColumn(
                 name: "SphereOfActivityId",
                 table: "Partner");
 
             migrationBuilder.RenameColumn(
-                name: "Contact_2",
+                name: "INN",
                 table: "Partner",
                 newName: "Аddress");
 
@@ -204,7 +224,7 @@ namespace ServerCore.Migrations
                 name: "DatePlanned",
                 table: "Events",
                 type: "timestamp without time zone",
-                nullable: true,
+                nullable: false,
                 oldClrType: typeof(DateTime),
                 oldType: "timestamp with time zone");
         }

@@ -18,38 +18,42 @@ namespace WinFormsClientLib.Forms.WPF.Controls.CRMControls
         private enum SearchComboBox { Name }
         public ObservableCollection<UIElement> Filters { get; set; }
         public ObservableCollection<Partner> PartnerList { get; set; }
-        public ObservableCollection<Partner> VPartnerList { get; set; }
+        public ObservableCollection<VisPartner> VPartnerList { get; set; }
         public ObservableCollection<VisEvent> PartnerEventsList { get; set; }
         public ObservableCollection<VisEvent> TimeEventsList { get; set; }
         private List<KeyValuePair<int, string>> Users { get; set; }
-        private readonly ObservableCollection<Button> ButtonsPartnerInteractionPanel;
-        private readonly ObservableCollection<Button> ButtonsEventInteractionPanel;
         public MainCRMControl()
         {
+            Users = new Network.Аuthorization.GetUserIDList().Get<List<KeyValuePair<int, string>>>(new WrapNetClient());
             PartnerList = new ObservableCollection<Partner>();
             PartnerEventsList = new ObservableCollection<VisEvent>();
             Filters = new ObservableCollection<UIElement>();
             TimeEventsList = new ObservableCollection<VisEvent>();
-            VPartnerList = new ObservableCollection<Partner>();
+            VPartnerList = new ObservableCollection<VisPartner>();
             List<Partner> Partn = new Network.CRM.GetAllPartners().Get<List<Partner>>(new WrapNetClient());
             foreach (Partner item in Partn) { PartnerList.Add(item); }
             InitializeComponent();
-            foreach (Partner item in PartnerList) { VPartnerList.Add(item); }
+            foreach (Partner item in PartnerList) { VPartnerList.Add(new VisPartner(item, Users)); }
             Partners.ItemsSource = VPartnerList;
             Filters.CollectionChanged += new NotifyCollectionChangedEventHandler(FindFilter);
-            ButtonsPartnerInteractionPanel = new ObservableCollection<Button>();
-            ButtonsEventInteractionPanel = new ObservableCollection<Button>();
-            PartnerInteractionPanel.ItemsSource = ButtonsPartnerInteractionPanel;
-            EventInteractionPanel.ItemsSource = ButtonsEventInteractionPanel;
             ChangedPartner += new Action<Partner>(RenewActivePartner);
-            SupportButton.AddButtons(ButtonsPartnerInteractionPanel, new RoutedEventHandler[] { AddPartner, DelPartner });
-            SupportButton.AddButtons(ButtonsEventInteractionPanel, new RoutedEventHandler[] { AddEvent });
             EventsLst.ItemsSource = PartnerEventsList;
             TimeEvent.ItemsSource = TimeEventsList;
-            Users = new Network.Аuthorization.GetUserIDList().Get<List<KeyValuePair<int, string>>>(new WrapNetClient());
             UsersBox2.ItemsSource = Users;
             UsersBox.ItemsSource = Users;
             UsersBox.SelectedIndex = 0;
+            UserFilter.ItemsSource = Users;
+            LeadManagerBox.ItemsSource = Users;
+            UserFilter.SelectedIndex = Main.ActiveUser;
+            if (VPartnerList.Count > 0)
+            {
+                ActivePartner = VPartnerList[0].Partner;
+            }
+            else
+            {
+                ActivePartner = new Partner();
+            }
+            CompanyInfoGrid.DataContext = new VisPartner(ActivePartner, Users);
         }
         private void Partners_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
@@ -57,17 +61,22 @@ namespace WinFormsClientLib.Forms.WPF.Controls.CRMControls
         }
         private void RenewEvents()
         {
-            ActivePartner = (Partner)Partners.SelectedItem;
-            CompanyInfoGrid.DataContext = ActivePartner;
-            if (ActivePartner != null)
+            if (Partners.SelectedItem != null)
             {
-                PartnerEventsList.Clear();
-                List<Event> Events = new Network.CRM.GetEventsFromPartnerID().Get<List<Event>>(new WrapNetClient(), ActivePartner.Id);
-                if (Events != null)
+                EventInfoRow.Height = new GridLength(0);
+                var VisP = (VisPartner)Partners.SelectedItem;
+                ActivePartner = VisP.Partner;
+                CompanyInfoGrid.DataContext = VisP;
+                if (ActivePartner != null)
                 {
-                    foreach (Event item in Events)
+                    PartnerEventsList.Clear();
+                    List<Event> Events = new Network.CRM.GetEventsFromPartnerID().Get<List<Event>>(new WrapNetClient(), ActivePartner.Id);
+                    if (Events != null)
                     {
-                        PartnerEventsList.Add(new VisEvent(item, Users, PartnerList));
+                        foreach (Event item in Events)
+                        {
+                            PartnerEventsList.Add(new VisEvent(item, Users));
+                        }
                     }
                 }
             }
@@ -228,7 +237,7 @@ namespace WinFormsClientLib.Forms.WPF.Controls.CRMControls
                         TimeEventsList.Clear();
                         foreach (Event item in Events)
                         {
-                            TimeEventsList.Add(new VisEvent(item, Users, PartnerList));
+                            TimeEventsList.Add(new VisEvent(item, Users));
                         }
                     }
                 }
@@ -236,16 +245,10 @@ namespace WinFormsClientLib.Forms.WPF.Controls.CRMControls
         }
         private void EditButton_Click(object sender, RoutedEventArgs e)
         {
-
             var btn = (Button)sender;
-
             var ViEv = (VisEvent)btn.DataContext;
-
             if (ViEv != null) { EventGrid.DataContext = ViEv; }
-
             EventInfoRow.Height = new GridLength(150);
-
-           
         }
         private void Partners_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
         {
@@ -268,7 +271,7 @@ namespace WinFormsClientLib.Forms.WPF.Controls.CRMControls
                             IEnumerable<Partner> S = PartnerList.Where(x => x.Name.ToLower().Contains(SearchBox.Text.ToLower()));
                             foreach (Partner item in S)
                             {
-                                VPartnerList.Add(item);
+                                VPartnerList.Add(new VisPartner(item, Users));
                             }
                             endSearch = true;
                         }
@@ -283,7 +286,7 @@ namespace WinFormsClientLib.Forms.WPF.Controls.CRMControls
             {
                 if (ComranyInfoRow.Height.Value == 0)
                 {
-                    ComranyInfoRow.Height = new GridLength(100);
+                    ComranyInfoRow.Height = new GridLength(150);
                 }
                 else
                 {
@@ -303,7 +306,47 @@ namespace WinFormsClientLib.Forms.WPF.Controls.CRMControls
         private void SaveEventButton_Click(object sender, RoutedEventArgs e)
         {
             EventInfoRow.Height = new GridLength(0);
-
+            var VEv = (VisEvent)EventGrid.DataContext;
+            VEv.SetUserId();
+            Event EV = VEv.Event;
+            bool TP = new Network.CRM.SaveEvent().Get<bool>(new WrapNetClient(), EV);
+        }
+        private void SavePartnerButton_Click(object sender, RoutedEventArgs e)
+        {
+            ComranyInfoRow.Height = new GridLength(0);
+            var VisP = (VisPartner)Partners.SelectedItem;
+            if (VisP != null)
+            {
+                ActivePartner.LeadManagerId = Users[(int)VisP.LeadManager].Key;
+            }
+            bool TP = new Network.CRM.UpdatePartner().Get<bool>(new WrapNetClient(), ActivePartner);
+        }
+        private void UserFilter_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (UserFilter.SelectedItem != null)
+            {
+                try
+                {
+                    VPartnerList.Clear();
+                    IEnumerable<Partner> S = PartnerList.Where(x => x.LeadManagerId == ((KeyValuePair<int, string>)UserFilter.SelectedItem).Key);
+                    foreach (Partner item in S)
+                    {
+                        VPartnerList.Add(new VisPartner(item, Users));
+                    }
+                }
+                catch { }
+            }
+            else
+            {
+                foreach (Partner item in PartnerList)
+                {
+                    VPartnerList.Add(new VisPartner(item, Users));
+                }
+            }
+        }
+        private void UserFilterNull_Click(object sender, RoutedEventArgs e)
+        {
+            UserFilter.SelectedItem = null;
         }
     }
 }

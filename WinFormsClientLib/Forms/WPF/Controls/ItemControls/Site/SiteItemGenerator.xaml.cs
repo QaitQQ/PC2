@@ -38,7 +38,7 @@ namespace WinFormsClientLib.Forms.WPF.Controls.ItemControls
             {
                 using System.Drawing.Image Img = Item.Image;
 
-                if (item.Image != null) { Images.Add(new WrapImage(item.Image)); }
+                if (item.Image != null) { Images.Add(new WrapImage((System.Drawing.Image)Img.Clone())); }
             }
 
             if (Item.Item.DescriptionSeparator == null)
@@ -259,7 +259,11 @@ namespace WinFormsClientLib.Forms.WPF.Controls.ItemControls
             }
             if (Images.Count > 0)
             {
-                System.Drawing.Image img = Images[0].GetImage();
+
+                System.Drawing.Image img = (System.Drawing.Image)Images[0].GetImage();
+               // System.Drawing.Bitmap
+
+
                 lst.Add(new SiteFieldDesc() { Obj = img, Type = FieldType.Image });
             }
 

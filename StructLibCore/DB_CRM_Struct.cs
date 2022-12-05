@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
 using static Object_Description.DB_Access_Struct;
 namespace CRMLibs
 {
@@ -12,6 +15,8 @@ namespace CRMLibs
     [System.Serializable]
     public class City
     {
+        [Key]
+        [ForeignKey("Partner")]
         public int Id { get; set; }
         public string Name { get; set; }
     }
@@ -23,6 +28,7 @@ namespace CRMLibs
         public string Contact_1 { get; set; }
         public string Contact_2 { get; set; }
         public City City { get; set; }
+        public int ?CityId { get; set; }
         public string Adress { get; set; }
         public string INN { get; set; }
         public SphereOfActivity SphereOfActivity { get; set; }
@@ -33,6 +39,8 @@ namespace CRMLibs
         public List<Event> Events { get; set; }
         public int DirectoryID { get; set; }
         public int StatusID { get; set; }
+        public User LeadManager { get; set; }
+        public int ?LeadManagerId { get; set; }
     }
     [System.Serializable]
     public class Event

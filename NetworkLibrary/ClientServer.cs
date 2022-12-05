@@ -37,7 +37,16 @@ namespace Network
             using MemoryStream ms = new MemoryStream();
             if (Message != null)
             {
-                new BinaryFormatter().Serialize(ms, Message);
+                try
+                {
+                    new BinaryFormatter().Serialize(ms, Message);
+                }
+                catch
+                {
+                  
+                   
+                }
+            
             }          
             return ms.ToArray();
         }

@@ -70,7 +70,7 @@ namespace Network.Item
         protected List<СomparisonNameID> ItemsNameFromCash(string Name, List<СomparisonNameID> CashItemName)
         {
             List<СomparisonNameID> Xlist = new List<СomparisonNameID>();
-            if (Name!="")
+            if (Name!="" && Name != null)
             {
 
                 Name = СomparisonNameGenerator.Get(Name);

@@ -13,8 +13,8 @@ using Server;
 namespace ServerCore.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    [Migration("20221101073015_M22")]
-    partial class M22
+    [Migration("20221115130955_M20")]
+    partial class M20
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

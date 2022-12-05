@@ -407,10 +407,10 @@ namespace Server.Class.IntegrationSiteApi
                         }
                     }
                 }
-                catch (Exception)
+                catch (Exception e)
                 {
 
-                    throw;
+              
                 }
               
 
