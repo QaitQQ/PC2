@@ -1,4 +1,7 @@
 ﻿using Newtonsoft.Json;
+
+using SiteApi.IntegrationSiteApi;
+
 using StructLibCore.Marketplace;
 using System;
 using System.Collections.Generic;
@@ -306,14 +309,14 @@ namespace Server.Class.IntegrationSiteApi.Market.Ozon.OzonPortOrderList
             ("delivering") => OrderStatus.DELIVERED,
             _ => OrderStatus.NONE,
         };
-        public List<string> Items
+        public List<MarketOrderItems> Items
         {
             get
             {
-                var X = new List<string>();
+                var X = new List<MarketOrderItems>();
                 foreach (var item in Products)
                 {
-                    X.Add(item.Name + "\t" + item.Quantity.ToString() + "шт.\t"+ item.OfferId+"\t"+ item.Price.ToString() +"р.");
+                    X.Add(new MarketOrderItems(item.Name, item.Quantity.ToString(), item.Price.ToString(), item.OfferId));
                 }
                 return X;
             } 
@@ -335,4 +338,7 @@ namespace Server.Class.IntegrationSiteApi.Market.Ozon.OzonPortOrderList
         [JsonProperty("result")]
         public Result Result;
     }
+
+
+
 }

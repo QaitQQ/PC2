@@ -1,8 +1,6 @@
 ﻿using ICQ.Bot;
 using ICQ.Bot.Args;
-
 using Server.Class.Net;
-
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,9 +25,6 @@ namespace Server
         private static async Task Main(string[] arg)
         {
             AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
-
-            
-
             Log += new Action<string>(CW);
             Cash = new CashClass();
             Cash.LoadCash();
@@ -45,7 +40,6 @@ namespace Server
                     try { await Task.Factory.StartNew(() => StartBot()); }
                     catch { }
                 }
-
                 await StartServers(Convert.ToInt32(arg.First(x => x.Contains("Port")).ToString().Split(":")[1]));
                 if (!arg.Contains("-Client"))
                 {
@@ -80,6 +74,8 @@ namespace Server
             //  await Task.Factory.StartNew(() => ImapServer.Start_Check());
             TargetDictionary.Dictionarys.Add("Imap_Checker", new Action(() => new Imap_Checker().CheckAndSave()));
             TargetDictionary.Dictionarys.Add("planedPriceWork", new Action(() => Cash.PlanedPriceWork(Cash)));
+            TargetDictionary.Dictionarys.Add("UploadStoregeToSite", new Action(() => Cash.UploadStoregeToSite(Cash)));
+            //Cash.Targets.Add(new Target("UploadStoregeToSite", Target.Regularity.after_time, PeriodTime: 300));
             // Cash.Targets.Add(new Target("planedPriceWork", Target.Regularity.after_time, PeriodTime: 300));
             //  Cash.Targets.Add(new Target("Imap_Checker", Target.Regularity.after_time, PeriodTime: 300));
             //  Cash.Targets = Cash.Targets;
@@ -162,7 +158,7 @@ namespace Server
             bot.OnCallbackQuery += BotOnCallbackQuery;
             try
             {
-                var me = bot.GetMeAsync().Result;
+                ICQ.Bot.Types.User me = bot.GetMeAsync().Result;
                 bot.StartReceiving();
             }
             catch
@@ -170,7 +166,7 @@ namespace Server
             }
             void BotOnMessageReceived(object sender, MessageEventArgs e)
             {
-                var message = e.Message;
+                ICQ.Bot.Types.Message message = e.Message;
                 if (e.Message.Text != "" && !e.Message.Text.Contains("|"))
                 {
                     System.Collections.IEnumerable Ot = null;
@@ -183,7 +179,7 @@ namespace Server
                         Ot = (System.Collections.IEnumerable)(QW.Post(DB, Program.Cash).Obj);
                     }
                     List<List<ICQ.Bot.Types.ReplyMarkups.InlineKeyboardButton>> Lst = new List<List<ICQ.Bot.Types.ReplyMarkups.InlineKeyboardButton>>();
-                    foreach (var item in Ot)
+                    foreach (object item in Ot)
                     {
                         Lst.Add(new List<ICQ.Bot.Types.ReplyMarkups.InlineKeyboardButton> { new ICQ.Bot.Types.ReplyMarkups.InlineKeyboardButton { Text = ((StructLibs.СomparisonNameID)item).Name, CallbackData = ((StructLibs.СomparisonNameID)item).Id.ToString() } });
                     }

@@ -41,6 +41,7 @@ namespace Object_Description
         public string Name { get; }
         public DictionaryRelate Relate { get; set; }
         public List<string> Values { get; set; }
+        public List<string> Patterns { get; set; }
         public List<IDictionaryPC> Branches { get; set; }
         public bool Сontain(string Value);
         public IDictionaryPC Сontained(string Value);

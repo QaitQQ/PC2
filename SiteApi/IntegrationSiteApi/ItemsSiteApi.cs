@@ -9,7 +9,6 @@ using System.Linq;
 using System.Net.Http;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Threading.Tasks;
-
 namespace Server.Class.IntegrationSiteApi
 {
     public class SiteItem
@@ -54,9 +53,7 @@ namespace Server.Class.IntegrationSiteApi
         }
         private void GetAllItem()
         {
-            
             GetAllProduct();
-
             double RC = 0;
             ItemList = new List<ItemDBStruct>();
             foreach (Dictionary<string, string> item in mapList)
@@ -64,14 +61,8 @@ namespace Server.Class.IntegrationSiteApi
                 string f = item["name"];
                 if (item["name"] != " None")
                 {
-
                     Dictionary<string, string> Item = item;
-
-
                     RC = Convert.ToDouble(item["base_price"].Replace('.', ','));
-
-
-
                     ItemDBStruct Product = new ItemDBStruct
                     {
                         Name = item["name"],
@@ -82,8 +73,6 @@ namespace Server.Class.IntegrationSiteApi
                 }
             }
             mapList = new List<Dictionary<string, string>>();
-      
-
         }
         public async Task GetAllItemAsync()
         {
@@ -97,39 +86,30 @@ namespace Server.Class.IntegrationSiteApi
         public bool SetPrice(KeyValuePair<int, double> ID_Price)
         {
             Ok = false;
-
             FormUrlEncodedContent Json = new FormUrlEncodedContent(new[] { new KeyValuePair<string, string>("product_id", ID_Price.Key.ToString()), new KeyValuePair<string, string>("base_price", ID_Price.Value.ToString().Replace(',', '.')) });
             Task<HttpResponseMessage> response = client.PostAsync(Apilink + $"/RC/setPrice/&token={token}", Json);
-
             SetPrice(response);
-
             return Ok;
-
         }
         public int NewProduct(PriceStruct Item)
         {
             product_id_in = 0; // зануляем возвращаемую переменную
             string Manufactorid = ManufactorID(Item); // определяем ID производителя
-
             List<Detail> Text = null; // переменная для деталий
             string str = null;// переменная для отформатированных деталий для передачи
             string category = null;// переменная для отформатированных категорий для передачи
             string Imagelink = null; // переменная для отформатированного линка на картинку
             List<int> CategoryID = new List<int>(); //переменная для неотформатированнх категорий.
-
             if (Item.Details == null) // ищем детали если их нету
             {// TextAnalytic.DetailFind analytic = new TextAnalytic.DetailFind(Item.Description); Text = analytic.GetDetales();
             }
             else
             { Text = Item.Details; }
-
             foreach (Detail Product in Text) // форматируем переменные в строку
             { str = str + Product.GetID().ToString() + "|" + Product.GetDetailValues() + ";"; }
             str = str.Remove(str.Length - 1, 1);
-
             if (Item.Imagelink != null) { FTP fTP = new FTP(FtpSetting); fTP.FTPUploadFile(Item.Imagelink); } //подсовываем на фтп фотку из прайса если есть
             if (Item.Imagelink != null) { Imagelink = @"catalog/" + Item.Imagelink.Replace(".//pic//", ""); } // форматируем адресс
-
             //ищем категории
             if (Item.CategoryID != null)
             {
@@ -138,13 +118,11 @@ namespace Server.Class.IntegrationSiteApi
                     category = category + "|" + Item.CategoryID[i].ToString();
                 }
                 category = category.Trim('|');
-
             }
             // форматируем категории
             // собираем сообщение для отправки
             FormUrlEncodedContent Json = new FormUrlEncodedContent(new[]
             {
-
                 new KeyValuePair<string, string>("model", Item.Name.ToString()),
                 new KeyValuePair<string, string>("sku", 0.ToString()),
                 new KeyValuePair<string, string>("manufacturer_id", Manufactorid),
@@ -157,13 +135,9 @@ namespace Server.Class.IntegrationSiteApi
                 new KeyValuePair<string, string>("Category", category)
             }
             );
-
             Task<HttpResponseMessage> response = client.PostAsync(Apilink + $"/RC/newProduct/&token={token}", Json);
-
             NewProduct(response); // отправляем
-
             return product_id_in;
-
         }
         public int NewProductFromFieldList(List<SiteFieldDesc> fieldDescs)
         {
@@ -182,11 +156,9 @@ namespace Server.Class.IntegrationSiteApi
             string Categories = GetSTR(fieldDescs.FindAll(x => x.Type == FieldType.Category))?.Trim('|');
             // Атребуты
             string Attributes = GetSTR(fieldDescs.FindAll(x => x.Type == FieldType.Attribute));
-
             //Картинка
             string Imagelink = null;
             var Image = (System.Drawing.Image)fieldDescs.Find(x => x.Type == FieldType.Image)?.Obj;
-
             if (Image!= null)
             {
                 FTP fTP = new FTP(FtpSetting);
@@ -195,12 +167,10 @@ namespace Server.Class.IntegrationSiteApi
                 stream.Position = 0;
                 fTP.FTPUploadStream(stream, СomparisonName + ".Png");
                 Imagelink = @"catalog/" + СomparisonName + ".Png";
-
             }          
             // собираем сообщение для отправки
             FormUrlEncodedContent Json = new FormUrlEncodedContent(new[]
             {
-
                 new KeyValuePair<string, string>("model", Name),
                 new KeyValuePair<string, string>("sku", 0.ToString()),
                 new KeyValuePair<string, string>("manufacturer_id", Manufactor),
@@ -213,17 +183,12 @@ namespace Server.Class.IntegrationSiteApi
                 new KeyValuePair<string, string>("Category", Categories)
             }
             );
-
             var response = client.PostAsync(Apilink + $"/RC/newProduct/&token={token}", Json);
             NewProduct(response);
             return product_id_in;
-
-
            static string GetSTR(List<SiteFieldDesc> fieldDescs) 
             {
-
                 string Str = null;
-
                 foreach (var item in fieldDescs)
                 {
                     if (item.Type == FieldType.Attribute)
@@ -234,46 +199,30 @@ namespace Server.Class.IntegrationSiteApi
                     {
                         Str = Str + item.Id + "|";
                     }
-                  
                 }
-
-
                 return Str;
-
-
             }
-
-
-
         }
         public List<KeyValuePair<int, bool>> DeleteItem(List<int> product_id)
         {
-
-
             this.product_id = product_id;
             DeleteProduct();
             return Result;
-
-
-
         }
         private async void GetToken()
         {
             if (File.Exists(FilePath))
             {
-
                 Stream openFileStream = File.OpenRead(FilePath);
                 if (openFileStream.Length != 0)
                 {
                     token = (string)new BinaryFormatter().Deserialize(File.OpenRead(FilePath));
                     openFileStream.Close();
-
                 }
             }
             else
             {
                 Task<HttpResponseMessage> response;
-
                 FormUrlEncodedContent Json = new FormUrlEncodedContent(new[] {
             new KeyValuePair<string, string>("key",Key)});
                 try
@@ -289,7 +238,6 @@ namespace Server.Class.IntegrationSiteApi
                                 {
                                     System.Collections.IEnumerable xx = item as System.Collections.IEnumerable;
                                     foreach (object X in xx) { token = X.ToString(); }
-
                                 }
                             }
                         }
@@ -300,17 +248,13 @@ namespace Server.Class.IntegrationSiteApi
         }
         private async void GetProduct()
         {
-
             Task<HttpResponseMessage> response;
             FormUrlEncodedContent Json;
-
             try
             {
                 Json = new FormUrlEncodedContent(new[] { new KeyValuePair<string, string>("product_id", Formatter(product_id)) });
                 response = client.PostAsync(Apilink + $"/RC/getProduct/&token={token}", Json);
                 JEnumerable<JToken> PositionString;
-
-
                 using (StreamReader reader = new StreamReader(await response.Result.Content.ReadAsStreamAsync()))
                 {
                     JObject collection = (JObject)(JsonConvert.DeserializeObject(await reader.ReadToEndAsync()));
@@ -318,7 +262,6 @@ namespace Server.Class.IntegrationSiteApi
                     {
                         PositionString = item.Children();
                     }
-
                     foreach (JToken item in PositionString)
                     {
                         Dictionary<string, string> MapDic = new Dictionary<string, string>();
@@ -329,23 +272,18 @@ namespace Server.Class.IntegrationSiteApi
                         }
                         mapList.Add(MapDic);
                     }
-
                 }
             }
             catch (Exception) { }
         }
         private async void GetAllProduct()
         {
-
             Task<HttpResponseMessage> response;
             FormUrlEncodedContent Json;
-
-
             Json = new FormUrlEncodedContent(new[] { new KeyValuePair<string, string>("product_id", "300") });
             response = client.PostAsync(Apilink + $"/RC/getAllProduct/&token={token}", Json);
             JEnumerable<JToken> PositionString;
             Stream D = await response.Result.Content.ReadAsStreamAsync();
-
             using (StreamReader reader = new StreamReader(D))
             {
                 JObject collection = (JObject)(JsonConvert.DeserializeObject(await reader.ReadToEndAsync()));
@@ -353,7 +291,6 @@ namespace Server.Class.IntegrationSiteApi
                 {
                     PositionString = item.Children();
                 }
-
                 foreach (JToken item in PositionString)
                 {
                     Dictionary<string, string> MapDic = new Dictionary<string, string>();
@@ -364,17 +301,13 @@ namespace Server.Class.IntegrationSiteApi
                     }
                     mapList.Add(MapDic);
                 }
-
             }
-
         }
         private async void SetPrice(Task<HttpResponseMessage> message)
         {
             using (StreamReader reader = new StreamReader(await message.Result.Content.ReadAsStreamAsync()))
             {
-
                 JObject collection = (JObject)(JsonConvert.DeserializeObject(await reader.ReadToEndAsync()));
-
                 IJEnumerable<JToken> m = collection.Values();
                 foreach (JToken item in m)
                 {
@@ -385,8 +318,6 @@ namespace Server.Class.IntegrationSiteApi
                     }
                 }
             }
-
-
         }
         private async void NewProduct(Task<HttpResponseMessage> message)
         {
@@ -396,7 +327,6 @@ namespace Server.Class.IntegrationSiteApi
                 try
                 {
                     JObject collection = (JObject)JsonConvert.DeserializeObject(B);
-
                     IJEnumerable<JToken> m = collection.Values();
                     foreach (JToken item in m)
                     {
@@ -409,20 +339,13 @@ namespace Server.Class.IntegrationSiteApi
                 }
                 catch (Exception e)
                 {
-
-              
                 }
-              
-
             }
-
-
         }
         private string ManufactorID(PriceStruct Item)
         {
             string Manufactor = null;
             string Manufactorid = "308";
-
             if (Item.Manufactor == null)
             {
                 //  Manufactor = new TextAnalytic.ManufactorFind(Item).Find();
@@ -431,8 +354,6 @@ namespace Server.Class.IntegrationSiteApi
             {
                 Manufactor = Item.Manufactor;
             }
-
-
             //foreach (string item in Settings.Manufactorid.AllKeys)
             //{
             //    if (item.ToUpper() == Manufactor.ToUpper())
@@ -440,25 +361,18 @@ namespace Server.Class.IntegrationSiteApi
             //        Manufactorid = Settings.Manufactorid.GetValues(item)[0];
             //    }
             //}
-
             return Manufactorid;
-
         }
         private async void DeleteProduct()
         {
-
-
             Task<HttpResponseMessage> response;
             FormUrlEncodedContent Json;
-
             try
             {
                 Json = new FormUrlEncodedContent(new[] { new KeyValuePair<string, string>("product_id", Formatter(product_id)) });
                 response = client.PostAsync(Apilink + $"/RC/deleteProduct/&token={token}", Json);
-
                 using (StreamReader reader = new StreamReader(await response.Result.Content.ReadAsStreamAsync()))
                 {
-
                     string m = reader.ReadToEnd();
                     int product_id = 0;
                     if (m.Contains("success"))
@@ -466,17 +380,14 @@ namespace Server.Class.IntegrationSiteApi
                         char[] F = { (char)34, (char)44, };
                         string FF = null;
                         char[] GG = m.ToCharArray();
-
                         foreach (char item in GG)
                         {
                             if (item != 123 && item != 34 && item != 91 && item != 93 && item != 129 && item != 125 && item != 58) { FF = FF + item; }
                             if (item == 58) { FF = FF + (char)44; }
                         }
                         bool SumResult = true;
-
                         string[] mass = FF.Split(F, StringSplitOptions.RemoveEmptyEntries);
                         int X = 0;
-
                         for (int i = 0; i < mass.Length; i++)
                         {
                             if (mass[i] == "product_id") { if (X == 0) { product_id = Convert.ToInt32(mass[i + 1]); X++; continue; } else { Result.Add(new KeyValuePair<int, bool>(product_id, SumResult)); product_id = Convert.ToInt32(mass[i + 1]); SumResult = true; } }
@@ -487,24 +398,18 @@ namespace Server.Class.IntegrationSiteApi
                 }
             }
             catch (Exception) { }
-
-
         }
         private string Formatter(List<int> str)
         {
             string formstr = null;
-
             int i = 0;
-
             while (i < str.Count - 1)
             {
                 formstr = formstr + str[i] + ";";
                 i++;
             }
             formstr = formstr + str[str.Count - 1];
-
             return formstr;
         }
     }
-
 }

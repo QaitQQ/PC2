@@ -45,7 +45,31 @@ namespace Server.Class.PriceProcessing
                     () =>
                     {
                         using XLS.XLS_To_Class X = new XLS.XLS_To_Class();
-                        Result = (List<ItemPlusImageAndStorege>)X.Read(_Attach, null, _Name, Identify.Value);
+
+                        List<int> NomberList = null;
+
+                        if (Identify.Value.Patterns.Count >0)
+                        {
+                            foreach (var item in Identify.Value.Patterns)
+                            {
+                                if (item.ToLower().Contains("list"))
+                                {
+                                  var nombers =  item.Split(':')[1];
+                                  var nombersMass = nombers.Split(",");
+                                  NomberList = new List<int>();
+
+                                    foreach (var Y in nombersMass)
+                                    {
+                                        NomberList.Add(Convert.ToInt32(Y));
+                                    }
+                                    break;
+                                }
+                            }
+
+                        }
+
+
+                        Result = (List<ItemPlusImageAndStorege>)X.Read(_Attach, NomberList, _Name, Identify.Value);
                     });
 
                     break;

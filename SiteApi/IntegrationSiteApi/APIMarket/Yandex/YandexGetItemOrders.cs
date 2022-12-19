@@ -1,5 +1,7 @@
 ﻿using Newtonsoft.Json;
+
 using StructLibCore.Marketplace;
+
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -13,8 +15,8 @@ namespace Server.Class.IntegrationSiteApi.Market.Yandex.YandexGetItemOrders
         }
         public List<object> Get()
         {
-            var date = DateTime.Now.AddDays(-10).ToString("dd-MM-yyyy");
-            HttpWebRequest httpWebRequest = GetRequest(@"/campaigns/" + ClientID + "/orders.json?fromDate="+ date, "GET");
+            string date = DateTime.Now.AddDays(-10).ToString("dd-MM-yyyy");
+            HttpWebRequest httpWebRequest = GetRequest(@"/campaigns/" + ClientID + "/orders.json?fromDate=" + date, "GET");
             HttpWebResponse httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
             using (StreamReader streamReader = new StreamReader(httpResponse.GetResponseStream())) { result = streamReader.ReadToEnd(); }
             Root root = JsonConvert.DeserializeObject<Root>(result);
@@ -42,7 +44,6 @@ namespace Server.Class.IntegrationSiteApi.Market.Yandex.YandexGetItemOrders
             }
             return Lst;
         }
-        // Root myDeserializedClass = JsonConvert.DeserializeObject<Root>(myJsonResponse);
         [Serializable]
         public class Pager
         {
@@ -248,14 +249,14 @@ namespace Server.Class.IntegrationSiteApi.Market.Yandex.YandexGetItemOrders
             public bool? CancelRequested { get; set; }
             [JsonProperty("subsidies")]
             public List<Subsidy> Subsidies { get; set; }
-            public List<string> Items
+            public List<MarketOrderItems> Items
             {
                 get
                 {
-                    List<string> lst = new List<string>();
+                    List<MarketOrderItems> lst = new List<MarketOrderItems>();
                     foreach (Item item in _Items)
                     {
-                        lst.Add(item.OfferName + " " + item.Count + " шт. " + item.Price + "р.");
+                        lst.Add(new MarketOrderItems(item.OfferName, item.Count.ToString(), item.Price.ToString(), item.ShopSku));
                     }
                     return lst;
                 }

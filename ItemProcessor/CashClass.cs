@@ -2,9 +2,9 @@
 
 using Server.Class.Base;
 using Server.Class.HDDClass;
-using Server.Class.ItemProcessor;
 using Server.Class.PriceProcessing;
 
+using StructLibCore;
 using StructLibCore.Marketplace;
 
 using StructLibs;
@@ -12,12 +12,15 @@ using StructLibs;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
+using System.Net;
+using System.Threading;
 using System.Threading.Tasks;
-
+using System.Windows.Forms;
+using System.Xml.Serialization;
 namespace Server
 {
-
     public class CashClass
     {
         public List<СomparisonNameID> ItemName;
@@ -35,10 +38,7 @@ namespace Server
         public List<Target> Targets
         {
             get => targets;
-            set
-            {
-                targets = value; СhangeList?.Invoke(Settings.TargetsList, targets);
-            }
+            set { targets = value; СhangeList?.Invoke(Settings.TargetsList, targets); }
         }
         public string[] ApiSiteSettngs;
         public string[] FtpSiteSettngs;
@@ -72,9 +72,7 @@ namespace Server
         public void ReloadNameCash()
         {
             using ApplicationContext db = new ApplicationContext();
-
-           ItemName = (from Item in db.Item select new СomparisonNameID() { Name = Item.Name, СomparisonName = Item.СomparisonName[0], Id = Item.Id }).ToList();
-
+            ItemName = (from Item in db.Item select new СomparisonNameID() { Name = Item.Name, СomparisonName = Item.СomparisonName[0], Id = Item.Id }).ToList();
         }
         public CashClass()
         {
@@ -91,8 +89,8 @@ namespace Server
             ObjBuffer = new List<QueueOfObj>();
             СhangeList += Serializer.Doit;
             ApiSiteSettngs = Settings.ApiSettngs;
-            FtpSiteSettngs = Settings.FtpSettings;
-
+            FtpSiteSettngs = Settings.FtpSettingsImage;
+            UploadStoregeToSite(this);
         }
         public void LoadCash()
         {
@@ -103,100 +101,22 @@ namespace Server
             LoadFromFile(ref siteList, Settings.SiteList);
             LoadFromFile(ref targets, Settings.TargetsList);
             LoadFromFile(ref marketplace, Settings.Marketplace);
-          //  ReloadNameCash();
-            // Gen_Dic();
         }
-        //private void Gen_Dic()
-        //{
-        //    Dictionaries = new Dictionaries();
-
-        //    Dictionaries.Add(new DictionaryPrice("DSSL_Price", new List<string> { "ДССЛ" }, DictionaryRelate.Price));
-        //    Dictionaries.Add(new DictionaryPrice("Hik_Price", new List<string> { "Хик" }, DictionaryRelate.Price));
-        //    Dictionaries.Add(new DictionaryPrice("GeoVision_Price", new List<string> { "GeoVision" }, DictionaryRelate.Price));
-        //    Dictionaries.Add(new DictionaryPrice("HiWatch_Price", new List<string> { "Хайвотч" }, DictionaryRelate.Price));
-        //    Dictionaries.Add(new DictionaryPrice("HIQ", new List<string> { "HIQ" }, DictionaryRelate.Price));
-        //    Dictionaries.Add(new DictionaryPrice("Dahua", new List<string> { "Dahua" }, DictionaryRelate.Price));
-
-        //    Dictionaries.Add(new DictionaryPrice("DSSL_Storage", new List<string> { "Складская справка email" }, DictionaryRelate.Storage));
-        //    Dictionaries.Add(new DictionaryBase("xls", new List<string> { "xls", "xlsx" }, Relate: DictionaryRelate.Extension));
-        //    Dictionaries.Add(new DictionaryBase("NameEdit", new List<string> { "!", "(", ")", "новинка", "готовится к релизу", "снимается с продаж", "снимается с производства", "замена", "\n", "Доступен к заказу" }, DictionaryRelate.Extension));
-        //    Dictionaries.Add(new DictionaryBase("New", new List<string> { "новинка", "готовитсякрелизу" }, DictionaryRelate.Tags));
-        //    Dictionaries.Add(new DictionaryBase("Old", new List<string> { "снимаетсяспродаж", "снимаетсяспроизводства", "замена" }, DictionaryRelate.Tags));
-        //    Dictionaries.Add(new DictionaryBase("OnRequest", new List<string> { "подзаказ2месяца", "подзаказ2недели" }, DictionaryRelate.Tags));
-
-
-
-        //    DictionaryPrice DSSL_PriceDic = (DictionaryPrice)Dictionaries.Get("DSSL_Price");
-
-        //    DSSL_PriceDic.Set_Filling_method_string(FillDefinitionPrice.Name, "Модель");
-        //    DSSL_PriceDic.Set_Filling_method_string(FillDefinitionPrice.PriceRC, "розни");
-        //    DSSL_PriceDic.Set_Filling_method_string(FillDefinitionPrice.PriceRC, "ользователь");
-        //    DSSL_PriceDic.Set_Filling_method_string(FillDefinitionPrice.PriceRC, "EU");
-        //    DSSL_PriceDic.Set_Filling_method_string(FillDefinitionPrice.Description, "писание");
-        //    DSSL_PriceDic.Set_Filling_method_string(FillDefinitionPrice.PriceDC, "Дистрибьютор");
-        //    DSSL_PriceDic.Set_Filling_method_string(FillDefinitionPrice.MaxRow, "250");
-
-
-        //    DictionaryPrice Hik_PriceDic = (DictionaryPrice)Dictionaries.Get("Hik_Price");
-
-        //    Hik_PriceDic.Set_Filling_method_string(FillDefinitionPrice.Name, "Модель");
-        //    Hik_PriceDic.Set_Filling_method_string(FillDefinitionPrice.PriceRC, "Новая РРЦ");
-        //    Hik_PriceDic.Set_Filling_method_string(FillDefinitionPrice.Description, "Описание");
-        //    Hik_PriceDic.Set_Filling_method_string(FillDefinitionPrice.MaxRow, "250");
-
-        //    DictionaryPrice GeoVision_Price_PriceDic = (DictionaryPrice)Dictionaries.Get("GeoVision_Price");
-
-        //    GeoVision_Price_PriceDic.Set_Filling_method_string(FillDefinitionPrice.Name, @"Наименование");
-        //    GeoVision_Price_PriceDic.Set_Filling_method_string(FillDefinitionPrice.PriceRC, "Розн");
-        //    GeoVision_Price_PriceDic.Set_Filling_method_string(FillDefinitionPrice.PriceDC, "Дилер");
-        //    GeoVision_Price_PriceDic.Set_Filling_method_string(FillDefinitionPrice.Description, "Наименование");
-        //    GeoVision_Price_PriceDic.Set_Filling_method_string(FillDefinitionPrice.MaxRow, "250");
-        //    GeoVision_Price_PriceDic.Set_Filling_method_string(FillDefinitionPrice.NamePattern, @"^.*\s");
-
-        //    DictionaryPrice HiWatch_PriceDic = (DictionaryPrice)Dictionaries.Get("HiWatch_Price");
-
-        //    HiWatch_PriceDic.Set_Filling_method_string(FillDefinitionPrice.Name, "Модель");
-        //    HiWatch_PriceDic.Set_Filling_method_string(FillDefinitionPrice.PriceRC, "Розница 10.03");
-        //    HiWatch_PriceDic.Set_Filling_method_string(FillDefinitionPrice.Description, "Описание");
-        //    HiWatch_PriceDic.Set_Filling_method_string(FillDefinitionPrice.MaxRow, "250");
-
-        //    DictionaryPrice HIQ_PriceDic = (DictionaryPrice)Dictionaries.Get("HIQ");
-
-        //    HIQ_PriceDic.Set_Filling_method_string(FillDefinitionPrice.Name, "Наименование");
-        //    HIQ_PriceDic.Set_Filling_method_string(FillDefinitionPrice.PriceRC, "Розничная");
-        //    HIQ_PriceDic.Set_Filling_method_string(FillDefinitionPrice.Description, "Краткие характеристики");
-        //    HIQ_PriceDic.Set_Filling_method_string(FillDefinitionPrice.NamePattern, @"HIQ.*?\, ");
-        //    HIQ_PriceDic.Set_Filling_method_string(FillDefinitionPrice.MaxRow, "250");
-
-        //    DictionaryPrice Dahua_PriceDic = (DictionaryPrice)Dictionaries.Get("Dahua");
-        //    Dahua_PriceDic.Set_Filling_method_string(FillDefinitionPrice.Name, "Наименование");
-        //    Dahua_PriceDic.Set_Filling_method_string(FillDefinitionPrice.PriceRC, "Розничная");
-        //    Dahua_PriceDic.Set_Filling_method_string(FillDefinitionPrice.Description, "Описание");
-        //    Dahua_PriceDic.Set_Filling_method_string(FillDefinitionPrice.MaxRow, "250");
-        //    Dahua_PriceDic.Set_Filling_method_string(FillDefinitionPrice.PriceRC, "РРЦ");
-
-        //}
         private void LoadFromFile<T>(ref T Object, string Path)
         {
             T Obj = Task.Run(() => new Deserializer<T>(Path).Doit()).Result;
-            if (Obj != null)
-            {
-                Object = Obj;
-            }
-
+            if (Obj != null) { Object = Obj; }
         }
         public void PlanedPriceWork(CashClass cash)
         {
-            foreach (var item in PriceStorageList)
+            foreach (PriceStorage item in PriceStorageList)
             {
-                var key = item.Name + "_TargetDictionary";
-
+                string key = item.Name + "_TargetDictionary";
                 if (item.PlanedRead)
                 {
                     if (!TargetDictionary.Dictionarys.ContainsKey(key))
                     {
                         TargetDictionary.Dictionarys.Add(key, () => Download(item));
-
                     }
                     if (targets.FindAll(x => x.KeyTask == key).Count == 0)
                     {
@@ -214,12 +134,31 @@ namespace Server
             }
             void Download(PriceStorage activeprice)
             {
-                System.Net.WebClient client = new System.Net.WebClient();
-                client.DownloadFileAsync(new Uri(activeprice.Link), activeprice.FilePath);
+                string Path = null;
 
-                client.DownloadFileCompleted += (a, e) => { Read(activeprice); };
+                if (activeprice.FilePath == null || activeprice.FilePath == "")
+                {
+                    Path = @"price_storage\\" + activeprice.Name + ".xlsx"; ;
+                }
+                else
+                {
+                    Path = activeprice.FilePath;
+                }
 
-                foreach (var item in cash.PriceStorageList)
+
+                if (activeprice.Link.ToLower().Contains("Zip".ToLower()))
+                {
+                    DownloadPriceZip(activeprice, Path);
+                }
+                else
+                {
+                    DownloadPriceXls(activeprice, Path);
+                }
+
+                Thread.Sleep(10000);
+
+                Read(activeprice);
+                foreach (PriceStorage item in cash.PriceStorageList)
                 {
                     if (item.Name == activeprice.Name)
                     {
@@ -229,25 +168,87 @@ namespace Server
                 cash.PriceStorageList = cash.PriceStorageList;
             }
             List<ItemDBStruct> DB_list;
-
             void Read(PriceStorage activeprice)
             {
-                var fs = File.OpenRead(activeprice.FilePath);
-                string Attb = string.Join(",", activeprice.Attributes);
-                using ApplicationContext DB = new ApplicationContext();
-                DB_list = DB.Item.ToList();
-                var lst = new PriceProcessingRules(fs, activeprice.Name, Attb, cash);
-                lst.СhangeResult += Comparer;
-                lst.Apply_rules();
+                try
+                {
+                    FileStream fs = File.OpenRead(activeprice.FilePath);
+                    string Attb = string.Join(",", activeprice.Attributes);
+                    using ApplicationContext DB = new ApplicationContext();
+                    DB_list = DB.Item.ToList();
+                    PriceProcessingRules lst = new PriceProcessingRules(fs, activeprice.Name, Attb, cash);
+                    lst.СhangeResult += Comparer;
+                    lst.Apply_rules();
+                }
+                catch (Exception e)
+                {
+                    MessageBox.Show(e.Message);
+                }
+
 
             }
             void Comparer(object Lst)
             {
-                var cmpr = new Сompare_NewPrice_with_DB((List<ItemPlusImageAndStorege>)Lst, DB_list, cash);
+                Сompare_NewPrice_with_DB cmpr = new Сompare_NewPrice_with_DB((List<ItemPlusImageAndStorege>)Lst, DB_list, cash);
                 cmpr.StartCompare();
             }
+            void DownloadPriceXls(PriceStorage activeprice, string Path)
+            {
+                WebClient client = new WebClient();
+                client.DownloadFile(new Uri(activeprice.Link), activeprice.FilePath);
+            }
+            void DownloadPriceZip(PriceStorage activeprice, string Path)
+            {
+                WebClient client = new WebClient();
+                byte[] Mass = client.DownloadData(new Uri(activeprice.Link));
+                Stream stream = new MemoryStream(Mass);
+                ZipArchive archive = new ZipArchive(stream);
+                foreach (ZipArchiveEntry entry in archive.Entries)
+                {
+                    if (entry.FullName.ToLower().Contains(".xls"))
+                    {
+                        entry.ExtractToFile(Path);
+                        break;
+                    }
+                }
+            }
+        }
+        public void UploadStoregeToSite(CashClass cash)
+        {
+            var FTP = new FTP(Settings.FtpSettingsStorege);
+            using ApplicationContext db = new ApplicationContext();
+            var IC = from St in db.Storage select new { ID = St.ItemID, SID = St.WarehouseID, C = St.Count, D = St.DateСhange };
+            var W = from Wt in db.Warehouse select new { ID = Wt.Id, WN = Wt.Name };
+            var i = 0;
+            SiteStoregeStruct _struct = new SiteStoregeStruct();
+            foreach (var item in IC)
+            {
+                if (item.D.Day == DateTime.Now.Day && item.C>0)
+                {
+                    _struct.ItmsCount.Add(new IC() { Id = item.ID, WID = item.SID, C = item.C });
+                }
+            }
+            foreach (var item in W)
+            {
+                _struct.Warehouses.Add(new WS() { Id = item.ID, N = item.WN });
+            }
+            XmlSerializer xmlSerializer = new(typeof(SiteStoregeStruct));
 
+            string FN = "STList.xml";
+
+            if (File.Exists(FN))
+            {
+                File.Delete(FN);
+            }
+
+            using FileStream fs = new(FN, FileMode.OpenOrCreate);
+
+            xmlSerializer.Serialize(fs, _struct);
+
+            fs.Close();
+
+
+            FTP.FTPUploadFile(FN);
         }
     }
 }
-

@@ -31,12 +31,31 @@ namespace StructLibCore.Marketplace
         public List<IOrder> Orders { get; set; }
         public MarketPlaceCash() { MarketItems = new List<MarketItem>(); APISettings = new List<APISetting>(); Orders = new List<IOrder>(); }
     }
+    [Serializable]
+    public class MarketOrderItems 
+    {
+        public MarketOrderItems(string name, string count = null, string price = null, string sku = null)
+        {
+            Name = name;
+            Count = count;
+            Price = price;
+            Sku = sku;
+        }
+
+        public string Name { get; set; }
+
+        public string Count { get; set; }
+
+        public string Price { get; set; }
+
+        public string Sku { get; set; }
+    }
     public interface IOrder
     {
         public string Id { get; }
         public APISetting APISetting { get; set; }
         public OrderStatus Status { get; }
-        public List<string> Items { get; }
+        public List<MarketOrderItems> Items { get; }
         public string Date { get; }
         public string DeliveryDate { get; }
     }

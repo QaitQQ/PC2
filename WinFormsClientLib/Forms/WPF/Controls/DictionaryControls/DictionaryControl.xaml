@@ -26,7 +26,7 @@
                 </Grid.RowDefinitions>
                 <TextBox Grid.Row="0"></TextBox>
                 <Grid Grid.Row="1">
-                    <TreeView x:Name="DictionaryTree"></TreeView>
+                    <TreeView x:Name="DictionaryTree" MouseDown="DictionaryTree_MouseDown"></TreeView>
                 </Grid>
             </Grid>
 

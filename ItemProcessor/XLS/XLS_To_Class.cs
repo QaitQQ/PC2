@@ -153,7 +153,10 @@ namespace XLS
                         {
                             for (int i = 1; i < 20; i++)
                             {
-                                if (_Worksheet.GetRow(rowRCFin + m).GetCell(i).CellType == CellType.Formula)
+
+                                var WCL = _Worksheet.GetRow(rowRCFin + m).GetCell(i);
+
+                                if (WCL != null && WCL.CellType == CellType.Formula)
                                 {
                                     String[i] = ReadStringToDouble(_Worksheet.GetRow(rowRCFin + m).GetCell(i).CellFormula?.ToString());
                                 }
@@ -523,7 +526,7 @@ namespace XLS
                                 {
                                     stList.Add(new Storage()
                                     {
-                                        Warehouse = new Warehouse() { Name = item.Value },
+                                        Warehouse = new Warehouse() { Name = FileName+":"+ item.Value },
                                         Count = (int)ReadStringToDouble(X),
                                         DateСhange = DateTime.Now,
                                         SourceName = NameString
@@ -1060,7 +1063,7 @@ namespace XLS
                     {
                         break;
                     }
-                    if (Convert.ToString(_Worksheet[Row, cellRC].Value) != "")
+                    if (Convert.ToString(_Worksheet[Row, cellRC].Value) != "" || Convert.ToString(_Worksheet[Row, cellStorege[0].Key].Value) != "")
                     {
                         DateTime DateСhange = DateTime.Now;
                         string PriceListName = _Worksheet.Name;
@@ -1108,7 +1111,7 @@ namespace XLS
                             {
                                 stList.Add(new Storage()
                                 {
-                                    Warehouse = new Warehouse() { Name = item.Value },
+                                    Warehouse = new Warehouse() { Name = FileName+":"+ item.Value },
                                     Count = (int)ReadStringToDouble(_Worksheet[Row, item.Key].Value),
                                     DateСhange = DateTime.Now,
                                     SourceName = NameString
@@ -1136,6 +1139,7 @@ namespace XLS
                             });
                         }
                         Row++;
+                     
                     }
                     else { Row++; nullstr++; }
                 }

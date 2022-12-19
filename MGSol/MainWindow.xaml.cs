@@ -1,6 +1,7 @@
 ﻿
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Media;
 namespace MGSol
@@ -37,7 +38,7 @@ namespace MGSol
             //}
 
         }
-        private void AddTab(UserControl control, string Header)
+        private void AddTab(System.Windows.Controls.UserControl control, string Header)
         {
             MModel.Tabs.Add(new TabItem() { Content = control, Header = new TextBlock() { Text = Header }, LayoutTransform = new RotateTransform { Angle = -90 } });
         }
@@ -46,13 +47,16 @@ namespace MGSol
         {
             if (e.ClickCount == 2)
             {
-                if (WindowState == System.Windows.WindowState.Normal)
+                if (this.WindowState == WindowState.Maximized)
                 {
-                    WindowState = System.Windows.WindowState.Maximized;
+                    this.WindowState = WindowState.Normal;
                 }
                 else
                 {
-                    WindowState = System.Windows.WindowState.Normal;
+                    System.Drawing.Rectangle r = Screen.GetWorkingArea(new System.Drawing.Point((int)this.Left, (int)this.Top));
+                    this.MaxWidth = r.Width;
+                    this.MaxHeight = r.Height;
+                    this.WindowState = WindowState.Maximized;
                 }
             }
             else

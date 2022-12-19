@@ -40,7 +40,6 @@ namespace MGSol.Panel
                 {
                     ProcessingPanelApiBox.Items.Add(item.Name);
                 }
-
             }
         }
         #region Кнопки
@@ -146,7 +145,6 @@ namespace MGSol.Panel
             foreach (APISetting Option in Options)
             {
                 List<object> Result = null;
-
                 if (Option.Active)
                 {
                     switch (Option.Type)
@@ -170,17 +168,8 @@ namespace MGSol.Panel
                         It.APISetting = Option;
                         MarketItem X = null;
                         X = ItemsList.FirstOrDefault(x => x.SKU == It.SKU);
-                        if (X != null && X.SKU.Contains("1057"))
-                        {
-                        }
-                        if (X != null && X.Name == null)
-                        {
-                            X.Name = It.Name;
-                        }
-                        if (X != null)
-                        {
-                            Dispatcher.Invoke(() => { X.Items.Add(It); });
-                        }
+                        if (X != null && X.Name == null) {X.Name = It.Name;}
+                        if (X != null){Dispatcher.Invoke(() => { X.Items.Add(It); });}
                         else
                         {
                             X = ItemsList.FirstOrDefault(x => x.Name == It.Name);
@@ -201,9 +190,7 @@ namespace MGSol.Panel
                                 Dispatcher.Invoke(() => { X.Items.Add(It); });
                             }
                         }
-
                     }
-
                 }
             }
             Dispatcher.Invoke(() =>
@@ -287,6 +274,7 @@ namespace MGSol.Panel
         private static void AddBtn(ContextMenu menu, string BtnCont, MouseButtonEventHandler handler)
         {
             Label X = new();
+            X.Content = BtnCont;
             X.MouseLeftButtonDown += handler;
             menu.Items.Add(X);
         }
@@ -339,10 +327,7 @@ namespace MGSol.Panel
                 {
                     if (ProcessingPanelApiBox.SelectedItem != null && X.APISetting.Name == ProcessingPanelApiBox.SelectedItem.ToString())
                     {
-                        if (X.Price.Contains("."))
-                        {
-                            X.Price = X.Price.Replace(".", ",");
-                        }
+                        if (X.Price.Contains(".")) {X.Price = X.Price.Replace(".", ",");}
                         double Z = double.Parse(X.Price, System.Globalization.NumberStyles.AllowDecimalPoint);
                         double P = double.Parse(ProcessingPanelPercentBox.Text);
                         X.Price = (Z - ((P / 100) * Z)).ToString();
@@ -360,14 +345,13 @@ namespace MGSol.Panel
                 List<СomparisonNameID> Search = new Network.Item.ItemSearch().Get<List<СomparisonNameID>>(Model.GetClient(), new object[] { ((System.Windows.Controls.TextBox)sender).Text, 3 });
                 ContextMenu M = new();
 
-                foreach (СomparisonNameID item in Search)
+                for (int i = 0; i < 10; i++)
                 {
-                    AddBtn(M, item.Name, (e, x) => { X.BaseID = item.Id; (sender as TextBox).Text = item.Id.ToString(); }); ;
+                    AddBtn(M, Search[i].Name, (e, x) => { X.BaseID = Search[i].Id; (sender as TextBox).Text = Search[i].Id.ToString(); }); ;
                 }
+
                 M.IsOpen = true;
             }
-
-
         }
     }
 }

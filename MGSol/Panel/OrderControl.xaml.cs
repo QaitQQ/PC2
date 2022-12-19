@@ -1,7 +1,5 @@
 ﻿using SiteApi.IntegrationSiteApi.APIMarket.Yandex;
-
 using StructLibCore.Marketplace;
-
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -12,7 +10,6 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
-
 namespace MGSol.Panel
 {
     /// <summary>
@@ -21,17 +18,16 @@ namespace MGSol.Panel
     public partial class OrdersControl : UserControl
     {
         private ObservableCollection<APISetting> Options;
-        private ObservableCollection<IOrder> orderList;
         private ObservableCollection<IGrouping<DateTime, IOrder>> VisOrderList;
         private event Action<List<IOrder>> LoadOrders;
         private MainModel model;
-        public ObservableCollection<IOrder> OrderList { get => orderList; set => orderList = value; }
+        public ObservableCollection<IOrder> OrderList { get; set; }
         public OrdersControl(MainModel Model)
         {
             model = Model;
             InitializeComponent();
             Options = new ObservableCollection<APISetting>();
-            orderList = new ObservableCollection<StructLibCore.Marketplace.IOrder>();
+            OrderList = new ObservableCollection<StructLibCore.Marketplace.IOrder>();
             VisOrderList = new ObservableCollection<IGrouping<DateTime, StructLibCore.Marketplace.IOrder>>();
             Task.Factory.StartNew(() => LoadNetOrders(model.OptionMarketPlace.APISettings));
             OrderStack.ItemsSource = VisOrderList;
@@ -41,10 +37,10 @@ namespace MGSol.Panel
         }
         private void FillOrders(List<IOrder> orders)
         {
-            orderList.Clear();
+            OrderList.Clear();
             foreach (IOrder order in orders)
             {
-                orderList.Add(order);
+                OrderList.Add(order);
             }
             if (StatusBox.SelectedIndex != 1)
             {
@@ -100,9 +96,9 @@ namespace MGSol.Panel
         {
             VisOrderList.Clear();
             Thread.CurrentThread.CurrentCulture = new CultureInfo("ru-RU");
-            IEnumerable<IOrder> X = from x in orderList where x.Status == (OrderStatus)StatusBox.SelectedItem orderby x.DeliveryDate select x;
+            IEnumerable<IOrder> X = from x in OrderList where x.Status == (OrderStatus)StatusBox.SelectedItem orderby x.DeliveryDate select x;
             IEnumerable<IGrouping<DateTime, IOrder>> Z = from x in X group x by DateTime.Parse(x.DeliveryDate, new CultureInfo("ru-RU"));
-            Z = Z.OrderByDescending(x => x.Key);
+            Z = Z.OrderBy(x => x.Key);
             foreach (IGrouping<DateTime, IOrder> item in Z)
             {
                 VisOrderList.Add(item);
@@ -119,12 +115,12 @@ namespace MGSol.Panel
             string S = null;
             foreach (IOrder item in X)
             {
-                foreach (string t in item.Items)
+                foreach (MarketOrderItems t in item.Items)
                 {
-                    S = S + t + "\t" + item.DeliveryDate + "\t" + "\n";
+                    S = S + t.Count + "\t" + t.Name +"\n";
                 }
             }
-            Clipboard.SetText(S);
+            Clipboard.SetDataObject(S);
         }
         private void Ship_Click(object sender, RoutedEventArgs e)
         {
@@ -204,7 +200,7 @@ namespace MGSol.Panel
                     Z = new YandexGETAct(X).Get();
                     break;
                 case MarketName.Ozon:
-                    IEnumerable<IOrder> t = from c in orderList where c.APISetting == X && c.Status == OrderStatus.READY select c;
+                    IEnumerable<IOrder> t = from c in OrderList where c.APISetting == X && c.Status == OrderStatus.READY select c;
                     List<IOrder> m = t.ToList();
                     if (m.Count > 0) { Z = new SiteApi.IntegrationSiteApi.APIMarket.Ozon.Post.OzonPostAct(X).Get(m); }
                     break;
@@ -233,9 +229,9 @@ namespace MGSol.Panel
         {
             VisOrderList.Clear();
             Thread.CurrentThread.CurrentCulture = new CultureInfo("ru-RU");
-            IEnumerable<IOrder> X = from x in orderList where x.Id.Contains(SearchBox.Text) orderby x.DeliveryDate select x;
+            IEnumerable<IOrder> X = from x in OrderList where x.Id.Contains(SearchBox.Text) orderby x.DeliveryDate select x;
             IEnumerable<IGrouping<DateTime, IOrder>> Z = from x in X orderby x.DeliveryDate group x by DateTime.Parse(x.DeliveryDate, new CultureInfo("ru-RU"));
-            Z = Z.OrderByDescending(x => x.Key);
+            Z = Z.OrderBy(x => x.Key);
             if (!Z.Any())
             {
                 List<IOrder> R = new List<IOrder>();
@@ -257,13 +253,10 @@ namespace MGSol.Panel
                         default:
                             break;
                     }
-                    if (P != null)
-                    {
-                        R.Add((IOrder)P);
-                    }
+                    if (P != null) {R.Add((IOrder)P);}
                 }
                 Z = from x in R orderby x.DeliveryDate group x by DateTime.Parse(x.DeliveryDate, new CultureInfo("ru-RU"));
-                Z = Z.OrderByDescending(x => x.Key);
+                Z = Z.OrderBy(x => x.Key);
                 foreach (IGrouping<DateTime, IOrder> item in Z) { VisOrderList.Add(item); }
             }
             else
@@ -280,11 +273,17 @@ namespace MGSol.Panel
             Grid Btn = (Grid)sender;
             Btn.Background = new SolidColorBrush(Color.FromRgb(168, 125, 125));
         }
-
         private void ActButton_MouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
         {
             Grid Btn = (Grid)sender;
             Btn.Background = new SolidColorBrush(Color.FromRgb(173, 247, 139));
+        }
+        private void CopyItemButton_Click(object sender, RoutedEventArgs e)
+        {
+            MarketOrderItems item = (MarketOrderItems)((Button)sender).DataContext;
+            string S = null;
+            S = S + item.Count + "шт.\t" + item.Name;
+            Clipboard.SetDataObject(S);
         }
     }
 }
