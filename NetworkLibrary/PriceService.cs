@@ -108,6 +108,11 @@ namespace Network.PriceService
             {
                 if (entry.FullName.ToLower().Contains(".xls"))
                 {
+                    if (File.Exists(Path))
+                    {
+                        File.Delete(Path);
+                    }
+
                     entry.ExtractToFile(Path);
                     
                     break;

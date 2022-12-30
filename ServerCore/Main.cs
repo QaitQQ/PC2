@@ -222,9 +222,10 @@ namespace Server
                 Thread.Sleep(20000);
                 for (int i = 0; i < Cash.Targets.Count; i++)
                 {
-                    Cash.Targets[i].TargetCheck();
-                    if (Cash.Targets[i].Done && (Cash.Targets[i].regularity == Target.Regularity.once || Cash.Targets[i].regularity == Target.Regularity.by_time_once))
-                    { Cash.Targets.Remove(Cash.Targets[i]); }
+                    Target target = Cash.Targets[i];
+                    target.TargetCheck();
+                    if (target.Done && (target.Regularity == Target.RegularityType.once || target.Regularity == Target.RegularityType.by_time_once))
+                    { Cash.Targets.Remove(target); }
                 }
             }
         }

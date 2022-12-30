@@ -1,32 +1,28 @@
-﻿
-using System;
+﻿using System;
 using System.Threading.Tasks;
-
 namespace Server
 {
     [Serializable]
-    public class Target
+    public partial class Target
     {
         private bool condition;
         private bool done;
-        private Regularity _regularity;
+        private RegularityType _regularity;
         private DateTime CheckTime;
         private DateTime DoneTime;
         private DateTime _planedTime;
         private int _periodTime;
         public string KeyTask { get { return _task; } }
-
         public bool Done { get => done; }
-        public Regularity regularity { get => _regularity; }
-
-        public Target(string KeyTask, Regularity Regularity, DateTime PlanedTime = default(DateTime), int PeriodTime = 0)
-        { _task = KeyTask; _regularity = Regularity; _planedTime = PlanedTime; _periodTime = PeriodTime; condition = false; done = false; }
-        public enum Regularity
+        public RegularityType Regularity { get => _regularity; }
+        public Target(string KeyTask, RegularityType Regularity, DateTime PlanedTime = default(DateTime), int PeriodTime = 0)
         {
-            once,
-            by_time,
-            after_time,
-            by_time_once
+            _task = KeyTask;
+            _regularity = Regularity; 
+            _planedTime = PlanedTime;
+            _periodTime = PeriodTime;
+            condition = false; 
+            done = false; 
         }
         private string _task;
         public bool TargetCheck()
@@ -42,14 +38,13 @@ namespace Server
             }
             return false;
         }
-
+        public int Period { get { return _periodTime; } set { _periodTime = value; } }
         private void checking_conditions()
         {
             switch (_regularity)
             {
-                case Regularity.once:
-
-                    if (_planedTime <= CheckTime)
+                case RegularityType.once:
+                    if (_planedTime.Hour <= CheckTime.Hour)
                     {
                         if (!Done)
                         {
@@ -58,12 +53,11 @@ namespace Server
                         }
                     }
                     break;
-                case Regularity.by_time:
+                case RegularityType.by_time:
                     if (DateTime.Now.Day > DoneTime.Day)
                     {
                         if (_planedTime.TimeOfDay <= CheckTime.TimeOfDay)
                         {
-
                             condition = true;
                         }
                         else
@@ -76,8 +70,7 @@ namespace Server
                         condition = false;
                     }
                     break;
-                case Regularity.after_time:
-
+                case RegularityType.after_time:
                     if (_planedTime == default(DateTime))
                     {
                         _planedTime = CheckTime.AddSeconds(_periodTime);
@@ -94,20 +87,17 @@ namespace Server
                             condition = false;
                         }
                     }
-
                     break;
-                case Regularity.by_time_once:
-
-
+                case RegularityType.by_time_once:
                     if (DateTime.Now.Day > DoneTime.Day)
                     {
                         if (_planedTime.TimeOfDay <= CheckTime.TimeOfDay)
                         {
-                                if (!Done)
-                                {
-                                    condition = true;
-                                    done = true;
-                                }
+                            if (!Done)
+                            {
+                                condition = true;
+                                done = true;
+                            }
                         }
                         else
                         {
@@ -118,13 +108,10 @@ namespace Server
                     {
                         condition = false;
                     }
-
                     break;
                 default:
                     break;
             }
-
         }
     }
 }
-

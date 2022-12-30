@@ -2,21 +2,16 @@
 using StructLibs;
 using System;
 using System.Linq;
-
 namespace Network.Other
 {
     [Serializable]
     public class NetOther : NetQwerry { }
-
-
     [Serializable]
     public class GetManufactors : NetOther
     {
         public override TCPMessage Post(ApplicationContext Db, object Obj = null)
         {
-
             Message.Obj = Db.Manufactor.ToList();
-
             return Message;
         }
     }
@@ -46,7 +41,6 @@ namespace Network.Other
             {
                 Message.Obj = Db.ManufactorSite.ToList();
             }
-
             return Message;
         }
     }
@@ -56,24 +50,19 @@ namespace Network.Other
         public override TCPMessage Post(ApplicationContext Db, object Obj = null)
         {
             Db.Add(((ManufactorSite)Attach));
-
             Db.SaveChanges();
             Message.Obj = true;
             return Message;
         }
     }
-
     [Serializable]
     public class FindManuf : NetOther
     {
         public override TCPMessage Post(ApplicationContext Db, object Obj = null)
         {
-
             var Item = (ItemDBStruct)Attach;
             var Dic = ((CashClass)Obj).Dictionaries.RetunUnderRelate(Object_Description.DictionaryRelate.Manufactor);
-
             string SerchSTR = Item.Name;
-
             foreach (var item in Dic)
             {
                 if (item.Values.Count > 0)
@@ -87,29 +76,10 @@ namespace Network.Other
                     }
                 }
             }
-
             Db.Update(Item);
             Db.SaveChanges();
             Message.Obj = true;
             return Message;
         }
     }
-
-    [Serializable]
-    public class GetTarget : NetOther
-    {
-        public override TCPMessage Post(ApplicationContext Db, object Obj = null)
-        {
-
-
-            var Targets = ((CashClass)Obj).Targets;
-
-            Message.Obj = Targets;
-            return Message;
-        }
-    }
-
-
 }
-
-

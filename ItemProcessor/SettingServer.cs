@@ -21,7 +21,7 @@
         public const string DBContext = "Host=localhost;Port=5432;Database=mydb;Username=postgres;Password=3011656";
         public static string[] SQLnphb = { "u0219115_User", "EGikcSMIxY]v", "scp24.hosting.reg.ru", "u0219115_default" };
         public static string[] FtpSettingsImage = { "ftp://" + "ftp.u0219115.cp.regruhosting.ru/image/catalog/", "admin@salessab.su", "3011656" };
-        public static string[] FtpSettingsStorege = { "ftp://" + "ftp.u0219115.cp.regruhosting.ru/Storage/", "admin@salessab.su", "3011656" };
+        public static string[] FtpSettingsStorege = { "ftp://" + "ftp.u0219115.cp.regruhosting.ru/", "admin@salessab.su", "3011656" };
         public static string[] ImapMail = { "price@sabsb.ru", "123456Q" };
         public static string[] ApiSettngs = { SiteLink, Key, tokenfile };
         public static string TargetsList = @"TargetsList.bin";

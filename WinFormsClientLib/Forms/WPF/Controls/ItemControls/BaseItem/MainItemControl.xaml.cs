@@ -1,10 +1,6 @@
-﻿
-using Client;
-
-using CRMLibs;
+﻿using Client;
 using Object_Description;
 using StructLibs;
-
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -13,10 +9,8 @@ using System.Collections.Specialized;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-
 using WinFormsClientLib.Forms.WPF.Controls.ItemControls;
 using WinFormsClientLib.Forms.WPF.Controls.Other;
-
 namespace WinFormsClientLib.Forms.WPF.ItemControls
 {
     /// <summary>
@@ -44,26 +38,20 @@ namespace WinFormsClientLib.Forms.WPF.ItemControls
                 PropertyInfoComboBox.Items.Add(item.Name);
                 if (item.Name == "Name") { PropertyInfoComboBox.SelectedIndex = PropertyInfoComboBox.Items.Count - 1; }
             }
-
             FilterStack.ItemsSource = FilterList;
             ItemSearchListBox.ItemsSource = SearchList;
-
             KeyDown += MainItemControl_KeyDown;
-
             ChangeSale += new Action<int, int>(SetSeleValue);
-
             SaleBox.TextChanged += new TextChangedEventHandler(SaleChange);
             MarkupBox.TextChanged += new TextChangedEventHandler(SaleChange);
             ButtonStack.Items.Add(new PercentCalc());
-
+            ButtonStack.Items.Add(new UploadForm());
             //Button RenewButton = new Button() { Content = "Обновить Кэш", Margin = new Thickness(2) };
             //RenewButton.Click += RenewCash_Click;
             //ButtonStack.Items.Add(RenewButton);
-
             //Button TagGenerateButton = new Button() { Content = "Перебрать Теги", Margin = new Thickness(2) };
             //TagGenerateButton.Click += TagGenerate_Click;
             //ButtonStack.Items.Add(TagGenerateButton);
-
             FilterList.CollectionChanged += new System.Collections.Specialized.NotifyCollectionChangedEventHandler(AppFilter);
         }
         private void TagGenerate_Click(object sender, RoutedEventArgs e)
@@ -79,7 +67,6 @@ namespace WinFormsClientLib.Forms.WPF.ItemControls
         }
         private void SearchButton_Click(object sender, RoutedEventArgs e)
         {
-
             SearchList.Clear();
             Search(SearhTextBox.Text, PropertyInfoComboBox.SelectedItem.ToString());
             ItemSearchListBox.Items.Refresh();
@@ -127,7 +114,6 @@ namespace WinFormsClientLib.Forms.WPF.ItemControls
             {
                 MessageBox.Show(D.Message);
             }
-          
         }
         private void SaleChange(object Obj, TextChangedEventArgs e)
         {
@@ -144,12 +130,10 @@ namespace WinFormsClientLib.Forms.WPF.ItemControls
                 }
                 return 0;
             }
-
             SaleValue = new int[] { ConvertToInt(SaleBox.Text), ConvertToInt(MarkupBox.Text) };
         }
         private void AddFilterButton_Click(object sender, RoutedEventArgs e)
         {
-          
             FilterList.Add(new PropPair() { PropertyInfo = Prop.First(x => x.Name == PropertyInfoComboBox.SelectedItem.ToString()), Value = SearhTextBox.Text });
         }
         private void Search(string Str, string PropName)
@@ -171,7 +155,6 @@ namespace WinFormsClientLib.Forms.WPF.ItemControls
             if (e.Action == NotifyCollectionChangedAction.Add || e.Action == NotifyCollectionChangedAction.Remove)
             {
                 SearchList.Clear();
-
                 if (FilterList.Count == 1)
                 {
                     foreach (object item in Obj as IEnumerable)
@@ -180,21 +163,16 @@ namespace WinFormsClientLib.Forms.WPF.ItemControls
                         Search(X.Value.ToString(), X.PropertyInfo.Name);
                     }
                 }
-                else if(FilterList.Count > 1)
+                else if (FilterList.Count > 1)
                 {
-                    var G =  new List<string[]>();
-
+                    var G = new List<string[]>();
                     foreach (var item in FilterList)
                     {
-                        G.Add(new string[] { item.PropertyInfo.Name, item.Value.ToString()});
+                        G.Add(new string[] { item.PropertyInfo.Name, item.Value.ToString() });
                     }
-
-
                     var X = new Network.Item.ItemSearchFromListPProp().Get<List<СomparisonNameID>>(new WrapNetClient(), G);
-
-                   foreach (СomparisonNameID item in X) { SearchList.Add(item); }
+                    foreach (СomparisonNameID item in X) { SearchList.Add(item); }
                 }
-
             }
         }
         private void RenewCash_Click(object sender, RoutedEventArgs e) { new Network.Item.RenewNameCash().Get<bool>(new WrapNetClient()); }

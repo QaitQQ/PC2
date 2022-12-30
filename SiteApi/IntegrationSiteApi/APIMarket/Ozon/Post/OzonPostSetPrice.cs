@@ -3,9 +3,7 @@ using SiteApi.IntegrationSiteApi.APIMarket.Ozon.Post;
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
-
 using static SiteApi.IntegrationSiteApi.APIMarket.Ozon.Post.OzonPostWarehouseInfo;
-
 namespace Server.Class.IntegrationSiteApi.Market.Ozon
 {
     public class OzonPostSetPrice : OzonPost.OzonPost
@@ -16,14 +14,12 @@ namespace Server.Class.IntegrationSiteApi.Market.Ozon
         public object Get(StructLibCore.Marketplace.IMarketItem[] List)
         {
             List<WarehouseResult> X = (List<WarehouseResult>)new OzonPostWarehouseInfo(aPISetting).Get();
-
             ProductsStocksRequestStockRoot itemsRoot = new ProductsStocksRequestStockRoot();
             foreach (Server.Class.IntegrationSiteApi.Market.Ozon.OzonPost.OzonItemDesc item in List)
             {
-                itemsRoot.Stocks.Add(new Stock(item,X[0].WarehouseId));
+                itemsRoot.Stocks.Add(new Stock(item, X[0].WarehouseId));
             }
             HttpWebRequest httpWebRequest = GetRequest(@"v2/products/stocks");
-
             using (StreamWriter streamWriter = new StreamWriter(httpWebRequest.GetRequestStream()))
             {
                 string root = JsonConvert.SerializeObject(itemsRoot);
@@ -33,14 +29,12 @@ namespace Server.Class.IntegrationSiteApi.Market.Ozon
             {
                 HttpWebResponse httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
                 using StreamReader streamReader = new StreamReader(httpResponse.GetResponseStream()); result = streamReader.ReadToEnd();
-                return true;
+                return result;
             }
-            catch 
+            catch
             {
-
                 return false;
-            }    
- 
+            }
         }
         public class ProductsStocksRequestStockRoot
         {
@@ -48,7 +42,6 @@ namespace Server.Class.IntegrationSiteApi.Market.Ozon
             {
                 Stocks = new List<Stock>();
             }
-
             [JsonProperty("stocks")]
             public List<Stock> Stocks { get; set; }
         }

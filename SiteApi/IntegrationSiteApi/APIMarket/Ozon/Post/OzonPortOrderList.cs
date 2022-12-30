@@ -18,7 +18,7 @@ namespace Server.Class.IntegrationSiteApi.Market.Ozon.OzonPortOrderList
             try
             {
                 HttpWebRequest httpWebRequest = GetRequest(@"v3/posting/fbs/unfulfilled/list");
-                PostList root = new PostList() { Limit = 100, Offset = 0, Dir = "ASC", Filter = new Filter() { CutoffFrom = DateTime.Now.AddMonths(-1), CutoffTo = DateTime.Now.AddDays(10) }, With = new With() { AnalyticsData = true, Barcodes = true, FinancialData = true, Translit = true } };
+                PostList root = new PostList() { Limit = 100, Offset = 0, Dir = "ASC", Filter = new Filter() { CutoffFrom = DateTime.Now.AddMonths(-1), CutoffTo = DateTime.Now.AddDays(20) }, With = new With() { AnalyticsData = true, Barcodes = true, FinancialData = true, Translit = true } };
                 using (var streamWriter = new StreamWriter(httpWebRequest.GetRequestStream())) { var json = JsonConvert.SerializeObject(root); streamWriter.Write(json); }
                 HttpWebResponse httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
                 using (var streamReader = new StreamReader(httpResponse.GetResponseStream())) { result = streamReader.ReadToEnd(); }

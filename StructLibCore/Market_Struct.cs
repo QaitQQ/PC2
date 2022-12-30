@@ -113,5 +113,14 @@ namespace StructLibCore.Marketplace
             get { return items; }
             set { items = value; }
         }
+
+     [NonSerialized]
+
+        private List<IC> storegeList;
+        public List<IC> StoregeList
+        {
+            get { return storegeList; }
+            set { storegeList = value; }
+        }
     }
 }

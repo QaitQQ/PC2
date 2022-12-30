@@ -61,7 +61,7 @@ namespace WinFormsClientLib.Forms.WPF.Controls
 
         private void Target_Clik(object sender, RoutedEventArgs e)
         {
-            var V = new Network.Other.GetTarget().Get<List<Target>>(new WrapNetClient());
+            var V = new Network.Target.GetTarget().Get<List<Server.Target>>(new WrapNetClient());
             mode = Mode.Target_Clik;
             FillTable(V);
         }

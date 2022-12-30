@@ -24,7 +24,7 @@ namespace Client.Forms
         public Mainform()
         {
             Controls.Add(new DradDropPanel
-                 (
+                 ( FirstPanelSize:1200,
                  controls: new Control[]
                  {
                     new ElementHost() { Child = new MainItemControl() },
@@ -38,6 +38,7 @@ namespace Client.Forms
                 controls: new Control[]
                 {
                  new ElementHost() { Child = new TextPayEditor()  },
+                 new ElementHost() {Child = new WinFormsClientLib.Forms.WPF.Controls.Target.TargetPanel()}
                 }
                 ));
             AddNewForm("Сравнение", new EventHandler((x, r) => { FormActivator(new UniversalWPFContainerForm(new ItemComparer()) { CanClosed = true }); }), видToolStripMenuItem);
