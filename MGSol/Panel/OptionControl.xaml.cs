@@ -107,8 +107,16 @@ namespace MGSol.Panel
             {
                 if (item.BaseID != 0)
                 {
-                    ItemPlusImageAndStorege Item = new Network.Item.GetItemFromId().Get<ItemPlusImageAndStorege>(Model.GetClient(), item.BaseID.ToString());
-                    item.Price = Item.Item.PriceRC;
+                    try
+                    {
+                        ItemPlusImageAndStorege Item = new Network.Item.GetItemFromId().Get<ItemPlusImageAndStorege>(Model.GetClient(), item.BaseID.ToString());
+                        item.Price = Item.Item.PriceRC;
+                    }
+                    catch 
+                    {
+                        MessageBox.Show("Problem "+ item.BaseID.ToString());
+                    }
+
                 }
             }
         }

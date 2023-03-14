@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Text;
+using System.Windows.Forms;
 
 namespace Server.Class.IntegrationSiteApi.Market.Yandex.YandexPostItemPrice
 {
@@ -17,22 +18,67 @@ namespace Server.Class.IntegrationSiteApi.Market.Yandex.YandexPostItemPrice
 
         public List<object> Get(StructLibCore.Marketplace.IMarketItem[] List)
         {
-            var httpWebRequest = GetRequest(@"/campaigns/" + ClientID + "/offer-prices/updates.json", "POST");
-            Root itemsRoot = new Root();
-            foreach (Server.Class.IntegrationSiteApi.Market.Yandex.YandexGetName.YandexGetItemList.ItemYandex item in List)
-            {
-                itemsRoot.offers.Add(new ItemPostPrice(item));
-            }
-            using (var streamWriter = new StreamWriter(httpWebRequest.GetRequestStream()))
-            {
-                var Root = JsonConvert.SerializeObject(itemsRoot);
-                streamWriter.Write(Root);
-            }
-            var httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
+            
+             //foreach (Server.Class.IntegrationSiteApi.Market.Yandex.YandexGetName.YandexGetItemList.ItemYandex item in List)
+            //{
 
-            string result;
+            if (List.Length > 10)
+            {
+                int countList = List.Length;
+                int I = List.Length / 10;
+                int End = countList % 10;
+                int count = 0;
 
-            using (var streamReader = new StreamReader(httpResponse.GetResponseStream())) { result = streamReader.ReadToEnd(); }
+                for (int i = 0; i < I; i++)
+                {
+                    count = count + 10;
+                    Send(count, count-10);
+                   
+                }
+                if (End >0)
+                {
+                    Send(count + End, End);
+                }
+            }
+            else 
+            {
+
+                Send(End:10);
+
+            }
+
+            void Send(int End,int Start = 0) 
+            {
+                Root itemsRoot = new Root();
+                for (int i = Start; i < End; i++)
+                {
+
+
+                    itemsRoot.offers.Add(new ItemPostPrice(List[i] as Server.Class.IntegrationSiteApi.Market.Yandex.YandexGetName.YandexGetItemList.ItemYandex));
+                }
+                var httpWebRequest = GetRequest(@"/campaigns/" + ClientID + "/offer-prices/updates.json", "POST");
+                string result;
+                using (var streamWriter = new StreamWriter(httpWebRequest.GetRequestStream()))
+                {
+                    var Root = JsonConvert.SerializeObject(itemsRoot);
+                    streamWriter.Write(Root);
+                }
+                try
+                {
+                    using (var httpResponse = (HttpWebResponse)httpWebRequest.GetResponse())
+                    {
+                        using (var streamReader = new StreamReader(httpResponse.GetResponseStream())) { result = streamReader.ReadToEnd(); }
+                    }
+                }
+                catch 
+                {
+                    MessageBox.Show(Start.ToString() + "=>" + End.ToString());
+                 
+                }          
+
+            }
+
+
 
             return new List<object>();
         }

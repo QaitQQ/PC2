@@ -69,6 +69,7 @@
             </ScrollViewer>
             <ScrollViewer Grid.Column="1" VerticalScrollBarVisibility="Visible">
                 <StackPanel Orientation="Vertical">
+                    <Button Content="Обновить" x:Name="RenewFileTree" Click="RenewFile_Click"/>
                     <Button Content="Конвертировать" Click="Button_Click"></Button>
                     <Button Content="Сохранить Настройки" Click="Save_Options"></Button>
                 </StackPanel>

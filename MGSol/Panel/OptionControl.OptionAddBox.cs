@@ -55,7 +55,7 @@ namespace MGSol.Panel
                 listBox.MouseRightButtonDown += (x, y) =>
                 {
                     ContextMenu M = new();
-                    TextBlock X = new();
+                    TextBlock X = new() {Text = "Добавить" };
                     X.MouseLeftButtonDown += (x, y) =>
                     {
                         ModalBox MB = new();

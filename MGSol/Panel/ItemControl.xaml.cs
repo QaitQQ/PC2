@@ -1,7 +1,10 @@
 ﻿using Microsoft.VisualBasic;
+
 using StructLibCore;
 using StructLibCore.Marketplace;
+
 using StructLibs;
+
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -305,47 +308,6 @@ namespace MGSol.Panel
             }
             M.IsOpen = true;
         }
-        private void PlusPricePercent(object sender, RoutedEventArgs e)
-        {
-            List<IMarketItem> mass = new();
-            foreach (MarketItem item in ItemsList)
-            {
-                foreach (IMarketItem X in item.Items)
-                {
-                    if (X.APISetting.Name == ProcessingPanelApiBox.SelectedItem.ToString())
-                    {
-                        if (X.Price.Contains("."))
-                        {
-                            X.Price = X.Price.Replace(".", ",");
-                        }
-                        double Z = double.Parse(X.Price, System.Globalization.NumberStyles.AllowDecimalPoint);
-                        double P = double.Parse(ProcessingPanelPercentBox.Text);
-                        X.Price = ((P / 100 + 1) * Z).ToString();
-                        mass.Add(X);
-                    }
-                }
-            }
-            RenewPrice(mass.ToArray());
-        }
-        private void MinusPricePercent(object sender, RoutedEventArgs e)
-        {
-            List<IMarketItem> mass = new();
-            foreach (MarketItem item in ItemsList)
-            {
-                foreach (IMarketItem X in item.Items)
-                {
-                    if (ProcessingPanelApiBox.SelectedItem != null && X.APISetting.Name == ProcessingPanelApiBox.SelectedItem.ToString())
-                    {
-                        if (X.Price.Contains(".")) { X.Price = X.Price.Replace(".", ","); }
-                        double Z = double.Parse(X.Price, System.Globalization.NumberStyles.AllowDecimalPoint);
-                        double P = double.Parse(ProcessingPanelPercentBox.Text);
-                        X.Price = (Z - ((P / 100) * Z)).ToString();
-                        mass.Add(X);
-                    }
-                }
-            }
-            RenewPrice(mass.ToArray());
-        }
         private void BaseIDBox_TextChanged(object sender, TextChangedEventArgs e)
         {
             MarketItem X = (MarketItem)((TextBox)sender).DataContext;
@@ -437,89 +399,6 @@ namespace MGSol.Panel
                 item.StoregeList = P.ItmsCount.FindAll(x => x.Id == item.BaseID).ToList();
             }
         }
-        private class VisMarketItem
-        {
-            public VisMarketItem(MarketItem item, List<WS> warehouses)
-            {
-                Item = item;
-                Warehouses = warehouses;
-            }
-            private List<WS> Warehouses { get; set; }
-            public MarketItem Item { get; set; }
-            public string Name { get { return Item.Name; } set { Item.Name = value; } }
-            public double Price { get { return Item.Price; } set { Item.Price = value; } }
-            public string Id { get { return Item.Id; } set { Item.Id = value; } }
-            public string SKU { get { return Item.SKU; } set { Item.SKU = value; } }
-            public int BaseID { get { return Item.BaseID; } set { Item.BaseID = value; } }
-            public string Art1C { get { return Item.Art1C; } set { Item.Art1C = value; } }
-            public ObservableCollection<StructLibCore.Marketplace.IMarketItem> Items
-            {
-                get { return Item.Items; }
-                set { Item.Items = value; }
-            }
-            public ObservableCollection<KeyValuePair<String, int>> STList
-            {
-                get
-                {
-                    var X = new ObservableCollection<KeyValuePair<String, int>>();
-                    if (Item.StoregeList == null)
-                    {
-                        return X;
-                    }
-                    foreach (var item in Item.StoregeList)
-                    {
-                        var Name = Warehouses.First(X => X.Id == item.WID).N;
-                        X.Add(new KeyValuePair<string, int>(Name, item.C));
-                    }
-                    return X;
-                }
-            }
-            public System.Windows.Media.SolidColorBrush Color
-            {
-                get
-                {
-                    int SaleItemCount = 0;
-                    foreach (var item in Items)
-                    {
-                        if (item.Stocks != "" && item.Stocks != null)
-                        {
-                            SaleItemCount = SaleItemCount + Convert.ToInt32(item.Stocks);
-                        }
-                    }
-                    int BayItemCount = 0;
-                    if (Item.StoregeList != null)
-                    {
-                        foreach (var item in Item.StoregeList)
-                        {
-                            if (item.C != 0 && item.C != null)
-                            {
-                                BayItemCount = BayItemCount + item.C;
-                            }
-                        }
-                    }
-                    if (SaleItemCount > BayItemCount)
-                    {
-                        if (BayItemCount > 0)
-                        {
-                            return new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(System.Drawing.Color.YellowGreen.R, System.Drawing.Color.YellowGreen.G, System.Drawing.Color.YellowGreen.B));
-                        }
-                        return new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(System.Drawing.Color.OrangeRed.R, System.Drawing.Color.OrangeRed.G, System.Drawing.Color.OrangeRed.B));
-                    }
-                    else
-                    {
-                        if (SaleItemCount <= 3 && BayItemCount >= 3)
-                        {
-                            return new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(System.Drawing.Color.Blue.R, System.Drawing.Color.Blue.G, System.Drawing.Color.Blue.B));
-                        }
-                        if (SaleItemCount == 0 && BayItemCount == 0)
-                        {
-                            return new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(System.Drawing.Color.Gray.R, System.Drawing.Color.Gray.G, System.Drawing.Color.Gray.B));
-                        }
-                        return new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(System.Drawing.Color.Green.R, System.Drawing.Color.Green.G, System.Drawing.Color.Green.B));
-                    }
-                }
-            }
-        }
         private async void DownloadName_Click(object sender, RoutedEventArgs e)
         {
             using (HttpClient client = new HttpClient())
@@ -532,7 +411,6 @@ namespace MGSol.Panel
                 }
             }
         }
-        private bool FindStatus;
         private void BaseIDBox_MouseDown(object sender, MouseButtonEventArgs e)
         {
             if (e.ChangedButton == MouseButton.Right)
@@ -540,15 +418,13 @@ namespace MGSol.Panel
                 ContextMenu menu = new ContextMenu();
                 TextBox Box = new TextBox();
                 TextBlock TX = (TextBlock)sender;
-                MarketItem MITEM =(MarketItem)((VisMarketItem)TX.DataContext).Item;
+                MarketItem MITEM = (MarketItem)((VisMarketItem)TX.DataContext).Item;
                 Box.Width = 50;
                 menu.Items.Add(Box);
                 menu.IsOpen = true;
                 Box.Focus();
                 Box.Select(0, Box.Text.Length);
                 ContextMenu menu2 = new ContextMenu();
-                string Text = null;
-                FindStatus = true;
                 menu.Closed += (e, s) =>
                 {
                     if (Box.Text.Length >= 3)
@@ -560,13 +436,10 @@ namespace MGSol.Panel
                             {
                                 foreach (var item in Find)
                                 {
-                                    TextBlock block = new TextBlock();
+                                    TextBlock block = new();
                                     block.Text = item.Name;
                                     block.DataContext = item;
-                                    block.MouseDown += (sender, e) =>
-                                    {
-                                        MITEM.BaseID = ((СomparisonNameID)((TextBlock)sender).DataContext).Id;
-                                    };
+                                    block.MouseDown += (sender, e) => { MITEM.BaseID = ((СomparisonNameID)((TextBlock)sender).DataContext).Id; };
                                     menu2.Items.Add(block);
                                 }
                             }
@@ -604,8 +477,94 @@ namespace MGSol.Panel
                     FindText(Box, menu2, false);
                 }
             }
-            Dispatcher.Invoke(() => { FindStatus = true; });
         }
-        private string GetText(TextBox Box) { return Box.Text; }
+        private void Art1CBox_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (e.ChangedButton == MouseButton.Right)
+            {
+                ContextMenu menu = new ContextMenu();
+                TextBox Box = new TextBox();
+                TextBlock TX = (TextBlock)sender;
+                MarketItem MITEM = (MarketItem)((VisMarketItem)TX.DataContext).Item;
+                Box.Width = 50;
+                Box.Focus();
+                Box.Select(0, Box.Text.Length);
+                menu.Closed += (e, s) => { MITEM.Art1C = Box.Text; };
+                menu.Items.Add(Box);
+                menu.IsOpen = true;
+            }
+        }
+
+        #region AutoProcessing
+        private void PlusPricePercent(object sender, RoutedEventArgs e)
+        {
+            List<IMarketItem> mass = new();
+            foreach (var I in VisItemsList)
+            {
+                var item = I.Item as MarketItem;
+
+
+                foreach (IMarketItem X in item.Items)
+                {
+                    if (X.APISetting.Name == ProcessingPanelApiBox.SelectedItem.ToString())
+                    {
+                        if (X.Price.Contains("."))
+                        {
+                            X.Price = X.Price.Replace(".", ",");
+                        }
+                        double Z = double.Parse(X.Price, System.Globalization.NumberStyles.AllowDecimalPoint);
+                        double P = double.Parse(ProcessingPanelPercentBox.Text);
+                        X.Price = ((P / 100 + 1) * Z).ToString();
+                        mass.Add(X);
+                    }
+                }
+            }
+            RenewPrice(mass.ToArray());
+        }
+        private void MinusPricePercent(object sender, RoutedEventArgs e)
+        {
+            List<IMarketItem> mass = new();
+            foreach (var I in VisItemsList)
+            {
+                var item = I.Item as MarketItem;
+                foreach (IMarketItem X in item.Items)
+                {
+                    if (ProcessingPanelApiBox.SelectedItem != null && X.APISetting.Name == ProcessingPanelApiBox.SelectedItem.ToString())
+                    {
+                        if (X.Price.Contains(".")) { X.Price = X.Price.Replace(".", ","); }
+                        double Z = double.Parse(X.Price, System.Globalization.NumberStyles.AllowDecimalPoint);
+                        double P = double.Parse(ProcessingPanelPercentBox.Text);
+                        X.Price = (Z - ((P / 100) * Z)).ToString();
+                        mass.Add(X);
+                    }
+                }
+            }
+            RenewPrice(mass.ToArray());
+        }
+
+
+        private void ConversionToRC_Button_Click(object sender, RoutedEventArgs e)
+        {
+            List<IMarketItem> mass = new();
+            foreach (var I in VisItemsList)
+            {
+                MarketItem item = I.Item as MarketItem;
+                foreach (IMarketItem X in item.Items)
+                {
+
+                    if (item.Price != 0 )
+                    {
+                        X.Price = item.Price.ToString();
+
+                        X.MinPrice= (item.Price*0.95).ToString();
+                        mass.Add(X);
+                    }
+                }
+            }
+            RenewPrice(mass.ToArray());
+        }
+        #endregion
+
+
     }
 }

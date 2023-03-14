@@ -76,7 +76,7 @@
                                             <Label Content="Розница"></Label>
                                             <TextBlock  TextAlignment="Left" Width="40" Margin ="2"  VerticalAlignment="Center" Background="ForestGreen" TextWrapping="Wrap" Text="{Binding Price}"></TextBlock>
                                             <Label Content="1С"></Label>
-                                            <TextBlock x:Name="Art1CBox" TextAlignment="Left" VerticalAlignment="Center" Width="80" Margin ="2" Background="Beige" TextWrapping="Wrap" Text="{Binding Art1C}"/>
+                                            <TextBlock x:Name="Art1CBox" TextAlignment="Left" VerticalAlignment="Center" Width="80" Margin ="2" Background="Beige" TextWrapping="Wrap" Text="{Binding Art1C}" MouseDown="Art1CBox_MouseDown" MouseEnter="TextBlock_MouseEnter" MouseLeave="TextBlock_MouseLeave"/>
                                             <Label Content="ID"></Label>
                                             <TextBlock x:Name="BaseIDBox" TextAlignment="Left" VerticalAlignment="Center" Margin ="2" Background="Beige" TextWrapping="Wrap" Text="{Binding BaseID}" MouseDown="BaseIDBox_MouseDown" MouseEnter="TextBlock_MouseEnter" MouseLeave="TextBlock_MouseLeave"></TextBlock>
                                             <Label Content="SKU"></Label>
@@ -132,6 +132,10 @@
                 <ComboBox x:Name="ProcessingPanelApiBox" ></ComboBox>
                 <Button Background="Beige" Height="35" Content="+% по API" Click="PlusPricePercent"></Button>
                 <Button Background="Beige" Height="35" Content="-% по API" Click="MinusPricePercent"></Button>
+
+                <Button x:Name="ConversionToRC_Button" Background="Beige" Height="35" Content="Сравнять с РЦ" Click="ConversionToRC_Button_Click"></Button>
+
+
             </StackPanel>
         </Grid>
     </Grid>

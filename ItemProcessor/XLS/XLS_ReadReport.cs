@@ -1,6 +1,7 @@
 ﻿using Spire.Xls;
 using System.Collections.Generic;
 using System.IO;
+using System.Windows.Forms;
 
 namespace ItemProcessor.XLS
 {
@@ -10,7 +11,18 @@ namespace ItemProcessor.XLS
         public Workbook Workbook { get => workbook; set => workbook = value; }
         public string[][][] Read(string Path)
         {
-            var fs = File.OpenRead(Path);
+            FileStream fs;
+            try
+            {
+                 fs = File.OpenRead(Path);
+            }
+            catch (System.Exception E)
+            {
+                MessageBox.Show(E.Message);
+                return null;
+            
+            }
+            
             Stream St2 = new MemoryStream();
             fs.CopyTo(St2);
             Workbook = new Workbook();

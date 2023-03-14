@@ -34,31 +34,16 @@ namespace MGSol.Panel
         public ReportControl(MainModel Model)
         {
             this.Model = Model;
-            InfoFolderFile = new ObservableCollection<FileOption>();
-            string y = AppDomain.CurrentDomain.BaseDirectory;
-            DirectoryInfo dir = new(y + @"/Report");
-            FolderFile = dir.GetFiles();
-            ParamStack = new ObservableCollection<ColorCell>();
-            InitializeComponent();
-            ParamButtons = RetunList();
-            ButtonFieldStack.ItemsSource = ParamButtons;
-            foreach (FileInfo file in FolderFile)
-            {
-                if (file.Name.Contains("xlsx") && !file.Name.Contains("#"))
-                {
-                    FileOption fileOption = new() { FileName = file.Name, FullPath = file.FullName };
-                    if (File.Exists(file.FullName.Replace("xlsx", "xml")))
-                    {
-                        fileOption = LoadFileOptioins(fileOption);
-                    }
-                    InfoFolderFile.Add(fileOption);
-                }
-            }
-            FileList.ItemsSource = InfoFolderFile;
+            RenewFile_Click(null,null);
         }
         private static string[][][] ReadFileToMass(string t)
         {
             string[][][] Z = new ItemProcessor.XLS.XLS_ReadReport().Read(t);
+
+            if (Z == null)
+            {
+                return new string[0][][];
+            }
             for (int i = 0; i < Z.Length; i++)
             {
                 Z[i] = RemNullStr(Z[i]);
@@ -154,7 +139,7 @@ namespace MGSol.Panel
                         {
                             string z = DateTime.Parse(Date).Month.ToString();
                             char p = DateTime.Parse(Date).Year.ToString().Last();
-                            Document.Nomber = Document.Nomber + z + p;
+                            Document.Nomber = z + p + Document.Nomber;
                             editNonber = true;
                         }
                         if (OrderPrice != "")
@@ -549,6 +534,31 @@ namespace MGSol.Panel
                 FileOption FL = (MGSol.Panel.FileOption)((ComboBox)sender).DataContext;
                 FL.InnString = Model.GetInnFromName(e.AddedItems[0].ToString());
             }
+        }
+
+        private void RenewFile_Click(object sender, RoutedEventArgs e)
+        {
+            InfoFolderFile = new ObservableCollection<FileOption>();
+            string y = AppDomain.CurrentDomain.BaseDirectory;
+            DirectoryInfo dir = new(y + @"/Report");
+            FolderFile = dir.GetFiles();
+            ParamStack = new ObservableCollection<ColorCell>();
+            InitializeComponent();
+            ParamButtons = RetunList();
+            ButtonFieldStack.ItemsSource = ParamButtons;
+            foreach (FileInfo file in FolderFile)
+            {
+                if (file.Name.Contains("xlsx") && !file.Name.Contains("#"))
+                {
+                    FileOption fileOption = new() { FileName = file.Name, FullPath = file.FullName };
+                    if (File.Exists(file.FullName.Replace("xlsx", "xml")))
+                    {
+                        fileOption = LoadFileOptioins(fileOption);
+                    }
+                    InfoFolderFile.Add(fileOption);
+                }
+            }
+            FileList.ItemsSource = InfoFolderFile;
         }
     }
 }
