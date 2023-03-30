@@ -34,9 +34,12 @@ namespace StructLibCore.Marketplace
     [Serializable]
     public class MarketOrderItems 
     {
-        public MarketOrderItems(string name, string count = null, string price = null, string sku = null)
+        public IOrder Order { get; set; }
+
+        public MarketOrderItems(string name, string count = null, string price = null, string sku = null, IOrder order = null)
         {
             Name = name;
+            Order = order;
             Count = count;
             Price = price;
             Sku = sku;

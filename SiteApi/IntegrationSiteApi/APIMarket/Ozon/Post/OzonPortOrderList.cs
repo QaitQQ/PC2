@@ -316,7 +316,7 @@ namespace Server.Class.IntegrationSiteApi.Market.Ozon.OzonPortOrderList
                 var X = new List<MarketOrderItems>();
                 foreach (var item in Products)
                 {
-                    X.Add(new MarketOrderItems(item.Name, item.Quantity.ToString(), item.Price.ToString(), item.OfferId));
+                    X.Add(new MarketOrderItems(item.Name, item.Quantity.ToString(), item.Price.ToString(), item.OfferId, this));
                 }
                 return X;
             } 

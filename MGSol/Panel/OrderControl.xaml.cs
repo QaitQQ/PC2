@@ -1,15 +1,22 @@
-﻿using SiteApi.IntegrationSiteApi.APIMarket.Yandex;
+﻿using Server.Class.IntegrationSiteApi.Market.Ozon;
+
+using SiteApi.IntegrationSiteApi.APIMarket.Yandex;
+
 using StructLibCore.Marketplace;
+
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
+using System.IO;
 using System.Linq;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
 namespace MGSol.Panel
 {
     /// <summary>
@@ -57,35 +64,40 @@ namespace MGSol.Panel
             List<IOrder> F = new();
             foreach (APISetting item in aPIs)
             {
-                if (item != null && item.Active)
+                Task.Factory.StartNew(() =>
                 {
-                    List<object> Result = new();
-                    switch (item.Type)
+                    if (item != null && item.Active)
                     {
-                        case StructLibCore.Marketplace.MarketName.Yandex:
-                            Result = new Server.Class.IntegrationSiteApi.Market.Yandex.YandexGetItemOrders.YandexGetItemOrders(item).Get();
-                            break;
-                        case StructLibCore.Marketplace.MarketName.Ozon:
-                            Result = new Server.Class.IntegrationSiteApi.Market.Ozon.OzonPortOrderList.OzonPortOrderList(item).Get();
-                            break;
-                        case StructLibCore.Marketplace.MarketName.Avito:
-                            break;
-                        case StructLibCore.Marketplace.MarketName.Sber:
-                            break;
-                        default:
-                            break;
-                    }
-                    if (Result != null)
-                    {
-                        Dispatcher.Invoke(() => Options.Add(item));
-                        foreach (object t in Result)
+                        List<object> Result = new();
+                        switch (item.Type)
                         {
-                            F.Add((StructLibCore.Marketplace.IOrder)t);
+                            case StructLibCore.Marketplace.MarketName.Yandex:
+                                Result = new Server.Class.IntegrationSiteApi.Market.Yandex.YandexGetItemOrders.YandexGetItemOrders(item).Get();
+                                break;
+                            case StructLibCore.Marketplace.MarketName.Ozon:
+                                Result = new Server.Class.IntegrationSiteApi.Market.Ozon.OzonPortOrderList.OzonPortOrderList(item).Get();
+                                break;
+                            case StructLibCore.Marketplace.MarketName.Avito:
+                                break;
+                            case StructLibCore.Marketplace.MarketName.Sber:
+                                break;
+                            default:
+                                break;
                         }
-                    }//  var X = new Network.Item.MarketApi.GetListOrders().Get<List<object>>(new WrapNetClient(), item);
-                }
+                        if (Result != null)
+                        {
+                            Dispatcher.Invoke(() => Options.Add(item));
+                            foreach (object t in Result)
+                            {
+                                F.Add((StructLibCore.Marketplace.IOrder)t);
+                            }
+                        }//  var X = new Network.Item.MarketApi.GetListOrders().Get<List<object>>(new WrapNetClient(), item);
+                    }
+
+                    Dispatcher.Invoke(() => LoadOrders(F));
+
+                });
             }
-            Dispatcher.Invoke(() => LoadOrders(F));
         }
         private void Fill_VOrders(object sender, RoutedEventArgs e)
         {
@@ -117,7 +129,7 @@ namespace MGSol.Panel
             {
                 foreach (MarketOrderItems t in item.Items)
                 {
-                    S = S + t.Count + "\t" + t.Name +"\n";
+                    S = S + t.Count + "\t" + t.Name + "\n";
                 }
             }
             Clipboard.SetDataObject(S);
@@ -253,7 +265,7 @@ namespace MGSol.Panel
                         default:
                             break;
                     }
-                    if (P != null) {R.Add((IOrder)P);}
+                    if (P != null) { R.Add((IOrder)P); }
                 }
                 Z = from x in R orderby x.DeliveryDate group x by DateTime.Parse(x.DeliveryDate, new CultureInfo("ru-RU"));
                 Z = Z.OrderBy(x => x.Key);
@@ -284,6 +296,77 @@ namespace MGSol.Panel
             string S = null;
             S = S + item.Count + "шт.\t" + item.Name;
             Clipboard.SetDataObject(S);
+        }
+        private void GetImage_Click(object sender, RoutedEventArgs e)
+        {
+            Button Btn = (Button)sender;
+            Btn.IsEnabled = false;
+            StackPanel St = (StackPanel)((StackPanel)((StackPanel)(Btn.Parent)).Parent).Children[2];
+            MarketOrderItems OrderItem = (StructLibCore.Marketplace.MarketOrderItems)((Button)sender).DataContext;
+            string ImgUri = null;
+            switch (OrderItem.Order.APISetting.Type)
+            {
+                case MarketName.Yandex:
+                    break;
+                case MarketName.Ozon:
+                    Server.Class.IntegrationSiteApi.Market.Ozon.OzonPost.OzonItemDesc item = (Server.Class.IntegrationSiteApi.Market.Ozon.OzonPost.OzonItemDesc)(new OzonGetItemDesc(OrderItem.Order.APISetting).Get(new List<string> { OrderItem.Sku }))[0];
+                    AddImage(item.Pic);
+                    foreach (string X in item.images)
+                    {
+                        AddImage(X);
+                    }
+                    ImgUri = item.Pic;
+                    break;
+                case MarketName.Avito:
+                    break;
+                case MarketName.Sber:
+                    break;
+                default:
+                    break;
+            }
+            void AddImage(string url)
+            {
+                WebClient c = new WebClient();
+                byte[] bytes = c.DownloadData(url);
+                MemoryStream ms = new MemoryStream(bytes);
+                BitmapImage bi = new BitmapImage();
+                bi.BeginInit();
+                bi.StreamSource = ms;
+                bi.EndInit();
+                Image img = new Image();
+                img.Width = 100;
+                img.Height = 100;
+                img.Source = bi;
+                img.MouseLeftButtonDown += (s, e) =>
+                {
+                    Image img = (Image)s;
+                    if (img.Width == 100)
+                    {
+                        img.Width = SystemParameters.PrimaryScreenWidth / 3; //img.Source.Width;
+                        img.Height = SystemParameters.PrimaryScreenHeight / 3;
+                    }
+                    else
+                    {
+                        img.Width = 100;
+                        img.Height = 100;
+                    }
+                };
+                St.Children.Add(img);
+            }
+        }
+        private void HeadStack_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            StackPanel p = (StackPanel)sender;
+            StackPanel Z = (StackPanel)p.Parent;
+            StackPanel T = (StackPanel)Z.Children[1];
+            if (T.Visibility == Visibility.Collapsed)
+            {
+                T.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                T.Visibility = Visibility.Collapsed;
+            }
         }
     }
 }

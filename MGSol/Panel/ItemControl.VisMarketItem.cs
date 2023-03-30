@@ -4,21 +4,25 @@ using StructLibCore.Marketplace;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 using System.Reactive.Linq;
 namespace MGSol.Panel
 {
     public partial class ItemControl
     {
-        private class VisMarketItem
+        private class VisMarketItem:INotifyPropertyChanged
         {
             public VisMarketItem(MarketItem item, List<WS> warehouses)
             {
                 Item = item;
                 Warehouses = warehouses;
+
             }
             private List<WS> Warehouses { get; set; }
             public MarketItem Item { get; set; }
+            private bool _checked;
+            public bool Cheked { get { return _checked; } set { this._checked = value; OnPropertyChanged("Cheked"); } }
             public string Name { get { return Item.Name; } set { Item.Name = value; } }
             public double Price { get { return Item.Price; } set { Item.Price = value; } }
             public string Id { get { return Item.Id; } set { Item.Id = value; } }
@@ -92,6 +96,14 @@ namespace MGSol.Panel
                     }
                 }
             }
+
+            protected virtual void OnPropertyChanged(string propertyName)
+            {
+                var handler = PropertyChanged;
+                if (handler != null) handler(this, new   PropertyChangedEventArgs(propertyName));
+            }
+
+            public event PropertyChangedEventHandler PropertyChanged;
         }
     }
 }

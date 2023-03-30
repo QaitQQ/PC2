@@ -23,7 +23,6 @@
                     <Button Height="35"  Content="&#128269;"  Grid.Column="1" ></Button>
                 </Grid>
                 <ComboBox HorizontalAlignment="Center"  VerticalAlignment="Center" Margin="2" Height="35" x:Name="StatusBox" SelectionChanged="StatusBox_SelectionChanged"></ComboBox>
-
                 <Border  Height="35" BorderBrush="Green" BorderThickness="1" CornerRadius="3" >
                     <StackPanel Orientation="Horizontal">
                         <ItemsControl x:Name="PrintActBtnStack">
@@ -55,7 +54,15 @@
                                 <DataTemplate>
                                     <StackPanel>
                                     <TextBlock Margin="3" Text="{Binding APISetting.Name}"></TextBlock>
-                                    <ListBox Grid.Row="1" ItemsSource ="{Binding Items}" />
+                                        <StackPanel Grid.Row="1">
+                                            <ItemsControl ItemsSource="{Binding Items}">
+                                                <ItemsControl.ItemTemplate>
+                                                    <DataTemplate>
+                                                        <TextBlock Text="{Binding Name}"/>
+                                                    </DataTemplate>
+                                                </ItemsControl.ItemTemplate>
+                                            </ItemsControl>
+                                        </StackPanel>
                                     <StackPanel Background="DarkSalmon" Margin ="3"  Orientation="Horizontal"  HorizontalAlignment="Left">
                                         <TextBlock Margin="3" Text="{Binding Id}"></TextBlock>
                                         <TextBlock Margin="3" Text="{Binding Date}"></TextBlock>

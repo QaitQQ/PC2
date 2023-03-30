@@ -54,7 +54,7 @@ namespace Server.Class.IntegrationSiteApi.Market.Yandex.YandexGetPrice
         public DateTime updatedAt { get; set; }
         public string marketSku { get; set; }
         public string Name { get; set; }
-        public string Price { get { return price.value; } set { } }
+        public string Price { get { return price?.value; } set { } }
         public string SKU { get { return id; } set { marketSku = value; } }
         public string Stocks { get; set; }
         public APISetting APISetting { get; set; }

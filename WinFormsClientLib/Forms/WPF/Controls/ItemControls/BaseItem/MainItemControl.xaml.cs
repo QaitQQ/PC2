@@ -46,9 +46,9 @@ namespace WinFormsClientLib.Forms.WPF.ItemControls
             MarkupBox.TextChanged += new TextChangedEventHandler(SaleChange);
             ButtonStack.Items.Add(new PercentCalc());
             ButtonStack.Items.Add(new UploadForm());
-            //Button RenewButton = new Button() { Content = "Обновить Кэш", Margin = new Thickness(2) };
-            //RenewButton.Click += RenewCash_Click;
-            //ButtonStack.Items.Add(RenewButton);
+            Button RenewButton = new Button() { Content = "Обновить Кэш", Margin = new Thickness(2) };
+            RenewButton.Click += RenewCash_Click;
+            ButtonStack.Items.Add(RenewButton);
             //Button TagGenerateButton = new Button() { Content = "Перебрать Теги", Margin = new Thickness(2) };
             //TagGenerateButton.Click += TagGenerate_Click;
             //ButtonStack.Items.Add(TagGenerateButton);

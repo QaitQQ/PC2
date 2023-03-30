@@ -11,6 +11,9 @@ namespace MGSol.Panel
         {
             public StructLibCore.Marketplace.APISetting ApiSetting { get; set; }
             public bool Qadd;
+            private int SiAs;
+
+
             public OptionAddBox(StructLibCore.Marketplace.APISetting Setting = null)
             {
                 Qadd = false;
@@ -52,6 +55,61 @@ namespace MGSol.Panel
                 Type.SelectedItem = Setting?.Type;
                 ListBox listBox = new();
                 listBox.ItemsSource = Setting?.ApiString;
+
+                //foreach (Control item in listBox.Items)
+                //{
+                //    item.MouseRightButtonDown += (x, e) => 
+                //    {
+
+                //    };
+                //} 
+
+                listBox.SelectionChanged += (x, e) => 
+                {
+
+                    this.SiAs = ((ListBox)x).SelectedIndex;
+
+
+                    ContextMenu M = new();
+                    TextBlock X = new() { Text = "Удалить" };
+                    X.MouseLeftButtonDown += (o, y) =>
+                    {
+
+                    };
+                    M.Items.Add(X);
+                    TextBlock С = new() { Text = "Изменить" };
+                    С.MouseLeftButtonDown += (o, y) =>
+                    {
+                        this.ApiSetting.ApiString[SiAs] = "123";
+
+
+                        ContextMenu N = new();
+                        TextBox block = new();
+                        block.Width= 100;
+
+                        N.Items.Add(block);
+                        N.IsOpen= true;
+
+                        N.Closed += (o, e) =>
+
+                        {
+
+                            this.ApiSetting.ApiString[SiAs] = block.Text;
+
+
+
+                        };
+
+                        
+
+                    };
+                    M.Items.Add(С);
+
+
+                    M.IsOpen = true;
+
+                };
+
                 listBox.MouseRightButtonDown += (x, y) =>
                 {
                     ContextMenu M = new();

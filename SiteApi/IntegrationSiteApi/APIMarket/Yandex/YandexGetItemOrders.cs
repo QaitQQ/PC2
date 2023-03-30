@@ -6,6 +6,8 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
+using System.Windows.Forms;
+
 namespace Server.Class.IntegrationSiteApi.Market.Yandex.YandexGetItemOrders
 {
     public class YandexGetItemOrders : SiteApi.IntegrationSiteApi.APIMarket.Yandex.YandexApiClass
@@ -17,7 +19,24 @@ namespace Server.Class.IntegrationSiteApi.Market.Yandex.YandexGetItemOrders
         {
             string date = DateTime.Now.AddDays(-10).ToString("dd-MM-yyyy");
             HttpWebRequest httpWebRequest = GetRequest(@"/campaigns/" + ClientID + "/orders.json?fromDate=" + date, "GET");
-            HttpWebResponse httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
+            HttpWebResponse httpResponse = null;
+
+            try
+            {
+                httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.Message);
+
+                return null;
+         
+            }
+            
+
+
+
+
             using (StreamReader streamReader = new StreamReader(httpResponse.GetResponseStream())) { result = streamReader.ReadToEnd(); }
             Root root = JsonConvert.DeserializeObject<Root>(result);
             List<object> Lst = new List<object>();
@@ -256,7 +275,7 @@ namespace Server.Class.IntegrationSiteApi.Market.Yandex.YandexGetItemOrders
                     List<MarketOrderItems> lst = new List<MarketOrderItems>();
                     foreach (Item item in _Items)
                     {
-                        lst.Add(new MarketOrderItems(item.OfferName, item.Count.ToString(), item.Price.ToString(), item.ShopSku));
+                        lst.Add(new MarketOrderItems(item.OfferName, item.Count.ToString(), item.Price.ToString(), item.ShopSku, this));
                     }
                     return lst;
                 }

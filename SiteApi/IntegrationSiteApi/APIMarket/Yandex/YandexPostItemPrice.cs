@@ -40,12 +40,7 @@ namespace Server.Class.IntegrationSiteApi.Market.Yandex.YandexPostItemPrice
                     Send(count + End, End);
                 }
             }
-            else 
-            {
-
-                Send(End:10);
-
-            }
+            else { Send(List.Length); }
 
             void Send(int End,int Start = 0) 
             {

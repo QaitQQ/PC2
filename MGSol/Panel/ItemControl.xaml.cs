@@ -1,4 +1,4 @@
-﻿using Microsoft.VisualBasic;
+﻿using NPOI.HSSF.EventUserModel;
 
 using StructLibCore;
 using StructLibCore.Marketplace;
@@ -14,7 +14,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Reactive.Linq;
 using System.Reflection;
-using System.Security.Policy;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -154,59 +154,69 @@ namespace MGSol.Panel
             SyncStoreges();
             foreach (APISetting Option in Options)
             {
-                List<object> Result = null;
-                if (Option.Active)
+                
+                Task.Factory.StartNew(() =>
                 {
-                    switch (Option.Type)
+                    List<object> Result = null;
+                    if (Option.Active)
                     {
-                        case MarketName.Yandex:
-                            Result = new Server.Class.IntegrationSiteApi.Market.Yandex.YandexGetName.YandexGetItemList(Option).Get();
-                            break;
-                        case MarketName.Ozon:
-                            Result = new Server.Class.IntegrationSiteApi.Market.Ozon.OzonGetItemDesc(Option).Get();
-                            break;
-                        case MarketName.Avito:
-                            break;
-                        case MarketName.Sber:
-                            break;
-                        default:
-                            break;
-                    }
-                    foreach (object item in Result)
-                    {
-                        IMarketItem It = (IMarketItem)item;
-                        It.APISetting = Option;
-                        MarketItem X = null;
-                        X = ItemsList.FirstOrDefault(x => x.SKU == It.SKU);
-                        if (X != null && X.Name == null) { X.Name = It.Name; }
-                        if (X != null) { Dispatcher.Invoke(() => { X.Items.Add(It); }); }
-                        else
+                        switch (Option.Type)
                         {
-                            X = ItemsList.FirstOrDefault(x => x.Name == It.Name);
-                            if (X == null)
+                            case MarketName.Yandex:
+                                Result = new Server.Class.IntegrationSiteApi.Market.Yandex.YandexGetName.YandexGetItemList(Option).Get();
+                            
+                                break;
+                            case MarketName.Ozon:
+                                Result = new Server.Class.IntegrationSiteApi.Market.Ozon.OzonGetItemDesc(Option).Get();
+                               
+                                break;
+                            case MarketName.Avito:
+                                break;
+                            case MarketName.Sber:
+                                break;
+                            default:
+                                break;
+                        }
+                        if (Result != null)
+                        {
+
+                            foreach (object item in Result)
                             {
-                                Dispatcher.Invoke(() =>
+                                IMarketItem It = (IMarketItem)item;
+                                It.APISetting = Option;
+                                MarketItem X = null;
+                                X = ItemsList.FirstOrDefault(x => x.SKU == It.SKU);
+                                if (X != null && X.Name == null) { X.Name = It.Name; }
+                                if (X != null) { Dispatcher.Invoke(() => { X.Items.Add(It); }); }
+                                else
                                 {
-                                    ItemsList.Add(new MarketItem()
+                                    X = ItemsList.FirstOrDefault(x => x.Name == It.Name);
+                                    if (X == null)
                                     {
-                                        SKU = It.SKU,
-                                        Name = It.Name,
-                                        Items = new ObservableCollection<IMarketItem>() { It }
-                                    });
-                                });
-                            }
-                            else if (X != null)
-                            {
-                                Dispatcher.Invoke(() => { X.Items.Add(It); });
+                                        Dispatcher.Invoke(() =>
+                                        {
+                                            ItemsList.Add(new MarketItem()
+                                            {
+                                                SKU = It.SKU,
+                                                Name = It.Name,
+                                                Items = new ObservableCollection<IMarketItem>() { It }
+                                            });
+                                        });
+                                    }
+                                    else if (X != null)
+                                    {
+                                        Dispatcher.Invoke(() => { X.Items.Add(It); });
+                                    }
+                                }
                             }
                         }
                     }
-                }
+                    Dispatcher.Invoke(() =>
+                    {
+                        Fill_Vlist(ItemsList);
+                    });
+                });
             }
-            Dispatcher.Invoke(() =>
-            {
-                Fill_Vlist(ItemsList);
-            });
         }
         private void LoadList()
         {
@@ -394,7 +404,7 @@ namespace MGSol.Panel
                     WCList = P.Warehouses;
                 }
             }
-            foreach (var item in ItemsList)
+            foreach (MarketItem item in ItemsList)
             {
                 item.StoregeList = P.ItmsCount.FindAll(x => x.Id == item.BaseID).ToList();
             }
@@ -418,7 +428,7 @@ namespace MGSol.Panel
                 ContextMenu menu = new ContextMenu();
                 TextBox Box = new TextBox();
                 TextBlock TX = (TextBlock)sender;
-                MarketItem MITEM = (MarketItem)((VisMarketItem)TX.DataContext).Item;
+                MarketItem MITEM = ((VisMarketItem)TX.DataContext).Item;
                 Box.Width = 50;
                 menu.Items.Add(Box);
                 menu.IsOpen = true;
@@ -431,10 +441,10 @@ namespace MGSol.Panel
                     {
                         if (сomparisonNames != null)
                         {
-                            var Find = сomparisonNames.FindAll(x => x.СomparisonName.Contains(Box.Text));
+                            List<СomparisonNameID> Find = сomparisonNames.FindAll(x => x.СomparisonName.Contains(Box.Text));
                             if (Find != null && Find.Count > 0 && Find.Count < 30)
                             {
-                                foreach (var item in Find)
+                                foreach (СomparisonNameID item in Find)
                                 {
                                     TextBlock block = new();
                                     block.Text = item.Name;
@@ -459,10 +469,10 @@ namespace MGSol.Panel
                 {
                     if (сomparisonNames != null)
                     {
-                        var Find = сomparisonNames.FindAll(x => x.СomparisonName.Contains(Box.Text));
+                        List<СomparisonNameID> Find = сomparisonNames.FindAll(x => x.СomparisonName.Contains(Box.Text));
                         if (Find != null && Find.Count > 0 && Find.Count < 10)
                         {
-                            foreach (var item in Find)
+                            foreach (СomparisonNameID item in Find)
                             {
                                 TextBlock block = new TextBlock();
                                 block.Text = item.Name;
@@ -485,7 +495,7 @@ namespace MGSol.Panel
                 ContextMenu menu = new ContextMenu();
                 TextBox Box = new TextBox();
                 TextBlock TX = (TextBlock)sender;
-                MarketItem MITEM = (MarketItem)((VisMarketItem)TX.DataContext).Item;
+                MarketItem MITEM = ((VisMarketItem)TX.DataContext).Item;
                 Box.Width = 50;
                 Box.Focus();
                 Box.Select(0, Box.Text.Length);
@@ -494,28 +504,28 @@ namespace MGSol.Panel
                 menu.IsOpen = true;
             }
         }
-
         #region AutoProcessing
         private void PlusPricePercent(object sender, RoutedEventArgs e)
         {
             List<IMarketItem> mass = new();
-            foreach (var I in VisItemsList)
+            foreach (VisMarketItem I in VisItemsList)
             {
-                var item = I.Item as MarketItem;
-
-
-                foreach (IMarketItem X in item.Items)
+                MarketItem item = I.Item;
+                if (I.Cheked)
                 {
-                    if (X.APISetting.Name == ProcessingPanelApiBox.SelectedItem.ToString())
+                    foreach (IMarketItem X in item.Items)
                     {
-                        if (X.Price.Contains("."))
+                        if (X.APISetting.Name == ProcessingPanelApiBox.SelectedItem.ToString())
                         {
-                            X.Price = X.Price.Replace(".", ",");
+                            if (X.Price.Contains("."))
+                            {
+                                X.Price = X.Price.Replace(".", ",");
+                            }
+                            double Z = double.Parse(X.Price, System.Globalization.NumberStyles.AllowDecimalPoint);
+                            double P = double.Parse(ProcessingPanelPercentBox.Text);
+                            X.Price = ((P / 100 + 1) * Z).ToString();
+                            mass.Add(X);
                         }
-                        double Z = double.Parse(X.Price, System.Globalization.NumberStyles.AllowDecimalPoint);
-                        double P = double.Parse(ProcessingPanelPercentBox.Text);
-                        X.Price = ((P / 100 + 1) * Z).ToString();
-                        mass.Add(X);
                     }
                 }
             }
@@ -524,47 +534,83 @@ namespace MGSol.Panel
         private void MinusPricePercent(object sender, RoutedEventArgs e)
         {
             List<IMarketItem> mass = new();
-            foreach (var I in VisItemsList)
+            foreach (VisMarketItem I in VisItemsList)
             {
-                var item = I.Item as MarketItem;
-                foreach (IMarketItem X in item.Items)
+                if (I.Cheked)
                 {
-                    if (ProcessingPanelApiBox.SelectedItem != null && X.APISetting.Name == ProcessingPanelApiBox.SelectedItem.ToString())
+                    MarketItem item = I.Item;
+                    foreach (IMarketItem X in item.Items)
                     {
-                        if (X.Price.Contains(".")) { X.Price = X.Price.Replace(".", ","); }
-                        double Z = double.Parse(X.Price, System.Globalization.NumberStyles.AllowDecimalPoint);
-                        double P = double.Parse(ProcessingPanelPercentBox.Text);
-                        X.Price = (Z - ((P / 100) * Z)).ToString();
-                        mass.Add(X);
+                        if (ProcessingPanelApiBox.SelectedItem != null && X.APISetting.Name == ProcessingPanelApiBox.SelectedItem.ToString())
+                        {
+                            if (X.Price.Contains(".")) { X.Price = X.Price.Replace(".", ","); }
+                            double Z = double.Parse(X.Price, System.Globalization.NumberStyles.AllowDecimalPoint);
+                            double P = double.Parse(ProcessingPanelPercentBox.Text);
+                            X.Price = (Z - ((P / 100) * Z)).ToString();
+                            mass.Add(X);
+                        }
                     }
                 }
             }
             RenewPrice(mass.ToArray());
         }
-
-
         private void ConversionToRC_Button_Click(object sender, RoutedEventArgs e)
         {
             List<IMarketItem> mass = new();
-            foreach (var I in VisItemsList)
+            foreach (VisMarketItem I in VisItemsList)
             {
-                MarketItem item = I.Item as MarketItem;
-                foreach (IMarketItem X in item.Items)
+                if (I.Cheked)
                 {
-
-                    if (item.Price != 0 )
+                    MarketItem item = I.Item;
+                    foreach (IMarketItem X in item.Items)
                     {
-                        X.Price = item.Price.ToString();
-
-                        X.MinPrice= (item.Price*0.95).ToString();
-                        mass.Add(X);
+                        if (item.Price != 0)
+                        {
+                            X.Price = item.Price.ToString();
+                            X.MinPrice = (item.Price * 0.95).ToString();
+                            mass.Add(X);
+                        }
                     }
                 }
             }
             RenewPrice(mass.ToArray());
         }
         #endregion
-
-
+        private void NullStack_Button_Click(object sender, RoutedEventArgs e)
+        {
+            List<IMarketItem> mass = new();
+            foreach (VisMarketItem I in VisItemsList)
+            {
+                if (I.Cheked)
+                {
+                    MarketItem item = I.Item;
+                    foreach (IMarketItem X in item.Items)
+                    {
+                        if (X.Stocks != "0" && X.Stocks != "" && X.Stocks != null)
+                        {
+                            X.Stocks = "0";
+                            mass.Add(X);
+                        }
+                    }
+                }
+            }
+            RenewPrice(mass.ToArray());
+        }
+        private void MarkAll_Click(object sender, RoutedEventArgs e)
+        {
+            ((CheckBox)sender).IsChecked = true;
+            foreach (VisMarketItem item in VisItemsList)
+            {
+                item.Cheked = true;
+            }
+        }
+        private void UnmarkAll_Click(object sender, RoutedEventArgs e)
+        {
+            ((CheckBox)sender).IsChecked = false;
+            foreach (VisMarketItem item in VisItemsList)
+            {
+                item.Cheked = false;
+            }
+        }
     }
 }

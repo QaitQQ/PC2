@@ -37,11 +37,23 @@ namespace Server
 
             foreach (ItemPlusImageAndStorege item in PC_list)
             {
+                if (item == null)
+                {
+                    continue;
+                }
 
                 List<ItemDBStruct> FindResult = DB_list.FindAll(t => t.СomparisonName.Intersect(item.Item.СomparisonName).Any());
 
                 if (FindResult.Count > 1)  
                 {
+
+                  var  F2 = FindResult.FindAll(x => x.Name == item.Item.Name);
+
+                    if (F2.Count > 0)
+                    {
+                        AddMappetItem(storegeUpdateList, item, F2);
+                    }
+
                 }
                 else if (FindResult.Count == 1)
                 {
@@ -49,8 +61,10 @@ namespace Server
                 }
                 else if (FindResult.Count == 0)
                 {
+                        List<ItemPlusImageAndStorege> X = Cash.NewItem.FindAll(t => t != null && t.Item.СomparisonName.Intersect(item.Item.СomparisonName).Any());
+                        if (X.Count == 0 && item != null && item.Item.СomparisonName != null) { Cash.NewItem.Add(item); }
 
-                 //   List<ItemPlusImageAndStorege> X = Cash.NewItem.FindAll(t => t.Item.СomparisonName.Intersect(item.Item.СomparisonName).Any()); if (X.Count == 0)  {   Cash.NewItem.Add(item);
+                  
 
                     //List<ItemDBStruct> FindResult2 = DB_list.FindAll(x => x.СomparisonName.Contains(item.Item.СomparisonName));
                     //if (FindResult2.Count == 1)

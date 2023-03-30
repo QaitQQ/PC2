@@ -16,12 +16,21 @@ namespace Server.Class.IntegrationSiteApi.Market.Ozon
         {
         }
 
-        public List<object> Get()
+        public List<object> Get(List<string> Ids = null)
         {
             var httpWebRequest = GetRequest(@"v2/product/info/list");
-            var Lst = new OzonGetItemList(this.aPISetting).Get();
             ItemQ itemQ = new ItemQ();
-            foreach (var item in Lst) { itemQ.offer_id.Add(item.offer_id);}
+            if (Ids == null)
+            {
+                var Lst = new OzonGetItemList(this.aPISetting).Get();               
+                foreach (var item in Lst) { itemQ.offer_id.Add(item.offer_id); }
+            }
+            else
+            {
+                foreach (var item in Ids) { itemQ.offer_id.Add(item); }
+            }
+
+
             using (var streamWriter = new StreamWriter(httpWebRequest.GetRequestStream())) { var root = JsonConvert.SerializeObject(itemQ); streamWriter.Write(root); }
             var httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
             using (var streamReader = new StreamReader(httpResponse.GetResponseStream())) { result = streamReader.ReadToEnd(); }

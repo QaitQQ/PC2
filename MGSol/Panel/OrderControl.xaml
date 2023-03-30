@@ -57,7 +57,7 @@
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
                                     <HeaderedContentControl Header="{Binding Path=Key, StringFormat='{}{0:dd.MM.yyyy  h:mm }'}" FontFamily="Arial" >
-                                        <ItemsControl ItemsSource="{Binding Path=.}" Background="Gray"  HorizontalAlignment="Left" >
+                                        <ItemsControl  ItemsSource="{Binding Path=.}" Background="Gray"  HorizontalAlignment="Left" >
                                             <ItemsControl.ItemTemplate>
                                                 <DataTemplate>
                                                     <Border BorderBrush="#FF514141" BorderThickness="2" CornerRadius="4" Margin="2" >
@@ -68,7 +68,7 @@
                                                             </Grid.RowDefinitions>
                                                             <Grid Grid.Row="0">
                                                                 <StackPanel HorizontalAlignment="Left" Width="2000">
-                                                                    <StackPanel Width="600" Background="DarkSalmon" Margin ="3"  Orientation="Horizontal" VerticalAlignment="Center"  HorizontalAlignment="Left">
+                                                                    <StackPanel Width="600" x:Name="HeadStack"  Background="DarkSalmon" Margin ="3"  Orientation="Horizontal" VerticalAlignment="Center" MouseLeftButtonDown="HeadStack_MouseLeftButtonDown"  HorizontalAlignment="Left">
                                                                         <StackPanel Orientation="Horizontal"  Margin="3">
                                                                             <Button Margin="3" Content="📦" Background="Green"  Click="Ship_Click" HorizontalAlignment="Left"></Button>
                                                                             <Button Margin="3"  Content="🏷" Click="Label_Click" Background="#FFF5C150"  HorizontalAlignment="Left"/>
@@ -79,17 +79,22 @@
                                                                         <TextBlock Margin="3" Width="15" VerticalAlignment="Center" Text="=>"></TextBlock>
                                                                         <TextBlock Width="65" Margin="3" VerticalAlignment="Center" Text="{Binding DeliveryDate}"></TextBlock>
                                                                     </StackPanel>
-                                                                    <StackPanel Orientation="Horizontal">
-                                                                        <ItemsControl Grid.Row="1" ItemsSource ="{Binding Items}">
+                                                                    <StackPanel Orientation="Horizontal" Visibility="Collapsed">
+                                                                        <ItemsControl Grid.Row="1" ItemsSource ="{Binding Items}" >
                                                                             <ItemsControl.ItemTemplate>
                                                                                 <DataTemplate>
-                                                                                    <StackPanel Orientation="Horizontal"  Width="600">
-                                                                                        <Button Margin="3" Width="20" x:Name="CopyItemButton" Content="📋" Background="CadetBlue"  Click="CopyItemButton_Click" HorizontalAlignment="Left"></Button>
-                                                                                        <Border HorizontalAlignment="Center"  BorderBrush="Black" BorderThickness="1" Height="17">
-                                                                                            <TextBlock FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center"  Margin="2" FontSize="14" Background="White" Width="25" Text="{Binding Count}"></TextBlock>
-                                                                                        </Border>
-                                                                                        <TextBlock Margin="2" VerticalAlignment="Center" Background="Wheat" Text="{Binding Price}"></TextBlock>
+                                                                                    <StackPanel>
                                                                                         <TextBlock Margin="2" VerticalAlignment="Center" Background="White" Text="{Binding Name}"></TextBlock>
+                                                                                        <StackPanel Orientation="Horizontal"  Width="600">
+                                                                                            <Button Margin="3" Width="20" x:Name="CopyItemButton" Content="📋" Background="CadetBlue"  Click="CopyItemButton_Click" HorizontalAlignment="Left"></Button>
+                                                                                            <Border HorizontalAlignment="Center"  BorderBrush="Black" BorderThickness="1" Height="17">
+                                                                                                <TextBlock FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center"  Margin="2" FontSize="14" Background="White" Width="25" Text="{Binding Count}"></TextBlock>
+                                                                                            </Border>
+                                                                                            <TextBlock Margin="3" Width="80" VerticalAlignment="Center" Text="{Binding Sku}"></TextBlock>
+                                                                                            <TextBlock Margin="2" VerticalAlignment="Center" Background="Wheat" Text="{Binding Price}"></TextBlock>
+                                                                                            <Button Margin="3" Width="20" x:Name="GetImage" Content="🎨" Background="CadetBlue"  Click="GetImage_Click" HorizontalAlignment="Left"></Button>
+                                                                                        </StackPanel>
+                                                                                        <StackPanel Orientation="Horizontal"></StackPanel>
                                                                                     </StackPanel>
                                                                                 </DataTemplate>
                                                                             </ItemsControl.ItemTemplate>
