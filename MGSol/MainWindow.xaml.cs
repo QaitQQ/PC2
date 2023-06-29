@@ -21,7 +21,9 @@ namespace MGSol
             AddTab(Items, "Товары");
             AddTab(new Panel.ReturnControl(MModel), "Возвраты");
             AddTab(new Panel.ReportControl(MModel), "Отчеты");
+            AddTab(new Panel.ShipmentListControl(MModel), "Отгрузки");
             AddTab(new Panel.OptionControl(MModel), "Настройки");
+            AddTab(new Panel.PromoControl(MModel), "Акции");
             VirtualizingStackPanel.SetIsVirtualizing(Items, true);
         }
         private void AddTab(System.Windows.Controls.UserControl control, string Header)

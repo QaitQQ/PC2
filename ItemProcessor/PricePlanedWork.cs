@@ -59,10 +59,10 @@ namespace Server
                 try
                 {
                     FileStream fs = File.OpenRead(activeprice.FilePath);
-                    string Attb = string.Join(",", activeprice.Attributes);
+                    string Attr = string.Join(",", activeprice.Attributes);
                     using ApplicationContext DB = new ApplicationContext();
                     DB_list = DB.Item.ToList();
-                    PriceProcessingRules lst = new PriceProcessingRules(fs, activeprice.Name, Attb, cash);
+                    PriceProcessingRules lst = new PriceProcessingRules(fs, activeprice.Name, Attr, cash);
                     lst.СhangeResult += Comparer;
                     lst.Apply_rules();
                 }
@@ -73,8 +73,8 @@ namespace Server
             }
             void Comparer(object Lst)
             {
-                Сompare_NewPrice_with_DB cmpr = new Сompare_NewPrice_with_DB((List<ItemPlusImageAndStorege>)Lst, DB_list, cash);
-                cmpr.StartCompare();
+                Сompare_NewPrice_with_DB CompareNewPriceWithDB = new Сompare_NewPrice_with_DB((List<ItemPlusImageAndStorege>)Lst, DB_list, cash);
+                CompareNewPriceWithDB.StartCompare();
             }
             void DownloadPriceXls(PriceStorage activeprice, string Path)
             {
@@ -98,13 +98,12 @@ namespace Server
                 }
             }
         }
-        public void UploadStoregeToSite(CashClass cash)
+        public static void UploadStorageToSite()
         {
             FTP FTP = new FTP(Settings.FtpSettingsStorege);
             using ApplicationContext db = new ApplicationContext();
             var IC = from St in db.Storage select new { ID = St.ItemID, SID = St.WarehouseID, C = St.Count, D = St.DateСhange };
             var W = from Wt in db.Warehouse select new { ID = Wt.Id, WN = Wt.Name };
-            int i = 0;
             SiteStoregeStruct _struct = new SiteStoregeStruct();
             foreach (var item in IC)
             {

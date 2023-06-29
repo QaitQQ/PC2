@@ -21,7 +21,17 @@ namespace Network
             Attach = Obj;
             Message.Obj = this;
             Message.Code = new object[] { 2 };
-            return (T)Client.Messaging(Message).Obj;
+
+            try
+            {
+                return (T)Client.Messaging(Message).Obj;
+            }
+            catch
+            {
+                return default(T);
+            }
+
+            
         }
         public virtual TCPMessage Post(ApplicationContext Db, object Obj = null) { throw new NotImplementedException(); }
         public void Dispose()

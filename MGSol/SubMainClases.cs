@@ -76,4 +76,77 @@ namespace MGSol
             }
         }
     }
+    [Serializable]
+    public class ShipmentOrder
+    {
+        public string ID { get; set; }
+        public string Nomber { get; set; }
+        public string Date { get; set; }
+        public string DateShipment { get; set; }
+        public List<string> Items { get; set; }
+
+        public string GetItemString
+        {
+            get
+            {
+                string result = null; foreach (var item in Items)
+                {
+                    result = result + item + "\r\n";
+                }
+                return result;
+            }
+        }
+
+    }
+    public class SyncShipment
+    {
+        private DateTime LastUp;
+        private List<ShipmentOrder> OrderList;
+
+        private MainModel mainModel;
+
+        public SyncShipment(MainModel model)
+        {
+            mainModel = model;
+            OrderList = model.ShipmentOrders;
+
+        }
+        public bool Sync() 
+        {
+            try
+            {
+                var SaveDate = GetLestUp();
+                var NewShipmentOrders = new List<ShipmentOrder>();
+                if (LastUp < SaveDate)
+                {
+                    NewShipmentOrders = СompareShipmentOrdersWithLocal(GetShipmentOrdersFromLastUp(LastUp));
+
+                    foreach (var item in NewShipmentOrders)
+                    {
+                        OrderList.Add(item);
+                    }
+                }
+                mainModel.ShipmentOrders = OrderList;
+                LastUp = DateTime.Now;
+                mainModel.OptionMarketPlace.LastUpTime = LastUp;
+
+
+                return true;
+            }
+            catch 
+            {
+
+                return false;
+            }
+
+        }
+
+
+        public void SetLastUpTime(DateTime time) { LastUp = time; }
+
+        private DateTime GetLestUp() { return  DateTime.Now; }
+        private List<ShipmentOrder> GetShipmentOrdersFromLastUp(DateTime dateTime) { return new List<ShipmentOrder>(); }
+        private List<ShipmentOrder> СompareShipmentOrdersWithLocal(List<ShipmentOrder> shipments) { return new List<ShipmentOrder>(); }
+        public bool Save(ShipmentOrder order) { return true; }
+    }
 }

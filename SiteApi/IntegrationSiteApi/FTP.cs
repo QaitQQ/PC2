@@ -15,7 +15,6 @@ namespace Server
         public void FTPUploadFile(string filename)
         {
             FileInfo fileInf = new FileInfo(filename);
-            string uri = FtpUri + fileInf.Name;
             FtpWebRequest reqFTP;
             // Создаем объект FtpWebRequest
             reqFTP = FtpWebRequest.Create(new Uri(FtpUri + fileInf.Name)) as FtpWebRequest;
@@ -28,7 +27,7 @@ namespace Server
             reqFTP.UseBinary = true;
             // Сообщаем серверу о размере файла
             reqFTP.ContentLength = fileInf.Length;
-            // Буффер в 2 кбайт
+            // Буфер в 2 кбайт
             int buffLength = 2048;
             byte[] buff = new byte[buffLength];
             int contentLen;
@@ -53,12 +52,11 @@ namespace Server
         }
         public void FTPUploadStream(MemoryStream stream, string FileName)
         {
-            string uri = FtpUri + FileName;
             FtpWebRequest reqFTP;
             // Создаем объект FtpWebRequest
-#pragma warning disable SYSLIB0014 // Тип или член устарел
+
             reqFTP = (FtpWebRequest)WebRequest.Create(new Uri(FtpUri + FileName));
-#pragma warning restore SYSLIB0014 // Тип или член устарел
+
                                   // Учетная запись
             reqFTP.Credentials = new NetworkCredential(FtpUser, FtpPass);
             reqFTP.KeepAlive = false;
@@ -68,7 +66,7 @@ namespace Server
             reqFTP.UseBinary = true;
             // Сообщаем серверу о размере файла
             reqFTP.ContentLength = stream.Length;
-            // Буффер в 2 кбайт
+            // Буфер в 2 кбайт
             int buffLength = 2048;
             byte[] buff = new byte[buffLength];
             int contentLen;

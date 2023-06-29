@@ -304,8 +304,46 @@ namespace Server.Class.IntegrationSiteApi.Market.Yandex.YandexGetItemOrders
             }
             public string Id => _Id.ToString();
             public string Date => CreationDate;
-            public string DeliveryDate => DateTime.Parse(Delivery.Shipments[0].ShipmentDate).ToShortDateString();
+            public string DeliveryDate
+            {
+                get
+                {
+                    if (Delivery.Shipments[0].ShipmentDate != null)
+                    {
+                       return DateTime.Parse(Delivery.Shipments[0].ShipmentDate).ToShortDateString();
+                    }
+                    return new DateTime().ToShortDateString();
+                }
+            }
             public APISetting APISetting { get; set; }
+
+            public void SetStatus(OrderStatus status)
+            {
+                //  _Status
+
+                switch (status)
+                {
+                    case OrderStatus.NONE:
+                        break;
+                    case OrderStatus.PROCESSING_STARTED:
+                        break;
+                    case OrderStatus.PROCESSING_SHIPPED:
+                        break;
+                    case OrderStatus.DELIVERED:
+                        break;
+                    case OrderStatus.CANCELLED:
+                        break;
+                    case OrderStatus.READY:
+
+                        _Status = "PROCESSING_READY_TO_SHIP";
+
+                        break;
+                    default:
+                        break;
+                }
+
+
+            }
         }
         [Serializable]
         public class Root

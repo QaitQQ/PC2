@@ -113,7 +113,7 @@ namespace Network.Item.MarketApi
                     Result = new Server.Class.IntegrationSiteApi.Market.Yandex.YandexGetName.YandexGetItemList(X).Get();
                     break;
                 case StructLibCore.Marketplace.MarketName.Ozon:
-                    Result = new Server.Class.IntegrationSiteApi.Market.Ozon.OzonGetItemDesc(X).Get();
+                    Result = new Server.Class.IntegrationSiteApi.Market.Ozon.OzonPostItemDesc(X).Get();
                     break;
                 case StructLibCore.Marketplace.MarketName.Avito:
                     break;

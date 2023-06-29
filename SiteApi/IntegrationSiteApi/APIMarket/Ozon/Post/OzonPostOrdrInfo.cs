@@ -10,7 +10,7 @@ using System.Text;
 
 namespace SiteApi.IntegrationSiteApi.APIMarket.Ozon.Post
 {
-    public class OzonPostOrdrInfo : Server.Class.IntegrationSiteApi.Market.Ozon.OzonPost.OzonPost
+    public class OzonPostOrdrInfo : OzonPost
     {
 
         public OzonPostOrdrInfo(APISetting aPISetting) : base(aPISetting)

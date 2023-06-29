@@ -101,7 +101,7 @@ namespace Server.Class.IntegrationSiteApi.Market.Yandex.YandexGetName
             public Server.Class.IntegrationSiteApi.Market.Yandex.YandexGetPrice.Price Yprice { get; set; }
             public string MinPrice { get; set; }
             public APISetting APISettingSource { get; set; }
-            public string Pic { get => pictures[0]; set => pictures[0] = value; }
+            public List<string> Pic { get { return pictures; } set { pictures = value; } }
             public string Barcode { get => barcodes[0]; set => barcodes[0] = value; }
         }
         [Serializable]

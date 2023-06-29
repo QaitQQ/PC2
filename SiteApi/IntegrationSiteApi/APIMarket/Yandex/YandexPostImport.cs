@@ -7,6 +7,7 @@ using StructLibCore.Marketplace;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Text;
 using System.Text.Json.Serialization;
@@ -100,7 +101,7 @@ namespace SiteApi.IntegrationSiteApi.APIMarket.Yandex.YandexPostImport
             {
                 try
                 {
-                    Description = new OzonGetDesc(item.APISettingSource).Get(item);
+                    Description = new OzonPostDesc(item.APISettingSource).Get(item);
                 }
                 catch (Exception e)
                 {
@@ -119,15 +120,15 @@ namespace SiteApi.IntegrationSiteApi.APIMarket.Yandex.YandexPostImport
 
             ShopSku = item.SKU;
             Name = item.Name;
-            Pictures = new List<string> { item.Pic };
+            Pictures = item.Pic.ToList();
             Barcodes = new List<string> { item.Barcode };
 
             Category = "IP камера";
            // Manufacturer = "AltCam";
             ManufacturerCountries = new List<string>() { "Китай" };
-            Urls = new List<string>() { item.Pic };
-         //   CustomsCommodityCodes = new List<string>();
-         //   SupplyScheduleDays = new List<string>();
+            Urls = item.Pic.ToList();
+            //   CustomsCommodityCodes = new List<string>();
+            //   SupplyScheduleDays = new List<string>();
         }
 
         [JsonProperty("shopSku")]

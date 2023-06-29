@@ -1,5 +1,6 @@
 ﻿using Server.Class.IntegrationSiteApi.Market.Ozon;
 
+using SiteApi.IntegrationSiteApi.APIMarket.Ozon.Post;
 using SiteApi.IntegrationSiteApi.APIMarket.Yandex;
 
 using StructLibCore.Marketplace;
@@ -7,6 +8,7 @@ using StructLibCore.Marketplace;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics.Tracing;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -24,10 +26,10 @@ namespace MGSol.Panel
     /// </summary>
     public partial class OrdersControl : UserControl
     {
-        private ObservableCollection<APISetting> Options;
-        private ObservableCollection<IGrouping<DateTime, IOrder>> VisOrderList;
+        private ObservableCollection<APISetting> Options { get; set; }
+        private ObservableCollection<IGrouping<DateTime, IOrder>> VisOrderList { get; set; }
         private event Action<List<IOrder>> LoadOrders;
-        private MainModel model;
+        private MainModel model { get; set; }
         public ObservableCollection<IOrder> OrderList { get; set; }
         public OrdersControl(MainModel Model)
         {
@@ -41,6 +43,9 @@ namespace MGSol.Panel
             StatusBox.ItemsSource = Enum.GetValues(typeof(StructLibCore.Marketplace.OrderStatus));
             LoadOrders += FillOrders;
             PrintActBtnStack.ItemsSource = Options;
+          
+
+
         }
         private void FillOrders(List<IOrder> orders)
         {
@@ -111,6 +116,9 @@ namespace MGSol.Panel
             IEnumerable<IOrder> X = from x in OrderList where x.Status == (OrderStatus)StatusBox.SelectedItem orderby x.DeliveryDate select x;
             IEnumerable<IGrouping<DateTime, IOrder>> Z = from x in X group x by DateTime.Parse(x.DeliveryDate, new CultureInfo("ru-RU"));
             Z = Z.OrderBy(x => x.Key);
+
+
+
             foreach (IGrouping<DateTime, IOrder> item in Z)
             {
                 VisOrderList.Add(item);
@@ -158,7 +166,23 @@ namespace MGSol.Panel
                 }
                 if (Z)
                 {
-                    btn.Content = "✅";
+                    X.SetStatus(OrderStatus.READY);
+                    StatusBox_SelectionChanged(null, null);
+                     
+                    var ItwmLIst = new List<string>();
+
+                    foreach (var item in X.Items)
+                    {
+                        double Icount = 0;
+                        double Iprice = 0;
+                        bool v1 = double.TryParse(item.Count,out Icount);
+                        bool v = double.TryParse(item.Price, out Iprice);
+                        ItwmLIst.Add(item.Sku + "|" + item.Count + "|" + item.Price + "|" + (Icount * Iprice).ToString());
+
+                    }
+                    var data = DateTime.Now.ToString("dd/MM/yy");
+
+                    model.ShipmentOrders.Add(new ShipmentOrder() { Date = X.Date, DateShipment = DateTime.Now.ToString(), ID = model.ShipmentOrders.Count+1.ToString()+ data, Nomber = X.Id, Items = ItwmLIst }) ;
                 }
             }
             catch (Exception E)
@@ -191,14 +215,7 @@ namespace MGSol.Panel
         }
         private void Browser_hide(object sender, RoutedEventArgs e)
         {
-            if (BCol.Width.Value == 200)
-            {
-                BCol.Width = new GridLength(1);
-            }
-            else
-            {
-                BCol.Width = new GridLength(200);
-            }
+
         }
         private void GetActClick(object sender, RoutedEventArgs e)
         {
@@ -303,19 +320,16 @@ namespace MGSol.Panel
             Btn.IsEnabled = false;
             StackPanel St = (StackPanel)((StackPanel)((StackPanel)(Btn.Parent)).Parent).Children[2];
             MarketOrderItems OrderItem = (StructLibCore.Marketplace.MarketOrderItems)((Button)sender).DataContext;
-            string ImgUri = null;
             switch (OrderItem.Order.APISetting.Type)
             {
                 case MarketName.Yandex:
                     break;
                 case MarketName.Ozon:
-                    Server.Class.IntegrationSiteApi.Market.Ozon.OzonPost.OzonItemDesc item = (Server.Class.IntegrationSiteApi.Market.Ozon.OzonPost.OzonItemDesc)(new OzonGetItemDesc(OrderItem.Order.APISetting).Get(new List<string> { OrderItem.Sku }))[0];
-                    AddImage(item.Pic);
+                    OzonItemDesc item = (OzonItemDesc)(new OzonPostItemDesc(OrderItem.Order.APISetting).Get(new List<string> { OrderItem.Sku }))[0];
                     foreach (string X in item.images)
                     {
                         AddImage(X);
                     }
-                    ImgUri = item.Pic;
                     break;
                 case MarketName.Avito:
                     break;
@@ -357,6 +371,9 @@ namespace MGSol.Panel
         private void HeadStack_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             StackPanel p = (StackPanel)sender;
+
+            MainOrderBoard.DataContext = p.DataContext;
+            Browser.Navigate("about:blank");
             StackPanel Z = (StackPanel)p.Parent;
             StackPanel T = (StackPanel)Z.Children[1];
             if (T.Visibility == Visibility.Collapsed)

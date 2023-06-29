@@ -1,5 +1,7 @@
 ﻿using Newtonsoft.Json;
 
+using SiteApi.IntegrationSiteApi.APIMarket.Ozon.Post;
+
 using StructLibCore;
 
 using System.Collections.Generic;
@@ -10,7 +12,7 @@ using System.Text.Json.Serialization;
 
 namespace Server.Class.IntegrationSiteApi.Market.Ozon
 {
-    public class OzonPostSetStoks : OzonPost.OzonPost
+    public class OzonPostSetStoks : SiteApi.IntegrationSiteApi.APIMarket.Ozon.Post.OzonPost
     {
         public OzonPostSetStoks(StructLibCore.Marketplace.APISetting aPISetting) : base(aPISetting)
         {
@@ -18,7 +20,7 @@ namespace Server.Class.IntegrationSiteApi.Market.Ozon
         public object Get(StructLibCore.Marketplace.IMarketItem[] List)
         {
             Root itemsRoot = new Root();
-            foreach (Server.Class.IntegrationSiteApi.Market.Ozon.OzonPost.OzonItemDesc item in List)
+            foreach (OzonItemDesc item in List)
             {
                 itemsRoot.Prices.Add(new PriceItem(item));
             }
@@ -58,7 +60,7 @@ namespace Server.Class.IntegrationSiteApi.Market.Ozon
             [JsonProperty("product_id")]
             public int ProductId;
 
-            public PriceItem(Server.Class.IntegrationSiteApi.Market.Ozon.OzonPost.OzonItemDesc ozonItemDesc, AutoActionEnabled autoActionEnabled = AutoActionEnabled.UNKNOWN)
+            public PriceItem(OzonItemDesc ozonItemDesc, AutoActionEnabled autoActionEnabled = AutoActionEnabled.UNKNOWN)
             {
                 MinPrice = ozonItemDesc.min_price;
                 OfferId = ozonItemDesc.offer_id;

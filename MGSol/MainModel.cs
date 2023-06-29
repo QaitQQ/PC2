@@ -17,6 +17,29 @@ namespace MGSol
         private MarketPlaceCash options;
         private BaseInfoPrice baseApi;
         private string Token;
+        private List<ShipmentOrder> shipmentOrders;
+        public SyncShipment syncShipment;
+
+
+        public List<ShipmentOrder> ShipmentOrders
+        {
+            get
+            {
+                if (shipmentOrders == null)
+                {
+                    LoadFromFile(ref shipmentOrders, "ShipmentOrders.bin");
+                }
+                if (shipmentOrders == null) 
+                {
+
+                    shipmentOrders = new List<ShipmentOrder>();
+                }
+                
+                
+            return shipmentOrders; 
+            }
+            set { shipmentOrders = value; СhangeList?.Invoke("ShipmentOrders.bin", ShipmentOrders); }
+        }
         public INetClient GetClient()
         {
             if (Token == null)
@@ -58,6 +81,7 @@ namespace MGSol
             }
             return lst;
         }
+
         public InnString GetInnFromName(string Name) { return options.SellerINN.Find(x => x.MarketName.ToString() == Name); }
         public APISetting GetApiFromName(string Name) { return options.APISettings.Find(x => x.Name == Name); }
         public void Save() { СhangeList?.Invoke("Option.bin", options); СhangeList?.Invoke("baseApi.bin", baseApi); }
@@ -67,6 +91,10 @@ namespace MGSol
             options = new MarketPlaceCash();
             LoadFromFile(ref options, "Option.bin");
             LoadFromFile(ref baseApi, "baseApi.bin");
+
+            syncShipment = new SyncShipment(this);
+            syncShipment.SetLastUpTime(options.LastUpTime);
+
             if (baseApi == null)
             {
                 baseApi = new BaseInfoPrice();
@@ -82,8 +110,6 @@ namespace MGSol
                 Object = Obj;
             }
         }
-
     }
-
 
 }

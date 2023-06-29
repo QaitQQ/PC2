@@ -60,7 +60,7 @@ namespace Server.Class.IntegrationSiteApi.Market.Yandex.YandexGetPrice
         public APISetting APISetting { get; set; }
         public string MinPrice { get { return price.discountBase; } set { price.discountBase = value; } }
         public APISetting APISettingSource { get; set; }
-        public string Pic { get; set; }
+        public List<string> Pic { get; set; }
         public string Barcode { get; set; }
     }
     [Serializable]

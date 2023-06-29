@@ -10,7 +10,7 @@ using System.Text;
 
 namespace SiteApi.IntegrationSiteApi.APIMarket.Ozon.Post
 {
-     public class OzonPostLabel : Server.Class.IntegrationSiteApi.Market.Ozon.OzonPost.OzonPost
+    public class OzonPostLabel : OzonPost
     {
         public OzonPostLabel(APISetting aPISetting) : base(aPISetting)
         {

@@ -3,6 +3,7 @@
 using SiteApi.IntegrationSiteApi;
 
 using StructLibCore.Marketplace;
+
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -10,7 +11,7 @@ using System.Net;
 using System.Text;
 namespace Server.Class.IntegrationSiteApi.Market.Ozon.OzonPortOrderList
 {
-    public class OzonPortOrderList : OzonPost.OzonPost
+    public class OzonPortOrderList : SiteApi.IntegrationSiteApi.APIMarket.Ozon.Post.OzonPost
     {
         public OzonPortOrderList(APISetting aPISetting) : base(aPISetting){}
         public List<object> Get()
@@ -27,7 +28,7 @@ namespace Server.Class.IntegrationSiteApi.Market.Ozon.OzonPortOrderList
                 foreach (var item in OrderList.Result.Postings) { item.APISetting = aPISetting; X.Add(item); }
                 return X;
             }
-            catch (Exception e) 
+            catch 
             {
                 
                 return null;
@@ -323,6 +324,29 @@ namespace Server.Class.IntegrationSiteApi.Market.Ozon.OzonPortOrderList
         }
         public string Date { get { return InProcessAt.ToString(); } }
         public string DeliveryDate { get { return ShipmentDate.ToShortDateString(); } }
+
+        public void SetStatus(OrderStatus _status)
+        {
+            switch (_status)
+            {
+                case OrderStatus.NONE:
+                    break;
+                case OrderStatus.PROCESSING_STARTED:
+                    break;
+                case OrderStatus.PROCESSING_SHIPPED:
+                    break;
+                case OrderStatus.DELIVERED:
+                    break;
+                case OrderStatus.CANCELLED:
+                    break;
+                case OrderStatus.READY:
+                    status = "awaiting_deliver";
+
+                    break;
+                default:
+                    break;
+            }
+        }
     }
     [Serializable]
     public class Result

@@ -254,7 +254,7 @@ namespace Server.Class.IntegrationSiteApi
             {
                 Json = new FormUrlEncodedContent(new[] { new KeyValuePair<string, string>("product_id", Formatter(product_id)) });
                 response = client.PostAsync(Apilink + $"/RC/getProduct/&token={token}", Json);
-                JEnumerable<JToken> PositionString;
+                JEnumerable<JToken> PositionString = default;
                 using (StreamReader reader = new StreamReader(await response.Result.Content.ReadAsStreamAsync()))
                 {
                     JObject collection = (JObject)(JsonConvert.DeserializeObject(await reader.ReadToEndAsync()));
@@ -282,7 +282,7 @@ namespace Server.Class.IntegrationSiteApi
             FormUrlEncodedContent Json;
             Json = new FormUrlEncodedContent(new[] { new KeyValuePair<string, string>("product_id", "300") });
             response = client.PostAsync(Apilink + $"/RC/getAllProduct/&token={token}", Json);
-            JEnumerable<JToken> PositionString;
+            JEnumerable<JToken> PositionString = default;
             Stream D = await response.Result.Content.ReadAsStreamAsync();
             using (StreamReader reader = new StreamReader(D))
             {
@@ -337,7 +337,7 @@ namespace Server.Class.IntegrationSiteApi
                         }
                     }
                 }
-                catch (Exception e)
+                catch
                 {
                 }
             }

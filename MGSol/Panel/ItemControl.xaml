@@ -20,6 +20,7 @@
             <TextBlock Margin="2"  Height="35" Text=" Сортировка " FontSize ="20" VerticalAlignment="Center"></TextBlock>
             <ComboBox Margin="2"  Height="35" Width="150" x:Name="SortedBox" SelectionChanged="ItemSorted"></ComboBox>
             <Button Margin="2" x:Name="DownloadName" Height="35" Width="35" Content="⤓" Background="#FF64B067" FontSize="24" FontFamily="Arial" FontWeight="Bold" Click="DownloadName_Click" HorizontalAlignment="Left"/>
+            <ComboBox Margin="2" x:Name="ApiBox" Height="35" Width="80" SelectionChanged="ApiBox_SelectionChanged" ></ComboBox>
         </StackPanel>
         <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
@@ -37,123 +38,119 @@
                     <CheckBox x:Name="UnmarkAll" IsChecked="False"  Click="UnmarkAll_Click"  ></CheckBox>
                 </StackPanel>
                 <ScrollViewer Grid.Row="1"  HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" >
-                <StackPanel x:Name="VItemsStack">
-                    <ItemsControl x:Name="VItemsList">
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate>
-                                <Grid >
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="25"/>
-                                        <RowDefinition  />
-                                    </Grid.RowDefinitions>
+                    <StackPanel x:Name="VItemsStack">
+                        <ItemsControl x:Name="VItemsList">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid >
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="25"/>
+                                            <RowDefinition  />
+                                        </Grid.RowDefinitions>
                                         <StackPanel Orientation="Horizontal" Grid.Row="0">
                                             <CheckBox IsChecked="{Binding Cheked, Mode=TwoWay}"/>
-                                        <TextBlock TextAlignment="Left" Width="550" Margin ="2" Background="{Binding Color}" TextWrapping="Wrap" Text="{Binding Name}" ToolTip="{Binding Name}" MouseLeftButtonDown="MiniClick"></TextBlock>
-                                        <Grid>
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition/>
-                                                <ColumnDefinition/>
-                                            </Grid.ColumnDefinitions>
-                                        </Grid>
-                                        <Border Margin="3" BorderBrush="Gray"  BorderThickness="2" CornerRadius="2">
-                                            <StackPanel Orientation="Horizontal" Width="200">
-                                                <ItemsControl ItemsSource="{Binding Items}">
-                                                    <ItemsControl.ItemTemplate>
-                                                        <DataTemplate>
-                                                            <Grid>
-                                                                <Grid.ColumnDefinitions>
-                                                                    <ColumnDefinition Width="*"/>
-                                                                    <ColumnDefinition Width="10"/>
-                                                                </Grid.ColumnDefinitions>
-                                                                <TextBlock Height="10"  Grid.Column="1" Margin ="2" Background="Green" ToolTip="{Binding APISetting.Name}"></TextBlock>
-                                                            </Grid>
-                                                        </DataTemplate>
-                                                    </ItemsControl.ItemTemplate>
-                                                    <ItemsControl.ItemsPanel>
-                                                        <ItemsPanelTemplate>
-                                                            <StackPanel Orientation="Horizontal"/>
-                                                        </ItemsPanelTemplate>
-                                                    </ItemsControl.ItemsPanel>
-                                                </ItemsControl>
-                                            </StackPanel>
-                                        </Border>
-                                    </StackPanel>
-                                    <Grid Grid.Row="1" Visibility="Collapsed">
-                                        <Grid.RowDefinitions>
-                                            <RowDefinition/>
-                                            <RowDefinition/>
-                                        </Grid.RowDefinitions>
-                                        <StackPanel Orientation="Horizontal">
-                                            <Label Content="Розница"></Label>
-                                            <TextBlock  TextAlignment="Left" Width="40" Margin ="2"  VerticalAlignment="Top" Background="ForestGreen" TextWrapping="Wrap" Text="{Binding Price}"></TextBlock>
-                                            <Label Content="1С"></Label>
-                                                <TextBlock x:Name="Art1CBox" TextAlignment="Left" VerticalAlignment="Top" Width="80" Margin ="2" Background="Beige" TextWrapping="Wrap" Text="{Binding Art1C}" MouseDown="Art1CBox_MouseDown" MouseEnter="TextBlock_MouseEnter" MouseLeave="TextBlock_MouseLeave"/>
-                                            <Label Content="ID"></Label>
-                                                <TextBlock x:Name="BaseIDBox" TextAlignment="Left" VerticalAlignment="Top" Margin ="2" Background="Beige" TextWrapping="Wrap" Text="{Binding BaseID}" MouseDown="BaseIDBox_MouseDown" MouseEnter="TextBlock_MouseEnter" MouseLeave="TextBlock_MouseLeave"></TextBlock>
-                                            <Label Content="SKU"></Label>
-                                                <TextBlock TextAlignment="Left" Width="40" Margin ="2" VerticalAlignment="Top" Background="Beige" TextWrapping="Wrap" Text="{Binding SKU}"></TextBlock>
-                                            <StackPanel>
-                                                <ItemsControl ItemsSource="{Binding STList}" Background="Gray">
-                                                    <ItemsControl.ItemTemplate>
-                                                        <DataTemplate>
-                                                            <StackPanel Margin="2" Orientation="Horizontal">
-                                                                <TextBlock Margin="2" Text="{Binding Key}"></TextBlock>
-                                                                <TextBlock Margin="2" Text="{Binding Value}"></TextBlock>
-                                                            </StackPanel>
-                                                        </DataTemplate>
-                                                    </ItemsControl.ItemTemplate>
-                                                </ItemsControl>
-                                            </StackPanel>
+                                            <TextBlock TextAlignment="Left" Width="550" Margin ="2" Background="{Binding Color}" TextWrapping="Wrap" Text="{Binding Name}" ToolTip="{Binding Name}" MouseLeftButtonDown="MiniClick"></TextBlock>
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition/>
+                                                    <ColumnDefinition/>
+                                                </Grid.ColumnDefinitions>
+                                            </Grid>
+                                            <Border Margin="3" BorderBrush="Gray"  BorderThickness="2" CornerRadius="2">
+                                                <StackPanel Orientation="Horizontal" Width="200">
+                                                    <ItemsControl ItemsSource="{Binding Items}">
+                                                        <ItemsControl.ItemTemplate>
+                                                            <DataTemplate>
+                                                                <Grid>
+                                                                    <Grid.ColumnDefinitions>
+                                                                        <ColumnDefinition Width="*"/>
+                                                                        <ColumnDefinition Width="10"/>
+                                                                    </Grid.ColumnDefinitions>
+                                                                    <TextBlock Height="10"  Grid.Column="1" Margin ="2" Background="Green" ToolTip="{Binding APISetting.Name}"></TextBlock>
+                                                                </Grid>
+                                                            </DataTemplate>
+                                                        </ItemsControl.ItemTemplate>
+                                                        <ItemsControl.ItemsPanel>
+                                                            <ItemsPanelTemplate>
+                                                                <StackPanel Orientation="Horizontal"/>
+                                                            </ItemsPanelTemplate>
+                                                        </ItemsControl.ItemsPanel>
+                                                    </ItemsControl>
+                                                </StackPanel>
+                                            </Border>
                                         </StackPanel>
+                                        <Grid Grid.Row="1" Visibility="Collapsed">
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition/>
+                                                <RowDefinition/>
+                                            </Grid.RowDefinitions>
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock x:Name="CopyName" Text="📋" MouseDown="CopyName_MouseDown"></TextBlock>
+                                                <Label Content="Розница"></Label>
+                                                <TextBlock  TextAlignment="Left" Width="40" Margin ="2"  VerticalAlignment="Top" Background="ForestGreen" TextWrapping="Wrap" Text="{Binding Price}"></TextBlock>
+                                                <Label Content="1С"></Label>
+                                                <TextBlock x:Name="Art1CBox" TextAlignment="Left" VerticalAlignment="Top" Width="80" Margin ="2" Background="Beige" TextWrapping="Wrap" Text="{Binding Art1C}" MouseDown="Art1CBox_MouseDown" MouseEnter="TextBlock_MouseEnter" MouseLeave="TextBlock_MouseLeave"/>
+                                                <Label Content="ID"></Label>
+                                                <TextBlock x:Name="BaseIDBox" TextAlignment="Left" VerticalAlignment="Top" Margin ="2" Background="Beige" TextWrapping="Wrap" Text="{Binding BaseID}" MouseDown="BaseIDBox_MouseDown" MouseEnter="TextBlock_MouseEnter" MouseLeave="TextBlock_MouseLeave"></TextBlock>
+                                                <Label Content="SKU"></Label>
+                                                <TextBlock TextAlignment="Left" Width="40" Margin ="2" VerticalAlignment="Top" Background="Beige" TextWrapping="Wrap" Text="{Binding SKU}"></TextBlock>
+                                                <StackPanel>
+                                                    <ItemsControl ItemsSource="{Binding STList, TargetNullValue ='empty'}" Background="Gray">
+                                                        <ItemsControl.ItemTemplate>
+                                                            <DataTemplate>
+                                                                <StackPanel Margin="2" Orientation="Horizontal">
+                                                                    <TextBlock Margin="2" Text="{Binding Key}"></TextBlock>
+                                                                    <TextBlock Margin="2" Text="{Binding Value}"></TextBlock>
+                                                                </StackPanel>
+                                                            </DataTemplate>
+                                                        </ItemsControl.ItemTemplate>
+                                                    </ItemsControl>
+                                                </StackPanel>
+                                            </StackPanel>
                                             <Grid Grid.Row="1">
                                                 <Grid.ColumnDefinitions>
                                                     <ColumnDefinition Width="18"/>
                                                     <ColumnDefinition/>
                                                 </Grid.ColumnDefinitions>
-                                                <StackPanel Grid.Column="1" >
-                                            <ItemsControl ItemsSource="{Binding Items}" >
-                                                <ItemsControl.ItemTemplate>
-                                                    <DataTemplate >
-                                                        <Grid Width ="100" Background="Beige">
-                                                            <Grid.RowDefinitions>
-                                                                <RowDefinition/>
-                                                                <RowDefinition/>
-                                                            </Grid.RowDefinitions>
-                                                            <StackPanel Grid.Row="1" >
-                                                                <TextBlock  Height="20" Text="{Binding APISetting.Name}" ToolTip="{Binding Name, Mode=OneWay}" Background="Gray" MouseLeave="TextBlock_MouseLeave" MouseEnter="TextBlock_MouseEnter" MouseLeftButtonDown="Renew_click" ></TextBlock>
-                                                                <TextBlock  Text="{Binding SKU, Mode=OneWay}" ></TextBlock>
-                                                                <TextBlock x:Name="TextBlockPrice" Text="{Binding Price}" MouseDown="TextBlockStocks_MouseLeftButtonDown" ></TextBlock>
-                                                                <TextBlock x:Name="TextBlockStocks"  Text="{Binding Stocks}" MouseDown="TextBlockStocks_MouseLeftButtonDown" ></TextBlock>
-                                                                <TextBlock x:Name="TextBlockMinPrice" Text="{Binding MinPrice}" MouseDown="TextBlockStocks_MouseLeftButtonDown" ></TextBlock>
-                                                            </StackPanel>
-                                                        </Grid>
-                                                    </DataTemplate>
-                                                </ItemsControl.ItemTemplate>
-                                                <ItemsControl.ItemsPanel>
-                                                    <ItemsPanelTemplate>
-                                                        <StackPanel Orientation="Horizontal"/>
-                                                    </ItemsPanelTemplate>
-                                                </ItemsControl.ItemsPanel>
-                                            </ItemsControl>
-                                        </StackPanel>
+                                                <StackPanel x:Name="BindItemPanel"  Grid.Column="1" >
+                                                    <ItemsControl ItemsSource="{Binding Items}" >
+                                                        <ItemsControl.ItemTemplate>
+                                                            <DataTemplate >
+                                                                <StackPanel Background="Beige" Margin="1" Width ="100" Grid.Row="1" >
+                                                                    <TextBlock  x:Name="MarketItemBox"  Height="20" Text="{Binding APISetting.Name}" ToolTip="{Binding Name, Mode=OneWay}" Background="Gray" MouseLeave="TextBlock_MouseLeave" MouseEnter="TextBlock_MouseEnter"  MouseDown="MarketItemBox_MouseDown" ></TextBlock>
+                                                                    <!--<TextBlock  Text="{Binding SKU, Mode=OneWay}" ></TextBlock>-->
+                                                                    <TextBlock x:Name="TextBlockPrice" Text="{Binding Price}" MouseDown="TextBlockStocks_MouseLeftButtonDown" ></TextBlock>
+                                                                    <TextBlock x:Name="TextBlockStocks"  Text="{Binding Stocks}" MouseDown="TextBlockStocks_MouseLeftButtonDown" ></TextBlock>
+                                                                    <!--<TextBlock x:Name="TextBlockMinPrice" Text="{Binding MinPrice}" MouseDown="TextBlockStocks_MouseLeftButtonDown" ></TextBlock>-->
+                                                                    <TextBlock  Background="Gray" x:Name="DownloadItemPicsButton" MouseDown="DownloadItemPicsButton_MouseDown" Text="Картинки" MouseLeave="TextBlock_MouseLeave" MouseEnter="TextBlock_MouseEnter" ></TextBlock>
+                                                                    <Grid x:Name="HiddenGrid" Height="500" Width="500" Visibility="Collapsed"></Grid>
+                                                                    <TextBlock HorizontalAlignment="Right" Width="50"  Background="Gray"  Text="Save" MouseLeave="TextBlock_MouseLeave" MouseEnter="TextBlock_MouseEnter" MouseLeftButtonDown="Renew_click" ></TextBlock>
+                                                                </StackPanel>
+                                                            </DataTemplate>
+                                                        </ItemsControl.ItemTemplate>
+                                                        <ItemsControl.ItemsPanel>
+                                                            <ItemsPanelTemplate>
+                                                                <StackPanel Orientation="Horizontal"/>
+                                                            </ItemsPanelTemplate>
+                                                        </ItemsControl.ItemsPanel>
+                                                    </ItemsControl>
+                                                </StackPanel>
                                             </Grid>
                                         </Grid>
-                                </Grid>
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
-                </StackPanel>
-            </ScrollViewer>
+                                    </Grid>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </StackPanel>
+                </ScrollViewer>
             </Grid>
             <StackPanel Grid.Column="1">
                 <TextBox x:Name="ProcessingPanelPercentBox" Height="35"></TextBox>
                 <ComboBox x:Name="ProcessingPanelApiBox" ></ComboBox>
                 <Button Background="Beige" Height="35" Content="+% по API" Click="PlusPricePercent"></Button>
                 <Button Background="Beige" Height="35" Content="-% по API" Click="MinusPricePercent"></Button>
-
                 <Button x:Name="ConversionToRC_Button" Background="Beige" Height="35" Content="Сравнять с РЦ" Click="ConversionToRC_Button_Click"></Button>
                 <Button x:Name="NullStack_Button" Background="Beige" Height="35" Content="Обнулить остатки" Click="NullStack_Button_Click"></Button>
-
             </StackPanel>
         </Grid>
     </Grid>

@@ -1,13 +1,9 @@
-﻿
-using SiteApi.IntegrationSiteApi;
-
-using StructLibCore.Marketplace;
+﻿using StructLibCore.Marketplace;
 
 using System;
 using System.Collections.Generic;
 using System.Net;
-
-namespace Server.Class.IntegrationSiteApi.Market.Ozon.OzonPost
+namespace SiteApi.IntegrationSiteApi.APIMarket.Ozon.Post
 {
     public abstract class OzonPost : IMarketApi
     {
@@ -15,17 +11,16 @@ namespace Server.Class.IntegrationSiteApi.Market.Ozon.OzonPost
         internal string apiKey;
         internal string result;
         internal APISetting aPISetting;
-
         public OzonPost(APISetting aPISetting)
         {
             this.aPISetting = aPISetting;
-            this.ClientID = aPISetting.ApiString[0];
-            this.apiKey = aPISetting.ApiString[1];
+            ClientID = aPISetting.ApiString[0];
+            apiKey = aPISetting.ApiString[1];
         }
         internal HttpWebRequest GetRequest(string Url)
         {
             string url = @"https://api-seller.ozon.ru/" + Url;
-            var httpWebRequest = (HttpWebRequest)WebRequest.Create(url);
+            HttpWebRequest httpWebRequest = (HttpWebRequest)WebRequest.Create(url);
             httpWebRequest.ContentType = "application/json";
             httpWebRequest.Method = "POST";
             httpWebRequest.Headers.Add("Host: api-seller.ozon.ru");
@@ -35,7 +30,6 @@ namespace Server.Class.IntegrationSiteApi.Market.Ozon.OzonPost
         }
     }
     #region query desc
-
     [Serializable]
     public class Item
     {
@@ -135,15 +129,15 @@ namespace Server.Class.IntegrationSiteApi.Market.Ozon.OzonPost
         public Status status { get; set; }
         public string state { get; set; }
         public string service_type { get; set; }
-        public string Stocks { get { return stocks.present; } set { stocks.present = value; } }
-        public string SKU  {get { return offer_id; }}
+        public string Stocks { get => stocks.present; set => stocks.present = value; }
+        public string SKU => offer_id;
         public APISetting APISetting { get; set; }
-        public string Name { get { return name; } set { name = value; } }
-        public string Price { get { return price; } set { price = value; } }
-        public string MinPrice { get { return min_price; } set { min_price = value; } }
+        public string Name { get => name; set => name = value; }
+        public string Price { get => price; set => price = value; }
+        public string MinPrice { get => min_price; set => min_price = value; }
         public APISetting APISettingSource { get; set; }
-        public string Pic { get { return primary_image; } set { primary_image = value; } }
-        public string Barcode { get { return barcode; } set { barcode = value; } }
+        public List<string> Pic { get => images; set => images = value; }
+        public string Barcode { get => barcode; set => barcode = value; }
     }
     [Serializable]
     public class Result_D
@@ -157,5 +151,3 @@ namespace Server.Class.IntegrationSiteApi.Market.Ozon.OzonPost
     }
     #endregion
 }
-
-

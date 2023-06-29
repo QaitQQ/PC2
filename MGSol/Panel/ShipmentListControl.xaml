@@ -1,0 +1,43 @@
+﻿<UserControl x:Class="MGSol.Panel.ShipmentListControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="100"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <StackPanel Grid.Row="0" x:Name="ControlPanel">
+            <StackPanel x:Name="ButtonsPanel"  HorizontalAlignment="Left">
+                <Button x:Name="Get" Click="Get_Click" Content="Get" Width="50"></Button>
+                <Button x:Name="Save" Click="Save_Click"  Content="Save" Width="50"></Button>
+                <Button x:Name="Clear" Click="Clear_Click"  Content="Clear" Width="50"></Button>
+            </StackPanel>
+        <StackPanel x:Name="FiltersPanel" Background="Azure"></StackPanel>
+        </StackPanel>
+        <Grid Background="Bisque" Grid.Row="1">
+            <ScrollViewer  Grid.Row="3" VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Visible">
+                <Border Background="White" Margin="1" BorderBrush="Black">
+                <StackPanel Orientation="Horizontal">
+                    <ItemsControl x:Name="DTtable">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal" >
+                                        <TextBlock Text="{Binding ID, Mode=OneWay}" Width="100"></TextBlock>
+                                        <TextBlock Text="{Binding Nomber, Mode=OneWay}" Width="100"></TextBlock>
+                                        <TextBlock Text="{Binding Date, Mode=OneWay}" Width="200"></TextBlock>
+                                        <TextBlock Text="{Binding DateShipment, Mode=OneWay}" Width="200"></TextBlock>
+                                        <TextBox  Text="{Binding GetItemString, Mode=OneWay}" Width="100"></TextBox>
+                                </StackPanel>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
+                </Border>
+            </ScrollViewer>
+        </Grid>
+    </Grid>
+</UserControl>

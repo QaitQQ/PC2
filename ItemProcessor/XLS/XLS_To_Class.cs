@@ -1063,6 +1063,9 @@ namespace XLS
                     {
                         break;
                     }
+
+
+
                     if (Convert.ToString(_Worksheet[Row, cellRC].Value) != "" ||(cellStorege != null && Convert.ToString(_Worksheet[Row, cellStorege[0].Key].Value) != ""))
                     {
                         DateTime DateСhange = DateTime.Now;

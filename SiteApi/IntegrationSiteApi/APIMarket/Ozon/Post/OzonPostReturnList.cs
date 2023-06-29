@@ -8,7 +8,7 @@ using System.IO;
 using System.Net;
 namespace Server.Class.IntegrationSiteApi.Market.Ozon.OzonPost.OzonPostReturnList
 {
-    public class OzonPostReturnList : Server.Class.IntegrationSiteApi.Market.Ozon.OzonPost.OzonPost
+    public class OzonPostReturnList : SiteApi.IntegrationSiteApi.APIMarket.Ozon.Post.OzonPost
     {
         public OzonPostReturnList(APISetting aPISetting) : base(aPISetting)
         {
@@ -121,6 +121,29 @@ namespace Server.Class.IntegrationSiteApi.Market.Ozon.OzonPost.OzonPostReturnLis
             public List<MarketOrderItems> Items { get { return new List<MarketOrderItems>() { new MarketOrderItems(ProductName) }; } }
             public string Date => ReturnedToSellerDateTime;
             public string DeliveryDate => WaitingForSellerDateTime;
+
+            public void SetStatus(OrderStatus status)
+            {
+                switch (status)
+                {
+                    case OrderStatus.NONE:
+                        break;
+                    case OrderStatus.PROCESSING_STARTED:
+                        break;
+                    case OrderStatus.PROCESSING_SHIPPED:
+                        break;
+                    case OrderStatus.DELIVERED:
+                        break;
+                    case OrderStatus.CANCELLED:
+                        break;
+                    case OrderStatus.READY:
+                        Status = "waiting_for_seller";
+
+                        break;
+                    default:
+                        break;
+                }
+            }
         }
         public class ResultRoot
         {

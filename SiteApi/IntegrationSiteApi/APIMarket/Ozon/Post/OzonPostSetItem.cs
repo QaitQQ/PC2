@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-using Server.Class.IntegrationSiteApi.Market.Ozon.OzonPost;
+using SiteApi.IntegrationSiteApi.APIMarket.Ozon.Post;
 
 using System.Collections.Generic;
 using System.IO;
@@ -9,7 +9,7 @@ using System.Net;
 
 namespace Server.Class.IntegrationSiteApi.Market.Ozon
 {
-    public class OzonPostSetItem : Server.Class.IntegrationSiteApi.Market.Ozon.OzonPost.OzonPost
+    public class OzonPostSetItem : SiteApi.IntegrationSiteApi.APIMarket.Ozon.Post.OzonPost
     {
         public OzonPostSetItem(StructLibCore.Marketplace.APISetting aPISetting) : base(aPISetting)
         {

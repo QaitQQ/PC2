@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-using Server.Class.IntegrationSiteApi.Market.Ozon.OzonPost;
+using SiteApi.IntegrationSiteApi.APIMarket.Ozon.Post;
 
 using StructLibCore.Marketplace;
 
@@ -10,9 +10,9 @@ using System.Net;
 
 namespace Server.Class.IntegrationSiteApi.Market.Ozon
 {
-    public class OzonGetItemDesc : Server.Class.IntegrationSiteApi.Market.Ozon.OzonPost.OzonPost
+    public class OzonPostItemDesc : SiteApi.IntegrationSiteApi.APIMarket.Ozon.Post.OzonPost
     {
-        public OzonGetItemDesc(APISetting aPISetting) : base(aPISetting)
+        public OzonPostItemDesc(APISetting aPISetting) : base(aPISetting)
         {
         }
 
@@ -22,7 +22,7 @@ namespace Server.Class.IntegrationSiteApi.Market.Ozon
             ItemQ itemQ = new ItemQ();
             if (Ids == null)
             {
-                var Lst = new OzonGetItemList(this.aPISetting).Get();               
+                var Lst = new OzonPostItemList(this.aPISetting).Get();               
                 foreach (var item in Lst) { itemQ.offer_id.Add(item.offer_id); }
             }
             else

@@ -1,12 +1,15 @@
 ﻿using Newtonsoft.Json;
+
 using SiteApi.IntegrationSiteApi.APIMarket.Ozon.Post;
+
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
+
 using static SiteApi.IntegrationSiteApi.APIMarket.Ozon.Post.OzonPostWarehouseInfo;
 namespace Server.Class.IntegrationSiteApi.Market.Ozon
 {
-    public class OzonPostSetPrice : OzonPost.OzonPost
+    public class OzonPostSetPrice : SiteApi.IntegrationSiteApi.APIMarket.Ozon.Post.OzonPost
     {
         public OzonPostSetPrice(StructLibCore.Marketplace.APISetting aPISetting) : base(aPISetting)
         {
@@ -15,7 +18,7 @@ namespace Server.Class.IntegrationSiteApi.Market.Ozon
         {
             List<WarehouseResult> X = (List<WarehouseResult>)new OzonPostWarehouseInfo(aPISetting).Get();
             ProductsStocksRequestStockRoot itemsRoot = new ProductsStocksRequestStockRoot();
-            foreach (Server.Class.IntegrationSiteApi.Market.Ozon.OzonPost.OzonItemDesc item in List)
+            foreach (OzonItemDesc item in List)
             {
                 itemsRoot.Stocks.Add(new Stock(item, X[0].WarehouseId));
             }
@@ -47,7 +50,7 @@ namespace Server.Class.IntegrationSiteApi.Market.Ozon
         }
         public class Stock
         {
-            public Stock(OzonPost.OzonItemDesc itemDesc, string WarehouseId)
+            public Stock(OzonItemDesc itemDesc, string WarehouseId)
             {
                 OfferId = itemDesc.offer_id;
                 ProductId = itemDesc.id.ToString();

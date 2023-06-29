@@ -29,6 +29,7 @@ namespace StructLibCore.Marketplace
         public List<APISetting> APISettings { get; set; }
         public List<InnString> SellerINN { get; set; }
         public List<IOrder> Orders { get; set; }
+        public DateTime LastUpTime { get; set; }
         public MarketPlaceCash() { MarketItems = new List<MarketItem>(); APISettings = new List<APISetting>(); Orders = new List<IOrder>(); }
     }
     [Serializable]
@@ -58,6 +59,7 @@ namespace StructLibCore.Marketplace
         public string Id { get; }
         public APISetting APISetting { get; set; }
         public OrderStatus Status { get; }
+        public void SetStatus(OrderStatus status);
         public List<MarketOrderItems> Items { get; }
         public string Date { get; }
         public string DeliveryDate { get; }
@@ -83,7 +85,7 @@ namespace StructLibCore.Marketplace
         public string MinPrice { get; set; }
         public APISetting APISetting { get; set; }
         public APISetting APISettingSource { get; set; }
-        public string Pic { get; set; }
+        public List<string> Pic { get; set; }
         public string Barcode { get; set; }
       
     }
@@ -95,9 +97,21 @@ namespace StructLibCore.Marketplace
         public string MinPrice { get; set; }
         public APISetting APISetting { get; set; }
         public APISetting APISettingSource { get; set; }
-        public string Pic { get; set; }
         public string Barcode { get; set; }
+        List<string> IMarketItem.Pic { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
     }
+    public interface Promo
+    {
+
+        public string Name { get; }
+        public string Description { get;  }
+        public string DataStart { get;  }
+        public string DataEnd { get;  }
+
+    }
+
+
+
     [Serializable]
    public class MarketItem 
     {
