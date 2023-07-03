@@ -1,7 +1,10 @@
 ﻿using SiteApi.IntegrationSiteApi.APIMarket.Yandex.YandexPUTStocks;
+
 using StructLibCore;
 using StructLibCore.Marketplace;
+
 using StructLibs;
+
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -32,7 +35,7 @@ namespace MGSol.Panel
         private List<WS> WCList { get; set; }
         private List<APISetting> Options { get; set; }
         private MainModel Model { get; set; }
-         private List<StructLibCore.IC> StorageList { get; set; }
+        private List<StructLibCore.IC> StorageList { get; set; }
         private List<СomparisonNameID> ComparisonsNames { get; set; }
         public ItemControl(MainModel model)
         {
@@ -180,7 +183,8 @@ namespace MGSol.Panel
                                 if (X != null && X.Name == null) { X.Name = It.Name; }
                                 if (X != null)
                                 {
-                                    Dispatcher.Invoke(() =>{ if (X.Items == null) { X.Items = new ObservableCollection<IMarketItem>(); }     X.Items.Add(It); }); }
+                                    Dispatcher.Invoke(() => { if (X.Items == null) { X.Items = new ObservableCollection<IMarketItem>(); } X.Items.Add(It); });
+                                }
                                 else
                                 {
                                     X = ItemsList.FirstOrDefault(x => x.Name == It.Name);
@@ -380,19 +384,36 @@ namespace MGSol.Panel
         private async void SyncStorages()
         {
             SiteStoregeStruct P = null;
+            bool Loading = false;
             using (HttpClient client = new())
             {
-                using HttpResponseMessage response = await client.GetAsync("https://salessab.su/STList.xml");
-                using Stream streamToReadFrom = await response.Content.ReadAsStreamAsync();
-                XmlSerializer serializer = new(typeof(SiteStoregeStruct));
-                P = (SiteStoregeStruct)serializer.Deserialize(streamToReadFrom);
-                WCList = P.Warehouses;
-                StorageList = P.ItmsCount;
+
+                try
+                {
+                    using HttpResponseMessage response = await client.GetAsync("https://salessab.su/STList.xml");
+                    using Stream streamToReadFrom = await response.Content.ReadAsStreamAsync();
+                    XmlSerializer serializer = new(typeof(SiteStoregeStruct));
+                    P = (SiteStoregeStruct)serializer.Deserialize(streamToReadFrom);
+                    WCList = P.Warehouses;
+                    StorageList = P.ItmsCount;
+                    Loading = true;
+                }
+                catch (Exception e)
+                {
+
+                    MessageBox.Show(e.Message);
+                }
+
+
             }
-            foreach (MarketItem item in ItemsList)
+            if (Loading)
             {
-                item.StoregeList = P.ItmsCount.FindAll(x => x.Id == item.BaseID).ToList();
+                foreach (MarketItem item in ItemsList)
+                {
+                    item.StoregeList = P.ItmsCount.FindAll(x => x.Id == item.BaseID).ToList();
+                }
             }
+
         }
         private async void DownloadName_Click(object sender, RoutedEventArgs e)
         {
@@ -431,11 +452,11 @@ namespace MGSol.Panel
                             {
                                 foreach (СomparisonNameID item in Find)
                                 {
-                                  var Fl = StorageList.FirstOrDefault(x => x.Id == item.Id);
+                                    var Fl = StorageList.FirstOrDefault(x => x.Id == item.Id);
                                     var TxTName = item.Name;
                                     if (Fl != null)
                                     {
-                                        TxTName = TxTName+ " " + Fl.C;
+                                        TxTName = TxTName + " " + Fl.C;
                                     }
                                     TextBlock block = new()
                                     {
@@ -508,18 +529,38 @@ namespace MGSol.Panel
                 MarketItem item = I.Item;
                 if (I.Checked)
                 {
+
                     foreach (IMarketItem X in item.Items)
                     {
-                        if (X.APISetting.Name == ProcessingPanelApiBox.SelectedItem.ToString())
+                        if (X.Price != null)
                         {
-                            if (X.Price.Contains('.'))
+                            if (ProcessingPanelApiBox.SelectedItem != null)
                             {
-                                X.Price = X.Price.Replace(".", ",");
+                                if (X.APISetting.Name == ProcessingPanelApiBox.SelectedItem.ToString())
+                                {
+                                    if (X.Price.Contains('.'))
+                                    {
+                                        X.Price = X.Price.Replace(".", ",");
+                                    }
+                                    double Z = double.Parse(X.Price, System.Globalization.NumberStyles.AllowDecimalPoint);
+                                    double P = double.Parse(ProcessingPanelPercentBox.Text);
+                                    X.Price = (((P / 100) + 1) * Z).ToString();
+                                    mass.Add(X);
+                                }
                             }
-                            double Z = double.Parse(X.Price, System.Globalization.NumberStyles.AllowDecimalPoint);
-                            double P = double.Parse(ProcessingPanelPercentBox.Text);
-                            X.Price = (((P / 100) + 1) * Z).ToString();
-                            mass.Add(X);
+                            else
+                            {
+
+                                if (X.Price.Contains('.'))
+                                {
+                                    X.Price = X.Price.Replace(".", ",");
+                                }
+                                double Z = double.Parse(X.Price, System.Globalization.NumberStyles.AllowDecimalPoint);
+                                double P = double.Parse(ProcessingPanelPercentBox.Text);
+                                X.Price = (((P / 100) + 1) * Z).ToString();
+                                mass.Add(X);
+                            }
+
                         }
                     }
                 }

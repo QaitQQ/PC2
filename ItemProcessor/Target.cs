@@ -31,10 +31,16 @@ namespace Server
             checking_conditions();
             if (condition)
             {
-                Task.Factory.StartNew(Server.TargetDictionary.Dictionarys[_task]);
-                DoneTime = DateTime.Now;
-                condition = false;
-                return true;
+                try
+                {
+                    Task.Factory.StartNew(Server.TargetDictionary.Dictionarys[_task]);
+                    DoneTime = DateTime.Now;
+                    condition = false;
+                    return true;
+                }
+                catch
+                {
+                }
             }
             return false;
         }

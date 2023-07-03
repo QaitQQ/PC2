@@ -73,8 +73,8 @@ namespace Server
             //  Class.Net.Imap_Checker ImapServer = new Class.Net.Imap_Checker();
             //  await Task.Factory.StartNew(() => ImapServer.Start_Check());
             TargetDictionary.Dictionarys.Add("Imap_Checker", new Action(() => new Imap_Checker().CheckAndSave()));
-            TargetDictionary.Dictionarys.Add("planedPriceWork", new Action(() => Cash.PlanedPriceWork(Cash)));
-            TargetDictionary.Dictionarys.Add("UploadStoregeToSite", new Action(() => Cash.UploadStoregeToSite(Cash)));
+            TargetDictionary.Dictionarys.Add("planedPriceWork", new Action(() => CashClass.PlanedPriceWork(Cash)));
+            TargetDictionary.Dictionarys.Add("UploadStorageToSite", new Action(() => CashClass.UploadStorageToSite(Cash)));
             //Cash.Targets.Add(new Target("UploadStoregeToSite", Target.Regularity.after_time, PeriodTime: 300));
             // Cash.Targets.Add(new Target("planedPriceWork", Target.Regularity.after_time, PeriodTime: 300));
             //  Cash.Targets.Add(new Target("Imap_Checker", Target.Regularity.after_time, PeriodTime: 300));
@@ -167,7 +167,7 @@ namespace Server
             void BotOnMessageReceived(object sender, MessageEventArgs e)
             {
                 ICQ.Bot.Types.Message message = e.Message;
-                if (e.Message.Text != "" && !e.Message.Text.Contains("|"))
+                if (e.Message.Text != "" && !e.Message.Text.Contains('|'))
                 {
                     System.Collections.IEnumerable Ot = null;
                     using (ApplicationContext DB = new ApplicationContext())
@@ -189,7 +189,7 @@ namespace Server
                         bot.SendTextMessageAsync(message.From.UserId, message.Text, replyMarkup: markup).Wait();
                     }
                 }
-                else if (e.Message.Text.Contains("|"))
+                else if (e.Message.Text.Contains('|'))
                 {
                 }
             }

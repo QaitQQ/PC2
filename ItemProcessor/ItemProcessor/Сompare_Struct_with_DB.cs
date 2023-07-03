@@ -27,7 +27,7 @@ namespace Server
         public async void StartCompare()
         {
             await Task.Factory.StartNew(() => Сomparer());
-            Cash.СhangedItems = Result;
+            Cash.ChangedItems = Result;
         }
         private void Сomparer()
         {

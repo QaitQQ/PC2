@@ -29,7 +29,7 @@ namespace SiteApi.IntegrationSiteApi.APIMarket.Ozon.Post
             {
                 Products.Add(new Product() { ProductId = item.Sku, Quantity = item.Quantity, ExemplarInfo = new List<ExemplarInfo>() { new ExemplarInfo() { IsGtdAbsent = true } } });
             }
-            var root = new Root() { PostingNumber = Or.PostingNumber, Packages = new List<Package>() { new Package() {Products = Products } } };
+            var root = new RootT() { PostingNumber = Or.PostingNumber, Packages = new List<Package>() { new Package() {Products = Products } } };
             using (var streamWriter = new StreamWriter(httpWebRequest.GetRequestStream()))
            {
                var json = JsonConvert.SerializeObject(root); streamWriter.Write(json);
@@ -89,7 +89,7 @@ namespace SiteApi.IntegrationSiteApi.APIMarket.Ozon.Post
         public List<Product> Products { get; set; }
     }
 
-    public class Root
+    public class RootT
     {
         [JsonProperty("packages")]
         public List<Package> Packages { get; set; }

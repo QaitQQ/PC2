@@ -98,7 +98,7 @@ namespace Server
                 }
             }
         }
-        public static void UploadStorageToSite()
+        public void UploadStorageToSite()
         {
             FTP FTP = new FTP(Settings.FtpSettingsStorege);
             using ApplicationContext db = new ApplicationContext();

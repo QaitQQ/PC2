@@ -48,7 +48,7 @@ namespace Network.Dictionary
             System.Collections.Generic.IEnumerable<IDictionaryPC> Manuf =   cash.Dictionaries.GetDictionaryRelate(DictionaryRelate.Manufactor);
             //Производители
 
-            StructSite.Manufactur[] X = new StructSite(cash.ApiSiteSettngs[0]).ManufactorsId();
+            StructSite.Manufactur[] X = new StructSite(cash.ApiSiteSettings[0]).ManufactorsId();
             System.Collections.Generic.IEnumerable<IDictionaryPC> result = Manuf.Where(n => !X.Any(t => Convert.ToInt32(t.Id) == n.Id));
             System.Collections.Generic.IEnumerable<StructSite.Manufactur> result2 = X.Where(n => !Manuf.Any(t => t.Id == Convert.ToInt32(n.Id)));
             if (result2.Count()>0)

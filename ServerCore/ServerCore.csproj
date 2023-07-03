@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   
   <PropertyGroup>
     <OutputType>Exe</OutputType>
@@ -28,7 +28,7 @@
 
   <ItemGroup>
     <PackageReference Include="ICQ.Bot" Version="1.4.9" />
-    <PackageReference Include="MailKit" Version="3.4.1" />
+    <PackageReference Include="MailKit" Version="4.1.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.0-rc.2.22472.11" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Abstractions" Version="7.0.0-rc.2.22472.11" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Analyzers" Version="7.0.0-rc.2.22472.11" />

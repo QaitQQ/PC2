@@ -48,7 +48,7 @@
                                             <RowDefinition  />
                                         </Grid.RowDefinitions>
                                         <StackPanel Orientation="Horizontal" Grid.Row="0">
-                                            <CheckBox IsChecked="{Binding Cheked, Mode=TwoWay}"/>
+                                            <CheckBox IsChecked="{Binding Checked, Mode=TwoWay}"/>
                                             <TextBlock TextAlignment="Left" Width="550" Margin ="2" Background="{Binding Color}" TextWrapping="Wrap" Text="{Binding Name}" ToolTip="{Binding Name}" MouseLeftButtonDown="MiniClick"></TextBlock>
                                             <Grid>
                                                 <Grid.ColumnDefinitions>
@@ -121,9 +121,13 @@
                                                                     <!--<TextBlock  Text="{Binding SKU, Mode=OneWay}" ></TextBlock>-->
                                                                     <TextBlock x:Name="TextBlockPrice" Text="{Binding Price}" MouseDown="TextBlockStocks_MouseLeftButtonDown" ></TextBlock>
                                                                     <TextBlock x:Name="TextBlockStocks"  Text="{Binding Stocks}" MouseDown="TextBlockStocks_MouseLeftButtonDown" ></TextBlock>
-                                                                    <!--<TextBlock x:Name="TextBlockMinPrice" Text="{Binding MinPrice}" MouseDown="TextBlockStocks_MouseLeftButtonDown" ></TextBlock>-->
-                                                                    <TextBlock  Background="Gray" x:Name="DownloadItemPicsButton" MouseDown="DownloadItemPicsButton_MouseDown" Text="Картинки" MouseLeave="TextBlock_MouseLeave" MouseEnter="TextBlock_MouseEnter" ></TextBlock>
-                                                                    <Grid x:Name="HiddenGrid" Height="500" Width="500" Visibility="Collapsed"></Grid>
+
+                                                                    <Grid x:Name="HiddenGrid" Height="500" Width="500" Visibility="Collapsed">
+                                                                        <StackPanel>
+                                                                            <TextBlock x:Name="TextBlockMinPrice" Text="{Binding MinPrice}" MouseDown="TextBlockStocks_MouseLeftButtonDown" ></TextBlock>
+                                                                            <TextBlock  Background="Gray" x:Name="DownloadItemPicsButton" MouseDown="DownloadItemPicsButton_MouseDown" Text="Картинки" MouseLeave="TextBlock_MouseLeave" MouseEnter="TextBlock_MouseEnter" ></TextBlock>
+                                                                        </StackPanel>
+                                                                    </Grid>
                                                                     <TextBlock HorizontalAlignment="Right" Width="50"  Background="Gray"  Text="Save" MouseLeave="TextBlock_MouseLeave" MouseEnter="TextBlock_MouseEnter" MouseLeftButtonDown="Renew_click" ></TextBlock>
                                                                 </StackPanel>
                                                             </DataTemplate>

@@ -13,7 +13,7 @@ namespace Network.Item.Changes
     {      
         public override TCPMessage Post(ApplicationContext Db, object Obj = null)
         {
-            Message.Obj = ((CashClass)Obj).СhangedItems;
+            Message.Obj = ((CashClass)Obj).ChangedItems;
 
             return Message;
         }
@@ -48,7 +48,7 @@ namespace Network.Item.Changes
     {
         public override TCPMessage Post(ApplicationContext Db, object Obj = null)
         {
-            var Changes = ((CashClass)Obj).СhangedItems;
+            var Changes = ((CashClass)Obj).ChangedItems;
 
             var Prop = ItemDBStruct.GetProperties();
 
@@ -87,7 +87,7 @@ namespace Network.Item.Changes
         public override TCPMessage Post(ApplicationContext Db, object Obj = null)
         {
 
-            List<StructLibs.ItemChanges> СhangedList = ((CashClass)Obj).СhangedItems;
+            List<StructLibs.ItemChanges> СhangedList = ((CashClass)Obj).ChangedItems;
 
             СhangedList.RemoveAll(x=> x.ItemID == ((StructLibs.ItemChanges)Attach).ItemID && x.FieldName == ((StructLibs.ItemChanges)Attach).FieldName);
 

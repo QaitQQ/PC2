@@ -567,7 +567,7 @@ namespace Network.Item
             using FileStream fs = new(FN, FileMode.OpenOrCreate);
             xmlSerializer.Serialize(fs, ListName);
             fs.Close();
-            var result = FTPUploadFile(FN, cash.FtpSiteSettngsRoot);
+            var result = FTPUploadFile(FN, CashClass.FtpSiteSettingsRoot);
             Message.Obj = result;
             return Message;
         }

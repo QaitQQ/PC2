@@ -22,7 +22,7 @@ namespace Network.Item.SiteApi
         public override TCPMessage Post(ApplicationContext Db, object Obj = null)
         {
             CashClass cash = ((CashClass)Obj);
-            SiteItem SiteApi = new SiteItem(cash.ApiSiteSettngs, cash.FtpSiteSettngs);
+            SiteItem SiteApi = new SiteItem(cash.ApiSiteSettings, cash.FtpSiteSettings);
             List<ItemChanges> Resul = new List<ItemChanges>();
             int Code = Resul.GetHashCode();
             cash.ObjBuffer.Add(new QueueOfObj() { ID = Code, Object = false });
@@ -111,7 +111,7 @@ namespace Network.Item.SiteApi
         public override TCPMessage Post(ApplicationContext Db, object Obj = null)
         {
             CashClass cash = ((CashClass)Obj);
-            SiteItem SiteApi = new SiteItem(cash.ApiSiteSettngs, cash.FtpSiteSettngs);
+            SiteItem SiteApi = new SiteItem(cash.ApiSiteSettings, cash.FtpSiteSettings);
             var X = (ItemChanges)Attach;
             SiteApi.SetPrice(new KeyValuePair<int, double>(X.ItemID, (double)X.NewValue));
             Message.Obj = X.ItemID.ToString() + " Обновлено";
@@ -124,7 +124,7 @@ namespace Network.Item.SiteApi
         public override TCPMessage Post(ApplicationContext Db, object Obj = null)
         {
             CashClass cash = ((CashClass)Obj);
-            SiteItem SiteApi = new SiteItem(cash.ApiSiteSettngs, cash.FtpSiteSettngs);
+            SiteItem SiteApi = new SiteItem(cash.ApiSiteSettings, cash.FtpSiteSettings);
             var X = (List<SiteFieldDesc>)Attach;
             Message.Obj = SiteApi.NewProductFromFieldList(X);
             return Message;
