@@ -62,10 +62,10 @@ namespace Server.Class.IntegrationSiteApi.Market.Ozon
 
             public PriceItem(OzonItemDesc ozonItemDesc, AutoActionEnabled autoActionEnabled = AutoActionEnabled.UNKNOWN)
             {
-                MinPrice = ozonItemDesc.min_price;
+                MinPrice = ozonItemDesc.min_price.Replace(',', '.');
                 OfferId = ozonItemDesc.offer_id;
                 OldPrice = ozonItemDesc.old_price;
-                Price = ozonItemDesc.price;
+                Price = ozonItemDesc.price.Replace(',','.');
                 ProductId = ozonItemDesc.id;
             }
         }

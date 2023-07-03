@@ -14,7 +14,7 @@ namespace Server.Class.IntegrationSiteApi.Market.Yandex.YandexGetPrice
         public List<object> Get(List<object> ObjectsList)
         {
             List<object> Lst = new List<object>();
-            HttpWebRequest httpWebRequest = GetRequest(@"/campaigns/" + ClientID + "/stats/skus.json", "POST");
+            HttpWebRequest httpWebRequest = GetRequest(@"campaigns/" + ClientID + "/stats/skus.json", "POST");
             List<string> SKULst = new List<string>();
             foreach (IMarketItem item in ObjectsList) { SKULst.Add(item.SKU); }
             POSTStocks QW = new POSTStocks

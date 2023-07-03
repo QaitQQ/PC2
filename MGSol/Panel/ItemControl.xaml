@@ -49,7 +49,7 @@
                                         </Grid.RowDefinitions>
                                         <StackPanel Orientation="Horizontal" Grid.Row="0">
                                             <CheckBox IsChecked="{Binding Checked, Mode=TwoWay}"/>
-                                            <TextBlock TextAlignment="Left" Width="550" Margin ="2" Background="{Binding Color}" TextWrapping="Wrap" Text="{Binding Name}" ToolTip="{Binding Name}" MouseLeftButtonDown="MiniClick"></TextBlock>
+                                            <Label VerticalAlignment="Stretch" Margin="0.5" HorizontalAlignment="Left" Width="550" Background="{Binding Color}"  Content="{Binding Name}" ToolTip="{Binding Name}" MouseLeftButtonDown="MiniClick"></Label>
                                             <Grid>
                                                 <Grid.ColumnDefinitions>
                                                     <ColumnDefinition/>
@@ -89,11 +89,11 @@
                                                 <Label Content="Розница"></Label>
                                                 <TextBlock  TextAlignment="Left" Width="40" Margin ="2"  VerticalAlignment="Top" Background="ForestGreen" TextWrapping="Wrap" Text="{Binding Price}"></TextBlock>
                                                 <Label Content="1С"></Label>
-                                                <TextBlock x:Name="Art1CBox" TextAlignment="Left" VerticalAlignment="Top" Width="80" Margin ="2" Background="Beige" TextWrapping="Wrap" Text="{Binding Art1C}" MouseDown="Art1CBox_MouseDown" MouseEnter="TextBlock_MouseEnter" MouseLeave="TextBlock_MouseLeave"/>
+                                                <Label x:Name="Art1CBox"  VerticalAlignment="Top" Width="80" Margin ="2" Background="Beige" Content="{Binding Art1C}" MouseDown="Art1CBox_MouseDown" MouseEnter="TextBlock_MouseEnter" MouseLeave="TextBlock_MouseLeave"/>
                                                 <Label Content="ID"></Label>
-                                                <TextBlock x:Name="BaseIDBox" TextAlignment="Left" VerticalAlignment="Top" Margin ="2" Background="Beige" TextWrapping="Wrap" Text="{Binding BaseID}" MouseDown="BaseIDBox_MouseDown" MouseEnter="TextBlock_MouseEnter" MouseLeave="TextBlock_MouseLeave"></TextBlock>
+                                                <Label x:Name="BaseIDBox" VerticalAlignment="Top" Margin ="2" Background="Beige"  Content="{Binding BaseID}" MouseDown="BaseIDBox_MouseDown" MouseEnter="TextBlock_MouseEnter" MouseLeave="TextBlock_MouseLeave"></Label>
                                                 <Label Content="SKU"></Label>
-                                                <TextBlock TextAlignment="Left" Width="40" Margin ="2" VerticalAlignment="Top" Background="Beige" TextWrapping="Wrap" Text="{Binding SKU}"></TextBlock>
+                                                <Label HorizontalAlignment="Left" Width="40" Margin ="0.5" VerticalAlignment="Top" Background="Beige"  Content="{Binding SKU}"></Label>
                                                 <StackPanel>
                                                     <ItemsControl ItemsSource="{Binding STList, TargetNullValue ='empty'}" Background="Gray">
                                                         <ItemsControl.ItemTemplate>
@@ -117,7 +117,7 @@
                                                         <ItemsControl.ItemTemplate>
                                                             <DataTemplate >
                                                                 <StackPanel Background="Beige" Margin="1" Width ="100" Grid.Row="1" >
-                                                                    <TextBlock  x:Name="MarketItemBox"  Height="20" Text="{Binding APISetting.Name}" ToolTip="{Binding Name, Mode=OneWay}" Background="Gray" MouseLeave="TextBlock_MouseLeave" MouseEnter="TextBlock_MouseEnter"  MouseDown="MarketItemBox_MouseDown" ></TextBlock>
+                                                                    <Label  x:Name="MarketItemBox"  Height="20" Content="{Binding APISetting.Name}" ToolTip="{Binding Name, Mode=OneWay}" Background="Gray" MouseLeave="TextBlock_MouseLeave" MouseEnter="TextBlock_MouseEnter"  MouseDown="MarketItemBox_MouseDown" ></Label>
                                                                     <!--<TextBlock  Text="{Binding SKU, Mode=OneWay}" ></TextBlock>-->
                                                                     <TextBlock x:Name="TextBlockPrice" Text="{Binding Price}" MouseDown="TextBlockStocks_MouseLeftButtonDown" ></TextBlock>
                                                                     <TextBlock x:Name="TextBlockStocks"  Text="{Binding Stocks}" MouseDown="TextBlockStocks_MouseLeftButtonDown" ></TextBlock>
@@ -125,10 +125,10 @@
                                                                     <Grid x:Name="HiddenGrid" Height="500" Width="500" Visibility="Collapsed">
                                                                         <StackPanel>
                                                                             <TextBlock x:Name="TextBlockMinPrice" Text="{Binding MinPrice}" MouseDown="TextBlockStocks_MouseLeftButtonDown" ></TextBlock>
-                                                                            <TextBlock  Background="Gray" x:Name="DownloadItemPicsButton" MouseDown="DownloadItemPicsButton_MouseDown" Text="Картинки" MouseLeave="TextBlock_MouseLeave" MouseEnter="TextBlock_MouseEnter" ></TextBlock>
+                                                                            <Label  Background="Gray" x:Name="DownloadItemPicsButton" MouseDown="DownloadItemPicsButton_MouseDown" Content="Картинки" MouseLeave="TextBlock_MouseLeave" MouseEnter="TextBlock_MouseEnter" ></Label>
                                                                         </StackPanel>
                                                                     </Grid>
-                                                                    <TextBlock HorizontalAlignment="Right" Width="50"  Background="Gray"  Text="Save" MouseLeave="TextBlock_MouseLeave" MouseEnter="TextBlock_MouseEnter" MouseLeftButtonDown="Renew_click" ></TextBlock>
+                                                                    <Label HorizontalAlignment="Right" Width="50"  Background="Gray"  Content="Save" MouseLeave="TextBlock_MouseLeave" MouseEnter="TextBlock_MouseEnter" MouseLeftButtonDown="Renew_click" ></Label>
                                                                 </StackPanel>
                                                             </DataTemplate>
                                                         </ItemsControl.ItemTemplate>

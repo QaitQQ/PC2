@@ -92,7 +92,7 @@ namespace MGSol.Panel
         }
         private void MiniClick(object sender, RoutedEventArgs e)
         {
-            Grid grid = (System.Windows.Controls.Grid)((StackPanel)((TextBlock)sender).Parent).Parent;
+            Grid grid = (System.Windows.Controls.Grid)((StackPanel)((Label)sender).Parent).Parent;
             grid.Children[1].Visibility = grid.Children[1].Visibility == Visibility.Collapsed ? Visibility.Visible : Visibility.Collapsed;
         }
         private void Button_Save(object sender, RoutedEventArgs e)
@@ -322,11 +322,11 @@ namespace MGSol.Panel
         }
         private void TextBlock_MouseEnter(object sender, MouseEventArgs e)
         {
-            ((TextBlock)sender).Background = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(Color.Green.R, Color.Green.G, Color.Green.B));
+            ((Label)sender).Background = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(Color.Green.R, Color.Green.G, Color.Green.B));
         }
         private void TextBlock_MouseLeave(object sender, MouseEventArgs e)
         {
-            ((TextBlock)sender).Background = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(Color.Gray.R, Color.Gray.G, Color.Gray.B));
+            ((Label)sender).Background = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(Color.Gray.R, Color.Gray.G, Color.Gray.B));
         }
         private void TextBlockStocks_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
@@ -510,7 +510,7 @@ namespace MGSol.Panel
             {
                 ContextMenu menu = new();
                 TextBox Box = new();
-                TextBlock TX = (TextBlock)sender;
+                Label TX = (Label)sender;
                 MarketItem MITEM = ((VisMarketItem)TX.DataContext).Item;
                 Box.Width = 50;
                 _ = Box.Focus();
@@ -529,15 +529,29 @@ namespace MGSol.Panel
                 MarketItem item = I.Item;
                 if (I.Checked)
                 {
-
-                    foreach (IMarketItem X in item.Items)
+                    if (item.Items is not null)
                     {
-                        if (X.Price != null)
+                        foreach (IMarketItem X in item.Items)
                         {
-                            if (ProcessingPanelApiBox.SelectedItem != null)
+                            if (X.Price != null)
                             {
-                                if (X.APISetting.Name == ProcessingPanelApiBox.SelectedItem.ToString())
+                                if (ProcessingPanelApiBox.SelectedItem != null)
                                 {
+                                    if (X.APISetting.Name == ProcessingPanelApiBox.SelectedItem.ToString())
+                                    {
+                                        if (X.Price.Contains('.'))
+                                        {
+                                            X.Price = X.Price.Replace(".", ",");
+                                        }
+                                        double Z = double.Parse(X.Price, System.Globalization.NumberStyles.AllowDecimalPoint);
+                                        double P = double.Parse(ProcessingPanelPercentBox.Text);
+                                        X.Price = (((P / 100) + 1) * Z).ToString();
+                                        mass.Add(X);
+                                    }
+                                }
+                                else
+                                {
+
                                     if (X.Price.Contains('.'))
                                     {
                                         X.Price = X.Price.Replace(".", ",");
@@ -547,20 +561,8 @@ namespace MGSol.Panel
                                     X.Price = (((P / 100) + 1) * Z).ToString();
                                     mass.Add(X);
                                 }
-                            }
-                            else
-                            {
 
-                                if (X.Price.Contains('.'))
-                                {
-                                    X.Price = X.Price.Replace(".", ",");
-                                }
-                                double Z = double.Parse(X.Price, System.Globalization.NumberStyles.AllowDecimalPoint);
-                                double P = double.Parse(ProcessingPanelPercentBox.Text);
-                                X.Price = (((P / 100) + 1) * Z).ToString();
-                                mass.Add(X);
                             }
-
                         }
                     }
                 }

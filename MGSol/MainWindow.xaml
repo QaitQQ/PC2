@@ -9,7 +9,7 @@
         WindowStyle="None"
         >
     <Window.Resources>
-        <Style TargetType="TabItem">
+        <!--<Style TargetType="TabItem">
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="TabItem">
@@ -31,7 +31,7 @@
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
-        </Style>
+        </Style>-->
         <Style TargetType="TabControl">
             <Setter Property="Background">
                 <Setter.Value>
@@ -76,6 +76,22 @@
                 </Trigger>
             </Style.Triggers>
         </Style>
+        <Style TargetType="Label">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Label">
+                    <Border BorderThickness="2" CornerRadius="3"   BorderBrush="{TemplateBinding Background}">
+                        <Grid x:Name="BtnGrd"  Background="{TemplateBinding Background }">
+                            <ContentPresenter HorizontalAlignment="Center"  VerticalAlignment="Center" RecognizesAccessKey="True"></ContentPresenter>
+                        </Grid>
+                    </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+
+        </Style>
+
+
         <Style TargetType="ScrollViewer">
             <Setter Property="OverridesDefaultStyle" Value="True"/>
             <Setter Property="Template">

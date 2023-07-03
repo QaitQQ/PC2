@@ -25,7 +25,7 @@ namespace SiteApi.IntegrationSiteApi.APIMarket.Yandex
 
         internal HttpWebRequest GetRequest(string Url, string Method)
         {
-            string url = @"https://api.partner.market.yandex.ru/v2" + Url;
+            string url = @"https://api.partner.market.yandex.ru/" + Url;
             var httpWebRequest = (HttpWebRequest)WebRequest.Create(url);
 
             httpWebRequest.Method = Method;

@@ -29,6 +29,7 @@ namespace SiteApi.IntegrationSiteApi.APIMarket.Yandex.YandexPUTStocks
             try
             {
                 HttpWebResponse httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
+                using (var streamReader = new StreamReader(httpResponse.GetResponseStream())) { result = streamReader.ReadToEnd(); }
                 return true;
             }
             catch

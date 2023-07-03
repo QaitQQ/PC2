@@ -1,9 +1,9 @@
 ﻿using Server;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-
 namespace Network.Item.MarketApi
 {
     [Serializable]
@@ -24,7 +24,7 @@ namespace Network.Item.MarketApi
         public override TCPMessage Post(ApplicationContext Db, object Obj = null)
         {
             StructLibCore.Marketplace.MarketPlaceCash Z = ((CashClass)Obj).Marketplace;
-            Z.APISettings= ((List<StructLibCore.Marketplace.APISetting>)Attach);
+            Z.APISettings = ((List<StructLibCore.Marketplace.APISetting>)Attach);
             ((CashClass)Obj).Marketplace = Z;
             Message.Obj = true;
             return Message;
@@ -58,7 +58,6 @@ namespace Network.Item.MarketApi
         public override TCPMessage Post(ApplicationContext Db, object Obj = null)
         {
             var X = (StructLibCore.Marketplace.IMarketItem[])Attach;
-
             static List<IGrouping<StructLibCore.Marketplace.APISetting, StructLibCore.Marketplace.IMarketItem>> ConvertListApi(StructLibCore.Marketplace.IMarketItem[] Lst)
             {
                 IEnumerable<IGrouping<StructLibCore.Marketplace.APISetting, StructLibCore.Marketplace.IMarketItem>> X = Lst.GroupBy(x => x.APISetting);
@@ -66,10 +65,7 @@ namespace Network.Item.MarketApi
                 return A;
             }
             var Z = ConvertListApi(X);
-            List<object> R = new List<object>();
-
-
-
+            bool R = false;
             foreach (var item in Z)
             {
                 switch (item.Key.Type)
@@ -78,7 +74,7 @@ namespace Network.Item.MarketApi
                         R = new Server.Class.IntegrationSiteApi.Market.Yandex.YandexPostItemPrice.YandexPostItemPrice(item.Key).Get(item.ToArray());
                         break;
                     case StructLibCore.Marketplace.MarketName.Ozon:
-                     //   R = new Server.Class.IntegrationSiteApi.Market.Ozon.OzonSetItem(item.Key).Get(item.ToArray());
+                        //   R = new Server.Class.IntegrationSiteApi.Market.Ozon.OzonSetItem(item.Key).Get(item.ToArray());
                         break;
                     case StructLibCore.Marketplace.MarketName.Avito:
                         break;
@@ -89,10 +85,6 @@ namespace Network.Item.MarketApi
                 }
             }
             Message.Obj = R;
-
-
-
-
             return Message;
         }
     }
@@ -101,12 +93,8 @@ namespace Network.Item.MarketApi
     {
         public override TCPMessage Post(ApplicationContext Db, object Obj = null)
         {
-
             StructLibCore.Marketplace.APISetting X = (StructLibCore.Marketplace.APISetting)Attach;
-
             List<object> Result = null;
-
-
             switch (X.Type)
             {
                 case StructLibCore.Marketplace.MarketName.Yandex:
