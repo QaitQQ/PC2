@@ -13,7 +13,7 @@ namespace MGSol
 {
     public class MainModel
     {
-        private event Action<string, object> СhangeList;
+        private event Action<string, object> ChangeList;
         private MarketPlaceCash options;
         private BaseInfoPrice baseApi;
         private string Token;
@@ -38,7 +38,7 @@ namespace MGSol
                 
             return shipmentOrders; 
             }
-            set { shipmentOrders = value; СhangeList?.Invoke("ShipmentOrders.bin", ShipmentOrders); }
+            set { shipmentOrders = value; ChangeList?.Invoke("ShipmentOrders.bin", ShipmentOrders); }
         }
         public INetClient GetClient()
         {
@@ -51,12 +51,12 @@ namespace MGSol
         public BaseInfoPrice BaseInfoPrice
         {
             get => baseApi;
-            set { baseApi = value; СhangeList?.Invoke("baseApi.bin", baseApi); }
+            set { baseApi = value; ChangeList?.Invoke("baseApi.bin", baseApi); }
         }
         public MarketPlaceCash OptionMarketPlace
         {
             get => options;
-            set { options = value; СhangeList?.Invoke("Option.bin", options); }
+            set { options = value; ChangeList?.Invoke("Option.bin", options); }
         }
         internal ObservableCollection<Control> Tabs { get; set; }
         public List<string> GetApi()
@@ -84,7 +84,7 @@ namespace MGSol
 
         public InnString GetInnFromName(string Name) { return options.SellerINN.Find(x => x.MarketName.ToString() == Name); }
         public APISetting GetApiFromName(string Name) { return options.APISettings.Find(x => x.Name == Name); }
-        public void Save() { СhangeList?.Invoke("Option.bin", options); СhangeList?.Invoke("baseApi.bin", baseApi); }
+        public void Save() { ChangeList?.Invoke("Option.bin", options); ChangeList?.Invoke("baseApi.bin", baseApi); }
         public MainModel()
         {
             Tabs = new ObservableCollection<Control>();
@@ -99,7 +99,7 @@ namespace MGSol
             {
                 baseApi = new BaseInfoPrice();
             }
-            СhangeList += Serializer.Doit;
+            ChangeList += Serializer.Doit;
         }
         private Serializer<object> Serializer = new();
         private static void LoadFromFile<T>(ref T Object, string Path)

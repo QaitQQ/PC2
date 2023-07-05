@@ -77,6 +77,9 @@
     <Content Include="favicon.ico" />
     <Content Include="main\favicon.ico" />
     <Content Include="main\static\favicon.ico" />
+    <Content Include="main\templates\main\add.html">
+      <SubType>Code</SubType>
+    </Content>
     <Content Include="WebApp\favicon.ico" />
     <Content Include="main\static\main\css\main.css" />
     <Content Include="main\templates\main\include.html" />

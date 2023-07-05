@@ -10,7 +10,7 @@
 
 <h1>Первая страница</h1>
 <div class="features">
-
+    {%if tables%}
     {%for el in tables %}
 
     <div class="alert alert-warning">
@@ -21,10 +21,18 @@
         <p>
             {{el.anons}}
         </p>
-
+        <p>  <!--коментарий--></p>
     </div>
 
     {%endfor%}
+    {%else %}
+    <p>Нет записей</p>
+    {%endif%}
+    <!--коментарий-->
+
+
+
+
 </div>
 
 

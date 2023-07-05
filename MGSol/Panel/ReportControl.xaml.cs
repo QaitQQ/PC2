@@ -381,9 +381,13 @@ namespace MGSol.Panel
         {
             try
             {
-                XmlSerializer xmlSerializer = new(typeof(FileOption));
-                using FileStream fs = new(FL.FullPath.Replace("xlsx", "xml"), FileMode.OpenOrCreate);
-                return FL = xmlSerializer.Deserialize(fs) as FileOption;
+                if (File.Exists(FL.FullPath))
+                {
+                    XmlSerializer xmlSerializer = new(typeof(FileOption));
+                    using FileStream fs = new(FL.FullPath.Replace("xlsx", "xml"), FileMode.OpenOrCreate);
+                    return FL = xmlSerializer.Deserialize(fs) as FileOption;
+                }
+                else { return null; }
             }
             catch
             {

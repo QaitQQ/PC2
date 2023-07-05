@@ -1,45 +1,26 @@
 ﻿using StructLibCore.Marketplace;
-
-using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Windows.Controls;
-
 namespace MGSol.Panel
 {
-    /// <summary>
-    /// Логика взаимодействия для ReturnControl.xaml
-    /// </summary>
     public partial class ReturnControl : UserControl
     {
-        private MainModel model;
-        private ObservableCollection<APISetting> Options;
-        private ObservableCollection<IOrder> VisOrderList;
-        private ObservableCollection<IOrder> orderList;
+        private readonly MainModel model;
+        private readonly ObservableCollection<APISetting> Options;
+        private readonly ObservableCollection<IOrder> VisOrderList;
+        private readonly ObservableCollection<IOrder> orderList;
         public ReturnControl(MainModel Model)
         {
             model = Model;
             InitializeComponent();
             Options = new ObservableCollection<APISetting>();
             orderList = new ObservableCollection<IOrder>();
-            PrintActBtnStack.ItemsSource = Options;
             VisOrderList = new ObservableCollection<IOrder>();
-            StatusBox.ItemsSource = Enum.GetValues(typeof(StructLibCore.Marketplace.OrderStatus));
             OrderStack.ItemsSource = VisOrderList;
         }
-        private void StatusBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            VisOrderList.Clear();
-            IEnumerable<IOrder> X = from x in orderList where x.Status == (OrderStatus)StatusBox.SelectedItem orderby x.DeliveryDate select x;
-            foreach (IOrder item in X)
-            {
-                VisOrderList.Add(item);
-            }
-            GC.Collect();
-        }
-        private void LoadNetReturns(List<APISetting> aPISettings)
+        public void LoadNetReturns(ObservableCollection<APISetting> aPISettings)
         {
             orderList.Clear();
             List<IOrder> F = new();
@@ -62,7 +43,6 @@ namespace MGSol.Panel
                         default:
                             break;
                     }
-
                     if (Result != null)
                     {
                         Dispatcher.Invoke(() => Options.Add(item));
@@ -73,14 +53,11 @@ namespace MGSol.Panel
                     }
                 }
             }
+            List<IOrder> ReadyList = orderList.Where(x => x.Status == OrderStatus.READY).ToList();
+            foreach (IOrder item in ReadyList)
+            {
+                VisOrderList.Add(item);
+            }
         }
-
-        private void Fill_VOrders(object sender, System.Windows.RoutedEventArgs e)
-        {
-            Options.Clear();
-            Task.Factory.StartNew(() => LoadNetReturns(model.OptionMarketPlace.APISettings));
-            StatusBox.SelectedIndex = 1;
-        }
-
     }
 }

@@ -13,5 +13,9 @@ def index(request):
 
 
 def One(request):
-    tables = Atable.objects.all()
+    tables = Atable.objects.order_by("-date")[:2]
     return render(request, 'main/One.html',{'tables':tables})
+
+
+def add(request):
+    return render(request, 'main/add.html')

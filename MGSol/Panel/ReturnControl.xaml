@@ -7,40 +7,6 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="55"/>
-            <RowDefinition/>
-        </Grid.RowDefinitions>
-        <Border  CornerRadius="1"  BorderThickness="1">
-            <StackPanel Grid.Row="0" Orientation="Horizontal"  Margin="2">
-                <Button Margin="2" Height="35" Width="35" Content="↺" Background="#FF64B067" FontSize="24" FontFamily="Arial" FontWeight="Bold" Click="Fill_VOrders"  HorizontalAlignment="Left"/>
-                <Grid Height="40">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition/>
-                        <ColumnDefinition/>
-                    </Grid.ColumnDefinitions>
-                    <TextBox Height="35" Width="100" x:Name="SearchBox" ></TextBox>
-                    <Button Height="35"  Content="&#128269;"  Grid.Column="1" ></Button>
-                </Grid>
-                <ComboBox HorizontalAlignment="Center"  VerticalAlignment="Center" Margin="2" Height="35" x:Name="StatusBox" SelectionChanged="StatusBox_SelectionChanged"></ComboBox>
-                <Border  Height="35" BorderBrush="Green" BorderThickness="1" CornerRadius="3" >
-                    <StackPanel Orientation="Horizontal">
-                        <ItemsControl x:Name="PrintActBtnStack">
-                            <ItemsControl.ItemsPanel>
-                                <ItemsPanelTemplate>
-                                    <StackPanel Orientation="Horizontal"/>
-                                </ItemsPanelTemplate>
-                            </ItemsControl.ItemsPanel>
-                            <ItemsControl.ItemTemplate>
-                                <DataTemplate>
-                                    <Button Margin="2" Content="{Binding Name}" Background="#FFADF78B"></Button>
-                                </DataTemplate>
-                            </ItemsControl.ItemTemplate>
-                        </ItemsControl>
-                    </StackPanel>
-                </Border>
-            </StackPanel>
-        </Border>
         <Grid x:Name="grid"  Grid.Row="1">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition x:Name="StackColumn"/>

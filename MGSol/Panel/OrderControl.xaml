@@ -9,6 +9,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="55"/>
             <RowDefinition/>
+            <RowDefinition Height="80"/>
         </Grid.RowDefinitions>
         <Border Grid.Row="0"  CornerRadius="1"  BorderThickness="1">
             <StackPanel Grid.Row="0" Orientation="Horizontal"  Margin="2">
@@ -44,7 +45,6 @@
                 </StackPanel>
             </StackPanel>
         </Border>
-      
         <Grid x:Name="grid"  Grid.Row="1">
             <Grid.RowDefinitions>
                 <RowDefinition x:Name="StackColumn" Height="150"/>
@@ -69,7 +69,6 @@
                                                             <Grid Grid.Row="0">
                                                                 <StackPanel HorizontalAlignment="Left" Width="2000">
                                                                     <StackPanel Width="600" x:Name="HeadStack"  Background="DarkSalmon" Margin ="3"  Orientation="Horizontal" VerticalAlignment="Center" MouseLeftButtonDown="HeadStack_MouseLeftButtonDown"  HorizontalAlignment="Left">
-                                                                       
                                                                         <TextBlock Margin="3" Width="100"  VerticalAlignment="Center"  Text="{Binding APISetting.Name}"></TextBlock>
                                                                         <TextBlock Margin="3" Width="150" VerticalAlignment="Center" Text="{Binding Id}"></TextBlock>
                                                                         <TextBlock Margin="3" Width="120" VerticalAlignment="Center" Text="{Binding Date, StringFormat='{}{0:dd.MM.yyyy h:mm }'}"></TextBlock>
@@ -123,15 +122,12 @@
                         </ItemsControl>
                     </StackPanel>
                 </Border>
-            </ScrollViewer>
-
-
+            </ScrollViewer> 
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition/>
                     <ColumnDefinition Width="0.3*"/>
                 </Grid.ColumnDefinitions>
-
                 <Grid x:Name="MainOrderBoard">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition  Width="85"/>
@@ -165,13 +161,9 @@
                     </StackPanel>
                     </Border>
                 </Grid>
-                
                 <WebBrowser   Opacity="1" x:Name="Browser" Grid.Column="1" ></WebBrowser>
             </Grid>
-            
-            
-            
-            
         </Grid>
+        <Grid Grid.Row="3" x:Name="ReturnGrid"></Grid>
     </Grid>
 </UserControl>

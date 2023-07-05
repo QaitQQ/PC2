@@ -8,15 +8,22 @@
         Background="Transparent"
         WindowStyle="None"
         >
-    <Window.Resources>
-        <!--<Style TargetType="TabItem">
+    <WindowChrome.WindowChrome>
+        <WindowChrome GlassFrameThickness="0,0,0,1" CornerRadius="4"></WindowChrome>
+    </WindowChrome.WindowChrome>
+    
+<Window.Resources>
+
+        <Style x:Key="NoStyle"></Style>
+        
+        <Style TargetType="TabItem">
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="TabItem">
                         <Border  BorderThickness="2,1,1,1" CornerRadius="0,0,0,0" BorderBrush="Gray" Margin="0,-2,-2,-2">
-                            <Label x:Name="L2"  Content="{TemplateBinding Header}" VerticalAlignment="Bottom"  Height="25">
+                            <Label x:Name="L2"  Style="{StaticResource NoStyle}" Content="{TemplateBinding Header}" VerticalAlignment="Bottom"  Height="25">
                                 <Label.Background>
-                                    <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                                    <LinearGradientBrush EndPoint="0.5,3" StartPoint="0.5,0">
                                         <GradientStop Color="#FFDCE9F7"/>
                                         <GradientStop Color="#FFC3DEFB"/>
                                     </LinearGradientBrush>
@@ -31,7 +38,7 @@
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
-        </Style>-->
+        </Style>
         <Style TargetType="TabControl">
             <Setter Property="Background">
                 <Setter.Value>
@@ -145,12 +152,18 @@
     </Window.Resources>
     <Grid Background="White">
         <Grid.RowDefinitions>
-            <RowDefinition Height="20"/>
+            <RowDefinition Height="18"/>
             <RowDefinition/>
         </Grid.RowDefinitions>
         <Grid Grid.Row="0" Background="Blue" x:Name="Heading" MouseLeftButtonDown="Heading_MouseLeftButtonDown">
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                <Button Content="X" Background="Red" x:Name="Сlose_Button" MinWidth="20" Opacity="0.9" Width="20" Click="Сlose_Button_Click" HorizontalAlignment="Center" FontSize="9"></Button>
+            <StackPanel  Orientation="Horizontal" HorizontalAlignment="Right">
+                <Button Style="{StaticResource NoStyle}" Margin="0" Background="Red" VerticalAlignment="Center" x:Name="Сlose_Button" MinWidth="16" Height="16" Opacity="0.9" Width="16" Click="Сlose_Button_Click" >
+                    <Button.Content>
+                        <TextBlock Text="🞮" FontSize="9"></TextBlock>
+                    </Button.Content>
+                 
+                </Button>
+                <Grid Width="1"></Grid>
             </StackPanel>
         </Grid>
         <Grid Background="Transparent" Grid.Row="1">

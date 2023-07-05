@@ -19,7 +19,7 @@ namespace MGSol
             Panel.ItemControl Items = new Panel.ItemControl(MModel);
             Items.BeginInit();
             AddTab(Items, "Товары");
-            AddTab(new Panel.ReturnControl(MModel), "Возвраты");
+           // AddTab(new Panel.ReturnControl(MModel), "Возвраты");
             AddTab(new Panel.ReportControl(MModel), "Отчеты");
             AddTab(new Panel.ShipmentListControl(MModel), "Отгрузки");
             AddTab(new Panel.OptionControl(MModel), "Настройки");
