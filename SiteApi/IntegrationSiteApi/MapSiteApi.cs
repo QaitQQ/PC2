@@ -32,8 +32,6 @@ namespace Server.Class.IntegrationSiteApi
         #endregion
         public urlset GetMap()
         {
-
-            List<WordTable> List = new List<WordTable>();
             urlset Result = new urlset();
 
 
@@ -42,7 +40,7 @@ namespace Server.Class.IntegrationSiteApi
                 urlset RowArrey = JsonConvert.DeserializeObject<urlset>(JsonConvert.DeserializeObject<_Message>(Response.Result.Content.ReadAsStringAsync().Result).msg.ToString());
 
             }
-            catch (Exception e) { throw e; }
+            catch {  }
 
             return Result;
 

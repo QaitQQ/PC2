@@ -13,7 +13,7 @@ namespace MGSol.Panel
             public bool Qadd;
             private int SiAs;
 
-
+            private string SiText;
             public OptionAddBox(StructLibCore.Marketplace.APISetting Setting = null)
             {
                 Qadd = false;
@@ -42,85 +42,62 @@ namespace MGSol.Panel
                 }
                 INNBOX.TextChanged += (x, e) =>
                 {
-                    if (Setting == null)
-                    {
-                        Setting = new StructLibCore.Marketplace.APISetting();
-                    }
+                    Setting ??= new StructLibCore.Marketplace.APISetting();
                     Setting.INN = INNBOX.Text;
                 };
                 ComboBox Type = new()
                 {
-                    ItemsSource = Enum.GetValues(typeof(StructLibCore.Marketplace.MarketName))
+                    ItemsSource = Enum.GetValues(typeof(StructLibCore.Marketplace.MarketName)),
+                    SelectedItem = Setting?.Type
                 };
-                Type.SelectedItem = Setting?.Type;
-                ListBox listBox = new();
-                listBox.ItemsSource = Setting?.ApiString;
-
+                ListBox listBox = new()
+                {
+                    ItemsSource = Setting?.ApiString
+                };
                 //foreach (Control item in listBox.Items)
                 //{
                 //    item.MouseRightButtonDown += (x, e) => 
                 //    {
-
                 //    };
                 //} 
-
-                listBox.SelectionChanged += (x, e) => 
+                listBox.SelectionChanged += (x, e) =>
                 {
-
-                    this.SiAs = ((ListBox)x).SelectedIndex;
-
-
+                    SiAs = ((ListBox)x).SelectedIndex;
+                    SiText = ((ListBox)x).SelectedItem.ToString();
                     ContextMenu M = new();
                     TextBlock X = new() { Text = "Удалить" };
                     X.MouseLeftButtonDown += (o, y) =>
                     {
-
                     };
-                    M.Items.Add(X);
+                    _ = M.Items.Add(X);
                     TextBlock С = new() { Text = "Изменить" };
                     С.MouseLeftButtonDown += (o, y) =>
                     {
-                        this.ApiSetting.ApiString[SiAs] = "123";
-
-
+                        ApiSetting.ApiString[SiAs] = "123";
                         ContextMenu N = new();
-                        TextBox block = new();
-                        block.Width= 100;
-
-                        N.Items.Add(block);
-                        N.IsOpen= true;
-
-                        N.Closed += (o, e) =>
-
+                        TextBox block = new()
                         {
-
-                            this.ApiSetting.ApiString[SiAs] = block.Text;
-
-
-
+                            Text = SiText,
+                            Width = 100
                         };
-
-                        
-
+                        _ = N.Items.Add(block);
+                        N.IsOpen = true;
+                        N.Closed += (o, e) =>
+                        {
+                            ApiSetting.ApiString[SiAs] = block.Text;
+                        };
                     };
-                    M.Items.Add(С);
-
-
+                    _ = M.Items.Add(С);
                     M.IsOpen = true;
-
                 };
-
                 listBox.MouseRightButtonDown += (x, y) =>
                 {
                     ContextMenu M = new();
-                    TextBlock X = new() {Text = "Добавить" };
+                    TextBlock X = new() { Text = "Добавить" };
                     X.MouseLeftButtonDown += (x, y) =>
                     {
                         ModalBox MB = new();
-                        if (Setting == null)
-                        {
-                            Setting = new StructLibCore.Marketplace.APISetting();
-                        }
+                        Setting ??= new StructLibCore.Marketplace.APISetting();
                         if ((bool)MB.ShowDialog())
                         {
                             List<string> lst = Setting.ApiString is null ? new List<string>() : Setting.ApiString.ToList();
@@ -130,17 +107,17 @@ namespace MGSol.Panel
                             MB.Close();
                         };
                     };
-                    M.Items.Add(X);
+                    _ = M.Items.Add(X);
                     M.IsOpen = true;
                 };
                 Grid.SetColumn(NameBox, 0);
                 Grid.SetColumn(Type, 1);
                 Grid.SetColumn(listBox, 3);
                 Grid.SetColumn(INNBOX, 2);
-                NoteGrid.Children.Add(NameBox);
-                NoteGrid.Children.Add(Type);
-                NoteGrid.Children.Add(listBox);
-                NoteGrid.Children.Add(INNBOX);
+                _ = NoteGrid.Children.Add(NameBox);
+                _ = NoteGrid.Children.Add(Type);
+                _ = NoteGrid.Children.Add(listBox);
+                _ = NoteGrid.Children.Add(INNBOX);
                 ButtonGrid.ColumnDefinitions.Add(new ColumnDefinition());
                 ButtonGrid.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(70) });
                 ButtonGrid.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(70) });
@@ -165,9 +142,7 @@ namespace MGSol.Panel
                 Button Save = new() { Content = "Сохранить", Height = 35, Width = 60, Margin = new Thickness(5) };
                 Save.Click += (x, y) =>
                 {
-
-                    if (ApiSetting == null) { ApiSetting = new StructLibCore.Marketplace.APISetting(); }
-
+                    ApiSetting ??= new StructLibCore.Marketplace.APISetting();
                     if (NameBox.Text != "")
                     {
                         ApiSetting.Name = NameBox.Text;
@@ -176,13 +151,10 @@ namespace MGSol.Panel
                     {
                         ApiSetting.Type = (StructLibCore.Marketplace.MarketName)Type.SelectedItem;
                     }
-
-
                     if (INNBOX.Text != "")
                     {
                         ApiSetting.INN = INNBOX.Text;
                     }
-
                     if (listBox.Items.Count > 0)
                     {
                         List<string> lst = new();
@@ -192,18 +164,17 @@ namespace MGSol.Panel
                         }
                         ApiSetting.ApiString = lst.ToArray();
                     }
-
                     Qadd = false;
                     DialogResult = true; Close();
                 };
                 Grid.SetColumn(Save, 1);
                 Button Cancel = new() { Content = "Отменить", Height = 35, Width = 60, Margin = new Thickness(5), IsCancel = true };
                 Grid.SetColumn(Cancel, 3);
-                ButtonGrid.Children.Add(OK);
-                ButtonGrid.Children.Add(Save);
-                ButtonGrid.Children.Add(Cancel);
-                MainGrid.Children.Add(NoteGrid);
-                MainGrid.Children.Add(ButtonGrid);
+                _ = ButtonGrid.Children.Add(OK);
+                _ = ButtonGrid.Children.Add(Save);
+                _ = ButtonGrid.Children.Add(Cancel);
+                _ = MainGrid.Children.Add(NoteGrid);
+                _ = MainGrid.Children.Add(ButtonGrid);
                 AddChild(MainGrid);
             }
         }

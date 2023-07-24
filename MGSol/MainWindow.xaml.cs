@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System.Threading.Tasks.Dataflow;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Forms;
 using System.Windows.Input;
@@ -35,16 +36,22 @@ namespace MGSol
         {
             if (e.ClickCount == 2)
             {
+
                 if (this.WindowState == WindowState.Maximized)
                 {
                     this.WindowState = WindowState.Normal;
+                    ((Grid)sender).Height = 18;
                 }
                 else
                 {
                     System.Drawing.Rectangle r = Screen.GetWorkingArea(new System.Drawing.Point((int)this.Left, (int)this.Top));
-                    this.MaxWidth = r.Width + 14;
-                    this.MaxHeight = r.Height + 14;
+                    this.Left = 8;
+                    this.Top = 10;
+                    this.MaxWidth = r.Width +7 ;
+                    this.MaxHeight = r.Height +7;
                     this.WindowState = WindowState.Maximized;
+
+                    ((Grid)sender).Height = 25;
                 }
             }
             else
@@ -86,6 +93,11 @@ namespace MGSol
             DragMove();
         }
         private void cmdClose_Click(object sender, RoutedEventArgs e)
+        {
+            Close();
+        }
+
+        private void TextBlock_MouseDown(object sender, MouseButtonEventArgs e)
         {
             Close();
         }

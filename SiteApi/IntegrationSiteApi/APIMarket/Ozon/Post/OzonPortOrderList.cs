@@ -347,6 +347,8 @@ namespace Server.Class.IntegrationSiteApi.Market.Ozon.OzonPortOrderList
                     break;
             }
         }
+
+        string IOrder.ShipmentDate => ShipmentDate.ToString();
     }
     [Serializable]
     public class Result

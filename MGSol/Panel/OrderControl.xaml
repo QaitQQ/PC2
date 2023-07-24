@@ -34,11 +34,11 @@
                         </ItemsControl.ItemsPanel>
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <Border BorderBrush="Gray" BorderThickness="2" CornerRadius="5,1,5,1" Margin="1,1,-4,1" Height="30">
-                                    <Grid Margin="1" x:Name="ActButton" MouseLeftButtonDown="GetActClick" Background="#FFADF78B" MouseEnter="ActButton_MouseEnter" MouseLeave="ActButton_MouseLeave">
-                                        <Label Content="{Binding Name}" />
-                                    </Grid>
-                                </Border>
+                                <Label FontSize="10" FontWeight="Bold" Content="{Binding Name}" Width="65" Margin="-15" Background="#FFADF78B"  MouseLeftButtonDown="GetActClick"  MouseEnter="ActButton_MouseEnter" MouseLeave="ActButton_MouseLeave">
+                                    <Label.LayoutTransform>
+                                        <RotateTransform Angle="-45"></RotateTransform>
+                                    </Label.LayoutTransform>
+                                </Label>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
@@ -46,17 +46,23 @@
             </StackPanel>
         </Border>
         <Grid x:Name="grid"  Grid.Row="1">
-            <Grid.RowDefinitions>
-                <RowDefinition x:Name="StackColumn" Height="150"/>
-                <RowDefinition x:Name="BCol" />
-            </Grid.RowDefinitions>
-            <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility ="Auto" Visibility="Visible">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="355" x:Name="StackColumn"/>
+                <ColumnDefinition x:Name="BCol" />
+            </Grid.ColumnDefinitions>
+            <ScrollViewer Grid.Column="1" VerticalScrollBarVisibility ="Auto" Visibility="Visible">
                 <Border  BorderBrush="#FF514141" BorderThickness="2" CornerRadius="4" Margin="2">
                     <StackPanel   >
                         <ItemsControl x:Name="OrderStack" Background="Gainsboro" FontFamily="Arial"  HorizontalAlignment="Left"  >
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
-                                    <HeaderedContentControl Header="{Binding Path=Key, StringFormat='{}{0:dd.MM.yyyy  h:mm }'}" FontFamily="Arial" >
+                                    <HeaderedContentControl>
+                                        <HeaderedContentControl.Header>
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock Text="{Binding Key,  ValidatesOnExceptions=True, StringFormat={}{0:dd.MM.yy}}"></TextBlock>
+                                                <TextBlock Text="{Binding Path=Count, StringFormat= {} количество заказов {0} }"></TextBlock>
+                                            </StackPanel>
+                                        </HeaderedContentControl.Header>
                                         <ItemsControl  ItemsSource="{Binding Path=.}" Background="Gray"  HorizontalAlignment="Left" >
                                             <ItemsControl.ItemTemplate>
                                                 <DataTemplate>
@@ -75,21 +81,21 @@
                                                                         <TextBlock Margin="3" Width="15" VerticalAlignment="Center" Text="=>"></TextBlock>
                                                                         <TextBlock Width="65" Margin="3" VerticalAlignment="Center" Text="{Binding DeliveryDate}"></TextBlock>
                                                                     </StackPanel>
-                                                                    <StackPanel Orientation="Horizontal" Visibility="Collapsed">
+                                                                    <StackPanel HorizontalAlignment="Left" Orientation="Horizontal" Visibility="Collapsed" >
                                                                         <ItemsControl Grid.Row="1" ItemsSource ="{Binding Items}" >
                                                                             <ItemsControl.ItemTemplate>
                                                                                 <DataTemplate>
-                                                                                    <StackPanel>
+                                                                                    <StackPanel HorizontalAlignment="Left">
                                                                                         <TextBlock Margin="2" VerticalAlignment="Center" Background="White" Text="{Binding Name}"></TextBlock>
-                                                                                        <StackPanel Orientation="Horizontal"  Width="600">
-                                                                                            <Button Margin="3" Width="20" x:Name="CopyItemButton" Content="📋" Background="CadetBlue"  Click="CopyItemButton_Click" HorizontalAlignment="Left"></Button>
-                                                                                            <Border HorizontalAlignment="Center"  BorderBrush="Black" BorderThickness="1" Height="17">
-                                                                                                <TextBlock FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center"  Margin="2" FontSize="14" Background="White" Width="25" Text="{Binding Count}"></TextBlock>
+                                                                                        <StackPanel HorizontalAlignment="Left" Orientation="Horizontal"  Width="600">
+                                                                                            <Button  Margin="3" Width="20" x:Name="CopyItemButton" Content="📋" Background="CadetBlue"  Click="CopyItemButton_Click" HorizontalAlignment="Left"></Button>
+                                                                                            <Border HorizontalAlignment="Left"  BorderBrush="Black" BorderThickness="1" Height="17">
+                                                                                                <TextBlock FontWeight="Bold" HorizontalAlignment="Left" VerticalAlignment="Center"  Margin="2" FontSize="14" Background="White" Width="25" Text="{Binding Count}"></TextBlock>
                                                                                             </Border>
-                                                                                            <TextBlock Margin="3" Width="80" VerticalAlignment="Center" Text="{Binding Sku}"></TextBlock>
-                                                                                            <TextBlock Margin="2" VerticalAlignment="Center" Background="Wheat" Text="{Binding Price}"></TextBlock>
+                                                                                            <TextBlock Margin="3" Width="80" HorizontalAlignment="Left" VerticalAlignment="Center" Text="{Binding Sku}"></TextBlock>
+                                                                                            <TextBlock Margin="2" HorizontalAlignment="Left" VerticalAlignment="Center" Background="Wheat" Text="{Binding Price}"></TextBlock>
                                                                                         </StackPanel>
-                                                                                        <StackPanel Orientation="Horizontal"></StackPanel>
+                                                                                        <StackPanel HorizontalAlignment="Left" Orientation="Horizontal"></StackPanel>
                                                                                     </StackPanel>
                                                                                 </DataTemplate>
                                                                             </ItemsControl.ItemTemplate>
@@ -122,46 +128,54 @@
                         </ItemsControl>
                     </StackPanel>
                 </Border>
-            </ScrollViewer> 
-            <Grid>
+            </ScrollViewer>
+            <Grid x:Name="MainOrderBoard">
                 <Grid.ColumnDefinitions>
+                    <ColumnDefinition  Width="85"/>
                     <ColumnDefinition/>
-                    <ColumnDefinition Width="0.3*"/>
                 </Grid.ColumnDefinitions>
-                <Grid x:Name="MainOrderBoard">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition  Width="85"/>
-                        <ColumnDefinition/>
-                    </Grid.ColumnDefinitions>
-                    <StackPanel Grid.Column="0" Orientation="Horizontal"  Margin="3">
-                        <Button Margin="3" Content="📦" Background="Green"  Click="Ship_Click" HorizontalAlignment="Left"></Button>
-                        <Button Margin="3"  Content="🏷" Click="Label_Click" Background="#FFF5C150"  HorizontalAlignment="Left"/>
-                    </StackPanel>
-                    <Border Grid.Column="1" BorderThickness="1" Background="White">
-                        <StackPanel Orientation="Horizontal">
-                            <ItemsControl  ItemsSource ="{Binding Items}"  Grid.Row="1" >
-                            <ItemsControl.ItemTemplate>
-                                    <DataTemplate >
-                                        <StackPanel>
-                                        <TextBlock Margin="2" VerticalAlignment="Center" Background="White" Text="{Binding Name}"></TextBlock>
-                                        <StackPanel Orientation="Horizontal"  Width="600">
-                                            <Button Margin="3" Width="20" x:Name="CopyItemButton" Content="📋" Background="CadetBlue"  Click="CopyItemButton_Click" HorizontalAlignment="Left"></Button>
-                                            <Border HorizontalAlignment="Center"  BorderBrush="Black" BorderThickness="1" Height="17">
-                                                <TextBlock FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center"  Margin="2" FontSize="14" Background="White" Width="25" Text="{Binding Count}"></TextBlock>
-                                            </Border>
-                                            <TextBlock Margin="3" Width="80" VerticalAlignment="Center" Text="{Binding Sku}"></TextBlock>
-                                            <TextBlock Margin="2" VerticalAlignment="Center" Background="Wheat" Text="{Binding Price}"></TextBlock>
-                                            <Button Margin="3" Width="20" x:Name="GetImage" Content="🎨" Background="CadetBlue"  Click="GetImage_Click" HorizontalAlignment="Left"></Button>
-                                        </StackPanel>
-                                        <StackPanel Orientation="Horizontal"></StackPanel>
-                                    </StackPanel>
-                                </DataTemplate>
-                            </ItemsControl.ItemTemplate>
-                        </ItemsControl>
-                    </StackPanel>
-                    </Border>
-                </Grid>
-                <WebBrowser   Opacity="1" x:Name="Browser" Grid.Column="1" ></WebBrowser>
+                <StackPanel Grid.Column="0" Orientation="Horizontal"  Margin="3">
+                    <Button Margin="3" Content="📦" Background="Green"  Click="Ship_Click" HorizontalAlignment="Left"></Button>
+                    <Button Margin="3"  Content="🏷" Click="Label_Click" Background="#FFF5C150"  HorizontalAlignment="Left"/>
+                </StackPanel>
+                <Border Grid.Column="1" BorderThickness="1" Background="White">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition/>
+                            <RowDefinition x:Name="WebBrowserRow" MaxHeight="390"/>
+                        </Grid.RowDefinitions>
+                        <ScrollViewer VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Auto">
+                            <StackPanel HorizontalAlignment="Left" Grid.Row="0" MaxWidth="247" Orientation="Horizontal">
+                                <ItemsControl  ItemsSource ="{Binding Items}"  Grid.Row="1" >
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate >
+                                            <StackPanel HorizontalAlignment="Left">
+                                                <StackPanel HorizontalAlignment="Left" Orientation="Vertical"  Width="600">
+                                                    <Button Margin="3"  x:Name="CopyItemButton"  Background="OrangeRed"  Click="CopyItemButton_Click" HorizontalAlignment="Left">
+                                                        <Button.Content>
+                                                            <TextBlock Margin="2" VerticalAlignment="Center" Background="White" Text="{Binding Name}" Width="237"  HorizontalAlignment="Left" TextWrapping="Wrap"></TextBlock>
+                                                        </Button.Content>
+                                                    </Button>
+                                                    <Border HorizontalAlignment="Left"  BorderBrush="Black" BorderThickness="1" Height="17">
+                                                        <StackPanel Orientation="Horizontal">
+                                                            <TextBlock FontWeight="Bold" HorizontalAlignment="Left" VerticalAlignment="Center"  Margin="2" FontSize="14" Background="White" Width="Auto" Text="{Binding Count}"></TextBlock>
+                                                            <TextBlock    Text=" шт. "></TextBlock>
+                                                        </StackPanel>
+                                                    </Border>
+                                                    <TextBlock Margin="3" Width="80" VerticalAlignment="Center" HorizontalAlignment="Left" Text="{Binding Sku}"></TextBlock>
+                                                    <TextBlock Margin="2" VerticalAlignment="Center" HorizontalAlignment="Left" Background="Wheat" Text="{Binding Price}"  TextWrapping="Wrap"></TextBlock>
+                                                    <Button Margin="3" Width="20" x:Name="GetImage" Content="🎨" Background="CadetBlue"  Click="GetImage_Click" HorizontalAlignment="Left"></Button>
+                                                </StackPanel>
+                                                <StackPanel HorizontalAlignment="Left" Orientation="Vertical"></StackPanel>
+                                            </StackPanel>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </StackPanel>
+                        </ScrollViewer>
+                        <WebBrowser   Opacity="1" x:Name="Browser" Grid.Row="1" ></WebBrowser>
+                    </Grid>
+                </Border>
             </Grid>
         </Grid>
         <Grid Grid.Row="3" x:Name="ReturnGrid"></Grid>

@@ -24,7 +24,6 @@ namespace MGSol.Panel
         private event Action<List<IOrder>> LoadOrders;
         private MainModel model { get; set; }
         public ObservableCollection<IOrder> OrderList { get; set; }
-
         private ReturnControl ReturnControl { get; set; }
         public OrdersControl(MainModel Model)
         {
@@ -38,10 +37,8 @@ namespace MGSol.Panel
             StatusBox.ItemsSource = Enum.GetValues(typeof(StructLibCore.Marketplace.OrderStatus));
             LoadOrders += FillOrders;
             PrintActBtnStack.ItemsSource = Options;
-
             ReturnControl = new ReturnControl(Model);
-
-            ReturnGrid.Children.Add(ReturnControl);
+            _ = ReturnGrid.Children.Add(ReturnControl);
         }
         private void FillOrders(List<IOrder> orders)
         {
@@ -63,8 +60,7 @@ namespace MGSol.Panel
         {
             Dispatcher.Invoke(() => Options.Clear());
             List<IOrder> F = new();
-            ReturnControl.LoadNetReturns(Options);
-
+           
             foreach (APISetting item in aPIs)
             {
                 _ = Task.Factory.StartNew(() =>
@@ -94,11 +90,15 @@ namespace MGSol.Panel
                             {
                                 F.Add((StructLibCore.Marketplace.IOrder)t);
                             }
-                        }//  var X = new Network.Item.MarketApi.GetListOrders().Get<List<object>>(new WrapNetClient(), item);
+                        }
                     }
                     Dispatcher.Invoke(() => LoadOrders(F));
                 });
             }
+
+         //   ReturnControl.LoadNetReturns(model.OptionMarketPlace.APISettings);
+
+
         }
         private void Fill_VOrders(object sender, RoutedEventArgs e)
         {
@@ -200,19 +200,24 @@ namespace MGSol.Panel
             }
             BNavi(Z);
         }
-        private void Browser_hide(object sender, RoutedEventArgs e)
-        {
-        }
         private void GetActClick(object sender, RoutedEventArgs e)
         {
-            Grid btn = (Grid)sender;
+            Control btn = (Control)sender;
             APISetting X = (StructLibCore.Marketplace.APISetting)btn.DataContext;
             Browser.Navigate("http://localhost/");
             string Z = null;
             switch (X.Type)
             {
                 case MarketName.Yandex:
-                    Z = new YandexGETAct(X).Get();
+                    var P = OrderList.Where(x => x.APISetting == X && x.Status == OrderStatus.READY);
+                    if (P.Count() == 0)
+                    {
+                        _ = MessageBox.Show("По магазину " + X.Name + " нет заказов");
+                    }
+                    else
+                    {
+                        Z = new YandexGETAct(X).Get();
+                    }
                     break;
                 case MarketName.Ozon:
                     IEnumerable<IOrder> t = from c in OrderList where c.APISetting == X && c.Status == OrderStatus.READY select c;
@@ -226,10 +231,31 @@ namespace MGSol.Panel
                 default:
                     break;
             }
-            BNavi(Z);
+            bool CN = Z is not null && Z.ToLower().Contains("error");
+            if (CN)
+            {
+                _ = MessageBox.Show(Z);
+            }
+            else if (Z != null)
+            {
+                if (Z == "true")
+                {
+                    btn.Background = new SolidColorBrush(Color.FromRgb(0,0, 255));
+                }
+                else if (Z == "false")
+                {
+                    btn.Background = new SolidColorBrush(Color.FromRgb(255,0,0));
+                }
+                else
+                {
+                    BNavi(Z);
+                }
+            }
         }
         private void BNavi(string Z)
         {
+            WebBrowserRow.Height = new GridLength(390);
+
             string y = AppDomain.CurrentDomain.BaseDirectory;
             if (Z == null || !Z.Contains("none"))
             {
@@ -285,12 +311,12 @@ namespace MGSol.Panel
         }
         private void ActButton_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
         {
-            Grid Btn = (Grid)sender;
+            Control Btn = (Control)sender;
             Btn.Background = new SolidColorBrush(Color.FromRgb(168, 125, 125));
         }
         private void ActButton_MouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
         {
-            Grid Btn = (Grid)sender;
+            Control Btn = (Control)sender;
             Btn.Background = new SolidColorBrush(Color.FromRgb(173, 247, 139));
         }
         private void CopyItemButton_Click(object sender, RoutedEventArgs e)
@@ -304,7 +330,7 @@ namespace MGSol.Panel
         {
             Button Btn = (Button)sender;
             Btn.IsEnabled = false;
-            StackPanel St = (StackPanel)((StackPanel)((StackPanel)Btn.Parent).Parent).Children[2];
+            StackPanel St = (StackPanel)((StackPanel)((StackPanel)Btn.Parent).Parent).Children[1];
             MarketOrderItems OrderItem = (StructLibCore.Marketplace.MarketOrderItems)((Button)sender).DataContext;
             switch (OrderItem.Order.APISetting.Type)
             {
@@ -360,7 +386,8 @@ namespace MGSol.Panel
         {
             StackPanel p = (StackPanel)sender;
             MainOrderBoard.DataContext = p.DataContext;
-            Browser.Navigate("about:blank");
+            WebBrowserRow.Height = new GridLength(0);
+           // Browser.Navigate("about:blank");
             StackPanel Z = (StackPanel)p.Parent;
             StackPanel T = (StackPanel)Z.Children[1];
             T.Visibility = T.Visibility == Visibility.Collapsed ? Visibility.Visible : Visibility.Collapsed;

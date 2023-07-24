@@ -264,7 +264,7 @@ namespace Server.Class.IntegrationSiteApi
                     }
                 }
             }
-            catch (Exception e) { throw e; }
+            catch  {}
 
             return Result;
         }

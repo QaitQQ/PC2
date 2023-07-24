@@ -25,7 +25,7 @@ namespace MGSol.Panel
                 if (value != _STR)
                 {
                     _STR = value;
-                    OnPropertyChanged("STR");
+                    OnPropertyChanged(nameof(STR));
                 }
             }
         }

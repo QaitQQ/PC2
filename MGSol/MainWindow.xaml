@@ -11,11 +11,8 @@
     <WindowChrome.WindowChrome>
         <WindowChrome GlassFrameThickness="0,0,0,1" CornerRadius="4"></WindowChrome>
     </WindowChrome.WindowChrome>
-    
 <Window.Resources>
-
         <Style x:Key="NoStyle"></Style>
-        
         <Style TargetType="TabItem">
             <Setter Property="Template">
                 <Setter.Value>
@@ -95,10 +92,7 @@
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
-
         </Style>
-
-
         <Style TargetType="ScrollViewer">
             <Setter Property="OverridesDefaultStyle" Value="True"/>
             <Setter Property="Template">
@@ -152,21 +146,21 @@
     </Window.Resources>
     <Grid Background="White">
         <Grid.RowDefinitions>
-            <RowDefinition Height="18"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition/>
         </Grid.RowDefinitions>
-        <Grid Grid.Row="0" Background="Blue" x:Name="Heading" MouseLeftButtonDown="Heading_MouseLeftButtonDown">
-            <StackPanel  Orientation="Horizontal" HorizontalAlignment="Right">
-                <Button Style="{StaticResource NoStyle}" Margin="0" Background="Red" VerticalAlignment="Center" x:Name="Сlose_Button" MinWidth="16" Height="16" Opacity="0.9" Width="16" Click="Сlose_Button_Click" >
+        
+        <Grid Height="17"  Background="Blue" WindowChrome.IsHitTestVisibleInChrome="True" x:Name="Heading" MouseLeftButtonDown="Heading_MouseLeftButtonDown">
+            <StackPanel VerticalAlignment="Center" Orientation="Horizontal" HorizontalAlignment="Right">
+                <Button Style="{StaticResource NoStyle}" Margin="0" Background="Red" WindowChrome.IsHitTestVisibleInChrome="True" VerticalAlignment="Center" x:Name="Сlose_Button"  Opacity="0.9" Width="27">
                     <Button.Content>
-                        <TextBlock Text="🞮" FontSize="9"></TextBlock>
+                        <TextBlock Text="🞮" FontSize="9" MouseDown="TextBlock_MouseDown"></TextBlock>
                     </Button.Content>
-                 
                 </Button>
-                <Grid Width="1"></Grid>
-            </StackPanel>
+                <Grid Width="2"></Grid>
+            </StackPanel>   
         </Grid>
-        <Grid Background="Transparent" Grid.Row="1">
+        <Grid Width="Auto"  Background="Transparent" Grid.Row="1">
             <TabControl x:Name="MainTabControl"  TabStripPlacement="Left">
             </TabControl>
         </Grid>

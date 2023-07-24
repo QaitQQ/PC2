@@ -11,8 +11,12 @@
 <div class="features">
     <h1> Вот тут таблица</h1>
     <form method="post">
-        <input type="text" placeholder="Название" /><br />
-        <input type="text" placeholder="Содержимое" /><br />
+        {% csrf_token %}
+        {{form.title}}<br />
+        {{form.full_text}}<br />
+        {{form.date}}<br />
+        <span>{{error}}</span>
+        <button class="btn btn-info" type="submit"> Добавить</button>
     </form>
 </div>
 {% endblock %}

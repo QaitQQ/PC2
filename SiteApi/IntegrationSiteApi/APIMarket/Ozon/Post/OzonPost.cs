@@ -138,6 +138,8 @@ namespace SiteApi.IntegrationSiteApi.APIMarket.Ozon.Post
         public APISetting APISettingSource { get; set; }
         public List<string> Pic { get => images; set => images = value; }
         public string Barcode { get => barcode; set => barcode = value; }
+        public object Priceinfo { get; set; }
+
     }
     [Serializable]
     public class Result_D

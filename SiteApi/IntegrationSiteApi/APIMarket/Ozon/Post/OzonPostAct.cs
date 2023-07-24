@@ -32,14 +32,25 @@ namespace SiteApi.IntegrationSiteApi.APIMarket.Ozon.Post
                 }
             }
 
-            var root = new Root() 
+            var parsedDate = DateTime.Parse(orders[0].ShipmentDate);
+            var formData = $"{parsedDate:O}";
+
+
+            formData = formData.Replace("0000000", "444Z");
+
+            var root = new Root()
             {
-                DeliveryMethodId = Ids[0]
+                DeliveryMethodId = Ids[0],
+
+             //   ContainersCount = 1,
+
+
+                DepartureDate = formData,
             };
 
             using (var streamWriter = new StreamWriter(httpWebRequest.GetRequestStream()))
             {
-               var json = JsonConvert.SerializeObject(root); streamWriter.Write(json);
+                var json = JsonConvert.SerializeObject(root); streamWriter.Write(json);
             }
             HttpWebResponse httpResponse;
             try
@@ -47,7 +58,7 @@ namespace SiteApi.IntegrationSiteApi.APIMarket.Ozon.Post
                 httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
                 using (var streamReader = new StreamReader(httpResponse.GetResponseStream())) { result = streamReader.ReadToEnd(); }
                 ResultRoot rslt = JsonConvert.DeserializeObject<ResultRoot>(result);
-                httpWebRequest = GetRequest(@"v2/posting/fbs/act/get-pdf");
+                httpWebRequest = GetRequest(@"v2/posting/fbs/act/check-status");
                 Result XR = new Result() { Id = rslt.Result.Id };
                 using (var streamWriter = new StreamWriter(httpWebRequest.GetRequestStream()))
                 {
@@ -59,30 +70,30 @@ namespace SiteApi.IntegrationSiteApi.APIMarket.Ozon.Post
             {
                 return e.Message;
             }
-            try
+
+            using (var streamReader = new StreamReader(httpResponse.GetResponseStream())) { result = streamReader.ReadToEnd(); }
+
+            var RS =  JsonConvert.DeserializeObject<Response>(result);
+
+            if (RS.Result.Status == "ready")
             {
-                using (var str = File.Create("temp.pdf"))
-                    httpResponse.GetResponseStream().CopyTo(str);
-                return "temp.pdf";
+                return "true";
             }
-            catch
-            {
-                using (var str = File.Create("temp2.pdf"))
-                    httpResponse.GetResponseStream().CopyTo(str);
-                return "temp2.pdf";
-            }
+
+            return "false";
+
 
         }
         public class Root
         {
-            //[JsonProperty("containers_count")]
-            //public int ContainersCount;
+         //   [JsonProperty("containers_count")]
+        //    public int ContainersCount { get; set; }
 
             [JsonProperty("delivery_method_id")]
-            public string DeliveryMethodId;
+            public string DeliveryMethodId { get; set; }
 
-            //[JsonProperty("departure_date")]
-            //public DateTime DepartureDate;
+            [JsonProperty("departure_date")]
+            public string DepartureDate { get; set; }
         }
 
 
@@ -112,5 +123,33 @@ namespace SiteApi.IntegrationSiteApi.APIMarket.Ozon.Post
         public string Type;
     }
 
+    public class ResponseD
+    {
+        [JsonProperty("status")]
+        public string Status { get; set; }
 
+        [JsonProperty("added_to_act")]
+        public List<string> AddedToAct { get; set; }
+
+        [JsonProperty("removed_from_act")]
+        public List<object> RemovedFromAct { get; set; }
+
+        [JsonProperty("act_type")]
+        public string ActType { get; set; }
+
+        [JsonProperty("is_partial")]
+        public bool IsPartial { get; set; }
+
+        [JsonProperty("has_postings_for_next_carriage")]
+        public bool HasPostingsForNextCarriage { get; set; }
+
+        [JsonProperty("partial_num")]
+        public int PartialNum { get; set; }
+    }
+
+    public class Response
+    {
+        [JsonProperty("result")]
+        public ResponseD Result { get; set; }
+    }
 }

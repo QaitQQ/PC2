@@ -1,4 +1,6 @@
-﻿using System;
+﻿using MGSol.Panel.Other;
+
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
@@ -34,15 +36,14 @@ namespace MGSol.Panel
         public ReportControl(MainModel Model)
         {
             this.Model = Model;
-            RenewFile_Click(null,null);
+            RenewFile_Click(null, null);
         }
         private static string[][][] ReadFileToMass(string t)
         {
             string[][][] Z = new ItemProcessor.XLS.XLS_ReadReport().Read(t);
-
             if (Z == null)
             {
-                return new string[0][][];
+                return Array.Empty<string[][]>();
             }
             for (int i = 0; i < Z.Length; i++)
             {
@@ -121,9 +122,9 @@ namespace MGSol.Panel
                         {
                             string SFNomber = ColorCellsList[i][GiveColorCell(ParamEnum.НомерСФ).Y].Value;
                             string Bonus = ColorCellsList[i][GiveColorCell(ParamEnum.Бонус).Y].Value;
-                            if (Bonus != "" && Bonus != null)
+                            if (Bonus is not "" and not null)
                             {
-                                OrderPrice = ((double.Parse(OrderPrice) * double.Parse(Count) + double.Parse(Bonus)) / double.Parse(Count)).ToString();
+                                OrderPrice = (((double.Parse(OrderPrice) * double.Parse(Count)) + double.Parse(Bonus)) / double.Parse(Count)).ToString();
                             }
                             if (SFNomber != "")
                             {
@@ -163,7 +164,39 @@ namespace MGSol.Panel
                             {
                                 NOrderItem.SKU = "1021";
                             }
-                            NOrderItem.Article1C = FindArt1C(NOrderItem.SKU);
+                            string Article1C = FindArt1C(NOrderItem.SKU);
+                            if (Article1C is null)
+                            {
+                                string RepSTR = null;
+                                foreach (ColorCell item in ColorCellsList[i])
+                                {
+                                    RepSTR = RepSTR + "   " + item.Value;
+                                }
+                                QuestionBox QS = new(RepSTR);
+                                if (QS.ShowDialog() == true)
+                                {
+                                    StructLibCore.Marketplace.MarketItem X = Model.OptionMarketPlace.MarketItems.FirstOrDefault(x => x.SKU == NOrderItem.SKU);
+                                    if (X != null)
+                                    {
+                                        X.Art1C = QS.AnswerTEXT;
+                                        Model.Save();
+                                        Article1C = X.Art1C;
+                                    }
+                                    else
+                                    {
+                                        ModalBox MB = new()
+                                        {
+                                            _STR = "не удалось найти позицию в базе с таким SKU, создать?"
+                                        };
+                                        if (MB.ShowDialog() == true)
+                                        {
+                                            Model.OptionMarketPlace.MarketItems.Add(new StructLibCore.Marketplace.MarketItem() { SKU = NOrderItem.SKU, Art1C = Article1C });
+                                        }
+                                        Model.Save();
+                                    }
+                                }
+                            }
+                            NOrderItem.Article1C = Article1C;
                             AddItem(Document, NPost, Date, FindPost, NOrderItem, SchetFaktura);
                         }
                         if (ColorCellsList[i][GiveColorCell(ParamEnum.SKU).Y].Value == "1162")
@@ -208,9 +241,9 @@ namespace MGSol.Panel
                             {
                                 break;
                             }
-                            if (OrderReturnPrice != "0" && OrderReturnPrice != "")
+                            if (OrderReturnPrice is not "0" and not "")
                             {
-                                string NPost = ColorCellsList[i][GiveColorCell(ParamEnum.НомерВозврата).Y]?.Value;
+                                string NPost = ColorCellsList[i][GiveColorCell(ParamEnum.НомерЗаказа).Y]?.Value;
                                 string Date = DateTime.Now.ToString().Split(" ")[0];
                                 SF SchetFaktura = null;
                                 try
@@ -239,7 +272,7 @@ namespace MGSol.Panel
                                 }
                                 catch
                                 {
-                                    MessageBox.Show("Не распознан Возврат");
+                                    _ = MessageBox.Show("Не распознан Возврат");
                                 }
                             }
                         }
@@ -263,30 +296,41 @@ namespace MGSol.Panel
             catch (Exception E)
             {
                 TestParamStack();
-                MessageBox.Show(E.Message);
+                _ = MessageBox.Show(E.Message);
             }
         }
         private string FindArt1C(string sKU)
         {
             string X = Model.OptionMarketPlace.MarketItems.FirstOrDefault(x => x.SKU == sKU)?.Art1C;
-            if (X == "" || X == null)
-            {
-                MessageBox.Show("Не найден артикул для SKU" + sKU);
-            }
-            return X;
+            return X is "" or null ? null : X;
         }
         private static void SaveDocument(Document Document)
         {
-            XmlSerializer xmlSerializer = new(typeof(Document));
-            using FileStream fs = new(Document.Nomber + DateTime.Now.Second + ".xml", FileMode.OpenOrCreate);
-            xmlSerializer.Serialize(fs, Document);
+            string Name = Document.Nomber + DateTime.Now.Second + ".xml";
+            string filename;
+            Microsoft.Win32.SaveFileDialog dlg = new()
+            {
+                FileName = Name, // Default file name
+                DefaultExt = ".xml", // Default file extension
+                Filter = "Text documents (.xml)|*.xml" // Filter files by extension
+            };
+            // Show save file dialog box
+            Nullable<bool> result = dlg.ShowDialog();
+            // Process save file dialog box results
+            if (result == true)
+            {
+                filename = dlg.FileName;
+                XmlSerializer xmlSerializer = new(typeof(Document));
+                using FileStream fs = new(filename, FileMode.OpenOrCreate);
+                xmlSerializer.Serialize(fs, Document);
+            }
         }
         private SF GetSchetFaktura(string NNomer, string SFNomber, ref string[][] byerSFmass)
         {
             try
             {
-                FileInfo Fn = FolderFile.First(x => x.Name.Contains(NNomer) && x.Name.Contains("DocumentB2BSales") && !x.Name.Contains("#"));
-                if (byerSFmass == null) { try { byerSFmass = ReadFileToMass(Fn.FullName)[0]; } catch { MessageBox.Show("Не удалось загрузить файл B2B"); } }
+                FileInfo Fn = FolderFile.First(x => x.Name.Contains(NNomer) && x.Name.Contains("DocumentB2BSales") && !x.Name.Contains('#'));
+                if (byerSFmass == null) { try { byerSFmass = ReadFileToMass(Fn.FullName)[0]; } catch { _ = MessageBox.Show("Не удалось загрузить файл B2B"); } }
                 string[] nameCollstring = byerSFmass.First(x => x.Contains("Наименование покупателя"));
                 int ind = Array.IndexOf(nameCollstring, "Наименование покупателя");
                 string[] valString = byerSFmass.First(x => x.Contains(SFNomber));
@@ -299,7 +343,7 @@ namespace MGSol.Panel
             }
             catch
             {
-                MessageBox.Show("Ненайден файл с счетфактурами");
+                _ = MessageBox.Show("Ненайден файл с счетфактурами");
             }
             return null;
         }
@@ -330,7 +374,7 @@ namespace MGSol.Panel
             }
             catch (Exception E)
             {
-                MessageBox.Show(E.Message);
+                _ = MessageBox.Show(E.Message);
                 return null;
             }
         }
@@ -341,7 +385,7 @@ namespace MGSol.Panel
                 IEnumerable<ColorCell> X = from x in ParamStack where x.Param == (ParamEnum)item[0] select x;
                 if (!X.Any())
                 {
-                    MessageBox.Show("Не заполнен " + ((ParamEnum)item[0]).ToString());
+                    _ = MessageBox.Show("Не заполнен " + ((ParamEnum)item[0]).ToString());
                     break;
                 }
             }
@@ -374,7 +418,7 @@ namespace MGSol.Panel
             }
             catch
             {
-                MessageBox.Show("Не удалось загрузить настройки");
+                _ = MessageBox.Show("Не удалось загрузить настройки");
             }
         }
         private static FileOption LoadFileOptioins(FileOption FL)
@@ -391,7 +435,7 @@ namespace MGSol.Panel
             }
             catch
             {
-                MessageBox.Show("Не удалось прочитать" + FL.FullPath.Replace("xlsx", "xml"));
+                _ = MessageBox.Show("Не удалось прочитать" + FL.FullPath.Replace("xlsx", "xml"));
                 return null;
             }
         }
@@ -414,7 +458,7 @@ namespace MGSol.Panel
                                 break;
                             }
                         }
-                        catch { MessageBox.Show("Не удалось разместить" + item.Param.ToString()); }
+                        catch { _ = MessageBox.Show("Не удалось разместить" + item.Param.ToString()); }
                     }
                 }
             }
@@ -440,7 +484,7 @@ namespace MGSol.Panel
                         {
                             ColtextBlock.Background = null;
                         }
-                        ParamStack.Remove(fnd[0]);
+                        _ = ParamStack.Remove(fnd[0]);
                         fnd = (from x in ParamStack where x.Param == paramsColl select x).ToList();
                     }
                     if (TM != val)
@@ -461,7 +505,7 @@ namespace MGSol.Panel
         }
         private void Border_Click(object sender, RoutedEventArgs e)
         {
-            Border borber = ((Border)((Button)sender).Parent);
+            Border borber = (Border)((Button)sender).Parent;
             if (borber.BorderThickness.Left != 2)
             {
                 borber.BorderBrush = Brushes.Green;
@@ -539,7 +583,6 @@ namespace MGSol.Panel
                 FL.InnString = Model.GetInnFromName(e.AddedItems[0].ToString());
             }
         }
-
         private void RenewFile_Click(object sender, RoutedEventArgs e)
         {
             InfoFolderFile = new ObservableCollection<FileOption>();
@@ -552,13 +595,14 @@ namespace MGSol.Panel
             ButtonFieldStack.ItemsSource = ParamButtons;
             foreach (FileInfo file in FolderFile)
             {
-                if (file.Name.Contains("xlsx") && !file.Name.Contains("#"))
+                if (file.Name.Contains("xlsx") && !file.Name.Contains('#'))
                 {
                     FileOption fileOption = new() { FileName = file.Name, FullPath = file.FullName };
                     if (File.Exists(file.FullName.Replace("xlsx", "xml")))
                     {
                         fileOption = LoadFileOptioins(fileOption);
                     }
+                    fileOption ??= new() { FileName = file.Name, FullPath = file.FullName };
                     InfoFolderFile.Add(fileOption);
                 }
             }

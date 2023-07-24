@@ -19,7 +19,16 @@ namespace Server.Class.IntegrationSiteApi.Market.Ozon.OzonPost.OzonPostReturnLis
             ReturnListRoot root = new ReturnListRoot() { Limit = 100, Offset = 0 };
             using (StreamWriter streamWriter = new StreamWriter(httpWebRequest.GetRequestStream())) { string json = JsonConvert.SerializeObject(root); streamWriter.Write(json); }
             HttpWebResponse httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
-            using (StreamReader streamReader = new StreamReader(httpResponse.GetResponseStream())) { result = streamReader.ReadToEnd(); }
+            try
+            {
+                using (StreamReader streamReader = new StreamReader(httpResponse.GetResponseStream())) { result = streamReader.ReadToEnd(); }
+            }
+            catch (Exception e)
+            {
+
+
+            }
+           
             ResultRoot Result = JsonConvert.DeserializeObject<ResultRoot>(result);
             List<object> X = new List<object>();
             foreach (Return item in Result.Result.Returns)
@@ -144,6 +153,8 @@ namespace Server.Class.IntegrationSiteApi.Market.Ozon.OzonPost.OzonPostReturnLis
                         break;
                 }
             }
+
+            public string ShipmentDate => WaitingForSellerDateTime;
         }
         public class ResultRoot
         {

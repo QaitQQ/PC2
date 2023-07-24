@@ -29,6 +29,8 @@ namespace Server.Class.IntegrationSiteApi.Market.Ozon
             using (var streamReader = new StreamReader(httpResponse.GetResponseStream())) { result = streamReader.ReadToEnd(); }
             Root root = JsonConvert.DeserializeObject<Root>(result);
 
+
+
             return root.result.items;
         }
     }

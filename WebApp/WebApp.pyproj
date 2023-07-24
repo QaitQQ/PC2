@@ -40,6 +40,9 @@
     <Compile Include="app\migrations\__init__.py" />
     <Compile Include="main\admin.py" />
     <Compile Include="main\apps.py" />
+    <Compile Include="main\forms.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="main\migrations\__init__.py" />
     <Compile Include="main\models.py" />
     <Compile Include="main\tests.py" />
@@ -75,9 +78,13 @@
   <ItemGroup>
     <Content Include="app\favicon.ico" />
     <Content Include="favicon.ico" />
-    <Content Include="main\favicon.ico" />
-    <Content Include="main\static\favicon.ico" />
     <Content Include="main\templates\main\add.html">
+      <SubType>Code</SubType>
+    </Content>
+    <Content Include="main\templates\main\Del.html">
+      <SubType>Code</SubType>
+    </Content>
+    <Content Include="main\templates\main\ListDetailView.html">
       <SubType>Code</SubType>
     </Content>
     <Content Include="WebApp\favicon.ico" />

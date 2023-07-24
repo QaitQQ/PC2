@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Controls;
+using System.Windows.Documents;
+
 namespace MGSol.Panel
 {
     public partial class ReturnControl : UserControl
@@ -20,7 +22,7 @@ namespace MGSol.Panel
             VisOrderList = new ObservableCollection<IOrder>();
             OrderStack.ItemsSource = VisOrderList;
         }
-        public void LoadNetReturns(ObservableCollection<APISetting> aPISettings)
+        public void LoadNetReturns(List<APISetting> aPISettings)
         {
             orderList.Clear();
             List<IOrder> F = new();

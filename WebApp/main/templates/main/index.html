@@ -7,17 +7,17 @@
 {% endblock %}
 
 {% block content  %}
+<div>
+    <h1>{{ title}}</h1>
 
-<h1>{{ title}}</h1>
+    <button class="btn btn-warning"> Опасность!!!</button>
 
-<button class="btn btn-warning" > Опасность!!!</button>
+    {% for el in values %}
 
-{% for el in values %}
+    <p>{{el}}</p>
 
-<p>{{el}}</p>
+    {%endfor %}
 
-{%endfor %}
-
-{% include 'main/include.html' %}
-
+    {% include 'main/include.html' %}
+</div>
 {% endblock %}

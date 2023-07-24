@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800"
-             xmlns:MainModel ="clr-namespace:MGSol"
+             xmlns:MainModel="clr-namespace:MGSol"
              >
 
     <UserControl.Resources>
@@ -23,8 +23,9 @@
                 </ItemsControl.ItemsPanel>
             </ItemsControl>
         </DataTemplate>
+        <ObjectDataProvider x:Key="AnyByer" MethodName="GetINN" ObjectType="{x:Type MainModel:MainModel}"/>
         <ObjectDataProvider x:Key="AnyApi" MethodName="GetApi" ObjectType="{x:Type MainModel:MainModel}"/>
-        <ObjectDataProvider x:Key="AnyByerINN" MethodName="GetINN" ObjectType="{x:Type MainModel:MainModel}"/>
+       
     </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
@@ -54,7 +55,7 @@
                                         </Grid.ColumnDefinitions>
                                         <TextBox Grid.Column="0" Text="{Binding FileName}" ></TextBox>
                                         <ComboBox Grid.Column="1" SelectedItem="{Binding APISetting.Name}" ItemsSource="{Binding Source={StaticResource ResourceKey=AnyApi}}" SelectionChanged="ComboBox_SelectionChanged"></ComboBox>
-                                        <ComboBox Grid.Column="2" x:Name="ByerComboBoxINN" SelectedItem="{Binding InnStringName, Mode=OneWay}" ItemsSource="{Binding Source={StaticResource ResourceKey=AnyByerINN}}" SelectionChanged="ByerComboBoxINN_SelectionChanged"></ComboBox>
+                                        <ComboBox Grid.Column="2" x:Name="ByerComboBoxINN" SelectedItem="{Binding InnStringName, Mode=OneWay}" ItemsSource="{Binding Source={StaticResource ResourceKey=AnyByer}}" SelectionChanged="ByerComboBoxINN_SelectionChanged"></ComboBox>
                                         <StackPanel Grid.Column="3" Orientation="Horizontal">
                                             <Button x:Name="Read_file_button"  Content="Прочитать" Click="Read_file_button_Click"></Button>
                                             <Button Content="Загрузить Настройки" Click="Load_options"></Button>

@@ -1,0 +1,31 @@
+﻿<Window x:Class="MGSol.Panel.Other.QuestionBox"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:MGSol.Panel.Other"
+        mc:Ignorable="d"
+        Title="QuestionBox" Height="450" Width="500">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition Height="45"/>
+        </Grid.RowDefinitions>
+                <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            <TextBox x:Name="QuestionTEXTBox"></TextBox>
+            <TextBox Grid.Row="1" x:Name="AnswerTEXTBox" TextChanged="AnswerTEXTBox_TextChanged"></TextBox>        
+                </Grid>
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="380"/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <Button Width="100" Click="Button_Click"  Content="Да" HorizontalAlignment="Right" Grid.Column="0"></Button>
+            <Button  Width="100" Click="Button_Click_1"  Content="Отмена" HorizontalAlignment="Right"  Grid.Column="1"></Button>
+        </Grid>
+    </Grid>
+</Window>

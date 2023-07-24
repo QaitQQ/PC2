@@ -63,6 +63,7 @@ namespace StructLibCore.Marketplace
         public List<MarketOrderItems> Items { get; }
         public string Date { get; }
         public string DeliveryDate { get; }
+        public string ShipmentDate { get; }
     }
     [Serializable]
     public class APISetting

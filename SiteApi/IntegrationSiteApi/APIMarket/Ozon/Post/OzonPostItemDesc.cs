@@ -1,11 +1,13 @@
 ﻿using Newtonsoft.Json;
 
 using SiteApi.IntegrationSiteApi.APIMarket.Ozon.Post;
+using SiteApi.IntegrationSiteApi.APIMarket.Ozon.Post.OzonGetDesc;
 
 using StructLibCore.Marketplace;
 
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net;
 
 namespace Server.Class.IntegrationSiteApi.Market.Ozon
@@ -36,7 +38,16 @@ namespace Server.Class.IntegrationSiteApi.Market.Ozon
             using (var streamReader = new StreamReader(httpResponse.GetResponseStream())) { result = streamReader.ReadToEnd(); }
             Root_D End = JsonConvert.DeserializeObject<Root_D>(result);
             List<object> NLST = new List<object>();
-            foreach (var item in End.result.items) { NLST.Add(item); }
+
+            List<string> IDS = new List<string>();
+
+            foreach (var item in End.result.items) { IDS.Add(item.id.ToString()); }
+
+            var PriceInfoList = new OzonPostPriceInfo(aPISetting).Get(IDS, OzonPostPriceInfo.PriceInfoType.product);
+
+            foreach (OzonItemDesc item in End.result.items) { item.Priceinfo = PriceInfoList.FirstOrDefault(x => x.ProductId == item.id); NLST.Add(item); }
+
+
             return NLST;
         }
     }

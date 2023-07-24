@@ -64,7 +64,7 @@ namespace MGSol.Panel
         }
         private void Renew_click(object sender, RoutedEventArgs e)
         {
-            IMarketItem[] mass = new IMarketItem[] { ((TextBlock)sender).DataContext as IMarketItem };
+            IMarketItem[] mass = new IMarketItem[] { ((Control)sender).DataContext as IMarketItem };
             RenewPrice(mass);
         }
         private void Add_Click(object sender, RoutedEventArgs e)
@@ -661,11 +661,11 @@ namespace MGSol.Panel
         }
         private void DownloadItemPicsButton_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            GetImage((TextBlock)sender);
+            GetImage((Control)sender);
         }
-        private static void GetImage(TextBlock sender)
+        private static void GetImage(Control sender)
         {
-            TextBlock Btn = sender;
+            Control Btn = sender;
             Btn.IsEnabled = false;
             StackPanel PR1 = (StackPanel)Btn.Parent;
             IMarketItem OrderItem = (IMarketItem)sender.DataContext;
@@ -743,7 +743,7 @@ namespace MGSol.Panel
         }
         private void MarketItemBox_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            var T = (TextBlock)sender;
+            var T = (Control)sender;
             var S = (StackPanel)T.Parent;
             foreach (var item in S.Children)
             {

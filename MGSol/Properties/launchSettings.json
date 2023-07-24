@@ -2,8 +2,8 @@
   "profiles": {
     "MGSol": {
       "commandName": "Project",
-      "hotReloadEnabled": false,
-      "nativeDebugging": true
+      "hotReloadEnabled": true,
+      "nativeDebugging": false
     }
   }
 }

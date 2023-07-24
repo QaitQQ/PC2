@@ -31,8 +31,8 @@ namespace ItemProcessor.XLS
             List<string[][]> X = new List<string[][]>();
             foreach (var item in Workbook.Worksheets)
             {
-                string[][] M = new string[100][];
-                for (int x = 1; x < 100; x++)
+                string[][] M = new string[500][];
+                for (int x = 1; x < 500; x++)
                 {
                     M[x - 1] = new string[100];
                     for (int y = 1; y < 50; y++)

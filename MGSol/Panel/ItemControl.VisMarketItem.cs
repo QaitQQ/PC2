@@ -41,18 +41,17 @@ namespace MGSol.Panel
                 get
                 {
                     ObservableCollection<KeyValuePair<string, int>> X = new();
-                    if (Item.StoregeList == null || Item.StoregeList.Count == 0)
+                    if (Item.StoregeList != null && Item.StoregeList.Count > 0)
                     {
-                        return X;
-                    }
-                    foreach (IC item in Item.StoregeList)
-                    {
-                        string Name = Warehouses.FirstOrDefault(X => X.Id == item.WID)?.N;
-                        if (Name is null or "")
+                        foreach (IC item in Item.StoregeList)
                         {
-                            Name = "None";
+                            string Name = Warehouses.FirstOrDefault(X => X.Id == item.WID)?.N;
+                            if (Name is null or "")
+                            {
+                                Name = "None";
+                            }
+                            X.Add(new KeyValuePair<string, int>(Name, item.C));
                         }
-                        X.Add(new KeyValuePair<string, int>(Name, item.C));
                     }
                     return X;
                 }
@@ -83,20 +82,15 @@ namespace MGSol.Panel
                             }
                         }
                     }
-                    if (SaleItemCount > BayItemCount)
-                    {
-                        return BayItemCount > 0
+                    return SaleItemCount > BayItemCount
+                        ? BayItemCount > 0
                             ? new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(System.Drawing.Color.YellowGreen.R, System.Drawing.Color.YellowGreen.G, System.Drawing.Color.YellowGreen.B))
-                            : new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(System.Drawing.Color.OrangeRed.R, System.Drawing.Color.OrangeRed.G, System.Drawing.Color.OrangeRed.B));
-                    }
-                    else
-                    {
-                        return SaleItemCount <= 3 && BayItemCount >= 3
+                            : new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(System.Drawing.Color.OrangeRed.R, System.Drawing.Color.OrangeRed.G, System.Drawing.Color.OrangeRed.B))
+                        : SaleItemCount <= 3 && BayItemCount >= 3
                             ? new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(System.Drawing.Color.Blue.R, System.Drawing.Color.Blue.G, System.Drawing.Color.Blue.B))
                             : SaleItemCount == 0 && BayItemCount == 0
                             ? new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(System.Drawing.Color.Gray.R, System.Drawing.Color.Gray.G, System.Drawing.Color.Gray.B))
                             : new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(System.Drawing.Color.Green.R, System.Drawing.Color.Green.G, System.Drawing.Color.Green.B));
-                    }
                 }
             }
             protected virtual void OnPropertyChanged(string propertyName)

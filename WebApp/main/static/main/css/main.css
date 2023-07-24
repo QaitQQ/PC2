@@ -1,16 +1,25 @@
 body {
     background: white;
     margin:3px;
+    
 }
+    body div{
+        margin-left:200px;
 
-aside {
-    float: left;
-    width: 12%;
-    padding: 2.5%;
-    height: 100vh;
-    border-right: 5px solid #2a2727;
-    background: grey;
-}
+    }
+
+    aside {
+        float: left;
+        width: 180px;
+        padding: 2.5%;
+        height: 100vh;
+        border-right: 5px solid #2a2727;
+        background: grey;
+    }
+
+    aside ul {
+        padding-left: 0rem;
+    }
 
 aside p {
     color: white;

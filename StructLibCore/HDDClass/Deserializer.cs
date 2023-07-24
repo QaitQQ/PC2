@@ -22,7 +22,7 @@ namespace Server.Class.HDDClass
                     _Obj = (T)deserializer.Deserialize(openFileStream);
                     openFileStream.Close();
                 }
-                catch (Exception E)
+                catch 
                 {
 
                 }

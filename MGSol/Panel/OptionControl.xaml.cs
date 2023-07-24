@@ -15,7 +15,7 @@ namespace MGSol.Panel
     {
         private MainModel Model { get; set; }
         private ObservableCollection<StructLibCore.Marketplace.APISetting> ListOption { get; set; }
-        private ObservableCollection<StructLibCore.Marketplace.InnString> innStrings;
+        private ObservableCollection<StructLibCore.Marketplace.InnString> innStrings { get; set; }
         public OptionControl(MainModel model)
         {
             InitializeComponent();
