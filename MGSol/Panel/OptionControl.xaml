@@ -54,6 +54,13 @@
                         </ItemsControl>
                     </StackPanel>
                 </Grid>
+                <Label Content="Настройки API Базы" Background="Gray"></Label>
+                <StackPanel Orientation="Horizontal">
+                    <Label Content="Адрес"></Label>
+                    <TextBox Width="300" x:Name="UriBaseBox" Grid.Column="1" TextChanged="TokenBaseBox_TextChanged"></TextBox>
+                    <Label Content="Токен"></Label>
+                    <TextBox MinWidth="350" x:Name="TokenBaseBox" Grid.Column="1" TextChanged="TokenBaseBox_TextChanged"></TextBox>
+                </StackPanel>
                 <Label Content="ИНН по юр.лицам" Background="Gray"/>
                 <Grid>
                     <Grid.RowDefinitions>

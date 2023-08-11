@@ -1,10 +1,12 @@
-﻿using StructLibCore.Marketplace;
+﻿using SiteApi.IntegrationSiteApi.APIMarket.Ozon.Post;
+
+using StructLibCore.Marketplace;
+
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Controls;
-using System.Windows.Documents;
-
 namespace MGSol.Panel
 {
     public partial class ReturnControl : UserControl
@@ -13,20 +15,25 @@ namespace MGSol.Panel
         private readonly ObservableCollection<APISetting> Options;
         private readonly ObservableCollection<IOrder> VisOrderList;
         private readonly ObservableCollection<IOrder> orderList;
-        public ReturnControl(MainModel Model)
+        public OrdersControl ParentControl { get; set; }
+        public ReturnControl(MainModel Model, OrdersControl parentControl = null)
         {
             model = Model;
             InitializeComponent();
             Options = new ObservableCollection<APISetting>();
             orderList = new ObservableCollection<IOrder>();
             VisOrderList = new ObservableCollection<IOrder>();
+            ParentControl = parentControl;
+            ParentControl.RenewEvent += () => Dispatcher.Invoke(() => LoadNetReturns());
+            LoadNetReturns();
             OrderStack.ItemsSource = VisOrderList;
         }
-        public void LoadNetReturns(List<APISetting> aPISettings)
+        public void LoadNetReturns()
         {
+            VisOrderList.Clear();
             orderList.Clear();
             List<IOrder> F = new();
-            foreach (APISetting item in aPISettings)
+            foreach (APISetting item in model.OptionMarketPlace.APISettings)
             {
                 if (item.Active)
                 {
@@ -36,7 +43,7 @@ namespace MGSol.Panel
                         case MarketName.Yandex:
                             break;
                         case MarketName.Ozon:
-                            Result = new Server.Class.IntegrationSiteApi.Market.Ozon.OzonPost.OzonPostReturnList.OzonPostReturnList(item).Get();
+                            Result = new OzonPostReturnList(item).Get();
                             break;
                         case MarketName.Avito:
                             break;
@@ -50,7 +57,7 @@ namespace MGSol.Panel
                         Dispatcher.Invoke(() => Options.Add(item));
                         foreach (object t in Result)
                         {
-                            Dispatcher.Invoke(() => orderList.Add((StructLibCore.Marketplace.IOrder)t));
+                            Dispatcher.Invoke(() => orderList.Add((IOrder)t));
                         }
                     }
                 }
@@ -60,6 +67,7 @@ namespace MGSol.Panel
             {
                 VisOrderList.Add(item);
             }
+            OrderStack.ItemsSource = VisOrderList;
         }
     }
 }

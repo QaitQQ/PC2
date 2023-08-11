@@ -1,7 +1,11 @@
-from django.urls import path
+from django.urls import path, include
 from . import views
 from django.contrib.staticfiles.storage import staticfiles_storage
 from django.views.generic.base import RedirectView
+from django.contrib.auth.views import LoginView, LogoutView
+from django.contrib import admin
+from rest_framework import routers, serializers, viewsets
+from django.contrib.auth.models import User
 
 urlpatterns = [
     path('', views.index, name="home"),

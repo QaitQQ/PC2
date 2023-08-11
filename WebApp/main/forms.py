@@ -1,6 +1,5 @@
 ﻿from dataclasses import field
 from pydoc import plainpager
-from tkinter import Widget
 from .models import Atable
 from django.forms import ModelForm, TextInput, Textarea, DateTimeInput
 

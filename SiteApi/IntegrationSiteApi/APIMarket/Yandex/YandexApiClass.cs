@@ -1,4 +1,7 @@
-﻿using System;
+﻿using StructLibCore;
+using StructLibCore.Marketplace;
+
+using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Text;
@@ -11,10 +14,10 @@ namespace SiteApi.IntegrationSiteApi.APIMarket.Yandex
         internal string oauth_token;
         internal string add_ip;
         internal string warehouseId;
-        internal StructLibCore.Marketplace.APISetting aPISetting;
+        internal APISetting aPISetting;
         internal string result;
 
-        public YandexApiClass(StructLibCore.Marketplace.APISetting APISetting)
+        public YandexApiClass(APISetting APISetting)
         {
             aPISetting = APISetting;
             warehouseId = APISetting.ApiString[3];

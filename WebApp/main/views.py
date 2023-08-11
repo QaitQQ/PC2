@@ -5,8 +5,13 @@ from main.models import Atable
 from django.views.generic import DetailView, UpdateView, DeleteView
 
 def index(request):
-    data = {"title": "Переданные данные", "values": ["один", 1, 2.4]}
-    return render(request, "main/index.html", data)
+    if request.method == "GET":
+       data = {"title": "Переданные данные", "values": [
+        #"один", 1, 2.4
+        ]}
+       return render(request, "main/index.html", data)
+    else:
+     return render(request, "main/index.html")
 
 
 def One(request):

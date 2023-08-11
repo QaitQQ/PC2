@@ -16,26 +16,48 @@
                 <Button x:Name="Save" Click="Save_Click"  Content="Save" Width="50"></Button>
                 <Button x:Name="Clear" Click="Clear_Click"  Content="Clear" Width="50"></Button>
             </StackPanel>
-        <StackPanel x:Name="FiltersPanel" Background="Azure"></StackPanel>
+            <StackPanel x:Name="FiltersPanel" Background="Azure"></StackPanel>
         </StackPanel>
         <Grid Background="Bisque" Grid.Row="1">
             <ScrollViewer  Grid.Row="3" VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Visible">
                 <Border Background="White" Margin="1" BorderBrush="Black">
-                <StackPanel Orientation="Horizontal">
-                    <ItemsControl x:Name="DTtable">
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate>
-                                <StackPanel Orientation="Horizontal" >
-                                        <TextBlock Text="{Binding ID, Mode=OneWay}" Width="100"></TextBlock>
-                                        <TextBlock Text="{Binding Nomber, Mode=OneWay}" Width="100"></TextBlock>
-                                        <TextBlock Text="{Binding Date, Mode=OneWay}" Width="200"></TextBlock>
-                                        <TextBlock Text="{Binding DateShipment, Mode=OneWay}" Width="200"></TextBlock>
-                                        <TextBox  Text="{Binding GetItemString, Mode=OneWay}" Width="100"></TextBox>
-                                </StackPanel>
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
-                </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <ItemsControl x:Name="DTtable">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Border Background="LightGray" BorderBrush="Black" CornerRadius="3" Margin="3">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="400"/>
+                                                <ColumnDefinition/>
+                                            </Grid.ColumnDefinitions>
+                                            <StackPanel>
+                                                <ItemsControl ItemsSource="{Binding OrderItems}">
+                                                    <ItemsControl.ItemTemplate>
+                                                        <DataTemplate>
+                                                            <StackPanel Margin="3" Orientation="Horizontal">
+                                                                <Label Width="100" Content="{Binding Sku}"></Label>
+                                                                <Label Width="40" Content="{Binding Count}"></Label>
+                                                                <Label Width="40" Content="{Binding Price}"></Label>
+                                                            </StackPanel>
+                                                        </DataTemplate>
+                                                    </ItemsControl.ItemTemplate>
+                                                </ItemsControl>
+                                            </StackPanel>
+                                            <StackPanel Margin="4" Grid.Column="1">
+                                                <Label  HorizontalAlignment="Left" Content="Номер"></Label>
+                                                <Label  HorizontalAlignment="Left" Content="{Binding OrderNomber, Mode=OneWay}" ></Label>
+                                                <Label  HorizontalAlignment="Left" Content="Дата Упаковки"></Label>
+                                                <TextBlock  HorizontalAlignment="Left" Text="{Binding BoxingDate, Mode=OneWay, ValidatesOnExceptions=True, StringFormat={}{0:dd.MM.yy H:mm:ss }}"></TextBlock>
+                                                <Label  HorizontalAlignment="Left" Content="Дата Заказа"></Label>
+                                                <TextBlock  HorizontalAlignment="Left" Text="{Binding OrderDate, Mode=OneWay,  ValidatesOnExceptions=True, StringFormat={}{0:dd.MM.yy H:mm:ss }}" ></TextBlock>
+                                            </StackPanel>
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </StackPanel>
                 </Border>
             </ScrollViewer>
         </Grid>

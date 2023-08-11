@@ -1,4 +1,3 @@
-from msilib.text import tables
 from django.contrib import admin
 from django.shortcuts import render
 from .models import Atable, Btable

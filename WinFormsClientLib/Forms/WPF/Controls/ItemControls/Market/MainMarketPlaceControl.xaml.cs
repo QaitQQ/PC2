@@ -1,4 +1,6 @@
-﻿using System;
+﻿using StructLibCore;
+
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
@@ -21,7 +23,7 @@ namespace WinFormsClientLib.Forms.WPF.Controls.ItemControls.Market
     /// 
     public partial class MainMarketPlaceControl : UserControl
     {
-        List<StructLibCore.Marketplace.APISetting> Option;
+        List<APISetting> Option;
 
         private event Action OrdersLoaded;
 
@@ -42,7 +44,7 @@ namespace WinFormsClientLib.Forms.WPF.Controls.ItemControls.Market
                 System.Threading.Tasks.Task.Factory.StartNew(() =>
                 {
 
-                    var X = new Network.Item.MarketApi.GetListOption().Get<List<StructLibCore.Marketplace.APISetting>>(new Client.WrapNetClient());
+                    var X = new Network.Item.MarketApi.GetListOption().Get<List<APISetting>>(new Client.WrapNetClient());
 
                     Dispatcher.Invoke(() => Option = X);
 

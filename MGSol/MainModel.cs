@@ -83,7 +83,8 @@ namespace MGSol
         private readonly Serializer<object> Serializer = new();
         private static void LoadFromFile<T>(ref T Object, string Path)
         {
-            T Obj = Task.Run(() => new Deserializer<T>(Path).Doit()).Result;
+            T Obj = Task.Run(() => 
+            new Deserializer<T>(Path).Doit()).Result;
             if (Obj != null)
             {
                 Object = Obj;

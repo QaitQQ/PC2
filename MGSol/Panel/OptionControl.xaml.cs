@@ -1,5 +1,5 @@
-﻿using StructLibs;
-
+﻿using StructLibCore.Marketplace;
+using StructLibs;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows;
@@ -14,27 +14,27 @@ namespace MGSol.Panel
     public partial class OptionControl : UserControl
     {
         private MainModel Model { get; set; }
-        private ObservableCollection<StructLibCore.Marketplace.APISetting> ListOption { get; set; }
-        private ObservableCollection<StructLibCore.Marketplace.InnString> innStrings { get; set; }
+        private ObservableCollection<APISetting> ListOption { get; set; }
+        private ObservableCollection<InnString> innStrings { get; set; }
         public OptionControl(MainModel model)
         {
             InitializeComponent();
             Model = model;
-            ListOption = new ObservableCollection<StructLibCore.Marketplace.APISetting>();
-            innStrings = new ObservableCollection<StructLibCore.Marketplace.InnString>();
-            foreach (StructLibCore.Marketplace.InnString item in Model.OptionMarketPlace.SellerINN)
+            ListOption = new ObservableCollection<APISetting>();
+            innStrings = new ObservableCollection<InnString>();
+            foreach (InnString item in Model.OptionMarketPlace.SellerINN)
             {
                 innStrings.Add(item);
             }
             InnSalerBox.ItemsSource = innStrings;
-            foreach (StructLibCore.Marketplace.APISetting item in Model.OptionMarketPlace.APISettings)
+            foreach (APISetting item in Model.OptionMarketPlace.APISettings)
             {
                 ListOption.Add(item);
             }
             ListOption.CollectionChanged += (x, y) =>
             {
-                List<StructLibCore.Marketplace.APISetting> lst = new();
-                foreach (StructLibCore.Marketplace.APISetting item in ListOption)
+                List<APISetting> lst = new();
+                foreach (APISetting item in ListOption)
                 {
                     lst.Add(item);
                 }
@@ -43,16 +43,14 @@ namespace MGSol.Panel
             };
             UserField.SetBinding(TextBox.TextProperty, new Binding("User") { Source = Model.BaseInfoPrice.LogPass });
             PassField.SetBinding(TextBox.TextProperty, new Binding("Pass") { Source = Model.BaseInfoPrice.LogPass });
-
             if (Model.BaseInfoPrice.AddressPort == null)
             {
                 Model.BaseInfoPrice.AddressPort = new AddressPort();
             }
-
-
             IPField.SetBinding(TextBox.TextProperty, new Binding("Address") { Source = Model.BaseInfoPrice.AddressPort });
             PortField.SetBinding(TextBox.TextProperty, new Binding("Port") { Source = Model.BaseInfoPrice.AddressPort });
-
+            UriBaseBox.SetBinding(TextBox.TextProperty, new Binding("UriBase") { Source = Model.BaseInfoPrice });
+            TokenBaseBox.SetBinding(TextBox.TextProperty, new Binding("ToketBase") { Source = Model.BaseInfoPrice});
             OptionList.ItemsSource = ListOption;
         }
         private void AddButton_Click(object sender, RoutedEventArgs e)
@@ -65,12 +63,12 @@ namespace MGSol.Panel
         }
         private void DelButtonClick_Click(object sender, RoutedEventArgs e)
         {
-            ListOption.Remove((StructLibCore.Marketplace.APISetting)((Button)sender).DataContext);
+            ListOption.Remove((APISetting)((Button)sender).DataContext);
         }
         private void Grid_MouseRightButtonDown(object sender, MouseButtonEventArgs e)
         {
             Grid grid = (Grid)sender;
-            StructLibCore.Marketplace.APISetting api = (StructLibCore.Marketplace.APISetting)grid.DataContext;
+            APISetting api = (APISetting)grid.DataContext;
             OptionAddBox OptionAddBox = new(api);
             if ((bool)OptionAddBox.ShowDialog())
             {
@@ -90,20 +88,19 @@ namespace MGSol.Panel
         }
         private void AddButton_Click_1(object sender, RoutedEventArgs e)
         {
-            innStrings.Add(new StructLibCore.Marketplace.InnString(StructLibCore.Marketplace.MarketName.Ozon, "123455"));
-            Model.OptionMarketPlace.SellerINN.Add(new StructLibCore.Marketplace.InnString(StructLibCore.Marketplace.MarketName.Ozon, "123455"));
+            innStrings.Add(new InnString(MarketName.Ozon, "123455"));
+            Model.OptionMarketPlace.SellerINN.Add(new InnString(MarketName.Ozon, "123455"));
         }
         private void RemoveInnButton_Click(object sender, RoutedEventArgs e)
         {
-            StructLibCore.Marketplace.InnString inn = (StructLibCore.Marketplace.InnString)((System.Windows.Controls.Button)sender).DataContext;
+            InnString inn = (InnString)((System.Windows.Controls.Button)sender).DataContext;
             innStrings.Remove(inn);
             Model.OptionMarketPlace.SellerINN.Remove(inn);
         }
         private void SyncBaseButton_Click(object sender, RoutedEventArgs e)
         {
             Model.BaseInfoPrice.PriceIDPair = new List<PriceIDPair>();
-
-            foreach (StructLibCore.Marketplace.MarketItem item in Model.OptionMarketPlace.MarketItems)
+            foreach (MarketItem item in Model.OptionMarketPlace.MarketItems)
             {
                 if (item.BaseID != 0)
                 {
@@ -116,9 +113,11 @@ namespace MGSol.Panel
                     {
                         MessageBox.Show("Problem "+ item.BaseID.ToString());
                     }
-
                 }
             }
+        }
+        private void TokenBaseBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
         }
     }
 }

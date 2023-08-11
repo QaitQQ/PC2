@@ -1,14 +1,15 @@
 ﻿using Newtonsoft.Json;
 
+using StructLibCore;
 using StructLibCore.Marketplace;
 
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
-namespace Server.Class.IntegrationSiteApi.Market.Ozon.OzonPost.OzonPostReturnList
+namespace SiteApi.IntegrationSiteApi.APIMarket.Ozon.Post
 {
-    public class OzonPostReturnList : SiteApi.IntegrationSiteApi.APIMarket.Ozon.Post.OzonPost
+    public class OzonPostReturnList : OzonPost
     {
         public OzonPostReturnList(APISetting aPISetting) : base(aPISetting)
         {
@@ -16,21 +17,17 @@ namespace Server.Class.IntegrationSiteApi.Market.Ozon.OzonPost.OzonPostReturnLis
         public List<object> Get()
         {
             HttpWebRequest httpWebRequest = GetRequest(@"v2/returns/company/fbs");
-            ReturnListRoot root = new ReturnListRoot() { Limit = 100, Offset = 0 };
-            using (StreamWriter streamWriter = new StreamWriter(httpWebRequest.GetRequestStream())) { string json = JsonConvert.SerializeObject(root); streamWriter.Write(json); }
+            ReturnListRoot root = new() { Limit = 100, Offset = 0 };
+            using (StreamWriter streamWriter = new(httpWebRequest.GetRequestStream())) { string json = JsonConvert.SerializeObject(root); streamWriter.Write(json); }
             HttpWebResponse httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
             try
             {
-                using (StreamReader streamReader = new StreamReader(httpResponse.GetResponseStream())) { result = streamReader.ReadToEnd(); }
+                using StreamReader streamReader = new(httpResponse.GetResponseStream());
+                result = streamReader.ReadToEnd();
             }
-            catch (Exception e)
-            {
-
-
-            }
-           
+            catch { }
             ResultRoot Result = JsonConvert.DeserializeObject<ResultRoot>(result);
-            List<object> X = new List<object>();
+            List<object> X = new();
             foreach (Return item in Result.Result.Returns)
             {
                 item.APISetting = aPISetting;
@@ -122,15 +119,14 @@ namespace Server.Class.IntegrationSiteApi.Market.Ozon.OzonPost.OzonPostReturnLis
             OrderStatus IOrder.Status =>
                 Status switch
                 {
-                    ("waiting_for_seller") => OrderStatus.READY,
-                    ("accepted_from_customer") => OrderStatus.PROCESSING_STARTED,
-                    ("returned_to_seller") => OrderStatus.DELIVERED,
+                    "waiting_for_seller" => OrderStatus.READY,
+                    "accepted_from_customer" => OrderStatus.PROCESSING_STARTED,
+                    "returned_to_seller" => OrderStatus.DELIVERED,
                     _ => OrderStatus.NONE,
                 };
-            public List<MarketOrderItems> Items { get { return new List<MarketOrderItems>() { new MarketOrderItems(ProductName) }; } }
+            public List<MarketOrderItems> Items => new() { new MarketOrderItems(ProductName) };
             public string Date => ReturnedToSellerDateTime;
             public string DeliveryDate => WaitingForSellerDateTime;
-
             public void SetStatus(OrderStatus status)
             {
                 switch (status)
@@ -147,13 +143,11 @@ namespace Server.Class.IntegrationSiteApi.Market.Ozon.OzonPost.OzonPostReturnLis
                         break;
                     case OrderStatus.READY:
                         Status = "waiting_for_seller";
-
                         break;
                     default:
                         break;
                 }
             }
-
             public string ShipmentDate => WaitingForSellerDateTime;
         }
         public class ResultRoot

@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 
+using StructLibCore;
 using StructLibCore.Marketplace;
 
 using System;

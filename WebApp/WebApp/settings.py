@@ -25,7 +25,7 @@ SECRET_KEY = 'b99f00a6-710a-457e-bce7-0e06ad38e692'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['xn--80ach6cd.xn--p1ai','127.0.0.1','localhost']
 
 # Application references
 # https://docs.djangoproject.com/en/2.1/ref/settings/#std:setting-INSTALLED_APPS
@@ -40,8 +40,14 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'main',
+    'Api',
+    'rest_framework',
+    'rest_framework.authtoken',
+    'djoser',
    
 ]
+
+#LOGIN_REDIRECT_URL = '/'
 
 # Middleware framework
 # https://docs.djangoproject.com/en/2.1/topics/http/middleware/
@@ -56,6 +62,17 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'WebApp.urls'
+
+
+#DJOSER = {
+
+#    "SERIALIZERS": {
+#        "user_create": "account.serializers.user_serializer.CustomUserCreateSerializer",
+#        "user": "account.serializers.user_serializer.CustomUserSerializer",
+#        "user_create_password_retype": "account.serializers.user_serializer.UserCreatePasswordRetypeSerializer",
+#    }
+     
+#}
 
 # Template configuration
 # https://docs.djangoproject.com/en/2.1/topics/templates/
@@ -76,14 +93,47 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'WebApp.wsgi.application'
-# Database
-# https://docs.djangoproject.com/en/2.1/ref/settings/#databases
+
+
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
+
+#DATABASES = {
+#    'default': {
+#        'ENGINE': 'django.db.backends.mysql',
+#        'NAME': 'u2163474_dj_def',
+#        'USER': 'u2163474_dj_def',
+#        'PASSWORD': 'fn3-XJd-9YF-vBv',
+#        'HOST': 'localhost',
+#        'PORT': '3306',
+#    }
+#}
+
+REST_FRAMEWORK = {
+    # Use Django's standard `django.contrib.auth` permissions,
+    # or allow read-only access for unauthenticated users.
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+        'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+        
+        ],
+    'DEFAULT_PERMISSION_CLASSES': [],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
+    ],
+    'DEFAULT_RENDERER_CLASSES': [
+        'rest_framework.renderers.JSONRenderer',
+        'rest_framework.renderers.BrowsableAPIRenderer',
+    ]
+}
+
+
 
 # Password validation
 # https://docs.djangoproject.com/en/2.1/ref/settings/#auth-password-validators
@@ -115,4 +165,5 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 
 STATIC_URL = '/static/'
+STATIC_ROOT = 'static'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'

@@ -1,5 +1,6 @@
 ﻿using SiteApi.IntegrationSiteApi.APIMarket.Ozon.Get;
 
+using StructLibCore;
 using StructLibCore.Marketplace;
 
 using System;

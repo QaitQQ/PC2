@@ -6,6 +6,7 @@ using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Linq;
+using StructLibCore;
 
 namespace WinFormsClientLib.Forms.WPF.Controls.ItemControls.Market
 {
@@ -14,41 +15,41 @@ namespace WinFormsClientLib.Forms.WPF.Controls.ItemControls.Market
     /// </summary>
     public partial class OrdersControl : UserControl
     {
-        private List<StructLibCore.Marketplace.APISetting> Options;
+        private List<APISetting> Options;
 
-        private ObservableCollection<StructLibCore.Marketplace.IOrder> OrderList;
-        private ObservableCollection<StructLibCore.Marketplace.IOrder> VisOrderList;
+        private ObservableCollection<IOrder> OrderList;
+        private ObservableCollection<IOrder> VisOrderList;
 
-        private event Action<List<StructLibCore.Marketplace.IOrder>> LoadOrders;
-        public OrdersControl(List<StructLibCore.Marketplace.APISetting> Option)
+        private event Action<List<IOrder>> LoadOrders;
+        public OrdersControl(List<APISetting> Option)
         {
             InitializeComponent();
             this.Options = Option;
-            OrderList = new ObservableCollection<StructLibCore.Marketplace.IOrder>();
-            VisOrderList = new ObservableCollection<StructLibCore.Marketplace.IOrder>();
+            OrderList = new ObservableCollection<IOrder>();
+            VisOrderList = new ObservableCollection<IOrder>();
             System.Threading.Tasks.Task.Factory.StartNew(()  => LoadNetOrders(Options));
 
             OrderStack.ItemsSource = VisOrderList;
-            StatusBox.ItemsSource = Enum.GetValues(typeof(StructLibCore.Marketplace.OrderStatus));
+            StatusBox.ItemsSource = Enum.GetValues(typeof(OrderStatus));
 
             LoadOrders += FillOrders;
         }
 
-        private void FillOrders(List<StructLibCore.Marketplace.IOrder> orders)
+        private void FillOrders(List<IOrder> orders)
         {
             OrderList.Clear();
 
             foreach (var order in orders)
             {
-                OrderList.Add((StructLibCore.Marketplace.IOrder)order);
+                OrderList.Add((IOrder)order);
             }
 
             StatusBox.SelectedIndex = 1;
         }
 
-        private void LoadNetOrders(List<StructLibCore.Marketplace.APISetting> aPIs) 
+        private void LoadNetOrders(List<APISetting> aPIs) 
         {
-            var F = new List<StructLibCore.Marketplace.IOrder>();
+            var F = new List<IOrder>();
 
             foreach (var item in aPIs)
             {
@@ -57,7 +58,7 @@ namespace WinFormsClientLib.Forms.WPF.Controls.ItemControls.Market
                     var X = new Network.Item.MarketApi.GetListOrders().Get<List<object>>(new WrapNetClient(), item);
                     foreach (var t in X)
                     {
-                        F.Add((StructLibCore.Marketplace.IOrder)t);
+                        F.Add((IOrder)t);
                     }
                 }    
 
@@ -80,7 +81,7 @@ namespace WinFormsClientLib.Forms.WPF.Controls.ItemControls.Market
         private void StatusBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             VisOrderList.Clear();
-            IEnumerable<StructLibCore.Marketplace.IOrder> X = OrderList.Where(x => x.Status == (StructLibCore.Marketplace.OrderStatus)StatusBox.SelectedItem);
+            IEnumerable<IOrder> X = OrderList.Where(x => x.Status == (OrderStatus)StatusBox.SelectedItem);
 
             foreach (var item in X)
             {

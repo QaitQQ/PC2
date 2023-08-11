@@ -1,5 +1,7 @@
 ﻿using Server;
 
+using StructLibCore.Marketplace;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,8 +25,8 @@ namespace Network.Item.MarketApi
     {
         public override TCPMessage Post(ApplicationContext Db, object Obj = null)
         {
-            StructLibCore.Marketplace.MarketPlaceCash Z = ((CashClass)Obj).Marketplace;
-            Z.APISettings = ((List<StructLibCore.Marketplace.APISetting>)Attach);
+            MarketPlaceCash Z = ((CashClass)Obj).Marketplace;
+            Z.APISettings = ((List<APISetting>)Attach);
             ((CashClass)Obj).Marketplace = Z;
             Message.Obj = true;
             return Message;
@@ -45,7 +47,7 @@ namespace Network.Item.MarketApi
         public override TCPMessage Post(ApplicationContext Db, object Obj = null)
         {
             var Z = ((CashClass)Obj).Marketplace;
-            Z.MarketItems = (List<StructLibCore.Marketplace.MarketItem>)Attach;
+            Z.MarketItems = (List<MarketItem>)Attach;
             ((CashClass)Obj).Marketplace = Z;
             Message.Obj = true;
             return Message;
@@ -57,11 +59,11 @@ namespace Network.Item.MarketApi
     {
         public override TCPMessage Post(ApplicationContext Db, object Obj = null)
         {
-            var X = (StructLibCore.Marketplace.IMarketItem[])Attach;
-            static List<IGrouping<StructLibCore.Marketplace.APISetting, StructLibCore.Marketplace.IMarketItem>> ConvertListApi(StructLibCore.Marketplace.IMarketItem[] Lst)
+            var X = (IMarketItem[])Attach;
+            static List<IGrouping<APISetting, IMarketItem>> ConvertListApi(IMarketItem[] Lst)
             {
-                IEnumerable<IGrouping<StructLibCore.Marketplace.APISetting, StructLibCore.Marketplace.IMarketItem>> X = Lst.GroupBy(x => x.APISetting);
-                List<IGrouping<StructLibCore.Marketplace.APISetting, StructLibCore.Marketplace.IMarketItem>> A = X.ToList();
+                IEnumerable<IGrouping<APISetting, IMarketItem>> X = Lst.GroupBy(x => x.APISetting);
+                List<IGrouping<APISetting, IMarketItem>> A = X.ToList();
                 return A;
             }
             var Z = ConvertListApi(X);
@@ -70,15 +72,15 @@ namespace Network.Item.MarketApi
             {
                 switch (item.Key.Type)
                 {
-                    case StructLibCore.Marketplace.MarketName.Yandex:
+                    case MarketName.Yandex:
                         R = new Server.Class.IntegrationSiteApi.Market.Yandex.YandexPostItemPrice.YandexPostItemPrice(item.Key).Get(item.ToArray());
                         break;
-                    case StructLibCore.Marketplace.MarketName.Ozon:
+                    case MarketName.Ozon:
                         //   R = new Server.Class.IntegrationSiteApi.Market.Ozon.OzonSetItem(item.Key).Get(item.ToArray());
                         break;
-                    case StructLibCore.Marketplace.MarketName.Avito:
+                    case MarketName.Avito:
                         break;
-                    case StructLibCore.Marketplace.MarketName.Sber:
+                    case MarketName.Sber:
                         break;
                     default:
                         break;
@@ -93,19 +95,19 @@ namespace Network.Item.MarketApi
     {
         public override TCPMessage Post(ApplicationContext Db, object Obj = null)
         {
-            StructLibCore.Marketplace.APISetting X = (StructLibCore.Marketplace.APISetting)Attach;
+            APISetting X = (APISetting)Attach;
             List<object> Result = null;
             switch (X.Type)
             {
-                case StructLibCore.Marketplace.MarketName.Yandex:
+                case MarketName.Yandex:
                     Result = new Server.Class.IntegrationSiteApi.Market.Yandex.YandexGetName.YandexGetItemList(X).Get();
                     break;
-                case StructLibCore.Marketplace.MarketName.Ozon:
+                case MarketName.Ozon:
                     Result = new Server.Class.IntegrationSiteApi.Market.Ozon.OzonPostItemDesc(X).Get();
                     break;
-                case StructLibCore.Marketplace.MarketName.Avito:
+                case MarketName.Avito:
                     break;
-                case StructLibCore.Marketplace.MarketName.Sber:
+                case MarketName.Sber:
                     break;
                 default:
                     break;
@@ -119,19 +121,19 @@ namespace Network.Item.MarketApi
     {
         public override TCPMessage Post(ApplicationContext Db, object Obj = null)
         {
-            StructLibCore.Marketplace.APISetting X = (StructLibCore.Marketplace.APISetting)Attach;
+            APISetting X = (APISetting)Attach;
             List<object> Result = new List<object>();
             switch (X.Type)
             {
-                case StructLibCore.Marketplace.MarketName.Yandex:
+                case MarketName.Yandex:
                     Result = new Server.Class.IntegrationSiteApi.Market.Yandex.YandexGetItemOrders.YandexGetItemOrders(X).Get();
                     break;
-                case StructLibCore.Marketplace.MarketName.Ozon:
+                case MarketName.Ozon:
                     Result = new Server.Class.IntegrationSiteApi.Market.Ozon.OzonPortOrderList.OzonPortOrderList(X).Get();
                     break;
-                case StructLibCore.Marketplace.MarketName.Avito:
+                case MarketName.Avito:
                     break;
-                case StructLibCore.Marketplace.MarketName.Sber:
+                case MarketName.Sber:
                     break;
                 default:
                     break;

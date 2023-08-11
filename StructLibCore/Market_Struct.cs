@@ -29,6 +29,23 @@ namespace StructLibCore.Marketplace
         public List<APISetting> APISettings { get; set; }
         public List<InnString> SellerINN { get; set; }
         public List<IOrder> Orders { get; set; }
+
+        private string apiBaseToken;
+
+        public string ApiBaseToken
+        {
+            get
+            {
+                if (apiBaseToken == null)
+                {
+                    return "";
+                }
+                else
+                {
+                    return apiBaseToken;
+                }
+            }
+            set { apiBaseToken = value; } }
         public DateTime LastUpTime { get; set; }
         public MarketPlaceCash() { MarketItems = new List<MarketItem>(); APISettings = new List<APISetting>(); Orders = new List<IOrder>(); }
     }

@@ -121,22 +121,33 @@ namespace MGSol.Panel
         private void Fill_V_list(IEnumerable<MarketItem> selectionItem)
         {
             VisItemsList.Clear();
+
             foreach (MarketItem item in selectionItem)
             {
                 VisItemsList.Add(new VisMarketItem(item, WCList));
             }
+
             GC.Collect();
         }
         private void ItemSorted(object sender, SelectionChangedEventArgs e)
         {
-            switch (((System.Windows.Controls.ComboBox)sender).SelectedItem.ToString())
+            List<MarketItem> nlist = new List<MarketItem>();
+            foreach (var item in VisItemsList)
+            {
+                nlist.Add(item.Item);
+            }
+
+            switch (((ComboBox)sender).SelectedItem.ToString())
             {
                 case "System.String name":
-                    Fill_V_list(from lst in ItemsList orderby lst.Name select lst);
+                    Fill_V_list(from lst in nlist orderby lst.Name select lst);
                     break;
                 case "System.String SKU":
-                    Fill_V_list(from lst in ItemsList orderby lst.SKU select lst);
+                    Fill_V_list(from lst in nlist orderby lst.SKU select lst);
                     break;
+                case "System.Collections.ObjectModel.ObservableCollection`1[StructLibCore.Marketplace.IMarketItem] Items":    
+                    Fill_V_list(selectionItem: from lst in nlist orderby lst.Items?.Count descending select lst);
+                    break;                   
                 default:
                     break;
             }
@@ -249,10 +260,10 @@ namespace MGSol.Panel
         private static void RenewPrice(IMarketItem[] mass)
         {
             IMarketItem[] X = mass;
-            static List<IGrouping<StructLibCore.Marketplace.APISetting, StructLibCore.Marketplace.IMarketItem>> ConvertListApi(StructLibCore.Marketplace.IMarketItem[] Lst)
+            static List<IGrouping<APISetting, IMarketItem>> ConvertListApi(IMarketItem[] Lst)
             {
-                IEnumerable<IGrouping<StructLibCore.Marketplace.APISetting, StructLibCore.Marketplace.IMarketItem>> X = Lst.GroupBy(x => x.APISetting);
-                List<IGrouping<StructLibCore.Marketplace.APISetting, StructLibCore.Marketplace.IMarketItem>> A = X.ToList();
+                IEnumerable<IGrouping<APISetting, IMarketItem>> X = Lst.GroupBy(x => x.APISetting);
+                List<IGrouping<APISetting, IMarketItem>> A = X.ToList();
                 return A;
             }
             List<IGrouping<APISetting, IMarketItem>> Z = ConvertListApi(X);
@@ -262,17 +273,17 @@ namespace MGSol.Panel
             {
                 switch (item.Key.Type)
                 {
-                    case StructLibCore.Marketplace.MarketName.Yandex:
+                    case MarketName.Yandex:
                         P = new Server.Class.IntegrationSiteApi.Market.Yandex.YandexPostItemPrice.YandexPostItemPrice(item.Key).Get(item.ToArray());
                         S = new YandexPUTStocks(item.Key).Get(item.ToArray());
                         break;
-                    case StructLibCore.Marketplace.MarketName.Ozon:
+                    case MarketName.Ozon:
                         P = new Server.Class.IntegrationSiteApi.Market.Ozon.OzonPostSetPrice(item.Key).Get(item.ToArray());
                         S = new Server.Class.IntegrationSiteApi.Market.Ozon.OzonPostSetStoks(item.Key).Get(item.ToArray());
                         break;
-                    case StructLibCore.Marketplace.MarketName.Avito:
+                    case MarketName.Avito:
                         break;
-                    case StructLibCore.Marketplace.MarketName.Sber:
+                    case MarketName.Sber:
                         break;
                     default:
                         break;
@@ -290,7 +301,7 @@ namespace MGSol.Panel
         }
         private void SearchItemIn1CBase_Click(object sender, RoutedEventArgs e)
         {
-            MarketItem X = (StructLibCore.Marketplace.MarketItem)((Button)sender).DataContext;
+            MarketItem X = (MarketItem)((Button)sender).DataContext;
             ContextMenu M = new();
             if (items1C == null)
             {
@@ -429,7 +440,7 @@ namespace MGSol.Panel
             {
                 ContextMenu menu = new();
                 TextBox Box = new();
-                TextBlock TX = (TextBlock)sender;
+                Control TX = (Control)sender;
                 MarketItem MITEM = ((VisMarketItem)TX.DataContext).Item;
                 Box.Width = 50;
                 _ = menu.Items.Add(Box);
@@ -761,6 +772,26 @@ namespace MGSol.Panel
                     }
                 }
             }
+        }
+
+        private void PlusStack_Button_Click(object sender, RoutedEventArgs e)
+        {
+            List<IMarketItem> mass = new();
+            foreach (VisMarketItem I in VisItemsList)
+            {
+                if (I.Checked)
+                {
+                    MarketItem item = I.Item;
+                    foreach (IMarketItem X in item.Items)
+                    {
+
+                            X.Stocks = ProcessingPanelPercentBox.Text;
+                            mass.Add(X);
+                        
+                    }
+                }
+            }
+            RenewPrice(mass.ToArray());
         }
     }
 }

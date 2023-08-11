@@ -2,6 +2,7 @@
 
 using SiteApi.IntegrationSiteApi.APIMarket.Ozon.Post.OzonGetDesc;
 
+using StructLibCore;
 using StructLibCore.Marketplace;
 
 using System;
@@ -16,8 +17,8 @@ namespace SiteApi.IntegrationSiteApi.APIMarket.Yandex.YandexPostImport
 {
     public class YandexPostImport : SiteApi.IntegrationSiteApi.APIMarket.Yandex.YandexApiClass
     {
-        public YandexPostImport(APISetting APISetting) : base(APISetting)  {}
-        public List<object> Get(StructLibCore.Marketplace.IMarketItem[] List)
+        public YandexPostImport(StructLibCore.Marketplace.APISetting APISetting) : base(APISetting)  {}
+        public List<object> Get(IMarketItem[] List)
         {
             var httpWebRequest = GetRequest(@"/campaigns/" + ClientID + "/offer-mapping-entries/updates.json", "POST");
             Root itemsRoot = new Root();

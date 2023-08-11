@@ -1,4 +1,5 @@
-﻿using StructLibCore.Marketplace;
+﻿using StructLibCore;
+using StructLibCore.Marketplace;
 
 using System;
 using System.Collections.Generic;
@@ -111,7 +112,7 @@ namespace MGSol.Panel
         public string FullPath { get; set; }
         public string FileName { get; set; }
         public List<ParamsColl> ParamsColl { get; set; }
-        public StructLibCore.Marketplace.InnString InnString { get; set; }
+        public InnString InnString { get; set; }
         public string InnStringName
         {
             get

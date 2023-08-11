@@ -1,6 +1,5 @@
 ﻿using Newtonsoft.Json;
 
-using StructLibCore;
 using StructLibCore.Marketplace;
 
 using System;
@@ -17,7 +16,7 @@ namespace Server.Class.IntegrationSiteApi.Market.Yandex.YandexPostItemPrice
     public class YandexPostItemPrice : SiteApi.IntegrationSiteApi.APIMarket.Yandex.YandexApiClass
     {
         public YandexPostItemPrice(APISetting APISetting) : base(APISetting) { }
-        public bool Get(StructLibCore.Marketplace.IMarketItem[] List)
+        public bool Get(IMarketItem[] List)
         {
             if (List.Length > 10)
             {

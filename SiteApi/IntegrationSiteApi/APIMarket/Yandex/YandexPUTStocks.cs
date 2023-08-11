@@ -13,7 +13,7 @@ namespace SiteApi.IntegrationSiteApi.APIMarket.Yandex.YandexPUTStocks
         public YandexPUTStocks(APISetting APISetting) : base(APISetting)
         {
         }
-        public bool Get(StructLibCore.Marketplace.IMarketItem[] itemList)
+        public bool Get(IMarketItem[] itemList)
         {
             HttpWebRequest httpWebRequest = GetRequest(@"/campaigns/" + ClientID + "/offers/stocks.json", "PUT");
             Root itemsRoot = new Root();

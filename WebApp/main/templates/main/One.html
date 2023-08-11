@@ -1,42 +1,28 @@
 ﻿{% extends 'main/layout.html' %}
 
-{% block title  %}
-
-Первая страница
-
+{% block title %}
+    Страница блоков
 {% endblock %}
 
 {% block content  %}
-
-<h1>Первая страница</h1>
-<div class="features">
-    {%if tables%}
-    {%for el in tables %}
-
-    <div class="alert alert-warning">
-        <p>
-            {{el.full_text}}
-        </p>
-        <p>
-            {{el.date}}
-        </p>
-        <form action="{% url 'list-detail' el.id %}"> <button class="bth alert-warning"> {{el.title}}</button></form>
-
-
-        <p>  <!--коментарий--></p>
-    </div>
-
-    {%endfor%}
-    {%else %}
-    <p>Нет записей</p>
-    {%endif%}
-    <!--коментарий-->
-
-
-
-
-</div>
-
+    {% if user.is_authenticated %}
+        <div class="features">
+            {%if tables%}
+            {%for el in tables %}
+            <div class="alert alert-warning">
+                <p>{{el.full_text}}</p>
+                <p>{{el.date}}</p>
+                <form action="{% url 'list-detail' el.id %}"> <button class="bth alert-warning"> {{el.title}}</button></form>
+            </div>
+            {%endfor%}
+            {%else %}
+            <p>Нет записей</p>
+            {%endif%}
+        </div>
+    {% else %}
+    <h1>Первая страница</h1>
+    {% endif %}
 
 
 {% endblock %}
+

@@ -1,4 +1,4 @@
-﻿using StructLibCore.Marketplace;
+﻿using StructLibCore;
 
 using System;
 using System.Collections.Generic;
@@ -25,20 +25,20 @@ namespace WinFormsClientLib.Forms.WPF.Controls.ItemControls.Market
     /// 
     public partial class ItemControl : UserControl
     {
-        private List<StructLibCore.Marketplace.MarketItem> ItemsList;
-        private ObservableCollection<StructLibCore.Marketplace.MarketItem> VisItemsList;
-        private List<StructLibCore.Marketplace.APISetting> Options;
-        public ItemControl(List<StructLibCore.Marketplace.APISetting> Option)
+        private List<MarketItem> ItemsList;
+        private ObservableCollection<MarketItem> VisItemsList;
+        private List<APISetting> Options;
+        public ItemControl(List<APISetting> Option)
         {
             InitializeComponent();
-            VisItemsList = new ObservableCollection<StructLibCore.Marketplace.MarketItem>();         
+            VisItemsList = new ObservableCollection<MarketItem>();         
             this.Options = Option;
             System.Threading.Tasks.Task.Factory.StartNew(() => Dispatcher.Invoke(() => LoadList()));
             VItemsList.ItemsSource = VisItemsList;
         }
         private void LoadList()
         {
-            ItemsList = new Network.Item.MarketApi.GetItemsList().Get<List<StructLibCore.Marketplace.MarketItem>>(new Client.WrapNetClient());
+            ItemsList = new Network.Item.MarketApi.GetItemsList().Get<List<MarketItem>>(new Client.WrapNetClient());
 
             foreach (var item in ItemsList)
             {
@@ -144,7 +144,7 @@ namespace WinFormsClientLib.Forms.WPF.Controls.ItemControls.Market
             var selectionItem = from lst in ItemsList where lst.Name.ToLower().Contains(FindField.Text.ToLower()) select lst;
             Fill_Vlist(selectionItem);
         }
-        private void Fill_Vlist(IEnumerable<StructLibCore.Marketplace.MarketItem> selectionItem)
+        private void Fill_Vlist(IEnumerable<MarketItem> selectionItem)
         {
             VisItemsList.Clear();
 

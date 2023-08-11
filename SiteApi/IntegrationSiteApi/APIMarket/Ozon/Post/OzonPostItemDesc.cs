@@ -1,7 +1,6 @@
 ﻿using Newtonsoft.Json;
 
 using SiteApi.IntegrationSiteApi.APIMarket.Ozon.Post;
-using SiteApi.IntegrationSiteApi.APIMarket.Ozon.Post.OzonGetDesc;
 
 using StructLibCore.Marketplace;
 

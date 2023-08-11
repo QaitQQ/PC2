@@ -2,7 +2,7 @@
 
 using SiteApi.IntegrationSiteApi.APIMarket.Ozon.Post;
 
-using StructLibCore;
+using StructLibCore.Marketplace;
 
 using System.Collections.Generic;
 using System.IO;
@@ -14,10 +14,10 @@ namespace Server.Class.IntegrationSiteApi.Market.Ozon
 {
     public class OzonPostSetStoks : SiteApi.IntegrationSiteApi.APIMarket.Ozon.Post.OzonPost
     {
-        public OzonPostSetStoks(StructLibCore.Marketplace.APISetting aPISetting) : base(aPISetting)
+        public OzonPostSetStoks(APISetting aPISetting) : base(aPISetting)
         {
         }
-        public object Get(StructLibCore.Marketplace.IMarketItem[] List)
+        public object Get(IMarketItem[] List)
         {
             Root itemsRoot = new Root();
             foreach (OzonItemDesc item in List)

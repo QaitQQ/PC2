@@ -1,39 +1,40 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 namespace MGSol.Panel
 {
-    /// <summary>
-    /// Логика взаимодействия для ShipmentListControl.xaml
-    /// </summary>
     public partial class ShipmentListControl : UserControl
     {
         private MainModel Model { get; set; }
-        private ObservableCollection<ShipmentOrder> shipmentOrders { get; set; }
+        private ObservableCollection<SiteApi.IntegrationSiteApi.ApiBase.ObjDesc.Order> shipmentOrders { get; set; }
         public ShipmentListControl(MainModel model)
         {
             InitializeComponent();
             Model = model;
-            shipmentOrders = new ObservableCollection<ShipmentOrder>();
+            shipmentOrders = new ObservableCollection<SiteApi.IntegrationSiteApi.ApiBase.ObjDesc.Order>();
             DTtable.ItemsSource = shipmentOrders;
         }
         public void LoadData()
         {
-            foreach (ShipmentOrder item in Model.ShipmentOrders)
+            shipmentOrders.Clear();
+             var X =  new SiteApi.IntegrationSiteApi.ApiBase.Get.GetAllOrders(Model.BaseInfoPrice.ToketBase, Model.BaseInfoPrice.UriBase).Get();
+
+            foreach (SiteApi.IntegrationSiteApi.ApiBase.ObjDesc.Order item in X)
             {
                 shipmentOrders.Add(item);
             }
         }
         private void Get_Click(object sender, RoutedEventArgs e)
         {
-            this.Dispatcher.BeginInvoke(new Action(() => { LoadData(); }));
+        //  var  BoxingDate = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, TimeZoneInfo.Local);
+
+              this.Dispatcher.BeginInvoke(new Action(() => { LoadData(); }));
         }
         private void Save_Click(object sender, RoutedEventArgs e)
         {
-            Model.ShipmentOrders = shipmentOrders.ToList();
+
         }
         private void Clear_Click(object sender, RoutedEventArgs e)
         {

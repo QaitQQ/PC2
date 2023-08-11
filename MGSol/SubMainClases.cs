@@ -1,8 +1,6 @@
 ﻿using Network;
-
 using System;
 using System.Collections.Generic;
-
 namespace MGSol
 {
     [Serializable]
@@ -11,6 +9,18 @@ namespace MGSol
         private UserPass logPass;
         private AddressPort addressPort;
         private List<PriceIDPair> priceIDPairList;
+        private string uriBase;
+        public string UriBase
+        {
+            get { return uriBase; }
+            set { uriBase = value; }
+        }
+        private string toketBase;
+        public string ToketBase
+        {
+            get { return toketBase; }
+            set { toketBase = value; }
+        }
         public UserPass LogPass
         {
             get => logPass;
@@ -62,7 +72,6 @@ namespace MGSol
             Port = Convert.ToInt32(port);
             Token = token;
         }
-
         public TCPMessage Messaging(TCPMessage Data)
         {
             try
@@ -84,7 +93,6 @@ namespace MGSol
         public string Date { get; set; }
         public string DateShipment { get; set; }
         public List<string> Items { get; set; }
-
         public string GetItemString
         {
             get
@@ -96,20 +104,16 @@ namespace MGSol
                 return result;
             }
         }
-
     }
     public class SyncShipment
     {
         private DateTime LastUp;
         private List<ShipmentOrder> OrderList;
-
         private MainModel mainModel;
-
         public SyncShipment(MainModel model)
         {
             mainModel = model;
             OrderList = model.ShipmentOrders;
-
         }
         public bool Sync() 
         {
@@ -120,7 +124,6 @@ namespace MGSol
                 if (LastUp < SaveDate)
                 {
                     NewShipmentOrders = СompareShipmentOrdersWithLocal(GetShipmentOrdersFromLastUp(LastUp));
-
                     foreach (var item in NewShipmentOrders)
                     {
                         OrderList.Add(item);
@@ -129,21 +132,14 @@ namespace MGSol
                 mainModel.ShipmentOrders = OrderList;
                 LastUp = DateTime.Now;
                 mainModel.OptionMarketPlace.LastUpTime = LastUp;
-
-
                 return true;
             }
             catch 
             {
-
                 return false;
             }
-
         }
-
-
         public void SetLastUpTime(DateTime time) { LastUp = time; }
-
         private DateTime GetLestUp() { return  DateTime.Now; }
         private List<ShipmentOrder> GetShipmentOrdersFromLastUp(DateTime dateTime) { return new List<ShipmentOrder>(); }
         private List<ShipmentOrder> СompareShipmentOrdersWithLocal(List<ShipmentOrder> shipments) { return new List<ShipmentOrder>(); }

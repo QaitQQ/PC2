@@ -1,5 +1,7 @@
 ﻿using MGSol.Panel.Other;
 
+using StructLibCore.Marketplace;
+
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -118,7 +120,7 @@ namespace MGSol.Panel
                         string Date = ColorCellsList[i][GiveColorCell(ParamEnum.Дата).Y].Value;
                         FindPost = Document.Orders.Find(x => x.DepartureNumber == NPost);
                         SF SchetFaktura = null;
-                        if (ActiveFile.APISetting.Type == StructLibCore.Marketplace.MarketName.Ozon)
+                        if (ActiveFile.APISetting.Type == MarketName.Ozon)
                         {
                             string SFNomber = ColorCellsList[i][GiveColorCell(ParamEnum.НомерСФ).Y].Value;
                             string Bonus = ColorCellsList[i][GiveColorCell(ParamEnum.Бонус).Y].Value;
@@ -136,7 +138,7 @@ namespace MGSol.Panel
                                 Date = Info.ShipmentDate.ToString();
                             }
                         }
-                        if (!editNonber && ActiveFile.APISetting.Type == StructLibCore.Marketplace.MarketName.Yandex)
+                        if (!editNonber && ActiveFile.APISetting.Type == MarketName.Yandex)
                         {
                             string z = DateTime.Parse(Date).Month.ToString();
                             char p = DateTime.Parse(Date).Year.ToString().Last();
@@ -175,7 +177,7 @@ namespace MGSol.Panel
                                 QuestionBox QS = new(RepSTR);
                                 if (QS.ShowDialog() == true)
                                 {
-                                    StructLibCore.Marketplace.MarketItem X = Model.OptionMarketPlace.MarketItems.FirstOrDefault(x => x.SKU == NOrderItem.SKU);
+                                    MarketItem X = Model.OptionMarketPlace.MarketItems.FirstOrDefault(x => x.SKU == NOrderItem.SKU);
                                     if (X != null)
                                     {
                                         X.Art1C = QS.AnswerTEXT;
@@ -202,12 +204,12 @@ namespace MGSol.Panel
                         if (ColorCellsList[i][GiveColorCell(ParamEnum.SKU).Y].Value == "1162")
                         {
                         }
-                        if (ActiveFile.APISetting.Type == StructLibCore.Marketplace.MarketName.Ozon) // Возврат работает только для озона
+                        if (ActiveFile.APISetting.Type == MarketName.Ozon) // Возврат работает только для озона
                         {
                             string OrderReturnPrice = ColorCellsList[i][GiveColorCell(ParamEnum.ВозвратСумма).Y].Value;
                             int u = GiveColorCell(ParamEnum.ВозвратКолич).Y;
                             Count = ColorCellsList[i][u].Value;
-                            if (OrderReturnPrice != "" && ActiveFile.APISetting.Type == StructLibCore.Marketplace.MarketName.Ozon)
+                            if (OrderReturnPrice != "" && ActiveFile.APISetting.Type == MarketName.Ozon)
                             {
                                 FindPost = Document.Orders.Find(x => x.DepartureNumber == NPost);
                                 OrderItem NOrderItem = new()
@@ -222,7 +224,7 @@ namespace MGSol.Panel
                             }
                         }
                     }
-                    if (ActiveFile.APISetting.Type == StructLibCore.Marketplace.MarketName.Yandex) // Возврат для Яндекса 
+                    if (ActiveFile.APISetting.Type == MarketName.Yandex) // Возврат для Яндекса 
                     {
                         ColorCell I = GiveColorCell(ParamEnum.НачСтрокВозврат);
                         int Y = 0;
@@ -544,7 +546,7 @@ namespace MGSol.Panel
             int D = 0;
             for (int i = 0; i < Z.Length; i++)
             {
-                if (ActiveFile.APISetting != null && ActiveFile.APISetting.Type == StructLibCore.Marketplace.MarketName.Yandex)
+                if (ActiveFile.APISetting != null && ActiveFile.APISetting.Type == MarketName.Yandex)
                 {
                     if (i == 0)
                     {

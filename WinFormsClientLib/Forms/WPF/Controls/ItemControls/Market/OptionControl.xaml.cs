@@ -1,4 +1,6 @@
-﻿using System;
+﻿using StructLibCore;
+
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Text;
@@ -19,11 +21,11 @@ namespace WinFormsClientLib.Forms.WPF.Controls.ItemControls.Market
     /// </summary>
     public partial class OptionControl : UserControl
     {
-        private ObservableCollection<StructLibCore.Marketplace.APISetting> ListOption;
-        public OptionControl(List<StructLibCore.Marketplace.APISetting> Option)
+        private ObservableCollection<APISetting> ListOption;
+        public OptionControl(List<APISetting> Option)
         {
             InitializeComponent();
-            ListOption = new ObservableCollection<StructLibCore.Marketplace.APISetting>();
+            ListOption = new ObservableCollection<APISetting>();
       
             foreach (var item in Option)
             {
@@ -31,7 +33,7 @@ namespace WinFormsClientLib.Forms.WPF.Controls.ItemControls.Market
             }
             ListOption.CollectionChanged += (x, y) =>
            {
-               var lst = new List<StructLibCore.Marketplace.APISetting>();
+               var lst = new List<APISetting>();
                foreach (var item in ListOption)
                {
                    lst.Add(item);
@@ -51,8 +53,8 @@ namespace WinFormsClientLib.Forms.WPF.Controls.ItemControls.Market
         }
         public class OptionAddBox : Window
         {
-            public StructLibCore.Marketplace.APISetting Setting { get; set; }
-            public OptionAddBox(StructLibCore.Marketplace.APISetting Setting = null)
+            public APISetting Setting { get; set; }
+            public OptionAddBox(APISetting Setting = null)
             {
                 this.Setting = Setting;
                 Grid MainGrid = new Grid();
@@ -77,7 +79,7 @@ namespace WinFormsClientLib.Forms.WPF.Controls.ItemControls.Market
 
                 ComboBox Type = new ComboBox
                 {
-                    ItemsSource = Enum.GetValues(typeof(StructLibCore.Marketplace.MarketName))
+                    ItemsSource = Enum.GetValues(typeof(MarketName))
                 };
                 Type.SelectedItem = Setting?.Type;
                 ListBox listBox = new ListBox();
@@ -125,7 +127,7 @@ namespace WinFormsClientLib.Forms.WPF.Controls.ItemControls.Market
 
                     if (Type.SelectedItem != null)
                     {
-                        this.Setting.Type = (StructLibCore.Marketplace.MarketName)Type.SelectedItem;
+                        this.Setting.Type = (MarketName)Type.SelectedItem;
                     }
                     DialogResult = true; this.Close();
                 };
@@ -144,12 +146,12 @@ namespace WinFormsClientLib.Forms.WPF.Controls.ItemControls.Market
         }
         private void DelButtonClick_Click(object sender, RoutedEventArgs e)
         {
-            ListOption.Remove((StructLibCore.Marketplace.APISetting)((Button)sender).DataContext);
+            ListOption.Remove((APISetting)((Button)sender).DataContext);
         }
         private void Grid_MouseRightButtonDown(object sender, MouseButtonEventArgs e)
         {
             Grid grid = (Grid)sender;
-            var OptionAddBox = new OptionAddBox((StructLibCore.Marketplace.APISetting)grid.DataContext);     
+            var OptionAddBox = new OptionAddBox((APISetting)grid.DataContext);     
 
 
             if ((bool)OptionAddBox.ShowDialog())

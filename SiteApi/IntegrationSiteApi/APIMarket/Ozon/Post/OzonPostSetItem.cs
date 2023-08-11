@@ -2,6 +2,9 @@
 
 using SiteApi.IntegrationSiteApi.APIMarket.Ozon.Post;
 
+using StructLibCore;
+using StructLibCore.Marketplace;
+
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -11,16 +14,16 @@ namespace Server.Class.IntegrationSiteApi.Market.Ozon
 {
     public class OzonPostSetItem : SiteApi.IntegrationSiteApi.APIMarket.Ozon.Post.OzonPost
     {
-        public OzonPostSetItem(StructLibCore.Marketplace.APISetting aPISetting) : base(aPISetting)
+        public OzonPostSetItem(APISetting aPISetting) : base(aPISetting)
         {
         }
 
-        private StructLibCore.Marketplace.IMarketItem[] Lst { get; set; }
-        public object Get(StructLibCore.Marketplace.IMarketItem[] Lst)
+        private IMarketItem[] Lst { get; set; }
+        public object Get(IMarketItem[] Lst)
         {
             this.Lst = Lst;
-            List<IGrouping<StructLibCore.Marketplace.APISetting, StructLibCore.Marketplace.IMarketItem>> LST = ConvertListApi();
-            foreach (IGrouping<StructLibCore.Marketplace.APISetting, StructLibCore.Marketplace.IMarketItem> item in LST)
+            List<IGrouping<APISetting, IMarketItem>> LST = ConvertListApi();
+            foreach (IGrouping<APISetting, IMarketItem> item in LST)
             {
                 ClientID = item.Key.ApiString[0];
                 apiKey = item.Key.ApiString[1];
@@ -43,17 +46,17 @@ namespace Server.Class.IntegrationSiteApi.Market.Ozon
             }
             return result;
         }
-        private List<IGrouping<StructLibCore.Marketplace.APISetting, StructLibCore.Marketplace.IMarketItem>> ConvertListApi()
+        private List<IGrouping<APISetting, IMarketItem>> ConvertListApi()
         {
-            IEnumerable<IGrouping<StructLibCore.Marketplace.APISetting, StructLibCore.Marketplace.IMarketItem>> X = Lst.GroupBy(x => x.APISetting);
-            List<IGrouping<StructLibCore.Marketplace.APISetting, StructLibCore.Marketplace.IMarketItem>> A = X.ToList();
+            IEnumerable<IGrouping<APISetting, IMarketItem>> X = Lst.GroupBy(x => x.APISetting);
+            List<IGrouping<APISetting, IMarketItem>> A = X.ToList();
             return A;
         }
-        private List<SetOzonItem> ConverItems(List<StructLibCore.Marketplace.IMarketItem> lst)
+        private List<SetOzonItem> ConverItems(List<IMarketItem> lst)
         {
             List<SetOzonItem> Nlst = new List<SetOzonItem>();
 
-            foreach (StructLibCore.Marketplace.IMarketItem item in lst)
+            foreach (IMarketItem item in lst)
             {
                 Nlst.Add(new SetOzonItem((OzonItemDesc)item));
             }

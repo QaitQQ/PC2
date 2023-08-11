@@ -97,7 +97,7 @@ namespace Server.Class.IntegrationSiteApi.Market.Yandex.YandexGetName
             public string Price { get; set; }
             public string SKU { get => shopSku; set => shopSku = value; }
             public string Stocks { get; set; }
-            public StructLibCore.Marketplace.APISetting APISetting { get; set; }
+            public APISetting APISetting { get; set; }
             public Server.Class.IntegrationSiteApi.Market.Yandex.YandexGetPrice.Price Yprice { get; set; }
             public string MinPrice { get; set; }
             public APISetting APISettingSource { get; set; }

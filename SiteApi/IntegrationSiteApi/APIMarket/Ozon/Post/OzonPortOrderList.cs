@@ -2,6 +2,7 @@
 
 using SiteApi.IntegrationSiteApi;
 
+using StructLibCore;
 using StructLibCore.Marketplace;
 
 using System;
