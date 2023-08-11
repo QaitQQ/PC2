@@ -1,4 +1,3 @@
-
 from datetime import date
 from tabnanny import verbose
 from django.db import models
