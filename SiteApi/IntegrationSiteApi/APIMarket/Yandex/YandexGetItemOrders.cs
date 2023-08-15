@@ -6,6 +6,7 @@ using StructLibCore.Marketplace;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Windows.Forms;
 namespace Server.Class.IntegrationSiteApi.Market.Yandex.YandexGetItemOrders
@@ -268,6 +269,13 @@ namespace Server.Class.IntegrationSiteApi.Market.Yandex.YandexGetItemOrders
                     List<MarketOrderItems> lst = new List<MarketOrderItems>();
                     foreach (Item item in _Items)
                     {
+                        List<string> Barcodes = new List<string>();
+
+                        if (IMtemsList != null)
+                        {
+                            Barcodes = IMtemsList.FirstOrDefault(x => x.SKU == item.ShopSku).Barcodes;
+                        }
+
                         lst.Add(new MarketOrderItems(item.OfferName, item.Count.ToString(), item.Price.ToString(), item.ShopSku, this));
                     }
                     return lst;
@@ -332,6 +340,8 @@ namespace Server.Class.IntegrationSiteApi.Market.Yandex.YandexGetItemOrders
             }
 
             public string ShipmentDate => throw new NotImplementedException();
+
+            public List<IMarketItem> IMtemsList { get; set; }
         }
     }
 }

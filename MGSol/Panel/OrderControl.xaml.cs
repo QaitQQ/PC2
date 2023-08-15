@@ -3,8 +3,10 @@
 using SiteApi.IntegrationSiteApi.ApiBase.Post;
 using SiteApi.IntegrationSiteApi.APIMarket.Ozon.Post;
 using SiteApi.IntegrationSiteApi.APIMarket.Yandex;
+
 using StructLibCore;
 using StructLibCore.Marketplace;
+
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -164,13 +166,11 @@ namespace MGSol.Panel
                     {
                         X.SetStatus(OrderStatus.READY);
                         StatusBox_SelectionChanged(null, null);
-
                     }
                     else
                     {
                         MessageBox.Show("Не удалось добавить в базу");
                     }
-
                     //List<string> ItwmLIst = new();
                     //foreach (MarketOrderItems item in X.Items)
                     //{
@@ -178,8 +178,8 @@ namespace MGSol.Panel
                     //    bool v = double.TryParse(item.Price, out double Iprice);
                     //    ItwmLIst.Add(item.Sku + "|" + item.Count + "|" + item.Price + "|" + (Icount * Iprice).ToString());
                     //}
-                   // string data = DateTime.Now.ToString("dd/MM/yy");
-                   // model.ShipmentOrders.Add(new ShipmentOrder() { Date = X.Date, DateShipment = DateTime.Now.ToString(), ID = model.ShipmentOrders.Count + 1.ToString() + data, Nomber = X.Id, Items = ItwmLIst });
+                    // string data = DateTime.Now.ToString("dd/MM/yy");
+                    // model.ShipmentOrders.Add(new ShipmentOrder() { Date = X.Date, DateShipment = DateTime.Now.ToString(), ID = model.ShipmentOrders.Count + 1.ToString() + data, Nomber = X.Id, Items = ItwmLIst });
                 }
             }
             catch (Exception E)
@@ -394,12 +394,71 @@ namespace MGSol.Panel
         private void HeadStack_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             StackPanel p = (StackPanel)sender;
-            MainOrderBoard.DataContext = p.DataContext;
+            var order = (IOrder)p.DataContext;
+            if (order.IMtemsList == null)
+            {
+                order.IMtemsList = new List<IMarketItem>();
+                switch (order.APISetting.Type)
+                {
+                    case MarketName.Yandex:
+                        break;
+                    case MarketName.Ozon:
+                        List<string> list = new List<string>();
+                        foreach (var Pitem in order.Items)
+                        {
+                            list.Add(Pitem.Sku);
+                        }
+                        order.IMtemsList = (List<IMarketItem>)new OzonPostItemDesc(order.APISetting).Get(list);
+                        break;
+                    case MarketName.Avito:
+                        break;
+                    case MarketName.Sber:
+                        break;
+                    default:
+                        break;
+                }
+            }
+            MainOrderBoard.DataContext = order;
             WebBrowserRow.Height = new GridLength(0);
             Border F = (Border)p.Parent;
             StackPanel Z = (StackPanel)F.Parent;
             StackPanel T = (StackPanel)Z.Children[1];
             T.Visibility = T.Visibility == Visibility.Collapsed ? Visibility.Visible : Visibility.Collapsed;
+        }
+        private void Barcode_Click(object sender, RoutedEventArgs e)
+        {
+            var btn = (Button)sender;
+            if (btn.Name == "DelBarcode")
+            {
+                var barcode = btn.DataContext.ToString();
+                foreach (var item in OrderList)
+                {
+                    if (item.IMtemsList != null)
+                    {
+                        var Itm = item.IMtemsList.FirstOrDefault(x => x.Barcodes.Contains(barcode));
+                        if (Itm != null)
+                        {
+                            Itm.Barcodes.Remove(barcode);
+                            var R = new Server.Class.IntegrationSiteApi.Market.Ozon.OzonPostSetItem(Itm.APISetting).Get(new IMarketItem[] { Itm });
+                        }
+                    }
+                }
+            }
+            else if (btn.Name == "AddBarcode")
+            {
+                var mdbox = new ModalBox();
+
+                var sku = ((MarketOrderItems)btn.DataContext).Sku;
+                var order = ((MarketOrderItems)btn.DataContext).Order;
+                var itm = ((MarketOrderItems)btn.DataContext).Order.IMtemsList?.First(x => x.SKU == sku);
+
+                if (mdbox.ShowDialog() == true)
+                {
+                    itm.Barcodes.Add(mdbox._STR);
+                    itm.APISetting = order.APISetting;
+                }
+                var R = new Server.Class.IntegrationSiteApi.Market.Ozon.OzonPostSetItem(order.APISetting).Get(new IMarketItem[] { itm });
+            }
         }
     }
 }

@@ -350,6 +350,8 @@ namespace Server.Class.IntegrationSiteApi.Market.Ozon.OzonPortOrderList
         }
 
         string IOrder.ShipmentDate => ShipmentDate.ToString();
+
+        public List<IMarketItem> IMtemsList { get; set; }
     }
     [Serializable]
     public class Result

@@ -66,7 +66,7 @@ namespace Server.Class.IntegrationSiteApi.Market.Ozon
         public class SetOzonItem
         {
             public List<object> attributes { get; set; }
-            public string barcode { get; set; }
+            public List<string> barcodes { get; set; }
             public int category_id { get; set; }
             public string color_image { get; set; }
             public List<object> complex_attributes { get; set; }
@@ -94,7 +94,7 @@ namespace Server.Class.IntegrationSiteApi.Market.Ozon
                 attributes = new List<object>();
                 complex_attributes = new List<object>();
                 pdf_list = new List<object>();
-                barcode = itemDesc.barcode;
+                barcodes = itemDesc.barcodes;
                 category_id = itemDesc.category_id;
                 color_image = itemDesc.color_image;
                 images = itemDesc.images;

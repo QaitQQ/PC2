@@ -61,7 +61,7 @@ namespace Server.Class.IntegrationSiteApi.Market.Yandex.YandexGetPrice
         public string MinPrice { get { return price.discountBase; } set { price.discountBase = value; } }
         public APISetting APISettingSource { get; set; }
         public List<string> Pic { get; set; }
-        public string Barcode { get; set; }
+        public List<string> Barcodes { get; set; }
     }
     [Serializable]
     public class Result

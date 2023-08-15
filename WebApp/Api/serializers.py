@@ -4,33 +4,30 @@ from pyexpat import model
 from rest_framework import serializers
 from Api.models import Orders, Items
 
-
 class ItemsSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = Items
         fields = ['sku', 'count', 'price']
 
 class OrderListSerializer(serializers.ModelSerializer):
     orderItems = ItemsSerializer(many=True)
-
     class Meta:
         model = Orders
         fields =  ['orderItems', 'orderDate', 'boxingDate','orderNomber']
-#'__all__'
-        
-        
-        
 
-class OrderSerializer(serializers.ModelSerializer):
-
-    user = serializers.HiddenField(default=serializers.CurrentUserDefault())
-    orderItems = ItemsSerializer(many=True)
+class StoreSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Orders
-        fields = '__all__'
+        fields =   '__all__'
 
+class OrderSerializer(serializers.ModelSerializer):
+    user = serializers.HiddenField(default=serializers.CurrentUserDefault())
+    store = StoreSerializer()
+    orderItems = ItemsSerializer(many=True)
+    class Meta:
+        model = Orders
+        fields = '__all__'
     def create(self, validated_data):
         orderItems = validated_data.pop('orderItems')
         order = Orders.objects.create(**validated_data)
@@ -40,4 +37,6 @@ class OrderSerializer(serializers.ModelSerializer):
           items.append(item)
         order.orderItems.set(items)      
         return order
+
+
 

@@ -149,6 +149,8 @@ namespace SiteApi.IntegrationSiteApi.APIMarket.Ozon.Post
                 }
             }
             public string ShipmentDate => WaitingForSellerDateTime;
+
+            public List<IMarketItem> IMtemsList { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         }
         public class ResultRoot
         {

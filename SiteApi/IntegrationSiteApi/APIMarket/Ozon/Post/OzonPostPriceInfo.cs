@@ -1,8 +1,6 @@
 ﻿using Newtonsoft.Json;
-
 using StructLibCore;
 using StructLibCore.Marketplace;
-
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -48,7 +46,7 @@ namespace SiteApi.IntegrationSiteApi.APIMarket.Ozon.Post
                 response = JsonConvert.DeserializeObject<Response>(result);
             }
             catch { }
-            return response.Result.Items;
+            return response?.Result?.Items;
         }
         // Root myDeserializedClass = JsonConvert.DeserializeObject<Root>(myJsonResponse);
         public class Action

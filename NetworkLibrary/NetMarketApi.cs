@@ -96,7 +96,7 @@ namespace Network.Item.MarketApi
         public override TCPMessage Post(ApplicationContext Db, object Obj = null)
         {
             APISetting X = (APISetting)Attach;
-            List<object> Result = null;
+            List<IMarketItem> Result = null;
             switch (X.Type)
             {
                 case MarketName.Yandex:

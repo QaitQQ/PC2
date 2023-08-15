@@ -1,10 +1,7 @@
 ﻿using SiteApi.IntegrationSiteApi.APIMarket.Yandex.YandexPUTStocks;
-
 using StructLibCore;
 using StructLibCore.Marketplace;
-
 using StructLibs;
-
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -121,12 +118,10 @@ namespace MGSol.Panel
         private void Fill_V_list(IEnumerable<MarketItem> selectionItem)
         {
             VisItemsList.Clear();
-
             foreach (MarketItem item in selectionItem)
             {
                 VisItemsList.Add(new VisMarketItem(item, WCList));
             }
-
             GC.Collect();
         }
         private void ItemSorted(object sender, SelectionChangedEventArgs e)
@@ -136,7 +131,6 @@ namespace MGSol.Panel
             {
                 nlist.Add(item.Item);
             }
-
             switch (((ComboBox)sender).SelectedItem.ToString())
             {
                 case "System.String name":
@@ -165,7 +159,7 @@ namespace MGSol.Panel
             {
                 _ = Task.Factory.StartNew(() =>
                 {
-                    List<object> Result = null;
+                    List<IMarketItem> Result = null;
                     if (Option.Active)
                     {
                         switch (Option.Type)
@@ -398,7 +392,6 @@ namespace MGSol.Panel
             bool Loading = false;
             using (HttpClient client = new())
             {
-
                 try
                 {
                     using HttpResponseMessage response = await client.GetAsync("https://salessab.su/STList.xml");
@@ -411,11 +404,8 @@ namespace MGSol.Panel
                 }
                 catch (Exception e)
                 {
-
                     MessageBox.Show(e.Message);
                 }
-
-
             }
             if (Loading)
             {
@@ -424,7 +414,6 @@ namespace MGSol.Panel
                     item.StoregeList = P.ItmsCount.FindAll(x => x.Id == item.BaseID).ToList();
                 }
             }
-
         }
         private async void DownloadName_Click(object sender, RoutedEventArgs e)
         {
@@ -557,12 +546,21 @@ namespace MGSol.Panel
                                         double Z = double.Parse(X.Price, System.Globalization.NumberStyles.AllowDecimalPoint);
                                         double P = double.Parse(ProcessingPanelPercentBox.Text);
                                         X.Price = (((P / 100) + 1) * Z).ToString();
+                                        if (X.APISetting.Type == MarketName.Ozon)
+                                        {
+                                            if (X.MinPrice.Contains('.'))
+                                            {
+                                                X.MinPrice = X.MinPrice.Replace(".", ",");
+                                            }
+
+                                            double G = double.Parse(X.MinPrice, System.Globalization.NumberStyles.AllowDecimalPoint);
+                                            X.MinPrice = (((P / 100) + 1) * G).ToString();
+                                        }
                                         mass.Add(X);
                                     }
                                 }
                                 else
                                 {
-
                                     if (X.Price.Contains('.'))
                                     {
                                         X.Price = X.Price.Replace(".", ",");
@@ -572,13 +570,16 @@ namespace MGSol.Panel
                                     X.Price = (((P / 100) + 1) * Z).ToString();
                                     mass.Add(X);
                                 }
-
                             }
                         }
                     }
                 }
             }
-            RenewPrice(mass.ToArray());
+            if (mass.Count > 0)
+            {
+                RenewPrice(mass.ToArray());
+            }
+         
         }
         private void MinusPricePercent(object sender, RoutedEventArgs e)
         {
@@ -773,7 +774,6 @@ namespace MGSol.Panel
                 }
             }
         }
-
         private void PlusStack_Button_Click(object sender, RoutedEventArgs e)
         {
             List<IMarketItem> mass = new();
@@ -784,10 +784,8 @@ namespace MGSol.Panel
                     MarketItem item = I.Item;
                     foreach (IMarketItem X in item.Items)
                     {
-
                             X.Stocks = ProcessingPanelPercentBox.Text;
                             mass.Add(X);
-                        
                     }
                 }
             }

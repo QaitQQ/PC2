@@ -17,7 +17,7 @@ namespace Server.Class.IntegrationSiteApi.Market.Ozon
         {
         }
 
-        public List<object> Get(List<string> Ids = null)
+        public List<IMarketItem> Get(List<string> Ids = null)
         {
             var httpWebRequest = GetRequest(@"v2/product/info/list");
             ItemQ itemQ = new ItemQ();
@@ -36,7 +36,7 @@ namespace Server.Class.IntegrationSiteApi.Market.Ozon
             var httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
             using (var streamReader = new StreamReader(httpResponse.GetResponseStream())) { result = streamReader.ReadToEnd(); }
             Root_D End = JsonConvert.DeserializeObject<Root_D>(result);
-            List<object> NLST = new List<object>();
+            List<IMarketItem> NLST = new List<IMarketItem>();
 
             List<string> IDS = new List<string>();
 

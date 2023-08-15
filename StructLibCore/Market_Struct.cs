@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Text;
 
 namespace StructLibCore.Marketplace
@@ -70,6 +71,17 @@ namespace StructLibCore.Marketplace
         public string Price { get; set; }
 
         public string Sku { get; set; }
+        public List<string> Barcode
+        {
+            get
+            {
+                if (Order.IMtemsList != null)
+                {
+                    return Order.IMtemsList.First(x => x.SKU == Sku).Barcodes;
+                } 
+                return new List<string>();
+            }
+        }
     }
     public interface IOrder
     {
@@ -81,6 +93,7 @@ namespace StructLibCore.Marketplace
         public string Date { get; }
         public string DeliveryDate { get; }
         public string ShipmentDate { get; }
+        public List<IMarketItem> IMtemsList{ get; set;}
     }
     [Serializable]
     public class APISetting
@@ -104,7 +117,7 @@ namespace StructLibCore.Marketplace
         public APISetting APISetting { get; set; }
         public APISetting APISettingSource { get; set; }
         public List<string> Pic { get; set; }
-        public string Barcode { get; set; }
+        public List<string> Barcodes { get; set; }
       
     }
     public class UniMarketItem : IMarketItem {
@@ -115,7 +128,7 @@ namespace StructLibCore.Marketplace
         public string MinPrice { get; set; }
         public APISetting APISetting { get; set; }
         public APISetting APISettingSource { get; set; }
-        public string Barcode { get; set; }
+        public List<string> Barcodes { get; set; }
         List<string> IMarketItem.Pic { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
     }
     public interface Promo

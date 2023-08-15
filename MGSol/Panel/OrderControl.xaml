@@ -49,9 +49,10 @@
         <Grid x:Name="grid"  Grid.Row="1">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="355" x:Name="StackColumn"/>
+                <ColumnDefinition Width="5"/>
                 <ColumnDefinition x:Name="BCol" />
             </Grid.ColumnDefinitions>
-            <Border Grid.Column="1" Background="White" BorderBrush="#FF514141" BorderThickness="2" CornerRadius="4" Margin="2">
+            <Border Grid.Column="2" Background="White" BorderBrush="#FF514141" BorderThickness="2" CornerRadius="4" Margin="2">
                 <ScrollViewer VerticalScrollBarVisibility ="Auto" Visibility="Visible">
                     <StackPanel   >
                         <ItemsControl x:Name="OrderStack" FontFamily="Arial"  HorizontalAlignment="Left"  >
@@ -136,6 +137,7 @@
                     </StackPanel>
                 </ScrollViewer>
             </Border>
+            <GridSplitter Grid.Column="1"  IsEnabled="True" Width="5" HorizontalAlignment="Stretch"  Background="#b5b5b5"></GridSplitter>
             <Border BorderBrush="#FF514141" BorderThickness="2" CornerRadius="4" Margin="2">
                 <Grid x:Name="MainOrderBoard">
                     <Grid.ColumnDefinitions>
@@ -176,6 +178,26 @@
                                                             <TextBlock Margin="3" VerticalAlignment="Center" HorizontalAlignment="Left" Text="{Binding Sku}"></TextBlock>
                                                             <Label Content="Цена"></Label>
                                                             <TextBlock Margin="2" VerticalAlignment="Center" HorizontalAlignment="Left" Background="Wheat" Text="{Binding Price}"></TextBlock>
+                                                        </StackPanel>
+                                                        <Grid Height="50"/>
+                                                        <StackPanel>
+                                                        <StackPanel  Width="200" HorizontalAlignment="Left" >
+                                                            <ItemsControl ItemsSource="{Binding Barcode}">
+                                                                <ItemsControl.ItemTemplate>
+                                                                    <DataTemplate>
+                                                                        <Grid>
+                                                                            <Grid.ColumnDefinitions>
+                                                                                <ColumnDefinition/>
+                                                                                <ColumnDefinition Width="50"/>
+                                                                            </Grid.ColumnDefinitions>
+                                                                            <TextBlock Grid.Column="0" Text="{Binding .}"></TextBlock> 
+                                                                            <Button HorizontalAlignment="Left" x:Name="DelBarcode" Background="PaleVioletRed" Height="15" Content='X' Width="15" FontSize="8" Grid.Column="1" Click="Barcode_Click"></Button>
+                                                                        </Grid>
+                                                                    </DataTemplate>
+                                                                </ItemsControl.ItemTemplate>
+                                                            </ItemsControl>
+                                                        </StackPanel>
+                                                            <Button HorizontalAlignment="Left" Background="#FFADF78B" x:Name="AddBarcode" Content="+" Height="20" Width="20" Click="Barcode_Click"></Button>
                                                         </StackPanel>
                                                     </StackPanel>
                                                     <StackPanel HorizontalAlignment="Left" Orientation="Vertical"></StackPanel>

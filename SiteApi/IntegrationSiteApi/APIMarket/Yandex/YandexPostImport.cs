@@ -122,7 +122,7 @@ namespace SiteApi.IntegrationSiteApi.APIMarket.Yandex.YandexPostImport
             ShopSku = item.SKU;
             Name = item.Name;
             Pictures = item.Pic.ToList();
-            Barcodes = new List<string> { item.Barcode };
+            Barcodes = item.Barcodes ;
 
             Category = "IP камера";
            // Manufacturer = "AltCam";

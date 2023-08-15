@@ -105,7 +105,7 @@ namespace SiteApi.IntegrationSiteApi.APIMarket.Ozon.Post
         public int id { get; set; }
         public string name { get; set; }
         public string offer_id { get; set; }
-        public string barcode { get; set; }
+        public List<string> barcodes { get; set; }
         public string buybox_price { get; set; }
         public int category_id { get; set; }
         public DateTime created_at { get; set; }
@@ -138,7 +138,7 @@ namespace SiteApi.IntegrationSiteApi.APIMarket.Ozon.Post
         public string MinPrice { get => min_price; set => min_price = value; }
         public APISetting APISettingSource { get; set; }
         public List<string> Pic { get => images; set => images = value; }
-        public string Barcode { get => barcode; set => barcode = value; }
+        public List<string> Barcodes { get => barcodes; set => barcodes = value; }
         public object Priceinfo { get; set; }
 
     }

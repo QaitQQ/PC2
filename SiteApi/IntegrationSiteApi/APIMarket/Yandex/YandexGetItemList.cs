@@ -12,13 +12,13 @@ namespace Server.Class.IntegrationSiteApi.Market.Yandex.YandexGetName
     public class YandexGetItemList : SiteApi.IntegrationSiteApi.APIMarket.Yandex.YandexApiClass
     {
         public YandexGetItemList(APISetting APISetting) : base(APISetting) { }
-        public List<object> Get()
+        public List<IMarketItem> Get()
         {
             HttpWebRequest httpWebRequest = GetRequest(@"/campaigns/" + ClientID + "/offer-mapping-entries.json?limit=200", "GET");
             HttpWebResponse httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
             using (StreamReader streamReader = new StreamReader(httpResponse.GetResponseStream())) { result = streamReader.ReadToEnd(); }
             Root root = JsonConvert.DeserializeObject<Root>(result);
-            List<object> Lst = new List<object>();
+            List<IMarketItem> Lst = new List<IMarketItem>();
             List<object> Prises = new YandexGetPrice.YandexGetPrice(aPISetting).Get();
             List<object> Stocks = new YandexGetPrice.YandexPostStocks(aPISetting).Get(Prises);
             Mapped(root, Lst, Prises, Stocks);
@@ -32,7 +32,7 @@ namespace Server.Class.IntegrationSiteApi.Market.Yandex.YandexGetName
             }
             return Lst;
         }
-        private static void Mapped(Root root, List<object> Lst, List<object> Prises, List<object> Stocks)
+        private static void Mapped(Root root, List<IMarketItem> Lst, List<object> Prises, List<object> Stocks)
         {
             foreach (OfferMappingEntry item in root.result.offerMappingEntries)
             {
@@ -102,7 +102,7 @@ namespace Server.Class.IntegrationSiteApi.Market.Yandex.YandexGetName
             public string MinPrice { get; set; }
             public APISetting APISettingSource { get; set; }
             public List<string> Pic { get { return pictures; } set { pictures = value; } }
-            public string Barcode { get => barcodes[0]; set => barcodes[0] = value; }
+            public List<string> Barcodes { get => barcodes; set => barcodes = value; }
         }
         [Serializable]
         public class Mapping
