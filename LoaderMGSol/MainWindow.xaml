@@ -7,14 +7,5 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="50"></RowDefinition>
-            <RowDefinition></RowDefinition>
-        </Grid.RowDefinitions>
-        <RichTextBox Grid.Row="1" x:Name="TextBox1"></RichTextBox>
-        <StackPanel Orientation="Horizontal">
-            <Button Content="1" Width="50" Click="Button_Click"></Button>
-            <Button  Content="2" Width="50"  Click="Button_Click_1"></Button>
-        </StackPanel>
     </Grid>
 </Window>

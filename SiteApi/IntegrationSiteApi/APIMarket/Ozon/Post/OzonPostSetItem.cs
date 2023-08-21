@@ -9,6 +9,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Xml.Linq;
+
+using static SiteApi.IntegrationSiteApi.APIMarket.Ozon.Post.OzonPostGetAttr;
 
 namespace Server.Class.IntegrationSiteApi.Market.Ozon
 {
@@ -17,21 +20,40 @@ namespace Server.Class.IntegrationSiteApi.Market.Ozon
         public OzonPostSetItem(APISetting aPISetting) : base(aPISetting)
         {
         }
-
         private IMarketItem[] Lst { get; set; }
         public object Get(IMarketItem[] Lst)
         {
             this.Lst = Lst;
+
+            var LstCat = new List<string>();
+            var LstIDs = new List<string>();
+
+
+            foreach (var item in Lst)
+            {
+                var Oitm = (OzonItemDesc)item;
+
+                LstCat.Add(Oitm.category_id.ToString());
+                LstIDs.Add(Oitm.id.ToString());
+            }
+            var CatAttr = new OzonPostGetAttFromCat(aPISetting).Get(LstCat);
+
+            var ItmAttr = new OzonPostGetAttr(aPISetting).Get(LstIDs);
+
+
+
+
             List<IGrouping<APISetting, IMarketItem>> LST = ConvertListApi();
             foreach (IGrouping<APISetting, IMarketItem> item in LST)
             {
                 ClientID = item.Key.ApiString[0];
                 apiKey = item.Key.ApiString[1];
-
                 HttpWebRequest httpWebRequest = GetRequest(@"v2/product/import");
 
-                Root items = new Root() { items = ConverItems(item.ToList()) };
 
+
+
+                Root items = new Root() { items = ConverItems(item.ToList(), ItmAttr.Result, CatAttr.Result) };
                 using (StreamWriter streamWriter = new StreamWriter(httpWebRequest.GetRequestStream()))
                 {
                     string root = JsonConvert.SerializeObject(items);
@@ -40,9 +62,7 @@ namespace Server.Class.IntegrationSiteApi.Market.Ozon
                 HttpWebResponse httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
                 using StreamReader streamReader = new StreamReader(httpResponse.GetResponseStream());
                 result = streamReader.ReadToEnd();
-
                 // ResultRoot = JsonConvert.DeserializeObject<ResultRoot>(result);
-
             }
             return result;
         }
@@ -52,26 +72,67 @@ namespace Server.Class.IntegrationSiteApi.Market.Ozon
             List<IGrouping<APISetting, IMarketItem>> A = X.ToList();
             return A;
         }
-        private List<SetOzonItem> ConverItems(List<IMarketItem> lst)
+        private List<SetOzonItem> ConverItems(List<IMarketItem> lst, List<OzonPostGetAttr.Result> ItmAttr, List<OzonPostGetAttFromCat.Result> CatAttr)
         {
             List<SetOzonItem> Nlst = new List<SetOzonItem>();
-
             foreach (IMarketItem item in lst)
             {
-                Nlst.Add(new SetOzonItem((OzonItemDesc)item));
-            }
+                var Oitm = (OzonItemDesc)item;
 
+                var Attribute = ItmAttr.First(x => x.Id == Oitm.id);
+                var LSTAttr = new List<Attribute>();
+
+                var CatArrt = CatAttr.First(x => x.CategoryId == Oitm.category_id);
+
+                foreach (var X in CatArrt.Attributes)
+                {
+                    if (Attribute.Attributes.FirstOrDefault(x=>x.ID == X.Id) == null)
+                    {
+                        LSTAttr.Add(new Attribute() { AttributeId = X.Id, Values = new List<OzonPostGetAttr.OzValue>() { new OzonPostGetAttr.OzValue() { DictionaryValueId = X.DictionaryId, Value = "" } } });
+                    }
+                }
+
+                
+
+                foreach (var X in Attribute.Attributes)
+                {
+                    LSTAttr.Add(new Attribute(X));
+                }
+                Nlst.Add(new SetOzonItem((OzonItemDesc)item) {attributes = LSTAttr, weight = Attribute.Weight, depth = Attribute.Depth, width = Attribute.Width, height = Attribute.Height });
+            }
             return Nlst;
+        }
+        public class Attribute : IAttribute
+        {
+            public Attribute(IAttribute attribute)
+            {
+                AttributeId = attribute.ID;
+                ComplexId = attribute.ComplexId;
+                Values = attribute.Values;
+            }
+            public Attribute(){}
+
+            [JsonProperty("id")]
+            public int AttributeId { get; set; }
+            [JsonProperty("complex_id")]
+            public int ComplexId { get; set; }
+            [JsonProperty("values")]
+            public List<OzValue> Values { get; set; }
+            public int ID { get { return AttributeId; } set { AttributeId = value; } }
         }
         public class SetOzonItem
         {
-            public List<object> attributes { get; set; }
-            public List<string> barcodes { get; set; }
+            //weight_unit
+            //dimension_unit
+            //attributes
+            public List<Attribute> attributes { get; set; }
+            public string barcode { get; set; }
+          //  public List<string> barcodes { get; set; }
             public int category_id { get; set; }
             public string color_image { get; set; }
             public List<object> complex_attributes { get; set; }
             public int depth { get; set; }
-            //   public string dimension_unit { get; set; }
+            public string dimension_unit { get; set; }
             public int height { get; set; }
             public List<string> images { get; set; }
             public List<object> images360 { get; set; }
@@ -85,16 +146,15 @@ namespace Server.Class.IntegrationSiteApi.Market.Ozon
             public string primary_image { get; set; }
             public string vat { get; set; }
             public int weight { get; set; }
-            //   public string weight_unit { get; set; }
+            public string weight_unit { get; set; }
             public int width { get; set; }
-
-
             public SetOzonItem(OzonItemDesc itemDesc)
             {
-                attributes = new List<object>();
+                attributes = new List<Attribute>();
                 complex_attributes = new List<object>();
                 pdf_list = new List<object>();
-                barcodes = itemDesc.barcodes;
+                barcode = itemDesc.barcodes?[1];
+              //  barcodes = itemDesc.barcodes;
                 category_id = itemDesc.category_id;
                 color_image = itemDesc.color_image;
                 images = itemDesc.images;
@@ -107,29 +167,24 @@ namespace Server.Class.IntegrationSiteApi.Market.Ozon
                 primary_image = itemDesc.primary_image;
                 vat = itemDesc.vat;
                 min_price = itemDesc.min_price;
+                weight_unit = "g";
+                dimension_unit = "mm";
 
             }
-
         }
-
         public class Root
         {
             public List<SetOzonItem> items { get; set; }
         }
-
         public class Result
         {
             [JsonProperty("task_id")]
             public string TaskId { get; set; }
         }
-
         public class ResultRoot
         {
             [JsonProperty("result")]
             public Result Result { get; set; }
         }
-
     }
 }
-
-

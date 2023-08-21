@@ -1,7 +1,5 @@
 ﻿using Newtonsoft.Json;
-
 using StructLibCore.Marketplace;
-
 using System;
 using System.Collections.Generic;
 namespace SiteApi.IntegrationSiteApi.ApiBase.ObjDesc
@@ -29,6 +27,8 @@ namespace SiteApi.IntegrationSiteApi.ApiBase.ObjDesc
             BoxingDate = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow,  TimeZoneInfo.Local);
             OrderNomber = order.Id;
         }
+        [JsonProperty("id")]
+        public string Id { get; set; }
 
         [JsonProperty("orderItems")]
         public List<OrderItem> OrderItems { get; set; }

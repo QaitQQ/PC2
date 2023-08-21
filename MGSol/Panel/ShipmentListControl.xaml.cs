@@ -19,8 +19,7 @@ namespace MGSol.Panel
         public void LoadData()
         {
             shipmentOrders.Clear();
-             var X =  new SiteApi.IntegrationSiteApi.ApiBase.Get.GetAllOrders(Model.BaseInfoPrice.ToketBase, Model.BaseInfoPrice.UriBase).Get();
-
+            var X = new SiteApi.IntegrationSiteApi.ApiBase.Get.GetAllOrders(Model.BaseInfoPrice.ToketBase, Model.BaseInfoPrice.UriBase).Get();
             foreach (SiteApi.IntegrationSiteApi.ApiBase.ObjDesc.Order item in X)
             {
                 shipmentOrders.Add(item);
@@ -28,19 +27,41 @@ namespace MGSol.Panel
         }
         private void Get_Click(object sender, RoutedEventArgs e)
         {
-        //  var  BoxingDate = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, TimeZoneInfo.Local);
-
-              this.Dispatcher.BeginInvoke(new Action(() => { LoadData(); }));
+            //  var  BoxingDate = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, TimeZoneInfo.Local);
+            this.Dispatcher.BeginInvoke(new Action(() => { LoadData(); }));
         }
         private void Save_Click(object sender, RoutedEventArgs e)
         {
-
         }
         private void Clear_Click(object sender, RoutedEventArgs e)
         {
             Model.ShipmentOrders = new List<ShipmentOrder>();
             shipmentOrders.Clear();
             this.Dispatcher.BeginInvoke(new Action(() => { LoadData(); }));
+        }
+        private void TextBlock_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            var tb = (TextBlock)sender;
+
+            if (tb.Name == "RedBlock")
+            {
+                var Gb = ((StackPanel)tb.Parent).Children[0];
+                if (Gb.Visibility == Visibility.Collapsed) 
+                {
+                    Gb.Visibility = Visibility.Visible;
+                }
+                else
+                {
+                    Gb.Visibility = Visibility.Collapsed;
+                }
+               
+            }
+            else if (tb.Name == "GreenBlock") 
+            {
+                var X = new SiteApi.IntegrationSiteApi.ApiBase.Delete.DeleteOrder(Model.BaseInfoPrice.ToketBase, Model.BaseInfoPrice.UriBase).Get((SiteApi.IntegrationSiteApi.ApiBase.ObjDesc.Order)((TextBlock)sender).DataContext);
+                this.Dispatcher.BeginInvoke(new Action(() => { LoadData(); }));
+
+            }
         }
     }
 }

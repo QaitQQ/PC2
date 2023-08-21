@@ -45,6 +45,12 @@
                                                 </ItemsControl>
                                             </StackPanel>
                                             <StackPanel Margin="4" Grid.Column="1">
+                                                <Border Background="Red" HorizontalAlignment="Right" CornerRadius="4">
+                                                    <StackPanel Orientation="Horizontal" >
+                                                        <TextBlock Background="Green" x:Name="GreenBlock" Visibility="Collapsed" Margin="1"  Text="✔" Width="18" Height="18" MouseDown="TextBlock_MouseDown"></TextBlock>
+                                                        <TextBlock  x:Name="RedBlock" Margin="1" Text="  X" Width="18" Height="18" MouseDown="TextBlock_MouseDown"></TextBlock>
+                                                    </StackPanel>
+                                                </Border>
                                                 <Label  HorizontalAlignment="Left" Content="Номер"></Label>
                                                 <Label  HorizontalAlignment="Left" Content="{Binding OrderNomber, Mode=OneWay}" ></Label>
                                                 <Label  HorizontalAlignment="Left" Content="Дата Упаковки"></Label>

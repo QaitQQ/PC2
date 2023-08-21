@@ -1,27 +1,20 @@
 ﻿using Newtonsoft.Json;
-
-using StructLibCore;
 using StructLibCore.Marketplace;
-
-using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Net;
-using System.Text;
-using System.Text.Json.Serialization;
-namespace SiteApi.IntegrationSiteApi.APIMarket.Ozon.Post.OzonGetDesc
+namespace SiteApi.IntegrationSiteApi.APIMarket.Ozon.Post
 {
-    class OzonPostDesc : OzonPost
+    internal class OzonPostDesc : OzonPost
     {
         public OzonPostDesc(APISetting aPISetting) : base(aPISetting)
         {
         }
         public string Get(IMarketItem item)
         {
-            var httpWebRequest = GetRequest(@"v1/product/info/description");
-            using (var streamWriter = new StreamWriter(httpWebRequest.GetRequestStream())) { var root = JsonConvert.SerializeObject(new Root() { OfferId = item.SKU, ProductId = ((OzonItemDesc)item).id }); streamWriter.Write(root); }
-            var httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
-            using (var streamReader = new StreamReader(httpResponse.GetResponseStream())) { result = streamReader.ReadToEnd(); }
+            HttpWebRequest httpWebRequest = GetRequest(@"v1/product/info/description");
+            using (StreamWriter streamWriter = new(httpWebRequest.GetRequestStream())) { string root = JsonConvert.SerializeObject(new Root() { OfferId = item.SKU, ProductId = ((OzonItemDesc)item).id }); streamWriter.Write(root); }
+            HttpWebResponse httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
+            using (StreamReader streamReader = new(httpResponse.GetResponseStream())) { result = streamReader.ReadToEnd(); }
             RootResult End = JsonConvert.DeserializeObject<RootResult>(result);
             return End.result.Description;
         }

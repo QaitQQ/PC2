@@ -10,9 +10,7 @@ from rest_framework.permissions import IsAuthenticated, IsAdminUser
 #    if request.method == "GET":  
 #        msg =  request.GET['pi']
 #        return HttpResponse(msg)
-class OrderDestroyView(generics.DestroyAPIView):
-    queryset = Orders.objects.all()
-    serializer_class = OrderSerializer
+
 class OrderCreateView(generics.CreateAPIView):
     queryset = Orders.objects.all()
     serializer_class = OrderSerializer

@@ -147,6 +147,7 @@
                     <StackPanel Grid.Column="0" Orientation="Horizontal"  Margin="3">
                         <Button Margin="3" Content="📦" Background="Green"  Click="Ship_Click" HorizontalAlignment="Left"></Button>
                         <Button Margin="3"  Content="🏷" Click="Label_Click" Background="#FFF5C150"  HorizontalAlignment="Left"/>
+                        <!--<Button x:Name="ShowStatus" Content="Проверить" Click="ShowStatus_Click"></Button>-->
                     </StackPanel>
                     <Border Grid.Column="1" BorderThickness="1" Background="White">
                         <Grid>
@@ -155,12 +156,12 @@
                                 <RowDefinition x:Name="WebBrowserRow" MaxHeight="390"/>
                             </Grid.RowDefinitions>
                             <ScrollViewer VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Hidden">
-                                <StackPanel HorizontalAlignment="Left" Grid.Row="0" MaxWidth="247" Orientation="Horizontal">
+                                <StackPanel HorizontalAlignment="Left" Grid.Row="0" MaxWidth="500" Orientation="Horizontal">
                                     <ItemsControl  ItemsSource ="{Binding Items}"  Grid.Row="1" >
                                         <ItemsControl.ItemTemplate>
                                             <DataTemplate >
                                                 <StackPanel HorizontalAlignment="Left">
-                                                    <StackPanel Margin="3" HorizontalAlignment="Left" Orientation="Vertical"  Width="620">
+                                                    <StackPanel Margin="3" HorizontalAlignment="Left" Orientation="Vertical"  Width="800">
                                                         <Button Margin="3"  x:Name="CopyItemButton"  Background="LightBlue"  Click="CopyItemButton_Click" HorizontalAlignment="Left">
                                                             <Button.Content>
                                                                 <TextBlock Margin="2" VerticalAlignment="Center" FontSize="15" Text="{Binding Name}" Width="225"  HorizontalAlignment="Left" TextWrapping="Wrap"></TextBlock>
@@ -173,32 +174,43 @@
                                                                     <TextBlock  VerticalAlignment="Center"  FontSize="16" Text="шт. "></TextBlock>
                                                                 </StackPanel>
                                                             </Border>
-                                                            <Button Margin="3" Width="35" Height="30" x:Name="GetImage" Content="🎨" Background="CadetBlue"  Click="GetImage_Click" HorizontalAlignment="Left"></Button>
-                                                            <Label Content="SKU"></Label>
-                                                            <TextBlock Margin="3" VerticalAlignment="Center" HorizontalAlignment="Left" Text="{Binding Sku}"></TextBlock>
-                                                            <Label Content="Цена"></Label>
-                                                            <TextBlock Margin="2" VerticalAlignment="Center" HorizontalAlignment="Left" Background="Wheat" Text="{Binding Price}"></TextBlock>
+                                                         
+                                                            <StackPanel>
+                                                                <StackPanel Orientation="Horizontal">
+                                                                   
+                                                                    <Label Content="SKU"></Label>
+                                                                    <TextBlock Margin="3" VerticalAlignment="Center" HorizontalAlignment="Left" Text="{Binding Sku}"></TextBlock>
+                                                                </StackPanel>
+                                                                <StackPanel Orientation="Horizontal">
+                                                                   
+                                                                    <Label Content="Цена"></Label>
+                                                                    <TextBlock Margin="2" VerticalAlignment="Center" HorizontalAlignment="Left" Background="Wheat" Text="{Binding Price}"  Initialized="TextBlock_Initialized"></TextBlock>
+                                                                </StackPanel>
+                                                                <Button Margin="3" Width="35" Height="30" x:Name="GetImage" Content="🎨" Background="CadetBlue"  Click="GetImage_Click" HorizontalAlignment="Left"></Button>
+                                                            </StackPanel>
                                                         </StackPanel>
                                                         <Grid Height="50"/>
                                                         <StackPanel>
-                                                        <StackPanel  Width="200" HorizontalAlignment="Left" >
-                                                            <ItemsControl ItemsSource="{Binding Barcode}">
-                                                                <ItemsControl.ItemTemplate>
-                                                                    <DataTemplate>
-                                                                        <Grid>
-                                                                            <Grid.ColumnDefinitions>
-                                                                                <ColumnDefinition/>
-                                                                                <ColumnDefinition Width="50"/>
-                                                                            </Grid.ColumnDefinitions>
-                                                                            <TextBlock Grid.Column="0" Text="{Binding .}"></TextBlock> 
-                                                                            <Button HorizontalAlignment="Left" x:Name="DelBarcode" Background="PaleVioletRed" Height="15" Content='X' Width="15" FontSize="8" Grid.Column="1" Click="Barcode_Click"></Button>
-                                                                        </Grid>
-                                                                    </DataTemplate>
-                                                                </ItemsControl.ItemTemplate>
-                                                            </ItemsControl>
-                                                        </StackPanel>
+                                                            <StackPanel  Width="200" HorizontalAlignment="Left" >
+                                                                <ItemsControl ItemsSource="{Binding Barcode}">
+                                                                    <ItemsControl.ItemTemplate>
+                                                                        <DataTemplate>
+                                                                            <Grid>
+                                                                                <Grid.ColumnDefinitions>
+                                                                                    <ColumnDefinition/>
+                                                                                    <ColumnDefinition Width="50"/>
+                                                                                </Grid.ColumnDefinitions>
+                                                                                <TextBlock Grid.Column="0" Text="{Binding .}"></TextBlock>
+                                                                                <!--<Button HorizontalAlignment="Left" x:Name="DelBarcode" Background="PaleVioletRed" Height="15" Content='X' Width="15" FontSize="8" Grid.Column="1" Click="Barcode_Click"></Button>-->
+                                                                            </Grid>
+                                                                        </DataTemplate>
+                                                                    </ItemsControl.ItemTemplate>
+                                                                </ItemsControl>
+                                                            </StackPanel>
                                                             <Button HorizontalAlignment="Left" Background="#FFADF78B" x:Name="AddBarcode" Content="+" Height="20" Width="20" Click="Barcode_Click"></Button>
+
                                                         </StackPanel>
+
                                                     </StackPanel>
                                                     <StackPanel HorizontalAlignment="Left" Orientation="Vertical"></StackPanel>
                                                 </StackPanel>

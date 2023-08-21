@@ -1,107 +1,46 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Windows;
 using System.Windows.Documents;
+using System.Xml.Linq;
+
+
 namespace LoaderMGSol
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
     public partial class MainWindow : Window
-    {
-        private string Text1;
-        private string Text2;
-        private List<CatPath> LstCat;
+    {     
         public MainWindow()
         {
             InitializeComponent();
+
+
+           
+            // Prepare the process to run
+            ProcessStartInfo start = new ProcessStartInfo();
+            // Enter in the command line arguments, everything you would enter after the executable name itself
+           // start.Arguments = arguments;
+            // Enter the executable to run, including the complete path
+            start.FileName = @"../net6.0-windows/MGSol.exe";
+            // Do you want to show a console window?
+            start.WindowStyle = ProcessWindowStyle.Hidden;
+            start.CreateNoWindow = true;
+            int exitCode;
+            // Run the external process & wait for it to finish
+            using (Process proc = Process.Start(start))
+            {
+                proc.WaitForExit();
+                // Retrieve the app's exit code
+                exitCode = proc.ExitCode;
+            }
+
+
+
         }
-        private class CatPath
-        {
-            public int Id { get; set; }
-            public int ParentId { get; set; }
-            public CatPath Parent { get; set; }
-            private string pathName;
-            public string Path
-            {
-                get
-                {
-                    if (ParentId == 0)
-                    {
-                        return Id.ToString();
-                    }
-                    else
-                    {
-                        return Parent != null ? Parent.Path + "_" + Id.ToString() : Id.ToString();
-                    }
-                }
-            }
-            public string PathName
-            {
-                get
-                {
-                    if (ParentId == 0)
-                    {
-                        return pathName;
-                    }
-                    else
-                    {
-                        return Parent != null ? Parent.PathName + @"/" + pathName : pathName;
-                    }
-                }
-                set => pathName = value;
-            }
-        }
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-            TextRange textRange = new(TextBox1.Document.ContentStart, TextBox1.Document.ContentEnd);
-            Text1 = textRange.Text;
-            string[] mass = Text1.Split("\r\n");
-            LstCat = new List<CatPath>();
-            foreach (string item in mass)
-            {
-                string[] stmass = item.Split("\t");
-                if (stmass[0] != "")
-                {
-                    LstCat.Add(new CatPath() { Id = int.Parse(stmass[0]), ParentId = int.Parse(stmass[1]) });
-                }
-            }
-            foreach (CatPath item in LstCat)
-            {
-                CatPath? Parent = LstCat.FirstOrDefault(x => x.Id == item.ParentId);
-                if (item != null)
-                {
-                    item.Parent = Parent;
-                }
-            }
-        }
-        private void Button_Click_1(object sender, RoutedEventArgs e)
-        {
-            TextRange textRange = new(TextBox1.Document.ContentStart, TextBox1.Document.ContentEnd);
-            Text2 = textRange.Text;
-            string[] mass = Text2.Split("\r\n");
-            foreach (string item in mass)
-            {
-                string[] stmass = item.Split("\t");
-                if (stmass[0] != "")
-                {
-                    CatPath? Cat = LstCat.FirstOrDefault(x => x.Id == int.Parse(stmass[0]));
-                    if (Cat != null)
-                    {
-                        Cat.PathName = stmass[1];
-                    }
-                }
-            }
-            string? nText = null;
-            foreach (CatPath item in LstCat)
-            {
-                nText = nText + 0.ToString() + "\t" + 1.ToString() + "\t" + "path" + "\t" + item.Path + "\t" + item.PathName + "\t" + "0"+ "\r\n";
-            }
-            FlowDocument? document = new();
-            Paragraph myParagraph = new();
-            myParagraph.Inlines.Add(nText);
-            document.Blocks.Add(myParagraph);
-            TextBox1.Document = document;
-        }
+      
+        
     }
 }

@@ -8,11 +8,15 @@ User = get_user_model()
 class Store(models.Model):
 
     name = models.CharField(verbose_name="Имя", max_length=50)
-    storeApiId = models.CharField(verbose_name="ID", max_length=50)
+    storeApi = models.CharField(verbose_name="ID", unique=True, max_length=50, null=True)
     storeINN = models.CharField(verbose_name="ИНН", max_length=50)
 
     def get_absolute_url(self):
-        return f'/{self.id}'
+        return f'/{self.storeApi}'
+    def __str__(self):
+        return self.id
+
+
 
 
 class Orders(models.Model):
@@ -24,7 +28,7 @@ class Orders(models.Model):
     orderNomber = models.CharField("Номер", unique=True, max_length=250)
     orderItems =  models.ManyToOneRel("Items", field_name='orderItems',  on_delete=models.CASCADE, to='order')
     user = models.ForeignKey(User, verbose_name= 'Пользователь', on_delete=models.CASCADE, null=True)
-    store = models.ForeignKey(Store, field_name='Магазин',  on_delete=models.CASCADE)
+    store = models.ForeignKey(Store, verbose_name='Магазин', on_delete=models.CASCADE, null=True)
     def __str__(self):
         return self.id
     def get_absolute_url(self):
