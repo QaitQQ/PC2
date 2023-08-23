@@ -167,6 +167,7 @@
                                                                 <TextBlock Margin="2" VerticalAlignment="Center" FontSize="15" Text="{Binding Name}" Width="225"  HorizontalAlignment="Left" TextWrapping="Wrap"></TextBlock>
                                                             </Button.Content>
                                                         </Button>
+                                                        <TextBox  Visibility="Hidden" TextChanged="ShowStatus_Click"></TextBox>
                                                         <StackPanel Margin="3"  Orientation="Horizontal">
                                                             <Border Margin="3" HorizontalAlignment="Left"  BorderBrush="Black" BorderThickness="2" CornerRadius="4">
                                                                 <StackPanel Orientation="Horizontal">
@@ -174,15 +175,12 @@
                                                                     <TextBlock  VerticalAlignment="Center"  FontSize="16" Text="шт. "></TextBlock>
                                                                 </StackPanel>
                                                             </Border>
-                                                         
                                                             <StackPanel>
                                                                 <StackPanel Orientation="Horizontal">
-                                                                   
                                                                     <Label Content="SKU"></Label>
                                                                     <TextBlock Margin="3" VerticalAlignment="Center" HorizontalAlignment="Left" Text="{Binding Sku}"></TextBlock>
                                                                 </StackPanel>
                                                                 <StackPanel Orientation="Horizontal">
-                                                                   
                                                                     <Label Content="Цена"></Label>
                                                                     <TextBlock Margin="2" VerticalAlignment="Center" HorizontalAlignment="Left" Background="Wheat" Text="{Binding Price}"  Initialized="TextBlock_Initialized"></TextBlock>
                                                                 </StackPanel>
@@ -208,9 +206,7 @@
                                                                 </ItemsControl>
                                                             </StackPanel>
                                                             <Button HorizontalAlignment="Left" Background="#FFADF78B" x:Name="AddBarcode" Content="+" Height="20" Width="20" Click="Barcode_Click"></Button>
-
                                                         </StackPanel>
-
                                                     </StackPanel>
                                                     <StackPanel HorizontalAlignment="Left" Orientation="Vertical"></StackPanel>
                                                 </StackPanel>

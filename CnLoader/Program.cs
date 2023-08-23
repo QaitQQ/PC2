@@ -7,6 +7,10 @@ class Program
     static void Main(string[] args)
     {
 
+        
+
+
+
         Process proc = new Process();
         var programPath = ".\\net6.0-windows\\MGSol.exe";
         proc.StartInfo.FileName = programPath;

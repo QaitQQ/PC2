@@ -101,7 +101,7 @@ namespace SiteApi.IntegrationSiteApi.APIMarket.Ozon.Post
     [Serializable]
     public class OzonItemDesc : IMarketItem
     {
-        public OzonItemDesc() { }
+        public OzonItemDesc() { barcodes = new List<string>(); }
         public int id { get; set; }
         public string name { get; set; }
         public string offer_id { get; set; }

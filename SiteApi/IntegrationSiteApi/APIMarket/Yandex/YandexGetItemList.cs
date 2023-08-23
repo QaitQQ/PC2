@@ -77,6 +77,7 @@ namespace Server.Class.IntegrationSiteApi.Market.Yandex.YandexGetName
         [Serializable]
         public class ItemYandex : IMarketItem
         {
+
             public string name { get; set; }
             public string shopSku { get; set; }
             public string category { get; set; }

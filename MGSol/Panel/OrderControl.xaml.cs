@@ -1,6 +1,7 @@
 ﻿using Microsoft.VisualBasic;
 using Server.Class.IntegrationSiteApi.Market.Ozon;
 using SiteApi.IntegrationSiteApi.ApiBase.Post;
+using SiteApi.IntegrationSiteApi.ApiMainSite.Post;
 using SiteApi.IntegrationSiteApi.APIMarket.Ozon.Post;
 using SiteApi.IntegrationSiteApi.APIMarket.Yandex;
 using StructLibCore;
@@ -43,6 +44,10 @@ namespace MGSol.Panel
             ReturnControl = new ReturnControl(model, this);
             _ = ReturnGrid.Children.Add(ReturnControl);
             _ = Task.Factory.StartNew(() => LoadNetOrders(model.OptionMarketPlace.APISettings));
+
+            _ = Task.Factory.StartNew(() => new MainSiteAutorization("", @"https://salessab.su/index.php?route=api/").Autorization());
+
+
         }
         private void FillOrders(List<IOrder> orders)
         {
@@ -356,43 +361,43 @@ namespace MGSol.Panel
                     break;
                 default:
                     break;
-            }         
+            }
         }
         private void HeadStack_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             StackPanel p = (StackPanel)sender;
             var order = (IOrder)p.DataContext;
-            if (order.IMtemsList == null)
+            Task.Factory.StartNew(() =>
             {
-                order.IMtemsList = new List<IMarketItem>();
-                switch (order.APISetting.Type)
+                if (order.IMtemsList == null)
                 {
-                    case MarketName.Yandex:
-                        break;
-                    case MarketName.Ozon:
-                        List<string> list = new List<string>();
-                        foreach (var Pitem in order.Items)
-                        {
-                            list.Add(Pitem.Sku);
-                        }
-                        order.IMtemsList = (List<IMarketItem>)new OzonPostItemDesc(order.APISetting).Get(list);
-
-                        foreach (var Pitem in order.Items)
-                        {
-                            Pitem.Image = GetBitmap(order.IMtemsList.FirstOrDefault(x => x.SKU == Pitem.Sku).Pic[0]);
-                        }
-
-
-                        break;
-                    case MarketName.Avito:
-                        break;
-                    case MarketName.Sber:
-                        break;
-                    default:
-                        break;
+                    order.IMtemsList = new List<IMarketItem>();
+                    switch (order.APISetting.Type)
+                    {
+                        case MarketName.Yandex:
+                            break;
+                        case MarketName.Ozon:
+                            List<string> list = new List<string>();
+                            foreach (var Pitem in order.Items)
+                            {
+                                list.Add(Pitem.Sku);
+                            }
+                            order.IMtemsList = (List<IMarketItem>)new OzonPostItemDesc(order.APISetting).Get(list);
+                            foreach (var Pitem in order.Items)
+                            {
+                                Pitem.Image = GetBitmap(order.IMtemsList.FirstOrDefault(x => x.SKU == Pitem.Sku).Pic[0]);
+                            }
+                            break;
+                        case MarketName.Avito:
+                            break;
+                        case MarketName.Sber:
+                            break;
+                        default:
+                            break;
+                    }
                 }
-            }
-            MainOrderBoard.DataContext = order;
+               Dispatcher.Invoke(()=> MainOrderBoard.DataContext = order);
+            });
             WebBrowserRow.Height = new GridLength(0);
             Border F = (Border)p.Parent;
             StackPanel Z = (StackPanel)F.Parent;
@@ -413,7 +418,7 @@ namespace MGSol.Panel
                         if (Itm != null)
                         {
                             Itm.Barcodes.Remove(barcode);
-                           // var R = new Server.Class.IntegrationSiteApi.Market.Ozon.OzonPostSetItem(Itm.APISetting).Get(new IMarketItem[] { Itm });
+                            // var R = new Server.Class.IntegrationSiteApi.Market.Ozon.OzonPostSetItem(Itm.APISetting).Get(new IMarketItem[] { Itm });
                         }
                     }
                 }
@@ -430,14 +435,18 @@ namespace MGSol.Panel
                     itm.APISetting = order.APISetting;
                 }
                 var R = new Server.Class.IntegrationSiteApi.Market.Ozon.OzonPostSetItem(order.APISetting).Get(new IMarketItem[] { itm });
-              //  ShowStatus.DataContext = order.APISetting;
-              // ShowStatus.Content = R;
+                //  ShowStatus.DataContext = order.APISetting;
+                // ShowStatus.Content = R;
             }
         }
         private void ShowStatus_Click(object sender, RoutedEventArgs e)
         {
-            var btn = (Button)sender;
-           var DD = new OzonPOSTShowStatusImport((APISetting)btn.DataContext).Get(GetId(btn.Content.ToString()));
+            var btn = (TextBox)sender;
+            string id = GetId(btn.Text);
+            if (id != "")
+            {
+                var DD = new OzonPOSTShowStatusImport(((StructLibCore.Marketplace.MarketOrderItems)btn.DataContext).Order.APISetting).Get(id);
+            }
             string GetId(string str)
             {
                 string result = null;
@@ -451,12 +460,9 @@ namespace MGSol.Panel
                 return result;
             }
         }
-
         void AddImage(string url, StackPanel St)
         {
-
             var bi = GetBitmap(url);
-
             Image img = new()
             {
                 Width = 100,
@@ -479,9 +485,9 @@ namespace MGSol.Panel
                 win.Height = SystemParameters.PrimaryScreenWidth / 3;
                 win.Show();
             };
-            St.Children.Insert(0,img);
+            St.Children.Insert(0, img);
         }
-        BitmapImage GetBitmap(string url) 
+        BitmapImage GetBitmap(string url)
         {
             WebClient c = new();
             byte[] bytes = c.DownloadData(url);
@@ -492,23 +498,15 @@ namespace MGSol.Panel
             bi.EndInit();
             return bi;
         }
-
         private void TextBlock_Initialized(object sender, EventArgs e)
         {
             StackPanel ST = (StackPanel)((TextBlock)sender).Parent;
             StackPanel PT = (StackPanel)((StackPanel)((StackPanel)((TextBlock)sender).Parent).Parent).Parent;
-
             var X = ((StructLibCore.Marketplace.MarketOrderItems)ST.DataContext).Order.IMtemsList;
-
-
             foreach (var item in X)
             {
                 AddImage(item.Pic[0], PT);
             }
-
-            
-
-
         }
     }
 }

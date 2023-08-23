@@ -13,4 +13,8 @@
     <ProjectReference Include="..\StructLibCore\StructLibCore.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="IntegrationSiteApi\ApiMainSite\Get\" />
+  </ItemGroup>
+
 </Project>

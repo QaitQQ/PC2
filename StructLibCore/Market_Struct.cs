@@ -113,6 +113,7 @@ namespace StructLibCore.Marketplace
 
     public interface IMarketItem
     {
+
         public string Name { get; set; }
         public string Price { get; set; }
         public string SKU { get; }
