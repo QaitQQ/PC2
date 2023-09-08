@@ -7,7 +7,7 @@
     <TestFramework>Pytest</TestFramework>
     <InterpreterId>MSBuild|env|$(MSBuildProjectFullPath)</InterpreterId>
     <IsWindowsApplication>False</IsWindowsApplication>
-    <WebBrowserPort>80000</WebBrowserPort>
+    <WebBrowserPort>65530</WebBrowserPort>
   </PropertyGroup>
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -40,9 +40,7 @@
     <Compile Include="Api\apps.py" />
     <Compile Include="Api\migrations\__init__.py" />
     <Compile Include="Api\models.py" />
-    <Compile Include="Api\permissions.py">
-      <SubType>Code</SubType>
-    </Compile>
+    <Compile Include="Api\permissions.py" />
     <Compile Include="Api\serializers.py">
       <SubType>Code</SubType>
     </Compile>
@@ -50,6 +48,16 @@
     <Compile Include="Api\urls.py" />
     <Compile Include="Api\views.py" />
     <Compile Include="Api\__init__.py" />
+    <Compile Include="ItemPrAppApi\admin.py" />
+    <Compile Include="ItemPrAppApi\apps.py" />
+    <Compile Include="ItemPrAppApi\migrations\__init__.py" />
+    <Compile Include="ItemPrAppApi\models.py" />
+    <Compile Include="ItemPrAppApi\permissions.py" />
+    <Compile Include="ItemPrAppApi\serializers.py" />
+    <Compile Include="ItemPrAppApi\tests.py" />
+    <Compile Include="ItemPrAppApi\urls.py" />
+    <Compile Include="ItemPrAppApi\views.py" />
+    <Compile Include="ItemPrAppApi\__init__.py" />
     <Compile Include="main\admin.py" />
     <Compile Include="main\apps.py" />
     <Compile Include="main\forms.py">
@@ -72,6 +80,10 @@
     <Folder Include="Api\migrations\" />
     <Folder Include="Api\templates\" />
     <Folder Include="Api\templates\Api\" />
+    <Folder Include="ItemPrAppApi\" />
+    <Folder Include="ItemPrAppApi\migrations\" />
+    <Folder Include="ItemPrAppApi\templates\" />
+    <Folder Include="ItemPrAppApi\templates\ItemPrAppApi\" />
     <Folder Include="main\" />
     <Folder Include="main\migrations\" />
     <Folder Include="main\static\" />
@@ -88,6 +100,7 @@
     </Content>
     <Content Include="Api\templates\Api\index.html" />
     <Content Include="favicon.ico" />
+    <Content Include="ItemPrAppApi\templates\ItemPrAppApi\index.html" />
     <Content Include="main\templates\main\add.html">
       <SubType>Code</SubType>
     </Content>

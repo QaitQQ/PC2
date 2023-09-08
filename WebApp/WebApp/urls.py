@@ -1,4 +1,4 @@
-from django.urls import path, include
+﻿from django.urls import path, include
 from django.contrib.auth.models import User
 from rest_framework import routers, serializers, viewsets
 from datetime import datetime
@@ -24,6 +24,7 @@ router.register(r'users', UserViewSet)
 urlpatterns = [
     path('', include('main.urls'), name='home'),
     path('api/v1/', include('Api.urls'), name='base'),
+    path('api/pwa/v1/', include('ItemPrAppApi.urls'), name='base'),
     path('admin/', admin.site.urls),
     path('api/v1/api-auth/', include('rest_framework.urls'), name='rest_framework'),
    # path('accounts/', include('django.contrib.auth.urls')),

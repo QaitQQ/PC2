@@ -7,6 +7,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Linq;
 using StructLibCore;
+using StructLibCore.Marketplace;
 
 namespace WinFormsClientLib.Forms.WPF.Controls.ItemControls.Market
 {

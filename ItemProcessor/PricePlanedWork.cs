@@ -23,7 +23,9 @@ namespace Server
                 {
                     if (!TargetDictionary.Dictionarys.ContainsKey(key))
                     {
-                        TargetDictionary.Dictionarys.Add(key, () => Download(item));
+                            TargetDictionary.Dictionarys.Add(key, () =>
+                            Download(item)
+                            );
                     }
                     if (cash.Targets.FindAll(x => x.KeyTask == key).Count == 0)
                     {
@@ -44,14 +46,20 @@ namespace Server
                 string Path = null;
                 if (activeprice.FilePath == null || activeprice.FilePath == "")   {  Path = @"price_storage\\" + activeprice.Name + ".xlsx";                 }
                 else{Path = activeprice.FilePath;}
-                if (activeprice.Link.ToLower().Contains("zip")){DownloadPriceZip(activeprice, Path);}
-                else{DownloadPriceXls(activeprice, Path);}
-                Read(activeprice);
-                foreach (PriceStorage item in cash.PriceStorageList)
+                try
                 {
-                    if (item.Name == activeprice.Name){item.ReceivingData = DateTime.Now;}
+                    if (activeprice.Link.ToLower().Contains("zip")) { DownloadPriceZip(activeprice, Path); }
+                    else { DownloadPriceXls(activeprice, Path); }
+                    Read(activeprice);
+                    foreach (PriceStorage item in cash.PriceStorageList)
+                    {
+                        if (item.Name == activeprice.Name) { item.ReceivingData = DateTime.Now; }
+                    }
+                    cash.PriceStorageList = cash.PriceStorageList;
                 }
-                cash.PriceStorageList = cash.PriceStorageList;
+                catch 
+                {
+                }
             }
             List<ItemDBStruct> DB_list;
             void Read(PriceStorage activeprice)

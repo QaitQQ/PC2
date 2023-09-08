@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json;
 using StructLibCore.Marketplace;
 using SiteApi.IntegrationSiteApi.APIMarket.Yandex;
-using StructLibCore.Marketplace;
+
 using StructLibCore;
 
 using System.Collections.Generic;

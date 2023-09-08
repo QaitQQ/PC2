@@ -26,13 +26,13 @@ namespace MGSol.Panel
         private ObservableCollection<APISetting> Options { get; set; }
         private ObservableCollection<IGrouping<DateTime, IOrder>> VisOrderList { get; set; }
         private event Action<List<IOrder>> LoadOrders;
-        private MainModel model { get; set; }
+        private MainModel Model { get; set; }
         public event Action RenewEvent;
         public ObservableCollection<IOrder> OrderList { get; set; }
         private ReturnControl ReturnControl { get; set; }
         public OrdersControl(MainModel Model)
         {
-            model = Model;
+            this.Model = Model;
             InitializeComponent();
             Options = new ObservableCollection<APISetting>();
             OrderList = new ObservableCollection<IOrder>();
@@ -41,21 +41,19 @@ namespace MGSol.Panel
             StatusBox.ItemsSource = Enum.GetValues(typeof(OrderStatus));
             LoadOrders += FillOrders;
             PrintActBtnStack.ItemsSource = Options;
-            ReturnControl = new ReturnControl(model, this);
+            ReturnControl = new ReturnControl(this.Model, this);
             _ = ReturnGrid.Children.Add(ReturnControl);
-            _ = Task.Factory.StartNew(() => LoadNetOrders(model.OptionMarketPlace.APISettings));
-
+            _ = Task.Factory.StartNew(() => LoadNetOrders(this.Model.OptionMarketPlace.APISettings));
             _ = Task.Factory.StartNew(() => new MainSiteAutorization("", @"https://salessab.su/index.php?route=api/").Autorization());
-
-
         }
         private void FillOrders(List<IOrder> orders)
         {
             OrderList.Clear();
-            foreach (IOrder order in orders)
+            for (int i = 0; i < orders.Count-1; i++)
             {
-                OrderList.Add(order);
+                OrderList.Add(orders[i]);
             }
+
             if (StatusBox.SelectedIndex != 1)
             {
                 StatusBox.SelectedIndex = 1;
@@ -108,7 +106,7 @@ namespace MGSol.Panel
         private void Fill_VOrders(object sender, RoutedEventArgs e)
         {
             VisOrderList.Clear();
-            _ = Task.Factory.StartNew(() => LoadNetOrders(model.OptionMarketPlace.APISettings));
+            _ = Task.Factory.StartNew(() => LoadNetOrders(Model.OptionMarketPlace.APISettings));
         }
         private void StatusBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
@@ -164,7 +162,7 @@ namespace MGSol.Panel
                 }
                 if (Z)
                 {
-                    bool AddToBase = new PostOrderBase(model.BaseInfoPrice.ToketBase, model.BaseInfoPrice.UriBase).Post(X);
+                    bool AddToBase = new PostOrderBase(Model.BaseInfoPrice.ToketBase, Model.BaseInfoPrice.UriBase).Post(X);
                     if (AddToBase)
                     {
                         X.SetStatus(OrderStatus.READY);
@@ -288,7 +286,7 @@ namespace MGSol.Panel
             if (!Z.Any())
             {
                 List<IOrder> R = new();
-                foreach (APISetting item in model.OptionMarketPlace.APISettings)
+                foreach (APISetting item in Model.OptionMarketPlace.APISettings)
                 {
                     object P = null;
                     switch (item.Type)
@@ -342,18 +340,21 @@ namespace MGSol.Panel
         {
             Button Btn = (Button)sender;
             Btn.IsEnabled = false;
-            StackPanel St = (StackPanel)((StackPanel)((StackPanel)((StackPanel)Btn.Parent).Parent).Parent).Children[1];
+            StackPanel St = (StackPanel)((StackPanel)((StackPanel)((StackPanel)((StackPanel)Btn.Parent).Parent).Parent).Parent).Children[1];
             MarketOrderItems OrderItem = (MarketOrderItems)((Button)sender).DataContext;
             switch (OrderItem.Order.APISetting.Type)
             {
                 case MarketName.Yandex:
                     break;
                 case MarketName.Ozon:
-                    OzonItemDesc item = (OzonItemDesc)new OzonPostItemDesc(OrderItem.Order.APISetting).Get(new List<string> { OrderItem.Sku })[0];
-                    foreach (string X in item.Pic)
+                    Task.Factory.StartNew(() =>
                     {
-                        AddImage(X, St);
-                    }
+                        OzonItemDesc item = (OzonItemDesc)new OzonPostItemDesc(OrderItem.Order.APISetting).Get(new List<string> { OrderItem.Sku })[0];
+                        foreach (string X in item.Pic)
+                        {
+                            Dispatcher.BeginInvoke(() => AddImage(X, St));
+                        }
+                    });
                     break;
                 case MarketName.Avito:
                     break;
@@ -365,44 +366,60 @@ namespace MGSol.Panel
         }
         private void HeadStack_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-            StackPanel p = (StackPanel)sender;
-            var order = (IOrder)p.DataContext;
-            Task.Factory.StartNew(() =>
+            try
             {
-                if (order.IMtemsList == null)
+                StackPanel p = (StackPanel)sender;
+                var order = (IOrder)p.DataContext;
+                Task.Factory.StartNew(() =>
                 {
-                    order.IMtemsList = new List<IMarketItem>();
-                    switch (order.APISetting.Type)
+                    if (order.IMtemsList == null)
                     {
-                        case MarketName.Yandex:
-                            break;
-                        case MarketName.Ozon:
-                            List<string> list = new List<string>();
-                            foreach (var Pitem in order.Items)
-                            {
-                                list.Add(Pitem.Sku);
-                            }
-                            order.IMtemsList = (List<IMarketItem>)new OzonPostItemDesc(order.APISetting).Get(list);
-                            foreach (var Pitem in order.Items)
-                            {
-                                Pitem.Image = GetBitmap(order.IMtemsList.FirstOrDefault(x => x.SKU == Pitem.Sku).Pic[0]);
-                            }
-                            break;
-                        case MarketName.Avito:
-                            break;
-                        case MarketName.Sber:
-                            break;
-                        default:
-                            break;
+                        order.IMtemsList = new List<IMarketItem>();
+                        switch (order.APISetting.Type)
+                        {
+                            case MarketName.Yandex:
+                                break;
+                            case MarketName.Ozon:
+                                if ( Dispatcher.Invoke(()=> LoadImageCheck.IsChecked == true))
+                                {
+                                    LoadItmAndPicOzon(order);
+                                }
+                                break;
+                            case MarketName.Avito:
+                                break;
+                            case MarketName.Sber:
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                    Dispatcher.Invoke(() => MainOrderBoard.DataContext = order);
+                });
+                WebBrowserRow.Height = new GridLength(0);
+                Border F = (Border)p.Parent;
+                StackPanel Z = (StackPanel)F.Parent;
+                StackPanel T = (StackPanel)Z.Children[1];
+                T.Visibility = T.Visibility == Visibility.Collapsed ? Visibility.Visible : Visibility.Collapsed;
+                void LoadItmAndPicOzon(IOrder order)
+                {
+                    List<string> list = new List<string>();
+                    foreach (var PItem in order.Items)
+                    {
+                        list.Add(PItem.Sku);
+                    }
+                    order.IMtemsList = (List<IMarketItem>)new OzonPostItemDesc(order.APISetting).Get(list);
+                    foreach (var PItem in order.Items)
+                    {
+                        Task.Factory.StartNew(() =>
+                        PItem.Image = GetBitmap(order.IMtemsList.FirstOrDefault(x => x.SKU == PItem.Sku).Pic[0]
+                        ));
                     }
                 }
-               Dispatcher.Invoke(()=> MainOrderBoard.DataContext = order);
-            });
-            WebBrowserRow.Height = new GridLength(0);
-            Border F = (Border)p.Parent;
-            StackPanel Z = (StackPanel)F.Parent;
-            StackPanel T = (StackPanel)Z.Children[1];
-            T.Visibility = T.Visibility == Visibility.Collapsed ? Visibility.Visible : Visibility.Collapsed;
+            }
+            catch (Exception E)
+            {
+                MessageBox.Show(E.Message);
+            }
         }
         private void Barcode_Click(object sender, RoutedEventArgs e)
         {
@@ -462,30 +479,37 @@ namespace MGSol.Panel
         }
         void AddImage(string url, StackPanel St)
         {
-            var bi = GetBitmap(url);
-            Image img = new()
+            try
             {
-                Width = 100,
-                Height = 100,
-                Source = bi,
-                DataContext = bi
-            };
-            img.MouseLeftButtonDown += (s, e) =>
-            {
-                var win = new Window();
-                Image img = (Image)s;
-                Image nimg = new()
+                var bi = GetBitmap(url);
+                Image img = new()
                 {
-                    Width = SystemParameters.PrimaryScreenWidth / 3,
-                    Height = SystemParameters.PrimaryScreenWidth / 3,
-                    Source = (BitmapImage)img.DataContext
+                    Width = 100,
+                    Height = 100,
+                    Source = bi,
+                    DataContext = bi
                 };
-                win.Content = nimg;
-                win.Width = SystemParameters.PrimaryScreenWidth / 3;
-                win.Height = SystemParameters.PrimaryScreenWidth / 3;
-                win.Show();
-            };
-            St.Children.Insert(0, img);
+                img.MouseLeftButtonDown += (s, e) =>
+                {
+                    var win = new Window();
+                    Image img = (Image)s;
+                    Image newImg = new()
+                    {
+                        Width = SystemParameters.PrimaryScreenWidth / 3,
+                        Height = SystemParameters.PrimaryScreenWidth / 3,
+                        Source = (BitmapImage)img.DataContext
+                    };
+                    win.Content = newImg;
+                    win.Width = SystemParameters.PrimaryScreenWidth / 3;
+                    win.Height = SystemParameters.PrimaryScreenWidth / 3;
+                    win.Show();
+                };
+                St.Children.Insert(0, img);
+            }
+            catch (Exception E)
+            {
+                MessageBox.Show(E.Message);
+            }
         }
         BitmapImage GetBitmap(string url)
         {
@@ -507,6 +531,9 @@ namespace MGSol.Panel
             {
                 AddImage(item.Pic[0], PT);
             }
+        }
+        private void ItemBox_Initialized(object sender, EventArgs e)
+        {
         }
     }
 }

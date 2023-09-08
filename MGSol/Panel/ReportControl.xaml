@@ -73,6 +73,8 @@
                     <Button Content="Обновить" x:Name="RenewFileTree" Click="RenewFile_Click"/>
                     <Button Content="Конвертировать" Click="Button_Click"></Button>
                     <Button Content="Сохранить Настройки" Click="Save_Options"></Button>
+                    <Button x:Name="LoadReport" Content="Загрузить отчеты по отправкам" Click="LoadReport_Click"></Button>
+                    <Button x:Name="GetReport" Content="Отправки" Click="GetReport_Click"></Button>
                 </StackPanel>
             </ScrollViewer>
         </Grid>

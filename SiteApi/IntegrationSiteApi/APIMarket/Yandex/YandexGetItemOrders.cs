@@ -271,7 +271,7 @@ namespace Server.Class.IntegrationSiteApi.Market.Yandex.YandexGetItemOrders
                     {
                         List<string> Barcodes = new List<string>();
 
-                        if (IMtemsList != null)
+                        if (IMtemsList != null && IMtemsList.Count()!=0)
                         {
                             Barcodes = IMtemsList.FirstOrDefault(x => x.SKU == item.ShopSku).Barcodes;
                         }

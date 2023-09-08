@@ -16,6 +16,7 @@
             <StackPanel Grid.Row="0" Orientation="Horizontal"  Margin="2">
                 <Button Margin="2" Height="35" Width="35" Content="↺" Background="#FF64B067" FontSize="24" FontFamily="Arial" FontWeight="Bold" Click="Fill_VOrders"  HorizontalAlignment="Left"/>
                 <Button Margin="2"  Height="35" Width="35" Content="📝;" Background="BurlyWood" FontSize="24" FontFamily="Arial" FontWeight="Bold" Click="Button_List"/>
+                <CheckBox VerticalAlignment="Center" IsChecked="False" x:Name="LoadImageCheck"></CheckBox>
                 <Grid Height="40">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition/>
@@ -175,7 +176,7 @@
                                                                     <TextBlock  VerticalAlignment="Center"  FontSize="16" Text="шт. "></TextBlock>
                                                                 </StackPanel>
                                                             </Border>
-                                                            <StackPanel>
+                                                            <StackPanel x:Name="ItemBox" Initialized="ItemBox_Initialized">
                                                                 <StackPanel Orientation="Horizontal">
                                                                     <Label Content="SKU"></Label>
                                                                     <TextBlock Margin="3" VerticalAlignment="Center" HorizontalAlignment="Left" Text="{Binding Sku}"></TextBlock>

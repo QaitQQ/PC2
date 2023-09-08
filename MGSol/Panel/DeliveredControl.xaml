@@ -1,0 +1,65 @@
+﻿<UserControl x:Class="MGSol.Panel.DeliveredControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:MGSol.Panel"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <Grid>
+        <ScrollViewer>
+            <StackPanel>
+                <Button Command="{Binding Btn}" Width="100" Height="100" CommandParameter="{Binding _list}"/>
+                <TextBox Text="{Binding ExNameStr.Name, Mode=TwoWay}"></TextBox>
+                <StackPanel>
+                    <ItemsControl  ItemsSource="{Binding _list}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel>
+                                    <Label Content="{Binding APISetting.Name}" MouseLeftButtonUp="Label_MouseLeftButtonUp"/>
+                                    <Label Content="{Binding APISetting.INN}" MouseLeftButtonUp="Label_MouseLeftButtonUp"/>
+                                    <StackPanel HorizontalAlignment="Left" Background="Green">
+                                        <ItemsControl ItemsSource="{Binding Postings}">
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate>
+                                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
+                                                        <Label Width="120" HorizontalAlignment="Left" Content="{Binding PostingNumber}" MouseLeftButtonUp="Label_MouseLeftButtonUp"/>
+                                                        <Label Width="120" HorizontalAlignment="Left"  Content="{Binding ShipmentDate}" MouseLeftButtonUp="Label_MouseLeftButtonUp"/>
+                                                        <Label Width="120" HorizontalAlignment="Left"  Background="Aqua" Content="{Binding AnalyticsData.Region}"/>
+                                                        <StackPanel Orientation="Horizontal">
+                                                            <StackPanel>
+                                                                <ItemsControl ItemsSource="{Binding Products}">
+                                                                    <ItemsControl.ItemTemplate>
+                                                                        <DataTemplate>
+                                                                            <Label Width="300" Content="{Binding Name}" MouseLeftButtonUp="Label_MouseLeftButtonUp"/>
+                                                                        </DataTemplate>
+                                                                    </ItemsControl.ItemTemplate>
+                                                                </ItemsControl>
+                                                            </StackPanel>
+                                                            <StackPanel HorizontalAlignment="Left">
+                                                            <ItemsControl ItemsSource="{Binding FinancialData.Products}">
+                                                                <ItemsControl.ItemTemplate>
+                                                                    <DataTemplate>
+                                                                        <StackPanel Orientation="Horizontal">
+                                                                            <Label  HorizontalAlignment="Left" Content="{Binding Quantity}" MouseLeftButtonUp="Label_MouseLeftButtonUp"></Label>
+                                                                            <Label HorizontalAlignment="Left" Content="{Binding Price}" MouseLeftButtonUp="Label_MouseLeftButtonUp"></Label>
+                                                                        </StackPanel>
+                                                                    </DataTemplate>
+                                                                </ItemsControl.ItemTemplate>
+                                                            </ItemsControl>
+                                                        </StackPanel>
+                                                        </StackPanel>
+                                                    </StackPanel>
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                        </ItemsControl>
+                                    </StackPanel>
+                                </StackPanel>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</UserControl>

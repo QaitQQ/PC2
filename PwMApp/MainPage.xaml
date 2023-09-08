@@ -1,0 +1,65 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:PwMApp"
+             x:Class="PwMApp.MainPage">
+   <ContentPage.BindingContext>
+        <local:ManuModel />
+    </ContentPage.BindingContext>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition x:Name="MenuColum" Width="0"/>
+            <ColumnDefinition Width="100"/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <Grid Grid.Column="1" Grid.ColumnSpan="2">
+            <BoxView Opacity="0" >
+                <BoxView.GestureRecognizers>
+                    <SwipeGestureRecognizer Direction="Right" Swiped="SwipeGestureRecognizerRight_Swiped"/>
+                    <SwipeGestureRecognizer Direction="Left" Swiped="SwipeGestureRecognizerLeft_Swiped"/>
+                </BoxView.GestureRecognizers>
+            </BoxView>
+            <ContentView Content="{Binding ActiveContentView.ContentView}"></ContentView>
+                    
+
+
+        </Grid>
+        <Grid Grid.Column="0" Background="gray  ">
+            <BoxView Opacity="0" >
+                <BoxView.GestureRecognizers>
+                    <SwipeGestureRecognizer Direction="Left" Swiped="SwipeGestureRecognizerLeft_Swiped"/>
+                </BoxView.GestureRecognizers>
+            </BoxView>
+            <ListView Margin="2" ItemsSource="{Binding Pages}">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ViewCell>
+                            <Button Text="{Binding Title}"  Command="{Binding  PageActivate}" CommandParameter="{Binding ContentView}" >
+                            </Button>
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+                
+            </ListView>
+        </Grid>
+        <!--<VerticalStackLayout Grid.Column="0" >
+            <CollectionView  ItemsSource="{Binding Labels, Mode=TwoWay}">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <HorizontalStackLayout>
+                            <Label Text="{Binding Name}"></Label>
+                        </HorizontalStackLayout>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+            <Button Command="{Binding AddLabel}" ></Button>
+        </VerticalStackLayout>
+        <ScrollView Grid.Column="1">
+            <VerticalStackLayout
+            Spacing="25"
+            Padding="30,0"
+            VerticalOptions="Center">
+            </VerticalStackLayout>
+        </ScrollView>-->
+    </Grid>
+</ContentPage>

@@ -16,9 +16,6 @@ class Store(models.Model):
     def __str__(self):
         return self.id
 
-
-
-
 class Orders(models.Model):
 
     #дата заказа, дата сборки, номер 

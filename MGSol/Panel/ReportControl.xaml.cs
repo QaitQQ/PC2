@@ -1,16 +1,21 @@
 ﻿using MGSol.Panel.Other;
-
+using NPOI.SS.Formula.Functions;
+using SiteApi.IntegrationSiteApi.APIMarket.Ozon.Post;
 using StructLibCore.Marketplace;
-
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using System.Net;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Threading;
 using System.Xml.Serialization;
 namespace MGSol.Panel
 {
@@ -22,6 +27,7 @@ namespace MGSol.Panel
         private ObservableCollection<FileOption> InfoFolderFile;
         private object PressBtn;
         private TextBlock ColtextBlock;
+        private List<ReportTokenRing> ReportToken;
         private ObservableCollection<ColorCell> ParamStack { get; set; }
         private List<object[]> ParamButtons { get; set; }
         private FileOption ActiveFile;
@@ -38,6 +44,7 @@ namespace MGSol.Panel
         public ReportControl(MainModel Model)
         {
             this.Model = Model;
+            ReportToken = new List<ReportTokenRing>();
             RenewFile_Click(null, null);
         }
         private static string[][][] ReadFileToMass(string t)
@@ -609,6 +616,85 @@ namespace MGSol.Panel
                 }
             }
             FileList.ItemsSource = InfoFolderFile;
+        }
+        private void LoadReport_Click(object sender, RoutedEventArgs e)
+        {
+            if (ReportToken.Count == 0)
+            {
+                foreach (APISetting item in Model.OptionMarketPlace.APISettings)
+                {
+                    if (item.Type == MarketName.Ozon)
+                    {
+                        var X = new SiteApi.IntegrationSiteApi.APIMarket.Ozon.Post.OzonPostCreateReport(item).Get();
+                        var n = new ReportTokenRing(X) { APISetting = item };
+                        n.PropertyChanged += (s, e) => download(((ReportTokenRing)s));
+                        ReportToken.Add(n);
+                    }
+                }
+            }
+        }
+        private void download(ReportTokenRing uri) 
+        {
+            using (var client = new WebClient())
+            {
+                string dir = "Report" + DateTime.Now.ToString("ddMMyy");
+                if (!Directory.Exists(dir))
+                {
+                    Directory.CreateDirectory(dir);
+                } 
+                client.DownloadFile(uri.ReportLink, dir + @"/" + uri.APISetting.Name + ".csv");
+            }
+        }
+        private class ReportTokenRing : INotifyPropertyChanged 
+        {
+            public APISetting APISetting { get; set; }
+            public ReportTokenRing(string reportToken)
+            {
+                ReportToken = reportToken;
+                Task.Factory.StartNew(() =>
+                {
+                    var result = true;
+                    while (result)
+                    {
+                        var X = new OzonPostLinkReport(APISetting).Get(ReportToken);
+                        if (X != null)
+                        {
+                            result = false;
+                            ReportLink = X;
+                            break;
+                        }
+                        else
+                        {
+                            Thread.Sleep(5000);
+                        }
+                    }
+                });
+            }
+            public event PropertyChangedEventHandler PropertyChanged;
+            public string ReportToken { get; private set; }
+            private string reportLink;
+            public string ReportLink
+            {
+                get { return reportLink; }
+                set { reportLink = value; OnPropertyChanged("ReportLink"); }
+            }
+            protected virtual void OnPropertyChanged(string propertyName)
+            {
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            }
+        }
+        private void GetReport_Click(object sender, RoutedEventArgs e)
+        {
+
+            foreach (APISetting item in Model.OptionMarketPlace.APISettings)
+            {
+                if (item.Type == MarketName.Ozon)
+                {
+                    var X = new SiteApi.IntegrationSiteApi.APIMarket.Ozon.Post.OzonPostMonthOrderList(item).Get();
+
+                }
+            }
+
         }
     }
 }
