@@ -201,6 +201,7 @@ namespace SiteApi.IntegrationSiteApi.APIMarket.Ozon.Post
 
         public class FinancialData
         {
+
             [JsonProperty("products")]
             public List<Product> Products { get; set; }
 
@@ -212,6 +213,7 @@ namespace SiteApi.IntegrationSiteApi.APIMarket.Ozon.Post
 
             [JsonProperty("cluster_to")]
             public string ClusterTo { get; set; }
+
         }
 
         public class ItemServices
@@ -252,6 +254,8 @@ namespace SiteApi.IntegrationSiteApi.APIMarket.Ozon.Post
 
         public class Posting
         {
+            public double CurrencyExchangeRate { get; set; }
+
             [JsonProperty("posting_number")]
             public string PostingNumber { get; set; }
 
@@ -366,6 +370,8 @@ namespace SiteApi.IntegrationSiteApi.APIMarket.Ozon.Post
 
         public class Product
         {
+            public double UsdPrice { get; set; }
+
             [JsonProperty("price")]
             public string Price { get; set; }
 

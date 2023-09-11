@@ -53,7 +53,6 @@ namespace MGSol.Panel
             {
                 OrderList.Add(orders[i]);
             }
-
             if (StatusBox.SelectedIndex != 1)
             {
                 StatusBox.SelectedIndex = 1;

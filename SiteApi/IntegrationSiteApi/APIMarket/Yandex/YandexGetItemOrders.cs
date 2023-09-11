@@ -13,9 +13,8 @@ namespace Server.Class.IntegrationSiteApi.Market.Yandex.YandexGetItemOrders
 {
     public class YandexGetItemOrders : SiteApi.IntegrationSiteApi.APIMarket.Yandex.YandexApiClass
     {
-        public YandexGetItemOrders(APISetting APISetting) : base(APISetting)
-        {
-        }
+        public YandexGetItemOrders(APISetting APISetting) : base(APISetting){}
+
         public List<object> Get()
         {
             string date = DateTime.Now.AddDays(-10).ToString("dd-MM-yyyy");
@@ -158,6 +157,15 @@ namespace Server.Class.IntegrationSiteApi.Market.Yandex.YandexGetItemOrders
             [JsonProperty("partnerWarehouseId")]
             public string PartnerWarehouseId { get; set; }
         }
+
+        public class Subsidy
+        {
+            [JsonProperty("type")]
+            public string Type { get; set; }
+
+            [JsonProperty("amount")]
+            public double Amount { get; set; }
+        }
         public class Pager
         {
             [JsonProperty("total")]
@@ -260,8 +268,9 @@ namespace Server.Class.IntegrationSiteApi.Market.Yandex.YandexGetItemOrders
             public string Notes { get; set; }
             [JsonProperty("cancelRequested")]
             public bool? CancelRequested { get; set; }
+
             [JsonProperty("subsidies")]
-            public List<string> Subsidies { get; set; }
+            public List<Subsidy> Subsidies { get; set; }
             public List<MarketOrderItems> Items
             {
                 get

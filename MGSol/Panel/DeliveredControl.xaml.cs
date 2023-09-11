@@ -6,9 +6,13 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Xml;
+using System.Xml.Serialization;
+
 namespace MGSol.Panel
 {
     public partial class DeliveredControl : UserControl
@@ -16,6 +20,7 @@ namespace MGSol.Panel
         public DeliveredControl(MainModel Model)
         {
             InitializeComponent();
+            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
             this.Model = Model;
             var list = new List<PostingsList>();
             foreach (StructLibCore.Marketplace.APISetting item in Model.OptionMarketPlace.APISettings)
@@ -77,6 +82,20 @@ namespace MGSol.Panel
         }
         public void Execute(object parameter)
         {
+            foreach (var item in (ObservableCollection < PostingsList >)parameter)
+            {
+                foreach (var X in item.Postings)
+                {
+                    //var data = DateTime.Parse(X.ShipmentDate).ToString(@"dd\/MM\/yyyy");
+                    //XmlReader reader = XmlReader.Create(@"http://www.cbr.ru/scripts/XML_daily.asp?date_req="+ data);
+                    //XmlSerializer ser = new XmlSerializer(typeof(ValCurs));
+                    //var Cur = ser.Deserialize(reader);
+
+                    //X.CurrencyExchangeRate=0;
+                }
+            }
+
+
         }
         public event EventHandler CanExecuteChanged;
     }
@@ -125,5 +144,60 @@ namespace MGSol.Panel
         }
         public event PropertyChangedEventHandler PropertyChanged;
         public void OnPropertyChanged([CallerMemberName] string name = "") => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+    }
+
+    [XmlRoot(ElementName = "Valute")]
+    public class Valute
+    {
+
+        [XmlElement(ElementName = "NumCode")]
+        public int NumCode { get; set; }
+
+        [XmlElement(ElementName = "CharCode")]
+        public string CharCode { get; set; }
+
+        [XmlElement(ElementName = "Nominal")]
+        public int Nominal { get; set; }
+
+        [XmlElement(ElementName = "Name")]
+        public string Name { get; set; }
+
+        [XmlElement(ElementName = "Value")]
+        public double Value { get; set; }
+
+        [XmlAttribute(AttributeName = "ID")]
+        public string ID { get; set; }
+
+        [XmlText]
+        public string Text { get; set; }
+    }
+
+    [XmlRoot(ElementName = "ValCurs")]
+    public class ValCurs
+    {
+        private DateTime? _allocationDate;
+        [XmlIgnore]
+        public DateTime? AllocationDate
+        {
+            get { return _allocationDate; }
+            set { _allocationDate = value; }
+        }
+
+        [XmlElement(ElementName = "Valute")]
+        public List<Valute> Valute { get; set; }
+
+        [XmlAttribute(AttributeName = "Date")]
+        public string Date { get; set; }
+
+        
+
+        [XmlAttribute(AttributeName = "name")]
+        public string Name { get; set; }
+
+        [XmlAttribute(AttributeName = "class")]
+        public string Class { get; set; }
+
+        [XmlText]
+        public string Text { get; set; }
     }
 }
