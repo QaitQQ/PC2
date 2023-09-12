@@ -9,7 +9,7 @@ urlpatterns = [
 
     path('item/create/', views.ItemCreateView.as_view()),
     path('item/list/', views.ItemListView.as_view()),
-    path('item/create_list/', views.ItemsListCreateView.as_view()),
+    path('item/create_list/', views.ItemsListCreateView),
     path('item/item_destroy/<int:pk>', views.ItemDestroy.as_view()),
     path('item/item_cash/', views.ItemCashDictDictView.as_view()),
     path('item/clear_base/<int:pk>', views.ClearBaseView.as_view()),

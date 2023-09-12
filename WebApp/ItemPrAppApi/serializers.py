@@ -1,11 +1,8 @@
-﻿from curses.ascii import isdigit
-from dataclasses import fields
+﻿from dataclasses import fields
 from email.policy import default
 from enum import unique
-from os import name, read
+from os import name,read
 from pyexpat import model
-import re
-from turtle import mode
 from urllib import request
 from wsgiref.validate import validator
 from rest_framework import serializers
@@ -69,7 +66,6 @@ class ItemsSerializer(serializers.ModelSerializer):
             tcname = ccname        
             i = 1
             while ComparisonName.objects.filter(cname = tcname).exists():
-                print(tcname)
                 tcname =  ccname+"v"+str(i)
                 i=i+1
             comparisonName = ComparisonName.objects.create(item=item, cname=tcname)
@@ -87,7 +83,7 @@ class ItemsSerializer(serializers.ModelSerializer):
                  detailB = ComparisonName.objects.create(item=item,**detail)
                  details.append(detailB)       
             item.details = details
-        item.save()
+        item.save()          
         return item
     def create(self, validated_data):
         return self.CreateItem(self.initial_data)
@@ -96,12 +92,15 @@ class ItemsListCreateSerializer(serializers.Serializer):
     class Meta:
         fields = ["Items"]
     def create(self, validated_data):
+        
         items = list()
+        Ids = list()
         if 'Items' in self.initial_data:
             itemsBooble = self.initial_data.pop('Items')             
             for x in itemsBooble: 
-               # print(str(x))
-                items.append(ItemsSerializer.CreateItem(x))           
+                
+                items.append(ItemsSerializer.CreateItem(x).__str__) 
+            print(items)
             return items
         else:
             raise ValidationError("Нет поля Items")
@@ -110,11 +109,6 @@ class ItemCashDictSerializer(serializers.ModelSerializer):
     class Meta:
         model = Item
         fields = ["id","name","itemComparisonName"]
-        
 class ClearBaseSerializer(serializers.Serializer):
-    
     def delete():
-        print("123") 
-        item = Item.objects.all().delete()       
-
-
+        item = Item.objects.all().delete() 

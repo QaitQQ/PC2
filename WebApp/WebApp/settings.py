@@ -27,6 +27,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['xn--80ach6cd.xn--p1ai','127.0.0.1','localhost']
 
+
 # Application references
 # https://docs.djangoproject.com/en/2.1/ref/settings/#std:setting-INSTALLED_APPS
 INSTALLED_APPS = [

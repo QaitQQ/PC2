@@ -23,8 +23,8 @@ class Item(models.Model):
     images = models.ManyToOneRel("Image", field_name='Images',  on_delete=models.CASCADE, to='item')
     itemComparisonName = models.ManyToOneRel("ComparisonName", field_name='itemComparisonName',  on_delete=models.CASCADE, to='item')
     stocks = models.ManyToOneRel("Stock", field_name='Stocks',  on_delete=models.CASCADE, to='item')
-    def get_absolute_url(self):
-        return f'/{self.id}'
+    def __str__(self):
+        return self.id
 class ItemDescription(models.Model):
     itemDesc = models.ForeignKey(Item, verbose_name='Item', on_delete=models.CASCADE)
     description = models.CharField(verbose_name="Description", max_length=250)
