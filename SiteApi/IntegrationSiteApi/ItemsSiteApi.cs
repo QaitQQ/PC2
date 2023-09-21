@@ -16,7 +16,7 @@ namespace Server.Class.IntegrationSiteApi
         /// <summary>
         /// Apilink = Setting[0]; Key = Setting[1]; tokenfile = Setting[2];
         /// </summary>
-        public SiteItem(string[] ApiSetting, string[] FtpSetting) {  Apilink = ApiSetting[0]; Key = ApiSetting[1]; FilePath = ApiSetting[2]; this.FtpSetting = FtpSetting; GetToken(); }
+        public SiteItem(string[] ApiSetting, string[] FtpSetting) {  Apilink = ApiSetting[0]; Key = ApiSetting[1]; FilePath = ApiSetting[2]; this.FtpSetting = FtpSetting; }
         private readonly string Apilink;
         private readonly string Key;
         private readonly string FilePath;
@@ -211,17 +211,7 @@ namespace Server.Class.IntegrationSiteApi
         }
         private async void GetToken()
         {
-            if (File.Exists(FilePath))
-            {
-                Stream openFileStream = File.OpenRead(FilePath);
-                if (openFileStream.Length != 0)
-                {
-                    token = (string)new BinaryFormatter().Deserialize(File.OpenRead(FilePath));
-                    openFileStream.Close();
-                }
-            }
-            else
-            {
+
                 Task<HttpResponseMessage> response;
                 FormUrlEncodedContent Json = new FormUrlEncodedContent(new[] {
             new KeyValuePair<string, string>("key",Key)});
@@ -244,7 +234,7 @@ namespace Server.Class.IntegrationSiteApi
                     }
                 }
                 catch (Exception) { }
-            }
+            
         }
         private async void GetProduct()
         {

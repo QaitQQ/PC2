@@ -11,33 +11,33 @@ namespace Server.Class.IntegrationSiteApi
     {
         public Map(string _SiteLink) => SiteLink = _SiteLink;
         #region описание сообщений
-        public class urlset : List<urlset.url>
+        public class Urlset : List<Urlset.Url>
         {
             [Serializable]
-            public class url
+            public class Url
             {
-                public string loc { get; set; }
-                public string lastmod { get; set; }
-                public string priority { get; set; }
-                public url() { }
+                public string Loc { get; set; }
+                public string Lastmod { get; set; }
+                public string Priority { get; set; }
+                public Url() { }
 
-                public url(string loc, string lastmod, string priority)
+                public Url(string loc, string lastmod, string priority)
                 {
-                    this.loc = loc;
-                    this.lastmod = lastmod;
-                    this.priority = priority;
+                    this.Loc = loc;
+                    this.Lastmod = lastmod;
+                    this.Priority = priority;
                 }
             }
         }
         #endregion
-        public urlset GetMap()
+        public Urlset GetMap()
         {
-            urlset Result = new urlset();
+            Urlset Result = new Urlset();
 
 
             try
             {
-                urlset RowArrey = JsonConvert.DeserializeObject<urlset>(JsonConvert.DeserializeObject<_Message>(Response.Result.Content.ReadAsStringAsync().Result).msg.ToString());
+                Urlset RowArrey = JsonConvert.DeserializeObject<Urlset>(JsonConvert.DeserializeObject<_Message>(Response.Result.Content.ReadAsStringAsync().Result).msg.ToString());
 
             }
             catch {  }

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:Pwa.Pages"           
+             x:Class="Pwa.Pages.ItemPage">
+    <ContentView.BindingContext>
+        <local:ItemsModel />
+    </ContentView.BindingContext>
+
+    <VerticalStackLayout Margin="2" VerticalOptions="Start" HorizontalOptions="Start">
+        <Grid MaximumHeightRequest="356">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="45"/>
+                <RowDefinition Height="150"/>
+            </Grid.RowDefinitions>
+            <HorizontalStackLayout Margin="0">
+                <Entry Text="{Binding SearchText, Mode=TwoWay}" WidthRequest="300" ></Entry>
+                <Button Text="&#128269;" Command="{Binding SearchClick}"></Button>
+            </HorizontalStackLayout>
+            <ScrollView Grid.Row="1" >
+                <ListView ItemsSource="{Binding FindItems}" MaximumHeightRequest="300" SelectedItem="{Binding _ListBoxSelectedItem.Item, Mode=TwoWay}">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <ViewCell>
+                                <Label Text="{Binding Name}"></Label>
+                            </ViewCell>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </ScrollView>
+        </Grid>
+        <Grid Background="gray">
+
+            <CollectionView ItemsSource="{Binding ItemList}"  ItemsLayout="HorizontalList">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                
+                            <ContentView Content="{Binding .}"></ContentView>
+                   
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </Grid>
+    </VerticalStackLayout>
+</ContentView>

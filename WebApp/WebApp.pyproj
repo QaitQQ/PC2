@@ -19,7 +19,7 @@
     <SearchPath>
     </SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
-    <WebBrowserUrl>http://localhost</WebBrowserUrl>
+    <WebBrowserUrl>http://127.0.0.1</WebBrowserUrl>
     <LaunchProvider>Django launcher</LaunchProvider>
     <DjangoSettingsModule>WebApp.settings</DjangoSettingsModule>
     <OutputPath>.</OutputPath>

@@ -25,7 +25,7 @@ SECRET_KEY = 'b99f00a6-710a-457e-bce7-0e06ad38e692'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['xn--80ach6cd.xn--p1ai','127.0.0.1','localhost']
+ALLOWED_HOSTS = ['xn--80ach6cd.xn--p1ai','127.0.0.1','localhost', '192.168.8.112']
 
 
 # Application references

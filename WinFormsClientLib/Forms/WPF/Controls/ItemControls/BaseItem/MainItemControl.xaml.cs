@@ -1,5 +1,7 @@
 ﻿using Client;
 using Object_Description;
+using SiteApi.IntegrationSiteApi.ApiBase.ItemApi;
+
 using StructLibs;
 using System;
 using System.Collections;
@@ -11,6 +13,8 @@ using System.Windows;
 using System.Windows.Controls;
 using WinFormsClientLib.Forms.WPF.Controls.ItemControls;
 using WinFormsClientLib.Forms.WPF.Controls.Other;
+
+
 namespace WinFormsClientLib.Forms.WPF.ItemControls
 {
     /// <summary>
@@ -49,6 +53,12 @@ namespace WinFormsClientLib.Forms.WPF.ItemControls
             Button RenewButton = new Button() { Content = "Обновить Кэш", Margin = new Thickness(2) };
             RenewButton.Click += RenewCash_Click;
             ButtonStack.Items.Add(RenewButton);
+
+            Button BaseUp = new Button() { Content = "Импорт Базы", Margin = new Thickness(2) };
+            BaseUp.Click += BaseUp_Click;
+            ButtonStack.Items.Add(BaseUp);
+
+
             //Button TagGenerateButton = new Button() { Content = "Перебрать Теги", Margin = new Thickness(2) };
             //TagGenerateButton.Click += TagGenerate_Click;
             //ButtonStack.Items.Add(TagGenerateButton);
@@ -176,6 +186,28 @@ namespace WinFormsClientLib.Forms.WPF.ItemControls
             }
         }
         private void RenewCash_Click(object sender, RoutedEventArgs e) { new Network.Item.RenewNameCash().Get<bool>(new WrapNetClient()); }
+
+
+        private void BaseUp_Click(object sender, RoutedEventArgs e) 
+        {
+            var lst = new List<AddItemsList.Item>();
+
+
+            for (int i = 0; i < 20; i++)
+            {
+                using Network.Item.GetItemFromId Qwery = new Network.Item.GetItemFromId();
+
+                var item = Qwery.Get<ItemPlusImageAndStorege>(new WrapNetClient(), SearchList[i].Id.ToString());
+
+
+                lst.Add(new AddItemsList.Item() { Name = item.Item.Name, Description = new AddItemsList.Description() { DescriptionItem = item.Item.Description, DescriptionSeparator = item.Item.DescriptionSeparator }, Price = item.Item.PriceRC });
+            }
+
+            new AddItemsList("a225d71e16ddf2d0780728e88073e8f409dd2a75", @"http://127.0.0.1:65530/").Post(lst); 
+
+
+        }
+
         private void DelFilter(object sender, RoutedEventArgs e)
         {
             FilterList.Remove((PropPair)((Button)sender).DataContext);

@@ -1,7 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net6.0-windows</TargetFramework>
+    <TargetFrameworks>net7.0-android33.0;</TargetFrameworks>
+    <TargetFrameworks>net6.0-windows;net7.0-windows10.0.19041.0;</TargetFrameworks>
+    <!--<TargetFramework>net6.0-windows</TargetFramework>-->
     <NoWarn>$(NoWarn);SYSLIB0014</NoWarn>
   </PropertyGroup>
 
@@ -10,11 +12,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\StructLibCore\StructLibCore.csproj" />
+    <Folder Include="IntegrationSiteApi\ApiMainSite\Get\" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="IntegrationSiteApi\ApiMainSite\Get\" />
+    <ProjectReference Include="..\StructLibCore\StructLibCore.csproj" />
   </ItemGroup>
 
 </Project>

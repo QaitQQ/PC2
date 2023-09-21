@@ -1,10 +1,6 @@
-﻿from dataclasses import fields
-from email.policy import default
-from enum import unique
-from os import name,read
-from pyexpat import model
-from urllib import request
-from wsgiref.validate import validator
+﻿from asyncio.windows_events import NULL
+from collections import OrderedDict
+from django.db.models import QuerySet, query
 from rest_framework import serializers
 from rest_framework.fields import ValidationError
 from ItemPrAppApi.models import Change, Item, ItemDescription, FieldСhange, Sourse, Manufactor, Stock, Warehouse, Categories, Details, Image, ComparisonName
@@ -23,11 +19,40 @@ class ItemDescriptionSerializer(serializers.ModelSerializer):
         model = ItemDescription
         validators=[]
         fields =  ['description','descriptionSeparator']
+        
+class ItemNameSerializer(serializers.ModelSerializer):
+    class Meta: 
+        model = Item
+        validators=[]
+        fields =  ['name','id']
+        
+class ItemNameField(serializers.PrimaryKeyRelatedField):
+
+    def to_representation(self, value):
+        id = super(ItemNameField, self).to_representation(value)
+        try:
+          product = Item.objects.get(pk=id)
+          serializer = ItemNameSerializer(product)
+          return serializer.data
+        except Item.DoesNotExist:
+            return None
+
+    def get_choices(self, cutoff=None):
+        queryset = self.get_queryset()
+        if queryset is None:
+            return {}
+
+        return OrderedDict([(item.id, self.display_value(item)) for item in queryset])
+
+
+
 class ComparisonNameSerializer(serializers.ModelSerializer):
+    item = ItemNameField(queryset = Item.objects.all())
+
     class Meta:
         model = ComparisonName
         validators=[]
-        fields =   ["cname"] 
+        fields =   ["item"] 
 class ItemsSerializer(serializers.ModelSerializer):
     description = ItemDescriptionSerializer(read_only=True)
     itemComparisonName = ComparisonNameSerializer(read_only = True, many=True) 
@@ -66,8 +91,7 @@ class ItemsSerializer(serializers.ModelSerializer):
             tcname = ccname        
             i = 1
             while ComparisonName.objects.filter(cname = tcname).exists():
-                tcname =  ccname+"v"+str(i)
-                i=i+1
+                return NULL
             comparisonName = ComparisonName.objects.create(item=item, cname=tcname)
             comparisonNames.append(comparisonName);
         item.itemComparisonName.set(comparisonNames);
@@ -82,13 +106,17 @@ class ItemsSerializer(serializers.ModelSerializer):
             for detail in detailBooble:               
                  detailB = ComparisonName.objects.create(item=item,**detail)
                  details.append(detailB)       
-            item.details = details
+            item.details = details   
         item.save()          
         return item
     def create(self, validated_data):
         return self.CreateItem(self.initial_data)
 class ItemsListCreateSerializer(serializers.Serializer):
+    ids = list()
     Items = list(ItemsSerializer())
+    def get_ids(self):
+        return self.ids
+
     class Meta:
         fields = ["Items"]
     def create(self, validated_data):
@@ -97,10 +125,12 @@ class ItemsListCreateSerializer(serializers.Serializer):
         Ids = list()
         if 'Items' in self.initial_data:
             itemsBooble = self.initial_data.pop('Items')             
-            for x in itemsBooble: 
-                
-                items.append(ItemsSerializer.CreateItem(x).__str__) 
-            print(items)
+            for x in itemsBooble:
+                item = ItemsSerializer.CreateItem(x)
+                if item is not NULL:
+                    print(str(item.name)) 
+                    items.append(item.get_id())             
+            self.ids = items
             return items
         else:
             raise ValidationError("Нет поля Items")

@@ -14,6 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\NetworkLibrary\NetworkLibrary.csproj" />
     <ProjectReference Include="..\StructLibCore\StructLibCore.csproj" />
   </ItemGroup>
 

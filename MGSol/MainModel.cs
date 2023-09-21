@@ -4,6 +4,8 @@ using StructLibCore.Marketplace;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Threading.Tasks;
 using System.Windows.Controls;
 namespace MGSol
@@ -78,17 +80,18 @@ namespace MGSol
             syncShipment = new SyncShipment(this);
             syncShipment.SetLastUpTime(options.LastUpTime);
             baseApi ??= new BaseInfoPrice();
-            ChangeList += Serializer.Doit;
+            ChangeList += serializer.Doit;
         }
-        private readonly Serializer<object> Serializer = new();
+        private readonly Serializer<object> serializer = new();
         private static void LoadFromFile<T>(ref T Object, string Path)
         {
-            T Obj = Task.Run(() => 
+            T Obj = Task.Run(() =>
             new Deserializer<T>(Path).Doit()).Result;
             if (Obj != null)
             {
                 Object = Obj;
             }
         }
+     
     }
 }

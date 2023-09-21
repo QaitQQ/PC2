@@ -3,9 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Drawing;
-using System.IO;
 using System.Runtime.Serialization;
-using System.Runtime.Serialization.Formatters.Binary;
 using System.Windows.Forms;
 
 namespace Pricecona
@@ -471,24 +469,6 @@ namespace Pricecona
         public void DelValue(string Value) => Values = Values.FindAll(item => item != Value);
         public void ClearValues() => Values.Clear();
         public new IEnumerator GetEnumerator() => ((IEnumerable)Name).GetEnumerator();
-        public void Serialization(string FilePath)
-        {
-            if (File.Exists(FilePath) == false)
-            {
-                Stream SaveFileStream = File.Create(FilePath);
-                BinaryFormatter serializer = new BinaryFormatter();
-                serializer.Serialize(SaveFileStream, this);
-                SaveFileStream.Close();
-            }
-            else
-            {
-                Stream SaveFileStream = File.OpenWrite(FilePath);
-                BinaryFormatter serializer = new BinaryFormatter();
-                serializer.Serialize(SaveFileStream, this);
-                SaveFileStream.Close();
-            }
-
-        }
         public void DelScion(string Name)
         {
             Children = Children.FindAll(item => item.GetName() != Name);

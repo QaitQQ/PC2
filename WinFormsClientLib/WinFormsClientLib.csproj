@@ -11,6 +11,7 @@
   <ItemGroup>
     <ProjectReference Include="..\ClientClass\ClientClass.csproj" />
     <ProjectReference Include="..\NetworkLibrary\NetworkLibrary.csproj" />
+    <ProjectReference Include="..\SiteApi\SiteApi.csproj" />
     <ProjectReference Include="..\StructLibCore\StructLibCore.csproj" />
   </ItemGroup>
 

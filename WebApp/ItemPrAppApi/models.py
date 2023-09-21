@@ -6,8 +6,8 @@ User = get_user_model()
 class Change(models.Model):
     itemChange = models.ForeignKey("Item", verbose_name='Item', on_delete=models.CASCADE)
     fieldСhange = models.ForeignKey("FieldСhange", verbose_name='FieldСhange', on_delete=models.CASCADE)
-    oldValue = models.CharField(verbose_name="Sku", max_length=25, null=True)    
-    newValue = models.CharField(verbose_name="Sku", max_length=25, null=True) 
+    oldValue = models.CharField(verbose_name="oldValue", max_length=25, null=True)    
+    newValue = models.CharField(verbose_name="newValue", max_length=25, null=True) 
     source = models.ForeignKey("Sourse", verbose_name='Sourse', on_delete=models.CASCADE)
     dateСhange = models.DateTimeField(verbose_name="DateСhange")
     user = models.ForeignKey(User, verbose_name= 'Пользователь', on_delete=models.CASCADE, null=True)
@@ -23,12 +23,12 @@ class Item(models.Model):
     images = models.ManyToOneRel("Image", field_name='Images',  on_delete=models.CASCADE, to='item')
     itemComparisonName = models.ManyToOneRel("ComparisonName", field_name='itemComparisonName',  on_delete=models.CASCADE, to='item')
     stocks = models.ManyToOneRel("Stock", field_name='Stocks',  on_delete=models.CASCADE, to='item')
-    def __str__(self):
-        return self.id
+    def get_id(self):
+        return str(self.id)
 class ItemDescription(models.Model):
-    itemDesc = models.ForeignKey(Item, verbose_name='Item', on_delete=models.CASCADE)
-    description = models.CharField(verbose_name="Description", max_length=250)
-    descriptionSeparator = models.CharField(verbose_name="DescriptionSeparator", max_length=10)
+    itemDesc = models.ForeignKey(Item, verbose_name='Item', on_delete=models.CASCADE, null=True)
+    description = models.CharField(verbose_name="Description", max_length=250, null=True)
+    descriptionSeparator = models.CharField(verbose_name="DescriptionSeparator", max_length=10, null=True)
 class FieldСhange(models.Model):
     name = models.CharField(verbose_name="Name", max_length=50) 
 class Sourse(models.Model):

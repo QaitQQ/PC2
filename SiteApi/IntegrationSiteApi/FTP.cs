@@ -35,17 +35,17 @@ namespace Server
             FileStream fs = fileInf.OpenRead();
             try
             {
-                Stream strm = reqFTP.GetRequestStream();
+                Stream stream = reqFTP.GetRequestStream();
                 // Читаем из потока по 2 кбайт
                 contentLen = fs.Read(buff, 0, buffLength);
                 // Пока файл не кончится
                 while (contentLen != 0)
                 {
-                    strm.Write(buff, 0, contentLen);
+                    stream.Write(buff, 0, contentLen);
                     contentLen = fs.Read(buff, 0, buffLength);
                 }
                 // Закрываем потоки
-                strm.Close();
+                stream.Close();
                 fs.Close();
             }
             catch (Exception) { throw; }
