@@ -4,45 +4,47 @@ using System.Net.Http.Headers;
 using System.Text;
 namespace SiteApi.IntegrationSiteApi.ApiBase.ItemApi
 {
-    public abstract class AbstractItemApi
+    public abstract class AbstractItemApi:IDisposable
     {
-        public interface IAbstractItem
+        public interface IAbstractItem:IDisposable
         {
             public string Name { get; }
             public int Id { get; }
             public string? Description { get; }
             public string? Price { get; }
-
-
         }
-
-
-        internal enum Method_Type {POST,GET,DELETE,PUT }
+        internal enum Method_Type { POST, GET, DELETE, PUT }
         internal string Token;
         internal string SiteUrl;
         internal Method_Type Method;
         internal string MethodUri;
         internal object? Message;
-
-        internal AbstractItemApi(string Token, string SiteUrl)
+        internal string Error;
+        public AbstractItemApi(string Token, string SiteUrl)
         {
             this.Token = Token;
             this.SiteUrl = SiteUrl;
         }
+
         internal T Go<T>()
         {
+            var handler = new HttpClientHandler();
+            handler.ClientCertificateOptions = ClientCertificateOption.Manual;
+            handler.ServerCertificateCustomValidationCallback =
+                (httpRequestMessage, cert, cetChain, policyErrors) =>
+                {
+                    return true;
+                };
             string url = @SiteUrl + MethodUri;
             string jsonValue = JsonConvert.SerializeObject(Message);
-            using HttpClient client = new HttpClient();
+            using HttpClient client = new HttpClient(handler);
             client.BaseAddress = new Uri(@SiteUrl);
-            client.DefaultRequestHeaders.Accept.Add(new  MediaTypeWithQualityHeaderValue("application/json"));
-            client.DefaultRequestHeaders.AcceptEncoding.Add( new StringWithQualityHeaderValue("UTF8"));
+            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            client.DefaultRequestHeaders.AcceptEncoding.Add(new StringWithQualityHeaderValue("UTF8"));
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Token", Token);
-
             StringContent content = new StringContent(jsonValue, Encoding.UTF8, "application/json");
             string message = null;
-
-            HttpResponseMessage response=null;
+            HttpResponseMessage response = null;
             try
             {
                 switch (Method)
@@ -51,8 +53,7 @@ namespace SiteApi.IntegrationSiteApi.ApiBase.ItemApi
                         response = client.PostAsync(url, content).Result;
                         break;
                     case Method_Type.GET:
-                        response = client.SendAsync(new HttpRequestMessage(HttpMethod.Get, url)).Result;
-
+                        response = client.GetAsync(url).Result;
                         break;
                     case Method_Type.DELETE:
                         break;
@@ -60,22 +61,22 @@ namespace SiteApi.IntegrationSiteApi.ApiBase.ItemApi
                         break;
                 }
             }
-            catch 
+            catch (Exception e)
             {
-
+                Error = Error + e;
             }
-
             message = response?.Content?.ReadAsStringAsync().Result;
-                    
-            if ((message!=null && response!=null && response.IsSuccessStatusCode))
+            if ((message != null && response != null && response.IsSuccessStatusCode))
             {
-                var result = JsonConvert.DeserializeObject<T>(message);
-                return result;
+                var _result = JsonConvert.DeserializeObject<T>(message);
+                return _result;
+            }
+            else if (message != null && response != null && !response.IsSuccessStatusCode) { }
+            {
+                Error = Error + message;
             }
             return default;
         }
-
-
         public class Description
         {
             [JsonProperty("description")]
@@ -116,7 +117,12 @@ namespace SiteApi.IntegrationSiteApi.ApiBase.ItemApi
             public string? Cname { get; set; }
         }
 
-
+        public void Dispose()
+        {
+            MethodUri = null;
+            Message = null;
+            Error = null;
+        }
 
     }
 }

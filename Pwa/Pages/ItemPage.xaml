@@ -1,13 +1,19 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:local="clr-namespace:Pwa.Pages"           
+             xmlns:local="clr-namespace:Pwa.Pages"   
+             x:DataType ="local:ItemsModel"
              x:Class="Pwa.Pages.ItemPage">
     <ContentView.BindingContext>
         <local:ItemsModel />
     </ContentView.BindingContext>
-
+    <ScrollView>
     <VerticalStackLayout Margin="2" VerticalOptions="Start" HorizontalOptions="Start">
+        <Grid  HeightRequest="{Binding ErrorDeskHeight.Object}" BackgroundColor="Gray">
+                <ScrollView>
+            <Label Text="{Binding Message.Object}" ></Label>
+                </ScrollView>
+            </Grid>
         <Grid MaximumHeightRequest="356">
             <Grid.RowDefinitions>
                 <RowDefinition Height="45"/>
@@ -18,7 +24,7 @@
                 <Button Text="&#128269;" Command="{Binding SearchClick}"></Button>
             </HorizontalStackLayout>
             <ScrollView Grid.Row="1" >
-                <ListView ItemsSource="{Binding FindItems}" MaximumHeightRequest="300" SelectedItem="{Binding _ListBoxSelectedItem.Item, Mode=TwoWay}">
+                <ListView CachingStrategy="RecycleElementAndDataTemplate" ItemsSource="{Binding FindItems}" MaximumHeightRequest="300" SelectedItem="{Binding _ListBoxSelectedItem.Item, Mode=TwoWay}">
                     <ListView.ItemTemplate>
                         <DataTemplate>
                             <ViewCell>
@@ -42,4 +48,5 @@
             </CollectionView>
         </Grid>
     </VerticalStackLayout>
+    </ScrollView>
 </ContentView>

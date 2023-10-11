@@ -1,6 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#512BD4</color>
-    <color name="colorPrimaryDark">#2B0B98</color>
+    <!--<color name="colorPrimary">#E1E1E1</color>
+    <color name="colorPrimaryDark">#C8C8C8</color>-->
     <color name="colorAccent">#2B0B98</color>
+
+  <color name="Primary">#512BD4</color>
+  <color name="Secondary">#DFD8F7</color>
+  <color name="Tertiary">#2B0B98</color>
+  <!--<color name="White">White</color>
+  <color name="Black">Black</color>-->
+  <color name="Gray100">#E1E1E1</color>
+  <color name="Gray200">#C8C8C8</color>
+  <color name="Gray300">#ACACAC</color>
+  <color name="Gray400">#919191</color>
+  <color name="Gray500">#6E6E6E</color>
+  <color name="Gray600">#404040</color>
+  <color name="Gray900">#212121</color>
+  <color name="Gray950">#141414</color>
+
+
+  <style name="SplashTheme" parent="@style/Maui.SplashTheme">
+    <item name="android:statusBarColor">@android:color/black</item>
+    <item name="android:navigationBarColor">@android:color/black</item>
+  </style>
+  <!--<SolidcolorBrush name="PrimaryBrush" color="{StaticResource Primary}"/>
+  <SolidcolorBrush name="SecondaryBrush" color="{StaticResource Secondary}"/>
+  <SolidcolorBrush name="TertiaryBrush" color="{StaticResource Tertiary}"/>
+  <SolidcolorBrush name="WhiteBrush" color="{StaticResource White}"/>
+  <SolidcolorBrush name="BlackBrush" color="{StaticResource Black}"/>
+  <SolidcolorBrush name="Gray100Brush" color="{StaticResource Gray100}"/>
+  <SolidcolorBrush name="Gray200Brush" color="{StaticResource Gray200}"/>
+  <SolidcolorBrush name="Gray300Brush" color="{StaticResource Gray300}"/>
+  <SolidcolorBrush name="Gray400Brush" color="{StaticResource Gray400}"/>
+  <SolidcolorBrush name="Gray500Brush" color="{StaticResource Gray500}"/>
+  <SolidcolorBrush name="Gray600Brush" color="{StaticResource Gray600}"/>
+  <SolidcolorBrush name="Gray900Brush" color="{StaticResource Gray900}"/>
+  <SolidcolorBrush name="Gray950Brush" color="{StaticResource Gray950}"/>-->
+
+  <!--<color name="Yellow100Accent">#F7B548</color>
+  <color name="Yellow200Accent">#FFD590</color>
+  <color name="Yellow300Accent">#FFE5B9</color>
+  <color name="Cyan100Accent">#28C2D1</color>
+  <color name="Cyan200Accent">#7BDDEF</color>
+  <color name="Cyan300Accent">#C3F2F4</color>
+  <color name="Blue100Accent">#3E8EED</color>
+  <color name="Blue200Accent">#72ACF1</color>
+  <color name="Blue300Accent">#A7CBF6</color>-->
 </resources>

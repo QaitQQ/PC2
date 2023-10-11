@@ -8,13 +8,15 @@ namespace ApiLib.ApiBase.ItemApi
         {
             Method = Method_Type.GET;
         }
-        public IAbstractItem Get(string item_id)
+        public IAbstractItem Go(string item_id)
         {
             MethodUri = @"/api/pwa/v1/item/get_item?item_id=" + item_id;
-            return Go<Response>().Item[0];
+            return base.Go<Response>()?.Item?[0]!;
         }
         public class Item:IAbstractItem
         {
+
+
             [JsonProperty("id")]
             public int Id { get; set; }
 
@@ -45,6 +47,17 @@ namespace ApiLib.ApiBase.ItemApi
             public string Description { get { return DescriptionItem.DescriptionItem; } }
 
             public string Price { get { return ItemPrice.ToString(); } }
+
+            public void Dispose()
+            {
+                DescriptionItem = null;
+                ItemComparisonName = null;
+                Name = null;
+                Sku = null;
+                Changes = null;
+                Categories = null;
+                Manufactor = null;
+            }
         }
 
         public class Response

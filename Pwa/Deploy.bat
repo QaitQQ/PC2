@@ -1,0 +1,1 @@
+dotnet publish D:\YandexDisk\Apps\PC2_solution\Pwa\Pwa.csproj -c Release -o /app/publish --self-contained false -f net8.0-windows10.0.22621.0  /p:UseAppHost=true /p:PublishTrimmed=false

@@ -18,7 +18,7 @@ namespace ApiLib.ApiBase.ItemApi
             {
                 return Result.Items!;
             }
-            return null!;
+            return Error!;
         }
         public class Request
         {
@@ -38,6 +38,11 @@ namespace ApiLib.ApiBase.ItemApi
             public string? Description { get; }
 
             public string Price { get; }
+
+            public void Dispose()
+            {
+                ItemN = null;
+            }
         }
 
         public class Item

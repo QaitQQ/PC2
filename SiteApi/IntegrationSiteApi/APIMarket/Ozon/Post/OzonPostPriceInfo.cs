@@ -9,6 +9,8 @@ namespace SiteApi.IntegrationSiteApi.APIMarket.Ozon.Post
 {
     internal class OzonPostPriceInfo : OzonPost
     {
+       private string Error;
+
         public enum PriceInfoType
         {
             offer, product
@@ -45,7 +47,7 @@ namespace SiteApi.IntegrationSiteApi.APIMarket.Ozon.Post
                 using (StreamReader streamReader = new(httpResponse.GetResponseStream())) { result = streamReader.ReadToEnd(); }
                 response = JsonConvert.DeserializeObject<Response>(result);
             }
-            catch { }
+            catch (Exception e) { Error = e.Message; }
             return response?.Result?.Items;
         }
         // Root myDeserializedClass = JsonConvert.DeserializeObject<Root>(myJsonResponse);
@@ -63,37 +65,37 @@ namespace SiteApi.IntegrationSiteApi.APIMarket.Ozon.Post
         public class Commissions
         {
             [JsonProperty("sales_percent")]
-            public int SalesPercent { get; set; }
+            public string SalesPercent { get; set; }
             [JsonProperty("fbo_fulfillment_amount")]
-            public int FboFulfillmentAmount { get; set; }
+            public string FboFulfillmentAmount { get; set; }
             [JsonProperty("fbo_direct_flow_trans_min_amount")]
-            public int FboDirectFlowTransMinAmount { get; set; }
+            public string FboDirectFlowTransMinAmount { get; set; }
             [JsonProperty("fbo_direct_flow_trans_max_amount")]
-            public int FboDirectFlowTransMaxAmount { get; set; }
+            public string FboDirectFlowTransMaxAmount { get; set; }
             [JsonProperty("fbo_deliv_to_customer_amount")]
-            public double FboDelivToCustomerAmount { get; set; }
+            public string FboDelivToCustomerAmount { get; set; }
             [JsonProperty("fbo_return_flow_amount")]
-            public int FboReturnFlowAmount { get; set; }
+            public string FboReturnFlowAmount { get; set; }
             [JsonProperty("fbo_return_flow_trans_min_amount")]
-            public int FboReturnFlowTransMinAmount { get; set; }
+            public string FboReturnFlowTransMinAmount { get; set; }
             [JsonProperty("fbo_return_flow_trans_max_amount")]
-            public int FboReturnFlowTransMaxAmount { get; set; }
+            public string FboReturnFlowTransMaxAmount { get; set; }
             [JsonProperty("fbs_first_mile_min_amount")]
-            public int FbsFirstMileMinAmount { get; set; }
+            public string FbsFirstMileMinAmount { get; set; }
             [JsonProperty("fbs_first_mile_max_amount")]
-            public int FbsFirstMileMaxAmount { get; set; }
+            public string FbsFirstMileMaxAmount { get; set; }
             [JsonProperty("fbs_direct_flow_trans_min_amount")]
-            public int FbsDirectFlowTransMinAmount { get; set; }
+            public string FbsDirectFlowTransMinAmount { get; set; }
             [JsonProperty("fbs_direct_flow_trans_max_amount")]
-            public int FbsDirectFlowTransMaxAmount { get; set; }
+            public string FbsDirectFlowTransMaxAmount { get; set; }
             [JsonProperty("fbs_deliv_to_customer_amount")]
             public double FbsDelivToCustomerAmount { get; set; }
             [JsonProperty("fbs_return_flow_amount")]
-            public int FbsReturnFlowAmount { get; set; }
+            public string FbsReturnFlowAmount { get; set; }
             [JsonProperty("fbs_return_flow_trans_min_amount")]
-            public int FbsReturnFlowTransMinAmount { get; set; }
+            public string FbsReturnFlowTransMinAmount { get; set; }
             [JsonProperty("fbs_return_flow_trans_max_amount")]
-            public int FbsReturnFlowTransMaxAmount { get; set; }
+            public string FbsReturnFlowTransMaxAmount { get; set; }
         }
         public class ExternalIndexData
         {

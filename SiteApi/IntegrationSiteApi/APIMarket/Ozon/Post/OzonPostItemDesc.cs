@@ -44,7 +44,7 @@ namespace Server.Class.IntegrationSiteApi.Market.Ozon
 
             var PriceInfoList = new OzonPostPriceInfo(aPISetting).Get(IDS, OzonPostPriceInfo.PriceInfoType.product);
 
-            foreach (OzonItemDesc item in End.result.items) { item.Priceinfo = PriceInfoList.FirstOrDefault(x => x.ProductId == item.id); NLST.Add(item); }
+            foreach (OzonItemDesc item in End.result.items) { item.Priceinfo = PriceInfoList?.FirstOrDefault(x => x.ProductId == item.id); NLST.Add(item); }
 
 
             return NLST;

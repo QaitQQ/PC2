@@ -4,6 +4,7 @@ using SiteApi.IntegrationSiteApi.APIMarket.Ozon.Post;
 
 using StructLibCore.Marketplace;
 
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -64,7 +65,15 @@ namespace Server.Class.IntegrationSiteApi.Market.Ozon
             {
                 MinPrice = ozonItemDesc.min_price.Replace(',', '.');
                 OfferId = ozonItemDesc.offer_id;
-                OldPrice = ozonItemDesc.old_price;
+
+                if (Convert.ToDouble(ozonItemDesc.old_price.Replace('.', ',')) < Convert.ToDouble(ozonItemDesc.price.Replace('.', ',')))
+                {
+                    double oldPrice = Convert.ToDouble(ozonItemDesc.price) * 1.1;
+
+                    OldPrice = oldPrice.ToString().Replace(',', '.');
+                }
+
+                
                 Price = ozonItemDesc.price.Replace(',','.');
                 ProductId = ozonItemDesc.id;
             }

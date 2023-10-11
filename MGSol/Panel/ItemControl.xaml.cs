@@ -12,6 +12,7 @@ using System.Net;
 using System.Net.Http;
 using System.Reactive.Linq;
 using System.Reflection;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -155,10 +156,14 @@ namespace MGSol.Panel
             }
             ItemsList = Model.OptionMarketPlace.MarketItems;
             SyncStorages();
+
+            var Results = new List<KeyValuePair<APISetting, List<IMarketItem>>>();
+
             foreach (APISetting Option in Options)
             {
-                _ = Task.Factory.StartNew(() =>
+                Task.Factory.StartNew(() =>
                 {
+
                     List<IMarketItem> Result = null;
                     if (Option.Active)
                     {
@@ -177,49 +182,78 @@ namespace MGSol.Panel
                             default:
                                 break;
                         }
-                        if (Result != null)
+                        Dispatcher.Invoke(() =>
                         {
-                            foreach (object item in Result)
+                            Results.Add(new KeyValuePair<APISetting, List<IMarketItem>>(Option, Result));
+                        });
+
+                    }
+
+                });
+             
+            }
+
+            int i = 0;
+            while (Results.Count < Options.Count )
+            {
+                i++; Thread.Sleep(1000);
+                if (Results.Count == Options.Count || i > 30)
+                {
+                    FiillResults(Results);
+                    break;
+                }
+                
+            }
+        }
+
+        private void FiillResults(List<KeyValuePair<APISetting, List<IMarketItem>>> Results)
+        {
+            foreach (var Result in Results)
+            {
+                if (Result.Value != null)
+                {
+                    foreach (object item in Result.Value)
+                    {
+                        IMarketItem It = (IMarketItem)item;
+                        It.APISetting = Result.Key;
+                        MarketItem X = null;
+                        X = ItemsList.FirstOrDefault(x => x.SKU == It.SKU);
+                        if (X != null && X.Name == null) { X.Name = It.Name; }
+                        if (X != null)
+                        {
+                            Dispatcher.Invoke(() => { if (X.Items == null) { X.Items = new ObservableCollection<IMarketItem>(); } X.Items.Add(It); });
+                        }
+                        else
+                        {
+                            X = ItemsList.FirstOrDefault(x => x.Name == It.Name);
+                            if (X == null)
                             {
-                                IMarketItem It = (IMarketItem)item;
-                                It.APISetting = Option;
-                                MarketItem X = null;
-                                X = ItemsList.FirstOrDefault(x => x.SKU == It.SKU);
-                                if (X != null && X.Name == null) { X.Name = It.Name; }
-                                if (X != null)
+                                Dispatcher.Invoke(() =>
                                 {
-                                    Dispatcher.Invoke(() => { if (X.Items == null) { X.Items = new ObservableCollection<IMarketItem>(); } X.Items.Add(It); });
-                                }
-                                else
-                                {
-                                    X = ItemsList.FirstOrDefault(x => x.Name == It.Name);
-                                    if (X == null)
+                                    ItemsList.Add(new MarketItem()
                                     {
-                                        Dispatcher.Invoke(() =>
-                                        {
-                                            ItemsList.Add(new MarketItem()
-                                            {
-                                                SKU = It.SKU,
-                                                Name = It.Name,
-                                                Items = new ObservableCollection<IMarketItem>() { It }
-                                            });
-                                        });
-                                    }
-                                    else if (X != null)
-                                    {
-                                        Dispatcher.Invoke(() => { if (X.Items == null) { X.Items = new ObservableCollection<IMarketItem>(); } X.Items.Add(It); });
-                                    }
-                                }
+                                        SKU = It.SKU,
+                                        Name = It.Name,
+                                        Items = new ObservableCollection<IMarketItem>() { It }
+                                    });
+                                });
+                            }
+                            else if (X != null)
+                            {
+                                Dispatcher.Invoke(() => { if (X.Items == null) { X.Items = new ObservableCollection<IMarketItem>(); } X.Items.Add(It); });
                             }
                         }
                     }
-                    Dispatcher.Invoke(() =>
-                    {
-                        Fill_V_list(ItemsList);
-                    });
+                }
+
+                Dispatcher.Invoke(() =>
+                {
+                    Fill_V_list(ItemsList);
                 });
-            }
+                
+            };
         }
+
         private static string ImportItems(IMarketItem[] mass)
         {
             IMarketItem[] X = mass;

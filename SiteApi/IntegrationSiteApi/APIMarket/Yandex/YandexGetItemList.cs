@@ -15,21 +15,32 @@ namespace Server.Class.IntegrationSiteApi.Market.Yandex.YandexGetName
         public List<IMarketItem> Get()
         {
             HttpWebRequest httpWebRequest = GetRequest(@"/campaigns/" + ClientID + "/offer-mapping-entries.json?limit=200", "GET");
-            HttpWebResponse httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
-            using (StreamReader streamReader = new StreamReader(httpResponse.GetResponseStream())) { result = streamReader.ReadToEnd(); }
-            Root root = JsonConvert.DeserializeObject<Root>(result);
+
             List<IMarketItem> Lst = new List<IMarketItem>();
-            List<object> Prises = new YandexGetPrice.YandexGetPrice(aPISetting).Get();
-            List<object> Stocks = new YandexGetPrice.YandexPostStocks(aPISetting).Get(Prises);
-            Mapped(root, Lst, Prises, Stocks);
-            if (root.result.paging.nextPageToken != null)
+            try
             {
-                httpWebRequest = GetRequest(@"/campaigns/" + ClientID + "/offer-mapping-entries.json?page_token=" + root.result.paging.nextPageToken, "GET");
-                httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
+                HttpWebResponse httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
                 using (StreamReader streamReader = new StreamReader(httpResponse.GetResponseStream())) { result = streamReader.ReadToEnd(); }
-                root = JsonConvert.DeserializeObject<Root>(result);
+                Root root = JsonConvert.DeserializeObject<Root>(result);
+                
+                List<object> Prises = new YandexGetPrice.YandexGetPrice(aPISetting).Get();
+                List<object> Stocks = new YandexGetPrice.YandexPostStocks(aPISetting).Get(Prises);
                 Mapped(root, Lst, Prises, Stocks);
+                if (root.result.paging.nextPageToken != null)
+                {
+                    httpWebRequest = GetRequest(@"/campaigns/" + ClientID + "/offer-mapping-entries.json?page_token=" + root.result.paging.nextPageToken, "GET");
+                    httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
+                    using (StreamReader streamReader = new StreamReader(httpResponse.GetResponseStream())) { result = streamReader.ReadToEnd(); }
+                    root = JsonConvert.DeserializeObject<Root>(result);
+                    Mapped(root, Lst, Prises, Stocks);
+                }
             }
+            catch 
+            {
+
+              
+            }
+
             return Lst;
         }
         private static void Mapped(Root root, List<IMarketItem> Lst, List<object> Prises, List<object> Stocks)

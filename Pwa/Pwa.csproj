@@ -1,103 +1,191 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
 
-	<PropertyGroup>
-		<TargetFrameworks>net8.0-android;</TargetFrameworks>
-		<TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">$(TargetFrameworks);net8.0-windows10.0.19041.0</TargetFrameworks>
-    <NoWarn>CS8632;SYSLIB0014</NoWarn>
+    <TargetFrameworks>net8.0-android;</TargetFrameworks>
+    <NoWarn>CS8632;SYSLIB0014;NETSDK1057;XA4304;</NoWarn>
     <OutputType>Exe</OutputType>
-		<RootNamespace>Pwa</RootNamespace>
-		<UseMaui>true</UseMaui>
-		<SingleProject>true</SingleProject>
-		<ImplicitUsings>enable</ImplicitUsings>
-
-		<!-- Display name -->
-		<ApplicationTitle>Pwa</ApplicationTitle>
-
-		<!-- App Identifier -->
-		<ApplicationId>com.companyname.pwa</ApplicationId>
-
-		<!-- Versions -->
-		<ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
-		<ApplicationVersion>1</ApplicationVersion>
-
-
-		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">21.0</SupportedOSPlatformVersion>
-		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</SupportedOSPlatformVersion>
-		<TargetPlatformMinVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</TargetPlatformMinVersion>
-		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-		<PackAsTool>True</PackAsTool>
-	</PropertyGroup>
-
-	<ItemGroup>
-		<!-- App Icon -->
-		<MauiIcon Include="Resources\AppIcon\appicon.svg" ForegroundFile="Resources\AppIcon\appiconfg.svg" />
-
-		<!-- Splash Screen -->
-		<MauiSplashScreen Include="Resources\Splash\splash.svg" Color="#512BD4" BaseSize="128,128" />
-
-		<!-- Images -->
-		<MauiImage Include="Resources\Images\*" />
-		<MauiImage Update="Resources\Images\dotnet_bot.svg" BaseSize="168,208" />
-
-		<!-- Custom Fonts -->
-		<MauiFont Include="Resources\Fonts\*" />
-
-		<!-- Raw Assets (also remove the "Resources\Raw" prefix) -->
-		<MauiAsset Include="Resources\Raw\**" LogicalName="%(RecursiveDir)%(Filename)%(Extension)" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <None Remove="Resources\AppIcon\appicon.svg" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<PackageReference Include="Microsoft.Maui.Controls" Version="$(MauiVersion)" />
-		<PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="$(MauiVersion)" />
-		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="8.0.0-rc.1.23419.4" />
-		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <Compile Update="Pages\ItemPage.xaml.cs">
-	    <DependentUpon>%(Filename)</DependentUpon>
-	  </Compile>
-	  <Compile Update="Pages\OptionsPage.xaml.cs">
-	    <DependentUpon>%(Filename)</DependentUpon>
-	  </Compile>
-	</ItemGroup>
-
-	<ItemGroup>
-	  <MauiXaml Update="Pages\Controls\ItemControl.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
-	  <MauiXaml Update="Pages\ItemPage.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
-	  <MauiXaml Update="Pages\OptionsPage.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
-	</ItemGroup>
-
-	<ItemGroup>
-	  <Folder Include="Api\ApiMainSite\Get\" />
-	</ItemGroup>
-
-	<!-- Build Properties must be defined within these property groups to ensure successful publishing
-       to the Mac App Store. See: https://aka.ms/maui-publish-app-store#define-build-properties-in-your-project-file -->
-  <PropertyGroup Condition="$(TargetFramework.Contains('-maccatalyst')) and '$(Configuration)' == 'Debug'">
-    <CodesignEntitlements>Platforms/MacCatalyst/Entitlements.Debug.plist</CodesignEntitlements>
+    <RootNamespace>Pwa</RootNamespace>
+    <UseMaui>true</UseMaui>
+    <SingleProject>true</SingleProject>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <!-- Display name -->
+    <ApplicationTitle>Pwa</ApplicationTitle>
+    <!-- App Identifier -->
+    <ApplicationId>com.companyname.pwa</ApplicationId>
+    <!-- Versions -->
+    <ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
+    <ApplicationVersion>1</ApplicationVersion>
+    <!--<ErrorOnDuplicatePublishOutputFiles>false</ErrorOnDuplicatePublishOutputFiles>-->
+    <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</SupportedOSPlatformVersion>
+    <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">21.0</SupportedOSPlatformVersion>
+    <TargetPlatformMinVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</TargetPlatformMinVersion>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <PackAsTool>True</PackAsTool>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <PackageCertificateThumbprint>16FCAFFF81E85A9290A892F6B3818FDC9B24A9E7</PackageCertificateThumbprint>
+    
+    <DefaultLanguage>RU</DefaultLanguage>
+    
+    
+    
+    <!--<PackageCertificateThumbprint>16FCAFFF81E85A9290A892F6B3818FDC9B24A9E7</PackageCertificateThumbprint>-->
+    <AppxPackageSigningEnabled>True</AppxPackageSigningEnabled>
   </PropertyGroup>
-
-  <PropertyGroup Condition="$(TargetFramework.Contains('-maccatalyst')) and '$(Configuration)' == 'Release'">
-    <CodesignEntitlements>Platforms/MacCatalyst/Entitlements.Release.plist</CodesignEntitlements>
-    <UseHardenedRuntime>true</UseHardenedRuntime>
-  </PropertyGroup>
-
+  <ItemGroup>
+    <!-- App Icon -->
+    <MauiIcon Include="Resources\AppIcon\appicon.svg" ForegroundFile="Resources\AppIcon\appiconfg.svg" />
+    <!-- Splash Screen -->
+    <MauiSplashScreen Include="Resources\Splash\splash.svg" Color="#512BD4" BaseSize="128,128" />
+    <!-- Images -->
+    <MauiImage Include="Resources\Images\*" />
+    <MauiImage Update="Resources\Images\dotnet_bot.svg" BaseSize="168,208" />
+    <!-- Custom Fonts -->
+    <MauiFont Include="Resources\Fonts\*" />
+    <!-- Raw Assets (also remove the "Resources\Raw" prefix) -->
+    <MauiAsset Include="Resources\Raw\**" LogicalName="%(RecursiveDir)%(Filename)%(Extension)" />
+  </ItemGroup>
+  <ItemGroup>
+    <MauiImage Remove="Resources\Images\bpwa.scale-400.png" />
+    <MauiImage Remove="Resources\Images\ipwa.scale-400.png" />
+    <MauiImage Remove="Resources\Images\ipwa.targetsize-256.png" />
+    <MauiImage Remove="Resources\Images\ipwa.targetsize-256_altform-lightunplated.png" />
+    <MauiImage Remove="Resources\Images\ipwa.targetsize-256_altform-unplated.png" />
+    <MauiImage Remove="Resources\Images\logo.scale-400.png" />
+    <MauiImage Remove="Resources\Images\mpwa.scale-400.png" />
+    <MauiImage Remove="Resources\Images\ppwa.scale-400.png" />
+    <MauiImage Remove="Resources\Images\spwa.scale-400.png" />
+    <MauiImage Remove="Resources\Images\wpwa.scale-400.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="Resources\AppIcon\appicon.svg" />
+    <None Remove="Resources\Images\$placeholder$.altform-lightunplated_targetsize-16.png" />
+    <None Remove="Resources\Images\$placeholder$.altform-lightunplated_targetsize-24.png" />
+    <None Remove="Resources\Images\$placeholder$.altform-lightunplated_targetsize-256.png" />
+    <None Remove="Resources\Images\$placeholder$.altform-lightunplated_targetsize-32.png" />
+    <None Remove="Resources\Images\$placeholder$.altform-lightunplated_targetsize-48.png" />
+    <None Remove="Resources\Images\$placeholder$.altform-unplated_targetsize-16.png" />
+    <None Remove="Resources\Images\$placeholder$.altform-unplated_targetsize-24.png" />
+    <None Remove="Resources\Images\$placeholder$.altform-unplated_targetsize-256.png" />
+    <None Remove="Resources\Images\$placeholder$.altform-unplated_targetsize-32.png" />
+    <None Remove="Resources\Images\$placeholder$.altform-unplated_targetsize-48.png" />
+    <None Remove="Resources\Images\$placeholder$.targetsize-16.png" />
+    <None Remove="Resources\Images\$placeholder$.targetsize-24.png" />
+    <None Remove="Resources\Images\$placeholder$.targetsize-256.png" />
+    <None Remove="Resources\Images\$placeholder$.targetsize-32.png" />
+    <None Remove="Resources\Images\$placeholder$.targetsize-48.png" />
+    <None Remove="Resources\Images\bpwa.scale-100.png" />
+    <None Remove="Resources\Images\bpwa.scale-125.png" />
+    <None Remove="Resources\Images\bpwa.scale-150.png" />
+    <None Remove="Resources\Images\bpwa.scale-200.png" />
+    <None Remove="Resources\Images\bpwa.scale-400.png" />
+    <None Remove="Resources\Images\ipwa.altform-lightunplated_targetsize-16.png" />
+    <None Remove="Resources\Images\ipwa.altform-lightunplated_targetsize-24.png" />
+    <None Remove="Resources\Images\ipwa.altform-lightunplated_targetsize-256.png" />
+    <None Remove="Resources\Images\ipwa.altform-lightunplated_targetsize-32.png" />
+    <None Remove="Resources\Images\ipwa.altform-lightunplated_targetsize-48.png" />
+    <None Remove="Resources\Images\ipwa.altform-unplated_targetsize-16.png" />
+    <None Remove="Resources\Images\ipwa.altform-unplated_targetsize-24.png" />
+    <None Remove="Resources\Images\ipwa.altform-unplated_targetsize-256.png" />
+    <None Remove="Resources\Images\ipwa.altform-unplated_targetsize-32.png" />
+    <None Remove="Resources\Images\ipwa.altform-unplated_targetsize-48.png" />
+    <None Remove="Resources\Images\ipwa.scale-100.png" />
+    <None Remove="Resources\Images\ipwa.scale-125.png" />
+    <None Remove="Resources\Images\ipwa.scale-150.png" />
+    <None Remove="Resources\Images\ipwa.scale-200.png" />
+    <None Remove="Resources\Images\ipwa.scale-400.png" />
+    <None Remove="Resources\Images\ipwa.targetsize-16.png" />
+    <None Remove="Resources\Images\ipwa.targetsize-24.png" />
+    <None Remove="Resources\Images\ipwa.targetsize-256.png" />
+    <None Remove="Resources\Images\ipwa.targetsize-256_altform-lightunplated.png" />
+    <None Remove="Resources\Images\ipwa.targetsize-32.png" />
+    <None Remove="Resources\Images\ipwa.targetsize-48.png" />
+    <None Remove="Resources\Images\logo.scale-100.png" />
+    <None Remove="Resources\Images\logo.scale-125.png" />
+    <None Remove="Resources\Images\logo.scale-150.png" />
+    <None Remove="Resources\Images\logo.scale-200.png" />
+    <None Remove="Resources\Images\logo.scale-400.png" />
+    <None Remove="Resources\Images\mpwa.scale-100.png" />
+    <None Remove="Resources\Images\mpwa.scale-125.png" />
+    <None Remove="Resources\Images\mpwa.scale-150.png" />
+    <None Remove="Resources\Images\mpwa.scale-200.png" />
+    <None Remove="Resources\Images\mpwa.scale-400.png" />
+    <None Remove="Resources\Images\ppwa.scale-100.png" />
+    <None Remove="Resources\Images\ppwa.scale-125.png" />
+    <None Remove="Resources\Images\ppwa.scale-150.png" />
+    <None Remove="Resources\Images\ppwa.scale-200.png" />
+    <None Remove="Resources\Images\ppwa.scale-400.png" />
+    <None Remove="Resources\Images\Pwa.altform-lightunplated_targetsize-16.png" />
+    <None Remove="Resources\Images\Pwa.altform-lightunplated_targetsize-256.png" />
+    <None Remove="Resources\Images\Pwa.altform-lightunplated_targetsize-48.png" />
+    <None Remove="Resources\Images\Pwa.altform-unplated_targetsize-16.png" />
+    <None Remove="Resources\Images\Pwa.altform-unplated_targetsize-256.png" />
+    <None Remove="Resources\Images\Pwa.altform-unplated_targetsize-48.png" />
+    <None Remove="Resources\Images\pwa.scale-100.png" />
+    <None Remove="Resources\Images\pwa.scale-125.png" />
+    <None Remove="Resources\Images\pwa.scale-150.png" />
+    <None Remove="Resources\Images\pwa.scale-200.png" />
+    <None Remove="Resources\Images\pwa.scale-400.png" />
+    <None Remove="Resources\Images\Pwa.targetsize-16.png" />
+    <None Remove="Resources\Images\Pwa.targetsize-256.png" />
+    <None Remove="Resources\Images\Pwa.targetsize-48.png" />
+    <None Remove="Resources\Images\spwa.scale-100.png" />
+    <None Remove="Resources\Images\spwa.scale-125.png" />
+    <None Remove="Resources\Images\spwa.scale-150.png" />
+    <None Remove="Resources\Images\spwa.scale-200.png" />
+    <None Remove="Resources\Images\spwa.scale-400.png" />
+    <None Remove="Resources\Images\wpwa.scale-100.png" />
+    <None Remove="Resources\Images\wpwa.scale-125.png" />
+    <None Remove="Resources\Images\wpwa.scale-150.png" />
+    <None Remove="Resources\Images\wpwa.scale-200.png" />
+    <None Remove="Resources\Images\wpwa.scale-400.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Resources\Images\bpwa.scale-400.png" />
+    <Content Include="Resources\Images\ipwa.scale-400.png" />
+    <Content Include="Resources\Images\ipwa.targetsize-256.png" />
+    <Content Include="Resources\Images\ipwa.targetsize-256_altform-lightunplated.png" />
+    <Content Include="Resources\Images\ipwa.targetsize-256_altform-unplated.png" />
+    <Content Include="Resources\Images\logo.scale-400.png" />
+    <Content Include="Resources\Images\mpwa.scale-400.png" />
+    <Content Include="Resources\Images\ppwa.scale-400.png" />
+    <Content Include="Resources\Images\spwa.scale-400.png" />
+    <Content Include="Resources\Images\wpwa.scale-400.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Maui.Controls" Version="$(MauiVersion)" />
+    <PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="$(MauiVersion)" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="8.0.0-rc.1.23419.4" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Update="Pages\ItemPage.xaml.cs">
+      <DependentUpon>%(Filename)</DependentUpon>
+    </Compile>
+    <Compile Update="Pages\OptionsPage.xaml.cs">
+      <DependentUpon>%(Filename)</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <MauiXaml Update="Pages\Controls\ItemControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </MauiXaml>
+    <MauiXaml Update="Pages\ItemPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </MauiXaml>
+    <MauiXaml Update="Pages\OptionsPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </MauiXaml>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Api\ApiMainSite\Get\" />
+  </ItemGroup>
   <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net8.0-android|AnyCPU'">
     <AndroidEnableMultiDex>True</AndroidEnableMultiDex>
   </PropertyGroup>
-
   <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net8.0-android|AnyCPU'">
     <AndroidEnableMultiDex>True</AndroidEnableMultiDex>
+  </PropertyGroup>
+  <PropertyGroup>
+    <TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">$(TargetFrameworks);net8.0-windows10.0.22621.0</TargetFrameworks>
   </PropertyGroup>
 </Project>

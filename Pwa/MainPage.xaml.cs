@@ -21,6 +21,18 @@ namespace Pwa
         {
             MenuColum.Width = 0;
         }
+
+        private void MenuButton_Clicked(object sender, EventArgs e)
+        {
+            if (MenuColum.Width == 0)
+            {
+                MenuColum.Width = 300;
+            }
+            else
+            {
+                MenuColum.Width = 0;
+            }
+        }   
     }
     public partial class ManuModel : ContentView
     {
@@ -34,8 +46,10 @@ namespace Pwa
         {
             MenuColumWidth = new ChangesObject<GridLength>(new GridLength()); 
             Title = "ManuModel";
-            Pages = new ObservableCollection<VisContentView>();
+            Pages = [];
             ActiveContentView = new VisContentView();
+
+
             Pages.Add(new VisContentView() { ContentView = new ItemPage(), Title = "Позиции" });
             Pages.Add(new VisContentView() { ContentView = new OptionsPage(), Title = "Настройки" });
             foreach (var item in Pages)
@@ -46,15 +60,10 @@ namespace Pwa
             }
         }
 
-        public class ChangesObject<T> : INotifyPropertyChanged 
+        public class ChangesObject<T>(object @object) : INotifyPropertyChanged 
         {
             public event PropertyChangedEventHandler PropertyChanged;
-            private object _object;
-
-            public ChangesObject(object @object)
-            {
-                _object = @object;
-            }
+            private object _object = @object;
 
             public object Object
             {

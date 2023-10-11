@@ -7,6 +7,15 @@
         <local:ManuModel/>
     </ContentPage.BindingContext>
     <Grid>
+        
+        <Grid.RowDefinitions>
+            <RowDefinition Height="60"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <Grid Grid.Row="0" Background="Gray" HorizontalOptions="Fill">
+            <Button HorizontalOptions="Start" x:Name="MenuButton" WidthRequest="60" Text="⚟" FontSize="Large" Clicked="MenuButton_Clicked"></Button>
+        </Grid>
+    <Grid BackgroundColor="White" Grid.Row="1">
         <Grid.ColumnDefinitions>
             <ColumnDefinition x:Name="MenuColum" Width="{Binding MenuColumWidth.Object, Mode=TwoWay}" />
             <ColumnDefinition Width="100"/>
@@ -37,5 +46,6 @@
                 </ListView.ItemTemplate>
             </ListView>
         </Grid>
+    </Grid>
     </Grid>
 </ContentPage>

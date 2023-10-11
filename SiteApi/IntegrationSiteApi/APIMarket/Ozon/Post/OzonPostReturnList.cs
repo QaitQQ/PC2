@@ -97,7 +97,7 @@ namespace SiteApi.IntegrationSiteApi.APIMarket.Ozon.Post
             [JsonProperty("place_id")]
             public object PlaceId { get; set; }
             [JsonProperty("commission_percent")]
-            public int CommissionPercent { get; set; }
+            public string CommissionPercent { get; set; }
             [JsonProperty("commission")]
             public double Commission { get; set; }
             [JsonProperty("price_without_commission")]

@@ -379,6 +379,12 @@ namespace MGSol.Panel
                             case MarketName.Yandex:
                                 break;
                             case MarketName.Ozon:
+                                List<string> list = new List<string>();
+                                foreach (var PItem in order.Items)
+                                {
+                                    list.Add(PItem.Sku);
+                                }
+                                order.IMtemsList = (List<IMarketItem>)new OzonPostItemDesc(order.APISetting).Get(list);
                                 if ( Dispatcher.Invoke(()=> LoadImageCheck.IsChecked == true))
                                 {
                                     LoadItmAndPicOzon(order);
@@ -401,12 +407,6 @@ namespace MGSol.Panel
                 T.Visibility = T.Visibility == Visibility.Collapsed ? Visibility.Visible : Visibility.Collapsed;
                 void LoadItmAndPicOzon(IOrder order)
                 {
-                    List<string> list = new List<string>();
-                    foreach (var PItem in order.Items)
-                    {
-                        list.Add(PItem.Sku);
-                    }
-                    order.IMtemsList = (List<IMarketItem>)new OzonPostItemDesc(order.APISetting).Get(list);
                     foreach (var PItem in order.Items)
                     {
                         Task.Factory.StartNew(() =>
@@ -444,7 +444,9 @@ namespace MGSol.Panel
                 var mdbox = new ModalBox();
                 var order = ((MarketOrderItems)btn.DataContext).Order;
                 var sku = ((MarketOrderItems)btn.DataContext).Sku;
-                var itm = ((MarketOrderItems)btn.DataContext).Order.IMtemsList?.First(x => x.SKU == sku);
+                IMarketItem itm = ((MarketOrderItems)btn.DataContext).Order.IMtemsList?.FirstOrDefault(x => x.SKU == sku);
+
+
                 if (mdbox.ShowDialog() == true)
                 {
                     itm.Barcodes.Add(mdbox._STR);
@@ -526,10 +528,14 @@ namespace MGSol.Panel
             StackPanel ST = (StackPanel)((TextBlock)sender).Parent;
             StackPanel PT = (StackPanel)((StackPanel)((StackPanel)((TextBlock)sender).Parent).Parent).Parent;
             var X = ((StructLibCore.Marketplace.MarketOrderItems)ST.DataContext).Order.IMtemsList;
-            foreach (var item in X)
+            if (LoadImageCheck.IsChecked == true )
             {
-                AddImage(item.Pic[0], PT);
+                foreach (var item in X)
+                {
+                    AddImage(item.Pic[0], PT);
+                }
             }
+      
         }
         private void ItemBox_Initialized(object sender, EventArgs e)
         {

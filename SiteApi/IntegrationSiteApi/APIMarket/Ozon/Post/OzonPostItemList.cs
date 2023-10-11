@@ -25,9 +25,19 @@ namespace Server.Class.IntegrationSiteApi.Market.Ozon
                 string json = "{\"page\": \"1\",\"page_size\": \"1000\"}";
                 streamWriter.Write(json);
             }
-            var httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
-            using (var streamReader = new StreamReader(httpResponse.GetResponseStream())) { result = streamReader.ReadToEnd(); }
-            Root root = JsonConvert.DeserializeObject<Root>(result);
+            Root root = new Root();
+            try
+            {
+                var httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
+                using (var streamReader = new StreamReader(httpResponse.GetResponseStream())) { result = streamReader.ReadToEnd(); }
+                root = JsonConvert.DeserializeObject<Root>(result);
+            }
+            catch (System.Exception e)
+            {
+
+
+            }
+       
 
 
 

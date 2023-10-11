@@ -31,7 +31,7 @@ namespace MGSol.Panel
         private ObservableCollection<ColorCell> ParamStack { get; set; }
         private List<object[]> ParamButtons { get; set; }
         private FileOption ActiveFile;
-        public static List<object[]> RetunList()
+        public static List<object[]> ReturnList()
         {
             List<object[]> lst = new();
             foreach (object item in Enum.GetValues(typeof(ParamEnum)))
@@ -117,7 +117,7 @@ namespace MGSol.Panel
                 {
                     Document Document = GenDocument();
                     string[][] byerSFmass = null;
-                    bool editNonber = false;
+                    bool editNumber = false;
                     Order FindPost;
                     for (int i = GiveColorCell(ParamEnum.НачСтрок).X; i < GiveColorCell(ParamEnum.КонецСтрок).X + 1; i++)
                     {
@@ -129,15 +129,15 @@ namespace MGSol.Panel
                         SF SchetFaktura = null;
                         if (ActiveFile.APISetting.Type == MarketName.Ozon)
                         {
-                            string SFNomber = ColorCellsList[i][GiveColorCell(ParamEnum.НомерСФ).Y].Value;
+                            string SFNumber = ColorCellsList[i][GiveColorCell(ParamEnum.НомерСФ).Y].Value;
                             string Bonus = ColorCellsList[i][GiveColorCell(ParamEnum.Бонус).Y].Value;
-                            if (Bonus is not "" and not null)
+                            if (OrderPrice != "" && Bonus is not "" and not null)
                             {
                                 OrderPrice = (((double.Parse(OrderPrice) * double.Parse(Count)) + double.Parse(Bonus)) / double.Parse(Count)).ToString();
                             }
-                            if (SFNomber != "")
+                            if (SFNumber != "")
                             {
-                                SchetFaktura = GetSchetFaktura(Document.Nomber, SFNomber, ref byerSFmass);
+                                SchetFaktura = GetSchetFaktura(Document.Nomber, SFNumber, ref byerSFmass);
                             }
                             Server.Class.IntegrationSiteApi.Market.Ozon.OzonPortOrderList.Order Info = (Server.Class.IntegrationSiteApi.Market.Ozon.OzonPortOrderList.Order)new SiteApi.IntegrationSiteApi.APIMarket.Ozon.Post.OzonPostOrdrInfo(ActiveFile.APISetting).Get(NPost);
                             if (Info != null)
@@ -145,12 +145,12 @@ namespace MGSol.Panel
                                 Date = Info.ShipmentDate.ToString();
                             }
                         }
-                        if (!editNonber && ActiveFile.APISetting.Type == MarketName.Yandex)
+                        if (!editNumber && ActiveFile.APISetting.Type == MarketName.Yandex)
                         {
                             string z = DateTime.Parse(Date).Month.ToString();
                             char p = DateTime.Parse(Date).Year.ToString().Last();
                             Document.Nomber = z + p + Document.Nomber;
-                            editNonber = true;
+                            editNumber = true;
                         }
                         if (OrderPrice != "")
                         {
@@ -600,7 +600,7 @@ namespace MGSol.Panel
             FolderFile = dir.GetFiles();
             ParamStack = new ObservableCollection<ColorCell>();
             InitializeComponent();
-            ParamButtons = RetunList();
+            ParamButtons = ReturnList();
             ButtonFieldStack.ItemsSource = ParamButtons;
             foreach (FileInfo file in FolderFile)
             {

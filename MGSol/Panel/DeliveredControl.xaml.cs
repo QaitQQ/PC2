@@ -12,7 +12,6 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Xml;
 using System.Xml.Serialization;
-
 namespace MGSol.Panel
 {
     public partial class DeliveredControl : UserControl
@@ -76,6 +75,10 @@ namespace MGSol.Panel
     }
     public class Btn_click : ICommand
     {
+        public Btn_click()
+        {
+          
+        }
         public bool CanExecute(object parameter)
         {
             return true;
@@ -86,18 +89,12 @@ namespace MGSol.Panel
             {
                 foreach (var X in item.Postings)
                 {
-                    //var data = DateTime.Parse(X.ShipmentDate).ToString(@"dd\/MM\/yyyy");
-                    //XmlReader reader = XmlReader.Create(@"http://www.cbr.ru/scripts/XML_daily.asp?date_req="+ data);
-                    //XmlSerializer ser = new XmlSerializer(typeof(ValCurs));
-                    //var Cur = ser.Deserialize(reader);
-
-                    //X.CurrencyExchangeRate=0;
                 }
             }
-
-
         }
+#pragma warning disable CS0067 // Событие "Btn_click.CanExecuteChanged" никогда не используется.
         public event EventHandler CanExecuteChanged;
+#pragma warning restore CS0067 // Событие "Btn_click.CanExecuteChanged" никогда не используется.
     }
     public class ExName : INotifyPropertyChanged
     {
@@ -145,33 +142,24 @@ namespace MGSol.Panel
         public event PropertyChangedEventHandler PropertyChanged;
         public void OnPropertyChanged([CallerMemberName] string name = "") => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
     }
-
     [XmlRoot(ElementName = "Valute")]
     public class Valute
     {
-
         [XmlElement(ElementName = "NumCode")]
         public int NumCode { get; set; }
-
         [XmlElement(ElementName = "CharCode")]
         public string CharCode { get; set; }
-
         [XmlElement(ElementName = "Nominal")]
         public int Nominal { get; set; }
-
         [XmlElement(ElementName = "Name")]
         public string Name { get; set; }
-
         [XmlElement(ElementName = "Value")]
         public double Value { get; set; }
-
         [XmlAttribute(AttributeName = "ID")]
         public string ID { get; set; }
-
         [XmlText]
         public string Text { get; set; }
     }
-
     [XmlRoot(ElementName = "ValCurs")]
     public class ValCurs
     {
@@ -182,21 +170,14 @@ namespace MGSol.Panel
             get { return _allocationDate; }
             set { _allocationDate = value; }
         }
-
         [XmlElement(ElementName = "Valute")]
         public List<Valute> Valute { get; set; }
-
         [XmlAttribute(AttributeName = "Date")]
         public string Date { get; set; }
-
-        
-
         [XmlAttribute(AttributeName = "name")]
         public string Name { get; set; }
-
         [XmlAttribute(AttributeName = "class")]
         public string Class { get; set; }
-
         [XmlText]
         public string Text { get; set; }
     }
