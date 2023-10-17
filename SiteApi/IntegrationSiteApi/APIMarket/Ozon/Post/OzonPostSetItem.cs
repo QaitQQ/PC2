@@ -153,7 +153,15 @@ namespace Server.Class.IntegrationSiteApi.Market.Ozon
                 attributes = new List<Attribute>();
                 complex_attributes = new List<object>();
                 pdf_list = new List<object>();
-                barcode = itemDesc.barcodes?[1];
+                if (itemDesc.barcodes.Count > 1)
+                {
+                    barcode = itemDesc.barcodes?[1];
+                }
+                else
+                {
+                    barcode = itemDesc.barcodes?[0];
+                }
+                
               //  barcodes = itemDesc.barcodes;
                 category_id = itemDesc.category_id;
                 color_image = itemDesc.color_image;

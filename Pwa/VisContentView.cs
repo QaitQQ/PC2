@@ -22,10 +22,10 @@ namespace Pwa
             public void OnPropertyChanged([CallerMemberName] string name = "") => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
 
-        public class ChangedObject<T> : INotifyPropertyChanged
+        public class ChangedObject<T> : INotifyPropertyChanged, IDisposable
         {
             public event PropertyChangedEventHandler PropertyChanged;
-            private T _object;
+            private T? _object;
         public ChangedObject(T @object) 
         {
             _object = @object;
@@ -36,6 +36,12 @@ namespace Pwa
                 set { _object = value; OnPropertyChanged("Object"); }
             }
             public void OnPropertyChanged([CallerMemberName] string name = "") => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+
+        public void Dispose()
+        {
+            PropertyChanged = null;
+         
         }
+    }
 
 }

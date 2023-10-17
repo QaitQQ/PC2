@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+
 using SiteApi.IntegrationSiteApi.ApiBase.ItemApi;
 namespace ApiLib.ApiBase.ItemApi
 {
@@ -13,41 +14,28 @@ namespace ApiLib.ApiBase.ItemApi
             MethodUri = @"/api/pwa/v1/item/get_item?item_id=" + item_id;
             return base.Go<Response>()?.Item?[0]!;
         }
-        public class Item:IAbstractItem
+        public class Item : IAbstractItem
         {
-
-
             [JsonProperty("id")]
             public int Id { get; set; }
-
             [JsonProperty("description")]
             public Description DescriptionItem { get; set; }
-
             [JsonProperty("itemComparisonName")]
             public List<ItemComparisonName> ItemComparisonName { get; set; }
-
             [JsonProperty("name")]
             public string Name { get; set; }
-
             [JsonProperty("sku")]
             public object Sku { get; set; }
-
             [JsonProperty("price")]
             public double ItemPrice { get; set; }
-
             [JsonProperty("changes")]
             public object Changes { get; set; }
-
             [JsonProperty("categories")]
             public object Categories { get; set; }
-
             [JsonProperty("manufactor")]
             public object Manufactor { get; set; }
-
             public string Description { get { return DescriptionItem.DescriptionItem; } }
-
             public string Price { get { return ItemPrice.ToString(); } }
-
             public void Dispose()
             {
                 DescriptionItem = null;
@@ -59,13 +47,10 @@ namespace ApiLib.ApiBase.ItemApi
                 Manufactor = null;
             }
         }
-
         public class Response
         {
             [JsonProperty("Item")]
             public List<Item> Item { get; set; }
         }
-
-
     }
 }

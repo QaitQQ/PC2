@@ -119,6 +119,7 @@ namespace SiteApi.IntegrationSiteApi.ApiBase.ItemApi
 
         public void Dispose()
         {
+            Token = null;
             MethodUri = null;
             Message = null;
             Error = null;

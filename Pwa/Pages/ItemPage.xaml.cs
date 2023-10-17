@@ -1,4 +1,5 @@
 using ApiLib.ApiBase.ItemApi;
+
 using Pwa.Api.ApiBase.ItemApi;
 using System.Collections;
 using System.Collections.ObjectModel;
@@ -7,7 +8,14 @@ using System.Runtime.CompilerServices;
 using System.Windows.Input;
 using static SiteApi.IntegrationSiteApi.ApiBase.ItemApi.AbstractItemApi;
 namespace Pwa.Pages;
-public partial class ItemPage : ContentView { public ItemPage() { InitializeComponent(); } }
+public partial class ItemPage : ContentView { public ItemPage() { InitializeComponent();}
+
+    private void Button_Clicked(object sender, EventArgs e)
+    {
+        SelectedListView.RemoveBinding(ContentProperty);
+        SelectedListView.RemoveLogicalChild(Content);
+    }
+}
 public partial class ItemsModel : ContentView
 {
     private ApiBase _apiBase { get; set; }
@@ -19,6 +27,9 @@ public partial class ItemsModel : ContentView
     public ObservableCollection<IAbstractItem> FindItems { get; private set; }
     public VisSelectedItem ActiveItem { get; private set; }
     public ObservableCollection<ContentView> ItemList { get; private set; }
+    private bool SearchProcess { get; set; }
+
+
     public string SearchText { get; set; }
     public ItemsModel()
     {
@@ -30,34 +41,43 @@ public partial class ItemsModel : ContentView
         SearchBind();
         SelectedBind();
         ItemList = [];
-        _apiBase = new ApiBase() { Token = "a225d71e16ddf2d0780728e88073e8f409dd2a75", SiteUrl = @"https://192.168.8.112:65530" };
+        
+        _apiBase = new ApiBase() { Token = "a225d71e16ddf2d0780728e88073e8f409dd2a75", SiteUrl = @"https://192.168.8.102:65530" };
     }
+
+
+
     private void SearchBind()
     {
         SearchClick = new Command(() =>
         {
-            if (SearchText?.Length > 0)
+            
+            if (SearchText?.Length > 0 && SearchProcess)
             {
+                SearchProcess = false;
                 using var client = _apiBase.Go<ItemSearch>();
                 object T = client.Post(SearchText);
                 client.Dispose();
                 ExceptionView(T);
                 if (T != null && T is IList && (T as IList).Count > 0)
                 {
-                    foreach (var item in FindItems)
+                    for (int i = 0; i < FindItems.Count-1; i++)
                     {
-                        item.Dispose();
+                        FindItems[i].Dispose();
+                        FindItems[i] = null;
                     }
-                    FindItems.Clear();
+                                            FindItems.Clear();
                     foreach (object item in T as IEnumerable)
                     {
                         if (item is IAbstractItem)
                         {
-                            FindItems.Add(item as IAbstractItem);
+                            FindItems.Add( item as IAbstractItem);
                         }
                     }
                 }
             }
+            SearchProcess = true;
+
         });
     }
     private void ExceptionView(object T)
@@ -86,18 +106,21 @@ public partial class ItemsModel : ContentView
     }
     private void Getitem(object s, object e)
     {
+
         var _VisSelectedItem = (ItemsModel.VisSelectedItem)s;
-        if (_VisSelectedItem.Item != null)
+        if (_VisSelectedItem.Item != null && _VisSelectedItem.Delay != false)
         {
             var Id = ((ItemSearch.FItem)(_VisSelectedItem).Item).Id.ToString();
-            ActiveItem.Item = _apiBase.Go<GetItem>().Go(Id);
+            using var client = _apiBase.Go<GetItem>();
+            ActiveItem.Item = client.Go(Id);
             if (ItemList.Count == 3)
             {
-                foreach (var item in ItemList)
+                for (int i = 0; i < ItemList.Count-1; i++)
                 {
-                    ((Controls.ItemControl)item).Dispose();
+                    ((Controls.ItemControl)ItemList[i]).Dispose();
+                    ItemList[i] = null;
                 }
-                ItemList.Clear();
+                ItemList.Clear();               
                 GC.Collect();
             }
             ItemList.Add(new Controls.ItemControl(ActiveItem.Item));
@@ -106,10 +129,23 @@ public partial class ItemsModel : ContentView
     public class VisSelectedItem : INotifyPropertyChanged, IDisposable
     {
         private IAbstractItem item;
+
+        public VisSelectedItem()
+        {
+            Delay = true;
+        }
+
+        private bool delay { get; set; }
+        public bool Delay { get { return delay; } set { delay = value; OnPropertyChanged("Delay"); } }
+
+
         public IAbstractItem Item
         {
             get => item;
-            set { item = value; OnPropertyChanged("Item"); }
+            set
+            {
+                item = value; Delay = false; System.Threading.Thread.Sleep(50); Delay = true; 
+            }
         }
         public event PropertyChangedEventHandler PropertyChanged;
         public void OnPropertyChanged([CallerMemberName] string name = "")
@@ -119,7 +155,11 @@ public partial class ItemsModel : ContentView
         public void Dispose()
         {
             item = null;
+            PropertyChanged = null;
             GC.SuppressFinalize(this);
         }
     }
+
+
+
 }

@@ -9,7 +9,6 @@
             <Label x:Name="LabelName" Background="White"></Label>
             <Label x:Name="LabelPrice"></Label>
                 <Frame CornerRadius="3" Background="Gray">
-
                     <Label x:Name="LabelDescription"></Label>
                 </Frame>
           
