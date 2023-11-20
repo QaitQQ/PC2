@@ -161,6 +161,9 @@
     <Compile Update="Pages\ItemPage.xaml.cs">
       <DependentUpon>%(Filename)</DependentUpon>
     </Compile>
+    <Compile Update="Pages\OrderPage.xaml.cs">
+      <DependentUpon>OrderPage.xaml</DependentUpon>
+    </Compile>
     <Compile Update="Pages\OptionsPage.xaml.cs">
       <DependentUpon>%(Filename)</DependentUpon>
     </Compile>
@@ -170,6 +173,9 @@
       <Generator>MSBuild:Compile</Generator>
     </MauiXaml>
     <MauiXaml Update="Pages\ItemPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </MauiXaml>
+    <MauiXaml Update="Pages\OrderPage.xaml">
       <Generator>MSBuild:Compile</Generator>
     </MauiXaml>
     <MauiXaml Update="Pages\OptionsPage.xaml">

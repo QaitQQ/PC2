@@ -30,21 +30,29 @@ namespace Server.Class.IntegrationSiteApi.Market.Ozon
             {
                 foreach (var item in Ids) { itemQ.offer_id.Add(item); }
             }
-
-
-            using (var streamWriter = new StreamWriter(httpWebRequest.GetRequestStream())) { var root = JsonConvert.SerializeObject(itemQ); streamWriter.Write(root); }
-            var httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
-            using (var streamReader = new StreamReader(httpResponse.GetResponseStream())) { result = streamReader.ReadToEnd(); }
-            Root_D End = JsonConvert.DeserializeObject<Root_D>(result);
             List<IMarketItem> NLST = new List<IMarketItem>();
+            try
+            {
+                using (var streamWriter = new StreamWriter(httpWebRequest.GetRequestStream())) { var root = JsonConvert.SerializeObject(itemQ); streamWriter.Write(root); }
+                var httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
+                using (var streamReader = new StreamReader(httpResponse.GetResponseStream())) { result = streamReader.ReadToEnd(); }
+                Root_D End = JsonConvert.DeserializeObject<Root_D>(result);
 
-            List<string> IDS = new List<string>();
 
-            foreach (var item in End.result.items) { IDS.Add(item.id.ToString()); }
+                List<string> IDS = new List<string>();
 
-            var PriceInfoList = new OzonPostPriceInfo(aPISetting).Get(IDS, OzonPostPriceInfo.PriceInfoType.product);
+                foreach (var item in End.result.items) { IDS.Add(item.id.ToString()); }
 
-            foreach (OzonItemDesc item in End.result.items) { item.Priceinfo = PriceInfoList?.FirstOrDefault(x => x.ProductId == item.id); NLST.Add(item); }
+                var PriceInfoList = new OzonPostPriceInfo(aPISetting).Get(IDS, OzonPostPriceInfo.PriceInfoType.product);
+
+                foreach (OzonItemDesc item in End.result.items) { item.Priceinfo = PriceInfoList?.FirstOrDefault(x => x.ProductId == item.id); NLST.Add(item); }
+
+            }
+            catch (System.Exception e)
+            {
+                return NLST;
+
+            }
 
 
             return NLST;

@@ -116,7 +116,7 @@ namespace Server.Class.IntegrationSiteApi.Market.Yandex.YandexPostItemPrice
             OfferId = Item.SKU;
             Id = Item.SKU;
             Price = new Price();
-            Price.Value = Item.Price.Replace(',', '.');
+            Price.Value = Item.Price?.Replace(',', '.');
             Feed = new Feed();
         }
         [JsonProperty("offerId")]

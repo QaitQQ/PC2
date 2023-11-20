@@ -51,6 +51,7 @@ namespace Pwa
 
 
             Pages.Add(new VisContentView() { ContentView = new ItemPage(), Title = "Позиции" });
+            Pages.Add(new VisContentView() { ContentView = new OrderPage(), Title = "Заказы" });
             Pages.Add(new VisContentView() { ContentView = new OptionsPage(), Title = "Настройки" });
             foreach (var item in Pages)
             {

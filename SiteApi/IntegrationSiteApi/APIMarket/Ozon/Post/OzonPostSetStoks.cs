@@ -68,7 +68,7 @@ namespace Server.Class.IntegrationSiteApi.Market.Ozon
 
                 if (Convert.ToDouble(ozonItemDesc.old_price.Replace('.', ',')) < Convert.ToDouble(ozonItemDesc.price.Replace('.', ',')))
                 {
-                    double oldPrice = Convert.ToDouble(ozonItemDesc.price) * 1.1;
+                    double oldPrice = Convert.ToDouble(ozonItemDesc.price.Replace('.', ',')) * 1.1;
 
                     OldPrice = oldPrice.ToString().Replace(',', '.');
                 }

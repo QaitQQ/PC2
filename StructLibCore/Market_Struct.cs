@@ -6,6 +6,7 @@ using System.Linq;
 using System.Net;
 using System.Security.Policy;
 using System.Text;
+using System.Xml.Linq;
 
 namespace StructLibCore.Marketplace
 {
@@ -102,7 +103,24 @@ namespace StructLibCore.Marketplace
     [Serializable]
     public class APISetting
     {
-        public string Name { get; set; }
+        private string name;
+
+        public string Name
+        {
+            get
+            {
+                if (name != null)
+                {
+                    return name;
+                }
+                else
+                {
+                    return "empty";
+
+                }
+            }
+            set { name = value; }
+        }
         public MarketName Type { get; set; }
         public string[] ApiString { get; set; }
         public bool Active { get; set; }

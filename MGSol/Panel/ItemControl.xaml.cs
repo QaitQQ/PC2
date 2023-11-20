@@ -561,7 +561,7 @@ namespace MGSol.Panel
             foreach (VisMarketItem I in VisItemsList)
             {
                 MarketItem item = I.Item;
-                if (I.Checked)
+                if (I.Checked && I.Item.Items != null)
                 {
                     if (item.Items is not null)
                     {
@@ -620,7 +620,7 @@ namespace MGSol.Panel
             List<IMarketItem> mass = new();
             foreach (VisMarketItem I in VisItemsList)
             {
-                if (I.Checked)
+                if (I.Checked && I.Item.Items != null)
                 {
                     MarketItem item = I.Item;
                     foreach (IMarketItem X in item.Items)
@@ -643,7 +643,7 @@ namespace MGSol.Panel
             List<IMarketItem> mass = new();
             foreach (VisMarketItem I in VisItemsList)
             {
-                if (I.Checked)
+                if (I.Checked && I.Item.Items != null)
                 {
                     MarketItem item = I.Item;
                     foreach (IMarketItem X in item.Items)
@@ -665,7 +665,7 @@ namespace MGSol.Panel
             List<IMarketItem> mass = new();
             foreach (VisMarketItem I in VisItemsList)
             {
-                if (I.Checked)
+                if (I.Checked && I.Item.Items != null)
                 {
                     MarketItem item = I.Item;
                     foreach (IMarketItem X in item.Items)
@@ -702,7 +702,7 @@ namespace MGSol.Panel
         }
         private void ApiBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            IEnumerable<MarketItem> selectionItem = from lst in ItemsList where lst.Items.FirstOrDefault(x => x.APISetting.Name == ApiBox.SelectedItem.ToString()) != null select lst;
+            IEnumerable<MarketItem> selectionItem = from lst in ItemsList where lst.Items?.FirstOrDefault(x => x.APISetting.Name  == ApiBox.SelectedItem.ToString()) != null select lst;
             Fill_V_list(selectionItem);
         }
         private void DownloadItemPicsButton_MouseDown(object sender, MouseButtonEventArgs e)
@@ -813,7 +813,7 @@ namespace MGSol.Panel
             List<IMarketItem> mass = new();
             foreach (VisMarketItem I in VisItemsList)
             {
-                if (I.Checked)
+                if (I.Checked && I.Item.Items != null)
                 {
                     MarketItem item = I.Item;
                     foreach (IMarketItem X in item.Items)
