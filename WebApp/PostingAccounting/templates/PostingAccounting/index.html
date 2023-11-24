@@ -1,9 +1,30 @@
-<html>
-<head><title></title></head>
+﻿{% extends 'PostingAccounting/layout.html' %}
 
-<body>
+{% block title  %}
 
-{{ content }}
+Главная страница
 
-</body>
-</html>
+{% endblock %}
+
+{% block content  %}
+<div>
+    <h1>{{ title}}</h1>
+
+    <!--<button class="btn btn-warning"> Опасность!!!</button>-->
+    <div class="features">
+        {%if tables%}
+        {%for el in tables %}
+        <div class="alert alert-warning">
+            <p>{{el.full_text}}</p>
+            <p>{{el.date}}</p>
+            <form action="{% url 'list-detail' el.id %}"> <button class="bth alert-warning"> {{el.title}}</button></form>
+        </div>
+        {%endfor%}
+        {%else %}
+        <p>Нет записей</p>
+        {%endif%}
+    </div>
+
+    <!--{% include 'main/include.html' %}-->
+</div>
+{% endblock %}

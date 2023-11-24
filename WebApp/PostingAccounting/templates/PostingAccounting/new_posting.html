@@ -1,0 +1,22 @@
+{% extends 'PostingAccounting/layout.html' %}
+
+{% block title  %}
+
+Страница добавления
+
+{% endblock %}
+
+{% block content  %}
+
+<div class="features">
+    <h1> Вот тут таблица</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{form.title}}<br />
+        {{form.full_text}}<br />
+        {{form.date}}<br />
+        <span>{{error}}</span>
+        <button class="btn btn-info" type="submit"> Добавить</button>
+    </form>
+</div>
+{% endblock %}

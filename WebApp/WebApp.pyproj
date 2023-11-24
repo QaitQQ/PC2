@@ -75,6 +75,7 @@
     <Compile Include="PostingAccounting\migrations\__init__.py" />
     <Compile Include="PostingAccounting\models.py" />
     <Compile Include="PostingAccounting\tests.py" />
+    <Compile Include="PostingAccounting\urls.py" />
     <Compile Include="PostingAccounting\views.py" />
     <Compile Include="PostingAccounting\__init__.py" />
     <Compile Include="WebApp\__init__.py" />
@@ -122,6 +123,10 @@
       <SubType>Code</SubType>
     </Content>
     <Content Include="PostingAccounting\templates\PostingAccounting\index.html" />
+    <Content Include="PostingAccounting\templates\PostingAccounting\layout.html" />
+    <Content Include="PostingAccounting\templates\PostingAccounting\DetailView.html" />
+    <Content Include="PostingAccounting\templates\PostingAccounting\new_posting.html" />
+    <Content Include="Start.ps1" />
     <Content Include="WebApp\favicon.ico" />
     <Content Include="main\static\main\css\main.css" />
     <Content Include="main\templates\main\include.html" />

@@ -25,7 +25,7 @@ SECRET_KEY = 'b99f00a6-710a-457e-bce7-0e06ad38e692'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['xn--80ach6cd.xn--p1ai','127.0.0.1','localhost', '192.168.8.102']
+ALLOWED_HOSTS = ['xn--80ach6cd.xn--p1ai','127.0.0.1','localhost', '192.168.8.100']
 
 
 # Application references
@@ -46,11 +46,13 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'djoser',
-    "django_extensions",
+    'django_extensions',
+    'PostingAccounting',
+    
    
 ]
 
-#LOGIN_REDIRECT_URL = '/'
+LOGIN_REDIRECT_URL = '/'
 
 # Middleware framework
 # https://docs.djangoproject.com/en/2.1/topics/http/middleware/
@@ -82,7 +84,7 @@ ROOT_URLCONF = 'WebApp.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

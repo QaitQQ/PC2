@@ -1,17 +1,22 @@
 ﻿{% extends 'main/layout.html' %}
 
+
+
+
+
+
 {% block title  %}
 
-Главная страница 
+Главная страница
 
 {% endblock %}
 
 {% block content  %}
 <div>
+    {% if user.is_authenticated %}
     <h1>{{ title}}</h1>
-
+    {% endif %}
     <!--<button class="btn btn-warning"> Опасность!!!</button>-->
-
     {% for el in values %}
 
     <p>{{el}}</p>
@@ -21,3 +26,4 @@
     {% include 'main/include.html' %}
 </div>
 {% endblock %}
+

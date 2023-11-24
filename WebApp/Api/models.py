@@ -1,5 +1,4 @@
-﻿from tabnanny import verbose
-from django.db import models
+﻿from django.db import models
 from datetime import date
 from django.contrib.auth import get_user_model
 

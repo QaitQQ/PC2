@@ -1,0 +1,18 @@
+﻿{% extends 'PostingAccounting/layout.html' %}
+
+{% block title  %}
+
+Лист
+
+{% endblock %}
+
+{% block content  %}
+<div class="features">
+    <h1>{{list.title}}</h1>
+
+
+    <a href="{% url 'detail-up' list.id %}" class="btn btn-danger"> Редактировать</a>
+    <a href="{% url 'detail-del' list.id %}" class="btn btn-danger"> Удалить</a>
+
+</div>
+{% endblock %}

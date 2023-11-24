@@ -47,3 +47,6 @@ def add(request):
     form = AtableForm()
     data = {"form": form, "error": error}
     return render(request, "main/add.html", data)
+
+
+

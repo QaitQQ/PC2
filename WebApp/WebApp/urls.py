@@ -2,8 +2,9 @@
 from django.contrib.auth.models import User
 from rest_framework import routers, serializers, viewsets
 from datetime import datetime
-from django.contrib import admin
+from django.contrib import admin, auth
 from django.contrib.auth.views import LoginView, LogoutView
+from djoser.urls import authtoken
 
 
 # Serializers define the API representation.
@@ -24,12 +25,11 @@ router.register(r'users', UserViewSet)
 urlpatterns = [
     path('', include('main.urls'), name='home'),
     path('api/v1/', include('Api.urls'), name='base'),
-    path('api/pwa/v1/', include('ItemPrAppApi.urls'), name='base'),
+    path('api/pwa/v1/', include('ItemPrAppApi.urls'), name='pwa_base'),
     path('admin/', admin.site.urls),
+    path('accounts/', include('django.contrib.auth.urls')),
     path('api/v1/api-auth/', include('rest_framework.urls'), name='rest_framework'),
-   # path('accounts/', include('django.contrib.auth.urls')),
     path('api/v1/auth/', include('djoser.urls')),
-    path('api/v1/auth_token/', include('djoser.urls.authtoken')),
-]
-
-
+    path('api/v1/auth_token/',authtoken.views.TokenCreateView.as_view()),
+    path('posting_accounting/', include('PostingAccounting.urls')),
+		]
