@@ -1,0 +1,19 @@
+﻿{% extends 'PostingAccounting/layout.html' %}
+
+{% block title  %}
+
+Удаление страцины
+
+{% endblock %}
+
+{% block content  %}
+
+<div class="features">
+    <h1>Удаление страцины</h1>
+    <form method="post">
+        {% csrf_token %}
+        <span>{{error}}</span>
+        <button class="btn btn-info" type="submit"> Удалить</button>
+    </form>
+</div>
+{% endblock %}

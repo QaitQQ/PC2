@@ -15,9 +15,10 @@
         {%if tables%}
         {%for el in tables %}
         <div class="alert alert-warning">
-            <p>{{el.full_text}}</p>
-            <p>{{el.date}}</p>
-            <form action="{% url 'list-detail' el.id %}"> <button class="bth alert-warning"> {{el.title}}</button></form>
+            <p>{{el.orderNomber}}</p>
+            <p>{{el.orderDate}}</p>
+            <p>{{el.unboxingDate}}</p>
+            <form action="{% url 'package_detail_view' el.id %}"> <button class="bth alert-warning"> {{el.id}}</button></form>
         </div>
         {%endfor%}
         {%else %}
@@ -25,6 +26,5 @@
         {%endif%}
     </div>
 
-    <!--{% include 'main/include.html' %}-->
 </div>
 {% endblock %}

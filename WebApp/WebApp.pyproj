@@ -72,6 +72,7 @@
     <Compile Include="manage.py" />
     <Compile Include="PostingAccounting\admin.py" />
     <Compile Include="PostingAccounting\apps.py" />
+    <Compile Include="PostingAccounting\forms.py" />
     <Compile Include="PostingAccounting\migrations\__init__.py" />
     <Compile Include="PostingAccounting\models.py" />
     <Compile Include="PostingAccounting\tests.py" />
@@ -122,9 +123,12 @@
     <Content Include="main\templates\main\ListDetailView.html">
       <SubType>Code</SubType>
     </Content>
+    <Content Include="main\templates\main\Modal.html" />
+    <Content Include="PostingAccounting\templates\PostingAccounting\Del.html" />
     <Content Include="PostingAccounting\templates\PostingAccounting\index.html" />
     <Content Include="PostingAccounting\templates\PostingAccounting\layout.html" />
     <Content Include="PostingAccounting\templates\PostingAccounting\DetailView.html" />
+    <Content Include="PostingAccounting\templates\PostingAccounting\new_item.html" />
     <Content Include="PostingAccounting\templates\PostingAccounting\new_posting.html" />
     <Content Include="Start.ps1" />
     <Content Include="WebApp\favicon.ico" />

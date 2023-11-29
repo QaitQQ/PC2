@@ -11,8 +11,18 @@
     <h1>{{list.title}}</h1>
 
 
-    <a href="{% url 'detail-up' list.id %}" class="btn btn-danger"> Редактировать</a>
-    <a href="{% url 'detail-del' list.id %}" class="btn btn-danger"> Удалить</a>
+
+
+    {% csrf_token %}
+
+    {{list.orderNomber}}<br />
+    {{list.orderDate}}<br />
+    {{list.unboxingDate}}<br />
+
+
+
+    <a href="{% url 'package_edit' list.id %}" class="btn btn-danger"> Редактировать</a>
+    <a href="{% url 'package_remove' list.id %}" class="btn btn-danger"> Удалить</a>
 
 </div>
 {% endblock %}
