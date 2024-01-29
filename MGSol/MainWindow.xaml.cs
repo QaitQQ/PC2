@@ -24,8 +24,9 @@ namespace MGSol
             AddTab(new Panel.ReportControl(MModel), "Отчеты");
             AddTab(new Panel.ShipmentListControl(MModel), "Отгрузки");
             AddTab(new Panel.OptionControl(MModel), "Настройки");
+            AddTab(new Panel.CopyFromIdControl(MModel), "Скопировать по ID");
             AddTab(new Panel.PromoControl(MModel), "Акции");
-            AddTab(new Panel.DeliveredControl(MModel), "Отгрузки 2");
+            AddTab(new Panel.DeliveredControl(MModel), "Отгрузки месяц");
             VirtualizingStackPanel.SetIsVirtualizing(Items, true);
         }
         private void AddTab(System.Windows.Controls.UserControl control, string Header)

@@ -7,30 +7,77 @@ from django import forms
 class ItemForm(forms.ModelForm):
     class Meta:
         model = Item
-        fields = '__all__'
-
-
-
+        fields = ["sku", "count", "price", "url", "description"]
+        widgets = {
+            "sku": forms.Textarea(
+                attrs={
+                    "style": "height:calc(1.5em + .75rem + 2px);width:100%;",
+                    
+                    "placeholder": "Текст",
+                    "type": "CharField",
+                }
+            ),
+            "url": forms.Textarea(
+                attrs={
+                  "style": "height:calc(1.5em + .75rem + 2px);width:100%;",
+                    
+                    "placeholder": "url",
+                    "type": "URLField",
+                }
+            ),
+            "description": forms.Textarea(
+                attrs={
+                  "style": "height:calc(1.5em + .75rem + 2px);width:100%;",
+                
+               
+                    "placeholder": "Дата Распоковки",
+                    "type": "TextField",
+                }
+            ),
+            "count": forms.Textarea(
+                attrs={
+                   "style": "height:calc(1.5em + .75rem + 2px);width:100%;",
+                    
+               
+                    "placeholder": "Дата Распоковки",
+                    "type": "TextField",
+                }
+            ),
+            "price": forms.Textarea(
+                attrs={
+                  "style": "height:calc(1.5em + .75rem + 2px);width:100%;",
+                  
+                }
+            ),
+        }
 
 
 class PackageForm(forms.ModelForm):
-    orderItems = forms.ModelMultipleChoiceField(queryset=Item.objects.all())
-    name = forms.CharField();
+    def __init__(self, *args, **kwargs):
+        super(PackageForm, self).__init__(*args, **kwargs)
+        self.orderId = self.instance.id
+
+        self.orderItems = []
+        Items = Item.objects.filter(order=self.orderId)
+        for X in Items:
+            self.orderItems.append(ItemForm(instance=X))
+
+    orderItems = []
+    orderId = 0
+
+    itemForm = ItemForm()
+
     class Meta:
         model = Package
-       
-        fields = '__all__'
-
+        fields = ["orderNomber", "orderDate", "unboxingDate"]
         widgets = {
             "orderNomber": forms.Textarea(
                 attrs={
+                    "style": "height:calc(1.5em + .75rem + 2px);width:100%;",
                     "class": "form-control",
                     "placeholder": "Текст",
                 }
             ),
-            
-            "orderItems": forms.ModelMultipleChoiceField(queryset=Item.objects.all() ),
-
             "orderDate": forms.DateTimeInput(
                 attrs={
                     "class": "form-control",
@@ -46,6 +93,3 @@ class PackageForm(forms.ModelForm):
                 }
             ),
         }
-        
-    
-    

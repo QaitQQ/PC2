@@ -1,16 +1,7 @@
 ﻿{% extends 'main/layout.html' %}
-
-
-
-
-
-
 {% block title  %}
-
 Главная страница
-
 {% endblock %}
-
 {% block content  %}
 <div>
     {% if user.is_authenticated %}
@@ -18,12 +9,20 @@
     {% endif %}
     <!--<button class="btn btn-warning"> Опасность!!!</button>-->
     {% for el in values %}
-
     <p>{{el}}</p>
-
     {%endfor %}
 
-    {% include 'main/include.html' %}
-</div>
-{% endblock %}
+    <!--<iframe src="https://aliexpress.ru/" width="90%" height="80%" frameborder="1"> </iframe>-->
 
+    {% include 'main/Modal.html' %}
+
+    <!--<script type="text/javascript">
+        $(function () {
+            $('body').append('<iframe id="cookiesHackFrame" name="cookiesHackFrame" src="https://aliexpress.ru/blank.html" style="display:none;"></iframe>');
+            $('body').append('<form id="cookiesHackForm" action="https://aliexpress.ru/" method="post" target="cookiesHackFrame" >');
+            $('#cookiesHackForm').submit();
+        });
+    </script>-->
+</div>
+
+{% endblock %}

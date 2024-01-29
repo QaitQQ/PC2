@@ -141,7 +141,8 @@ namespace StructLibCore.Marketplace
         public APISetting APISettingSource { get; set; }
         public List<string> Pic { get; }
         public List<string> Barcodes { get; set; }
-     
+        public List<object> attributes { get; set; }
+
     }
     public class UniMarketItem : IMarketItem {
         public string Name { get; set ; }
@@ -153,6 +154,7 @@ namespace StructLibCore.Marketplace
         public APISetting APISettingSource { get; set; }
         public List<string> Barcodes { get; set; }
         List<string> IMarketItem.Pic { get => throw new NotImplementedException();}
+        public List<object> attributes { get; set; }
     }
     public interface Promo
     {

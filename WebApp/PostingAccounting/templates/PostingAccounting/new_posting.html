@@ -1,26 +1,54 @@
 {% extends 'PostingAccounting/layout.html' %}
-
-{% block title  %}
-
+{% load static  %}
+<html>
+    {% block title  %}
 Страница добавления
-
 {% endblock %}
+<body>
+    {% block content  %}
+    <div class="center" style="display: block; width:80%">
+        <h1>Посылка</h1>
+        <form id="order-form" method="post">
+            {% csrf_token %}
+            {{form.orderNomber}}
+            <div style="display: flex; margin:4px;">
+                {{form.orderDate}}
+                {{form.unboxingDate}}
+            </div>
 
-{% block content  %}
+            <div style="display: table;">
+                {% for field in form.orderItems %}
+                <div style="display: flex; float: left; width:100%; margin:4px;">
+                    <div style="width:100%;">
+                        {{field.description}}<br />
+                        {{field.count}}<br />
+                        {{field.price}}<br />
+                        {{field.sku}}<br />
+                    </div>
+                    <button class="btn btn-warning" style="width:40px; margin:2px;"> V </button>
+                    <button class="btn btn-danger" style="width: 40px; margin: 2px;"> Х </button>
+                </div>
 
-<div class="features">
-    <h1> Вот тут таблица</h1>
-    <form method="post">
-        {% csrf_token %}
-
-        {{form.orderNomber}}<br />
-        {{form.orderDate}}<br />
-        {{form.unboxingDate}}<br />
-        {{form.orderItems}} <a href="{% url 'item_add' %}" class="btn btn-danger"> Добавить</a>
-
-        <span>{{error}}</span>
-        <div> </div>
-        <button class="btn btn-info" type="submit"> Добавить</button>
-    </form>
-</div>
-{% endblock %}
+                {%endfor%}
+                <div style="display:block">
+                    <button id='js-open-modal' class="btn btn-info" data-modal="1" orderNomber=form.orderNomber> Добавить позицию</button>
+                    <span>{{error}}</span>
+                </div>
+            </div>
+            <br />
+            <div style="display: grid;">
+                <button class="btn btn-info" type="submit">Сохранить</button>
+                {%if form.orderId%}
+                <a href="{% url 'package_remove' form.orderId %}" class="btn btn-danger"> Удалить</a>
+                {%endif%}
+            </div>
+        </form>
+        {% include 'PostingAccounting/new_item.html' %}
+    </div>
+    {% block javascript %}
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="{% static 'main/js/TJS.js' %}"></script>
+    {% endblock javascript %}
+    {% endblock %}
+</body>
+</html>

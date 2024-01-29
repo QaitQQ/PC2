@@ -18,7 +18,7 @@ urlpatterns = [
     path('', views.index, name="PostingAccountingMainPage"),
     path('package_detail_view/<int:pk>', views.PackageDetailView.as_view(), name="package_detail_view"),
     path('package_add', views.PackageAdd, name="package_add"),
-    path('item_add', views.ItemAdd, name="item_add"),
+    path('package_edit/item_add', views.ItemAdd, name="item_add"),
     path('package_remove/<int:pk>', views.PackageRemove.as_view(), name="package_remove"),
     path('package_edit/<int:pk>', views.PackageUpdate.as_view(), name="package_edit"),
 ]

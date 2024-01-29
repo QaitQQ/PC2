@@ -1,6 +1,7 @@
 ﻿from django.db import models
 from datetime import date
 from django.contrib.auth import get_user_model
+from django.urls import reverse
 
 User = get_user_model()
 
@@ -13,7 +14,7 @@ class Package(models.Model):
     user = models.ForeignKey(User, verbose_name= 'Пользователь', on_delete=models.CASCADE, null=True)
     annotation = models.CharField("Номер", unique=True, max_length=250, null=True)
     def get_absolute_url(self):
-        return f'/{self.id}'
+        return reverse('package_edit', args=[str(self.id)])
 
 
 class Item(models.Model):
@@ -26,7 +27,7 @@ class Item(models.Model):
     description = models.CharField(verbose_name="Описание", max_length=500, null=True)
 
     def get_absolute_url(self):
-        return f'/{self.id}'
+        return str(self.id)
     def __str__(self):
         return self.description
 

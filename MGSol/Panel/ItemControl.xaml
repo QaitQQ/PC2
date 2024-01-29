@@ -156,6 +156,9 @@
                 <Button x:Name="ConversionToRC_Button" Background="Beige" Height="35" Content="Сравнять с РЦ" Click="ConversionToRC_Button_Click"></Button>
                 <Button x:Name="NullStack_Button" Background="Beige" Height="35" Content="Обнулить остатки" Click="NullStack_Button_Click"></Button>
                 <Button x:Name="PlusStack_Button" Background="Beige" Height="35" Content="Прировнять остатки" Click="PlusStack_Button_Click"></Button>
+                <Button x:Name="LoadArchive" Background="Beige" Height="35" Content="Загрузить архив" Click="LoadArchive_Click"></Button>
+                <Button x:Name="CopyList" Background="Beige" Height="35" Content="Копировать из списка" Click="CopyList_Click"></Button>
+                
             </StackPanel>
         </Grid>
     </Grid>

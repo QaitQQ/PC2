@@ -4,49 +4,17 @@
 <head>
     <title>Модальное окно с использованием Bootstrap</title>
     <link rel="stylesheet" href="{% static 'main/css/bootstrap.min.css' %}">
-    <script src="{% static 'main/js/jquery.min.js' %}"></script>
-    <script src="{% static 'main/js/bootstrap.min.js' %}"></script>
-    <style>
-        .image-item {
-            display: inline-block;
-            margin: 10px;
-        }
-
-        .modal-dialog {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .modal-body img {
-            max-width: 100%;
-            height: auto;
-        }
-    </style>
+    <link rel="stylesheet" href="{% static 'main/css/main.css' %}" />
 </head>
 <body>
-    <div class="container">
-        <h1>Модальное окно с использованием Bootstrap</h1>
-        <div id="imageModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered" role="document">
-                <div class="modal-content">
-                    <div class="modal-body">
-                        <img src="" id="modalImage" class="img-fluid" alt="Модальное окно">
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="image-container">
+    <div class='my_modal' data-modal="1">
 
-        </div>
+
+
+
+
+        <svg id="js-modal-close" class="modal__cross" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M23.954 21.03l-9.184-9.095 9.092-9.174-2.832-2.807-9.09 9.179-9.176-9.088-2.81 2.81 9.186 9.105-9.095 9.184 2.81 2.81 9.112-9.192 9.18 9.1z" /></svg>
+
     </div>
-    <script>
-        $(document).ready(function() {
-            $('#imageModal').on('show.bs.modal', function(e) {
-                var image = $(e.relatedTarget).data('image-url');
-                $("#modalImage").attr("src", image);
-            });
-        });
-    </script>
 </body>
 </html>

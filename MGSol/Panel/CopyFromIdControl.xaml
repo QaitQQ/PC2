@@ -1,0 +1,38 @@
+﻿<UserControl x:Class="MGSol.Panel.CopyFromIdControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:MGSol.Panel"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="50"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <StackPanel Orientation="Horizontal">
+            <TextBox Width="200" x:Name="IdBox"></TextBox>
+            <ComboBox Width="200" x:Name="ApiListBox"></ComboBox>
+            <Button Content="Скопировать" Margin="2" Click="Button_Click"/>
+        </StackPanel>
+        <Grid Grid.Row="1">
+            <StackPanel>
+                <ItemsControl x:Name="TaskList">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="{Binding TaskId}"></TextBlock>
+                                <Button Grid.Column="1" Content="Статус" Click="Button_Click_1"></Button>
+                            </Grid>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </StackPanel>
+        </Grid>
+    </Grid>
+</UserControl>

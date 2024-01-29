@@ -10,7 +10,6 @@
 <div>
     <h1>{{ title}}</h1>
 
-    <!--<button class="btn btn-warning"> Опасность!!!</button>-->
     <div class="features">
         {%if tables%}
         {%for el in tables %}
@@ -18,13 +17,14 @@
             <p>{{el.orderNomber}}</p>
             <p>{{el.orderDate}}</p>
             <p>{{el.unboxingDate}}</p>
-            <form action="{% url 'package_detail_view' el.id %}"> <button class="bth alert-warning"> {{el.id}}</button></form>
+            <form action="{% url 'package_edit' el.id %}"> <button class="bth alert-warning"> {{el.id}}</button></form>
         </div>
         {%endfor%}
         {%else %}
         <p>Нет записей</p>
         {%endif%}
     </div>
+
 
 </div>
 {% endblock %}

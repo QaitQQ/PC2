@@ -19,7 +19,7 @@
         <p>Навигация</p>
         <ul>
             <li><a href="{% url 'home' %}"> <i class="bi bi-house"> </i>Главная </a>  </li>
-
+            <li><a href="{% url 'PostingAccounting' %}"> <i class="bi bi-inbox"> </i>Посылки </a> </li>
             <li><form action="{% url 'package_add' %}"> <button class="btn btn-info">Добавить<i class="bi bi-clipboard-plus "></i></button></form></li>
         </ul>
         {% else %}

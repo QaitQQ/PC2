@@ -154,7 +154,7 @@ namespace SiteApi.IntegrationSiteApi.APIMarket.Ozon.Post
         }
         public List<string> Barcodes { get => barcodes; set => barcodes = value; }
         public object Priceinfo { get; set; }
-
+        public List<object> attributes { get; set; }
     }
     [Serializable]
     public class Result_D

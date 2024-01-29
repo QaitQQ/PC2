@@ -1,10 +1,8 @@
-﻿using Microsoft.VisualBasic;
-using Server.Class.IntegrationSiteApi.Market.Ozon;
+﻿using Server.Class.IntegrationSiteApi.Market.Ozon;
 using SiteApi.IntegrationSiteApi.ApiBase.Post;
 using SiteApi.IntegrationSiteApi.ApiMainSite.Post;
 using SiteApi.IntegrationSiteApi.APIMarket.Ozon.Post;
 using SiteApi.IntegrationSiteApi.APIMarket.Yandex;
-using StructLibCore;
 using StructLibCore.Marketplace;
 using System;
 using System.Collections.Generic;
@@ -25,7 +23,6 @@ namespace MGSol.Panel
     {
         private ObservableCollection<APISetting> Options { get; set; }
         private ObservableCollection<IGrouping<DateTime, IOrder>> VisOrderList { get; set; }
-        private event Action<List<IOrder>> LoadOrders;
         private MainModel Model { get; set; }
         public event Action RenewEvent;
         public ObservableCollection<IOrder> OrderList { get; set; }
@@ -39,19 +36,21 @@ namespace MGSol.Panel
             VisOrderList = new ObservableCollection<IGrouping<DateTime, IOrder>>();
             OrderStack.ItemsSource = VisOrderList;
             StatusBox.ItemsSource = Enum.GetValues(typeof(OrderStatus));
-            LoadOrders += FillOrders;
             PrintActBtnStack.ItemsSource = Options;
             ReturnControl = new ReturnControl(this.Model, this);
             _ = ReturnGrid.Children.Add(ReturnControl);
             _ = Task.Factory.StartNew(() => LoadNetOrders(this.Model.OptionMarketPlace.APISettings));
             _ = Task.Factory.StartNew(() => new MainSiteAutorization("", @"https://salessab.su/index.php?route=api/").Autorization());
         }
-        private void FillOrders(List<IOrder> orders)
+        private void FillOrders(List<IOrder> orders = null)
         {
-            OrderList.Clear();
-            for (int i = 0; i < orders.Count-1; i++)
+            if (orders != null)
             {
-                OrderList.Add(orders[i]);
+                OrderList.Clear();
+                for (int i = 0; i < orders.Count - 1; i++)
+                {
+                    OrderList.Add(orders[i]);
+                }
             }
             if (StatusBox.SelectedIndex != 1)
             {
@@ -65,14 +64,16 @@ namespace MGSol.Panel
         private void LoadNetOrders(List<APISetting> aPIs)
         {
             Dispatcher.Invoke(() => Options.Clear());
+            Dispatcher.Invoke(() => OrderList.Clear());
             List<IOrder> F = new();
             foreach (APISetting item in aPIs)
             {
-                _ = Task.Factory.StartNew(() =>
+                var T = Task.Factory.StartNew(() =>
                 {
+                    List<object> Result = null;
                     if (item != null && item.Active)
                     {
-                        List<object> Result = new();
+                        Result = new();
                         switch (item.Type)
                         {
                             case MarketName.Yandex:
@@ -93,11 +94,10 @@ namespace MGSol.Panel
                             Dispatcher.Invoke(() => Options.Add(item));
                             foreach (object t in Result)
                             {
-                                F.Add((IOrder)t);
+                                Dispatcher.Invoke(() => { OrderList.Add((IOrder)t); FillOrders(); });
                             }
                         }
                     }
-                    Dispatcher.Invoke(() => LoadOrders(F));
                 });
             }
             RenewEvent();
@@ -385,7 +385,7 @@ namespace MGSol.Panel
                                     list.Add(PItem.Sku);
                                 }
                                 order.IMtemsList = (List<IMarketItem>)new OzonPostItemDesc(order.APISetting).Get(list);
-                                if ( Dispatcher.Invoke(()=> LoadImageCheck.IsChecked == true))
+                                if (Dispatcher.Invoke(() => LoadImageCheck.IsChecked == true))
                                 {
                                     LoadItmAndPicOzon(order);
                                 }
@@ -445,8 +445,6 @@ namespace MGSol.Panel
                 var order = ((MarketOrderItems)btn.DataContext).Order;
                 var sku = ((MarketOrderItems)btn.DataContext).Sku;
                 IMarketItem itm = ((MarketOrderItems)btn.DataContext).Order.IMtemsList?.FirstOrDefault(x => x.SKU == sku);
-
-
                 if (mdbox.ShowDialog() == true)
                 {
                     itm.Barcodes.Add(mdbox._STR);
@@ -528,14 +526,13 @@ namespace MGSol.Panel
             StackPanel ST = (StackPanel)((TextBlock)sender).Parent;
             StackPanel PT = (StackPanel)((StackPanel)((StackPanel)((TextBlock)sender).Parent).Parent).Parent;
             var X = ((StructLibCore.Marketplace.MarketOrderItems)ST.DataContext).Order.IMtemsList;
-            if (LoadImageCheck.IsChecked == true )
+            if (LoadImageCheck.IsChecked == true)
             {
                 foreach (var item in X)
                 {
                     AddImage(item.Pic[0], PT);
                 }
             }
-      
         }
         private void ItemBox_Initialized(object sender, EventArgs e)
         {

@@ -24,7 +24,7 @@ namespace SiteApi.IntegrationSiteApi.APIMarket.Ozon.Post
                 Response Response = JsonConvert.DeserializeObject<Response>(result);
                 return Response;
             }
-            catch 
+            catch(Exception e) 
             {
                 return null;
             }
@@ -33,9 +33,9 @@ namespace SiteApi.IntegrationSiteApi.APIMarket.Ozon.Post
         {
             public Filter()
             {
-                Visibility = "ALL";
+                Visibility = "ARCHIVED";
             }
-            [JsonProperty("product_id")]
+            [JsonProperty("offer_id")]
             public List<string> ProductId { get; set; }
             [JsonProperty("visibility")]
             public string Visibility { get; set; }

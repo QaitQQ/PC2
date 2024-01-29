@@ -8,6 +8,8 @@
     <InterpreterId>MSBuild|env|$(MSBuildProjectFullPath)</InterpreterId>
     <IsWindowsApplication>False</IsWindowsApplication>
     <WebBrowserPort>65530</WebBrowserPort>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -99,12 +101,40 @@
     <Folder Include="main\static\main\" />
     <Folder Include="main\static\main\css\" />
     <Folder Include="main\static\main\img\" />
+    <Folder Include="main\static\main\js\" />
     <Folder Include="main\templates\" />
     <Folder Include="main\templates\main\" />
     <Folder Include="PostingAccounting\" />
     <Folder Include="PostingAccounting\migrations\" />
     <Folder Include="PostingAccounting\templates\" />
     <Folder Include="PostingAccounting\templates\PostingAccounting\" />
+    <Folder Include="static\" />
+    <Folder Include="static\admin\" />
+    <Folder Include="static\admin\css\" />
+    <Folder Include="static\admin\css\vendor\" />
+    <Folder Include="static\admin\css\vendor\select2\" />
+    <Folder Include="static\admin\img\" />
+    <Folder Include="static\admin\img\gis\" />
+    <Folder Include="static\admin\js\" />
+    <Folder Include="static\admin\js\admin\" />
+    <Folder Include="static\admin\js\vendor\" />
+    <Folder Include="static\admin\js\vendor\jquery\" />
+    <Folder Include="static\admin\js\vendor\select2\" />
+    <Folder Include="static\admin\js\vendor\select2\i18n\" />
+    <Folder Include="static\admin\js\vendor\xregexp\" />
+    <Folder Include="static\images\" />
+    <Folder Include="static\main\" />
+    <Folder Include="static\main\css\" />
+    <Folder Include="static\main\js\" />
+    <Folder Include="static\rest_framework\" />
+    <Folder Include="static\rest_framework\css\" />
+    <Folder Include="static\rest_framework\docs\" />
+    <Folder Include="static\rest_framework\docs\css\" />
+    <Folder Include="static\rest_framework\docs\img\" />
+    <Folder Include="static\rest_framework\docs\js\" />
+    <Folder Include="static\rest_framework\fonts\" />
+    <Folder Include="static\rest_framework\img\" />
+    <Folder Include="static\rest_framework\js\" />
     <Folder Include="WebApp\" />
   </ItemGroup>
   <ItemGroup>
@@ -112,8 +142,55 @@
       <SubType>Code</SubType>
     </Content>
     <Content Include="Api\templates\Api\index.html" />
+    <Content Include="ApplicationInsights.config" />
     <Content Include="favicon.ico" />
     <Content Include="ItemPrAppApi\templates\ItemPrAppApi\index.html" />
+    <Content Include="main\static\main\css\bootstrap-grid.css" />
+    <Content Include="main\static\main\css\bootstrap-grid.css.map" />
+    <Content Include="main\static\main\css\bootstrap-grid.min.css" />
+    <Content Include="main\static\main\css\bootstrap-grid.min.css.map" />
+    <Content Include="main\static\main\css\bootstrap-grid.rtl.css" />
+    <Content Include="main\static\main\css\bootstrap-grid.rtl.css.map" />
+    <Content Include="main\static\main\css\bootstrap-grid.rtl.min.css" />
+    <Content Include="main\static\main\css\bootstrap-grid.rtl.min.css.map" />
+    <Content Include="main\static\main\css\bootstrap-reboot.css" />
+    <Content Include="main\static\main\css\bootstrap-reboot.css.map" />
+    <Content Include="main\static\main\css\bootstrap-reboot.min.css" />
+    <Content Include="main\static\main\css\bootstrap-reboot.min.css.map" />
+    <Content Include="main\static\main\css\bootstrap-reboot.rtl.css" />
+    <Content Include="main\static\main\css\bootstrap-reboot.rtl.css.map" />
+    <Content Include="main\static\main\css\bootstrap-reboot.rtl.min.css" />
+    <Content Include="main\static\main\css\bootstrap-reboot.rtl.min.css.map" />
+    <Content Include="main\static\main\css\bootstrap-utilities.css" />
+    <Content Include="main\static\main\css\bootstrap-utilities.css.map" />
+    <Content Include="main\static\main\css\bootstrap-utilities.min.css" />
+    <Content Include="main\static\main\css\bootstrap-utilities.min.css.map" />
+    <Content Include="main\static\main\css\bootstrap-utilities.rtl.css" />
+    <Content Include="main\static\main\css\bootstrap-utilities.rtl.css.map" />
+    <Content Include="main\static\main\css\bootstrap-utilities.rtl.min.css" />
+    <Content Include="main\static\main\css\bootstrap-utilities.rtl.min.css.map" />
+    <Content Include="main\static\main\css\bootstrap.css" />
+    <Content Include="main\static\main\css\bootstrap.css.map" />
+    <Content Include="main\static\main\css\bootstrap.min.css" />
+    <Content Include="main\static\main\css\bootstrap.min.css.map" />
+    <Content Include="main\static\main\css\bootstrap.rtl.css" />
+    <Content Include="main\static\main\css\bootstrap.rtl.css.map" />
+    <Content Include="main\static\main\css\bootstrap.rtl.min.css" />
+    <Content Include="main\static\main\css\bootstrap.rtl.min.css.map" />
+    <Content Include="main\static\main\js\bootstrap.bundle.js" />
+    <Content Include="main\static\main\js\bootstrap.bundle.js.map" />
+    <Content Include="main\static\main\js\bootstrap.bundle.min.js" />
+    <Content Include="main\static\main\js\bootstrap.bundle.min.js.map" />
+    <Content Include="main\static\main\js\bootstrap.esm.js" />
+    <Content Include="main\static\main\js\bootstrap.esm.js.map" />
+    <Content Include="main\static\main\js\bootstrap.esm.min.js" />
+    <Content Include="main\static\main\js\bootstrap.esm.min.js.map" />
+    <Content Include="main\static\main\js\bootstrap.js" />
+    <Content Include="main\static\main\js\bootstrap.js.map" />
+    <Content Include="main\static\main\js\bootstrap.min.js" />
+    <Content Include="main\static\main\js\bootstrap.min.js.map" />
+    <Content Include="main\static\main\js\jquery.min.js" />
+    <Content Include="main\static\main\js\TJS.js" />
     <Content Include="main\templates\main\add.html">
       <SubType>Code</SubType>
     </Content>
@@ -124,6 +201,7 @@
       <SubType>Code</SubType>
     </Content>
     <Content Include="main\templates\main\Modal.html" />
+    <None Include="packages.config" />
     <Content Include="PostingAccounting\templates\PostingAccounting\Del.html" />
     <Content Include="PostingAccounting\templates\PostingAccounting\index.html" />
     <Content Include="PostingAccounting\templates\PostingAccounting\layout.html" />
@@ -131,6 +209,216 @@
     <Content Include="PostingAccounting\templates\PostingAccounting\new_item.html" />
     <Content Include="PostingAccounting\templates\PostingAccounting\new_posting.html" />
     <Content Include="Start.ps1" />
+    <Content Include="static\admin\css\autocomplete.css" />
+    <Content Include="static\admin\css\base.css" />
+    <Content Include="static\admin\css\changelists.css" />
+    <Content Include="static\admin\css\dark_mode.css" />
+    <Content Include="static\admin\css\dashboard.css" />
+    <Content Include="static\admin\css\forms.css" />
+    <Content Include="static\admin\css\login.css" />
+    <Content Include="static\admin\css\nav_sidebar.css" />
+    <Content Include="static\admin\css\responsive.css" />
+    <Content Include="static\admin\css\responsive_rtl.css" />
+    <Content Include="static\admin\css\rtl.css" />
+    <Content Include="static\admin\css\vendor\select2\LICENSE-SELECT2.md" />
+    <Content Include="static\admin\css\vendor\select2\select2.css" />
+    <Content Include="static\admin\css\vendor\select2\select2.min.css" />
+    <Content Include="static\admin\css\widgets.css" />
+    <Content Include="static\admin\img\calendar-icons.svg" />
+    <Content Include="static\admin\img\gis\move_vertex_off.svg" />
+    <Content Include="static\admin\img\gis\move_vertex_on.svg" />
+    <Content Include="static\admin\img\icon-addlink.svg" />
+    <Content Include="static\admin\img\icon-alert.svg" />
+    <Content Include="static\admin\img\icon-calendar.svg" />
+    <Content Include="static\admin\img\icon-changelink.svg" />
+    <Content Include="static\admin\img\icon-clock.svg" />
+    <Content Include="static\admin\img\icon-deletelink.svg" />
+    <Content Include="static\admin\img\icon-no.svg" />
+    <Content Include="static\admin\img\icon-unknown-alt.svg" />
+    <Content Include="static\admin\img\icon-unknown.svg" />
+    <Content Include="static\admin\img\icon-viewlink.svg" />
+    <Content Include="static\admin\img\icon-yes.svg" />
+    <Content Include="static\admin\img\inline-delete.svg" />
+    <Content Include="static\admin\img\LICENSE" />
+    <Content Include="static\admin\img\README.txt" />
+    <Content Include="static\admin\img\search.svg" />
+    <Content Include="static\admin\img\selector-icons.svg" />
+    <Content Include="static\admin\img\sorting-icons.svg" />
+    <Content Include="static\admin\img\tooltag-add.svg" />
+    <Content Include="static\admin\img\tooltag-arrowright.svg" />
+    <Content Include="static\admin\js\actions.js" />
+    <Content Include="static\admin\js\admin\DateTimeShortcuts.js" />
+    <Content Include="static\admin\js\admin\RelatedObjectLookups.js" />
+    <Content Include="static\admin\js\autocomplete.js" />
+    <Content Include="static\admin\js\calendar.js" />
+    <Content Include="static\admin\js\cancel.js" />
+    <Content Include="static\admin\js\change_form.js" />
+    <Content Include="static\admin\js\collapse.js" />
+    <Content Include="static\admin\js\core.js" />
+    <Content Include="static\admin\js\filters.js" />
+    <Content Include="static\admin\js\inlines.js" />
+    <Content Include="static\admin\js\jquery.init.js" />
+    <Content Include="static\admin\js\nav_sidebar.js" />
+    <Content Include="static\admin\js\popup_response.js" />
+    <Content Include="static\admin\js\prepopulate.js" />
+    <Content Include="static\admin\js\prepopulate_init.js" />
+    <Content Include="static\admin\js\SelectBox.js" />
+    <Content Include="static\admin\js\SelectFilter2.js" />
+    <Content Include="static\admin\js\theme.js" />
+    <Content Include="static\admin\js\urlify.js" />
+    <Content Include="static\admin\js\vendor\jquery\jquery.js" />
+    <Content Include="static\admin\js\vendor\jquery\jquery.min.js" />
+    <Content Include="static\admin\js\vendor\jquery\LICENSE.txt" />
+    <Content Include="static\admin\js\vendor\select2\i18n\af.js" />
+    <Content Include="static\admin\js\vendor\select2\i18n\ar.js" />
+    <Content Include="static\admin\js\vendor\select2\i18n\az.js" />
+    <Content Include="static\admin\js\vendor\select2\i18n\bg.js" />
+    <Content Include="static\admin\js\vendor\select2\i18n\bn.js" />
+    <Content Include="static\admin\js\vendor\select2\i18n\bs.js" />
+    <Content Include="static\admin\js\vendor\select2\i18n\ca.js" />
+    <Content Include="static\admin\js\vendor\select2\i18n\cs.js" />
+    <Content Include="static\admin\js\vendor\select2\i18n\da.js" />
+    <Content Include="static\admin\js\vendor\select2\i18n\de.js" />
+    <Content Include="static\admin\js\vendor\select2\i18n\dsb.js" />
+    <Content Include="static\admin\js\vendor\select2\i18n\el.js" />
+    <Content Include="static\admin\js\vendor\select2\i18n\en.js" />
+    <Content Include="static\admin\js\vendor\select2\i18n\es.js" />
+    <Content Include="static\admin\js\vendor\select2\i18n\et.js" />
+    <Content Include="static\admin\js\vendor\select2\i18n\eu.js" />
+    <Content Include="static\admin\js\vendor\select2\i18n\fa.js" />
+    <Content Include="static\admin\js\vendor\select2\i18n\fi.js" />
+    <Content Include="static\admin\js\vendor\select2\i18n\fr.js" />
+    <Content Include="static\admin\js\vendor\select2\i18n\gl.js" />
+    <Content Include="static\admin\js\vendor\select2\i18n\he.js" />
+    <Content Include="static\admin\js\vendor\select2\i18n\hi.js" />
+    <Content Include="static\admin\js\vendor\select2\i18n\hr.js" />
+    <Content Include="static\admin\js\vendor\select2\i18n\hsb.js" />
+    <Content Include="static\admin\js\vendor\select2\i18n\hu.js" />
+    <Content Include="static\admin\js\vendor\select2\i18n\hy.js" />
+    <Content Include="static\admin\js\vendor\select2\i18n\id.js" />
+    <Content Include="static\admin\js\vendor\select2\i18n\is.js" />
+    <Content Include="static\admin\js\vendor\select2\i18n\it.js" />
+    <Content Include="static\admin\js\vendor\select2\i18n\ja.js" />
+    <Content Include="static\admin\js\vendor\select2\i18n\ka.js" />
+    <Content Include="static\admin\js\vendor\select2\i18n\km.js" />
+    <Content Include="static\admin\js\vendor\select2\i18n\ko.js" />
+    <Content Include="static\admin\js\vendor\select2\i18n\lt.js" />
+    <Content Include="static\admin\js\vendor\select2\i18n\lv.js" />
+    <Content Include="static\admin\js\vendor\select2\i18n\mk.js" />
+    <Content Include="static\admin\js\vendor\select2\i18n\ms.js" />
+    <Content Include="static\admin\js\vendor\select2\i18n\nb.js" />
+    <Content Include="static\admin\js\vendor\select2\i18n\ne.js" />
+    <Content Include="static\admin\js\vendor\select2\i18n\nl.js" />
+    <Content Include="static\admin\js\vendor\select2\i18n\pl.js" />
+    <Content Include="static\admin\js\vendor\select2\i18n\ps.js" />
+    <Content Include="static\admin\js\vendor\select2\i18n\pt-BR.js" />
+    <Content Include="static\admin\js\vendor\select2\i18n\pt.js" />
+    <Content Include="static\admin\js\vendor\select2\i18n\ro.js" />
+    <Content Include="static\admin\js\vendor\select2\i18n\ru.js" />
+    <Content Include="static\admin\js\vendor\select2\i18n\sk.js" />
+    <Content Include="static\admin\js\vendor\select2\i18n\sl.js" />
+    <Content Include="static\admin\js\vendor\select2\i18n\sq.js" />
+    <Content Include="static\admin\js\vendor\select2\i18n\sr-Cyrl.js" />
+    <Content Include="static\admin\js\vendor\select2\i18n\sr.js" />
+    <Content Include="static\admin\js\vendor\select2\i18n\sv.js" />
+    <Content Include="static\admin\js\vendor\select2\i18n\th.js" />
+    <Content Include="static\admin\js\vendor\select2\i18n\tk.js" />
+    <Content Include="static\admin\js\vendor\select2\i18n\tr.js" />
+    <Content Include="static\admin\js\vendor\select2\i18n\uk.js" />
+    <Content Include="static\admin\js\vendor\select2\i18n\vi.js" />
+    <Content Include="static\admin\js\vendor\select2\i18n\zh-CN.js" />
+    <Content Include="static\admin\js\vendor\select2\i18n\zh-TW.js" />
+    <Content Include="static\admin\js\vendor\select2\LICENSE.md" />
+    <Content Include="static\admin\js\vendor\select2\select2.full.js" />
+    <Content Include="static\admin\js\vendor\select2\select2.full.min.js" />
+    <Content Include="static\admin\js\vendor\xregexp\LICENSE.txt" />
+    <Content Include="static\admin\js\vendor\xregexp\xregexp.js" />
+    <Content Include="static\admin\js\vendor\xregexp\xregexp.min.js" />
+    <Content Include="static\favicon.ico" />
+    <Content Include="static\images\favicon.ico" />
+    <Content Include="static\main\css\bootstrap-grid.css" />
+    <Content Include="static\main\css\bootstrap-grid.css.map" />
+    <Content Include="static\main\css\bootstrap-grid.min.css" />
+    <Content Include="static\main\css\bootstrap-grid.min.css.map" />
+    <Content Include="static\main\css\bootstrap-grid.rtl.css" />
+    <Content Include="static\main\css\bootstrap-grid.rtl.css.map" />
+    <Content Include="static\main\css\bootstrap-grid.rtl.min.css" />
+    <Content Include="static\main\css\bootstrap-grid.rtl.min.css.map" />
+    <Content Include="static\main\css\bootstrap-reboot.css" />
+    <Content Include="static\main\css\bootstrap-reboot.css.map" />
+    <Content Include="static\main\css\bootstrap-reboot.min.css" />
+    <Content Include="static\main\css\bootstrap-reboot.min.css.map" />
+    <Content Include="static\main\css\bootstrap-reboot.rtl.css" />
+    <Content Include="static\main\css\bootstrap-reboot.rtl.css.map" />
+    <Content Include="static\main\css\bootstrap-reboot.rtl.min.css" />
+    <Content Include="static\main\css\bootstrap-reboot.rtl.min.css.map" />
+    <Content Include="static\main\css\bootstrap-utilities.css" />
+    <Content Include="static\main\css\bootstrap-utilities.css.map" />
+    <Content Include="static\main\css\bootstrap-utilities.min.css" />
+    <Content Include="static\main\css\bootstrap-utilities.min.css.map" />
+    <Content Include="static\main\css\bootstrap-utilities.rtl.css" />
+    <Content Include="static\main\css\bootstrap-utilities.rtl.css.map" />
+    <Content Include="static\main\css\bootstrap-utilities.rtl.min.css" />
+    <Content Include="static\main\css\bootstrap-utilities.rtl.min.css.map" />
+    <Content Include="static\main\css\bootstrap.css" />
+    <Content Include="static\main\css\bootstrap.css.map" />
+    <Content Include="static\main\css\bootstrap.min.css" />
+    <Content Include="static\main\css\bootstrap.min.css.map" />
+    <Content Include="static\main\css\bootstrap.rtl.css" />
+    <Content Include="static\main\css\bootstrap.rtl.css.map" />
+    <Content Include="static\main\css\bootstrap.rtl.min.css" />
+    <Content Include="static\main\css\bootstrap.rtl.min.css.map" />
+    <Content Include="static\main\css\main.css" />
+    <Content Include="static\main\js\bootstrap.bundle.js" />
+    <Content Include="static\main\js\bootstrap.bundle.js.map" />
+    <Content Include="static\main\js\bootstrap.bundle.min.js" />
+    <Content Include="static\main\js\bootstrap.bundle.min.js.map" />
+    <Content Include="static\main\js\bootstrap.esm.js" />
+    <Content Include="static\main\js\bootstrap.esm.js.map" />
+    <Content Include="static\main\js\bootstrap.esm.min.js" />
+    <Content Include="static\main\js\bootstrap.esm.min.js.map" />
+    <Content Include="static\main\js\bootstrap.js" />
+    <Content Include="static\main\js\bootstrap.js.map" />
+    <Content Include="static\main\js\bootstrap.min.js" />
+    <Content Include="static\main\js\bootstrap.min.js.map" />
+    <Content Include="static\main\js\jquery.min.js" />
+    <Content Include="static\main\js\TJS.js" />
+    <Content Include="static\rest_framework\css\bootstrap-theme.min.css" />
+    <Content Include="static\rest_framework\css\bootstrap-theme.min.css.map" />
+    <Content Include="static\rest_framework\css\bootstrap-tweaks.css" />
+    <Content Include="static\rest_framework\css\bootstrap.min.css" />
+    <Content Include="static\rest_framework\css\bootstrap.min.css.map" />
+    <Content Include="static\rest_framework\css\default.css" />
+    <Content Include="static\rest_framework\css\font-awesome-4.0.3.css" />
+    <Content Include="static\rest_framework\css\prettify.css" />
+    <Content Include="static\rest_framework\docs\css\base.css" />
+    <Content Include="static\rest_framework\docs\css\highlight.css" />
+    <Content Include="static\rest_framework\docs\css\jquery.json-view.min.css" />
+    <Content Include="static\rest_framework\docs\img\favicon.ico" />
+    <Content Include="static\rest_framework\docs\img\grid.png" />
+    <Content Include="static\rest_framework\docs\js\api.js" />
+    <Content Include="static\rest_framework\docs\js\highlight.pack.js" />
+    <Content Include="static\rest_framework\docs\js\jquery.json-view.min.js" />
+    <Content Include="static\rest_framework\fonts\fontawesome-webfont.eot" />
+    <Content Include="static\rest_framework\fonts\fontawesome-webfont.svg" />
+    <Content Include="static\rest_framework\fonts\fontawesome-webfont.ttf" />
+    <Content Include="static\rest_framework\fonts\fontawesome-webfont.woff" />
+    <Content Include="static\rest_framework\fonts\glyphicons-halflings-regular.eot" />
+    <Content Include="static\rest_framework\fonts\glyphicons-halflings-regular.svg" />
+    <Content Include="static\rest_framework\fonts\glyphicons-halflings-regular.ttf" />
+    <Content Include="static\rest_framework\fonts\glyphicons-halflings-regular.woff" />
+    <Content Include="static\rest_framework\fonts\glyphicons-halflings-regular.woff2" />
+    <Content Include="static\rest_framework\img\glyphicons-halflings-white.png" />
+    <Content Include="static\rest_framework\img\glyphicons-halflings.png" />
+    <Content Include="static\rest_framework\img\grid.png" />
+    <Content Include="static\rest_framework\js\ajax-form.js" />
+    <Content Include="static\rest_framework\js\bootstrap.min.js" />
+    <Content Include="static\rest_framework\js\coreapi-0.1.1.js" />
+    <Content Include="static\rest_framework\js\csrf.js" />
+    <Content Include="static\rest_framework\js\default.js" />
+    <Content Include="static\rest_framework\js\jquery-3.5.1.min.js" />
+    <Content Include="static\rest_framework\js\prettify-min.js" />
+    <Content Include="web.config" />
     <Content Include="WebApp\favicon.ico" />
     <Content Include="main\static\main\css\main.css" />
     <Content Include="main\templates\main\include.html" />
@@ -155,6 +443,142 @@
       <PathEnvironmentVariable>PYTHONPATH</PathEnvironmentVariable>
       <Architecture>X64</Architecture>
     </Interpreter>
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.AI.Agent.Intercept, Version=2.4.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35">
+      <Name>Microsoft.AI.Agent.Intercept</Name>
+      <AssemblyName>Microsoft.AI.Agent.Intercept.dll</AssemblyName>
+      <HintPath>..\packages\Microsoft.ApplicationInsights.Agent.Intercept.2.4.0\lib\net45\Microsoft.AI.Agent.Intercept.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.AI.DependencyCollector, Version=2.15.0.44797, Culture=neutral, PublicKeyToken=31bf3856ad364e35">
+      <Name>Microsoft.AI.DependencyCollector</Name>
+      <AssemblyName>Microsoft.AI.DependencyCollector.dll</AssemblyName>
+      <HintPath>..\packages\Microsoft.ApplicationInsights.DependencyCollector.2.15.0\lib\net452\Microsoft.AI.DependencyCollector.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.AI.PerfCounterCollector, Version=2.15.0.44797, Culture=neutral, PublicKeyToken=31bf3856ad364e35">
+      <Name>Microsoft.AI.PerfCounterCollector</Name>
+      <AssemblyName>Microsoft.AI.PerfCounterCollector.dll</AssemblyName>
+      <HintPath>..\packages\Microsoft.ApplicationInsights.PerfCounterCollector.2.15.0\lib\net452\Microsoft.AI.PerfCounterCollector.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.AI.ServerTelemetryChannel, Version=2.15.0.44797, Culture=neutral, PublicKeyToken=31bf3856ad364e35">
+      <Name>Microsoft.AI.ServerTelemetryChannel</Name>
+      <AssemblyName>Microsoft.AI.ServerTelemetryChannel.dll</AssemblyName>
+      <HintPath>..\packages\Microsoft.ApplicationInsights.WindowsServer.TelemetryChannel.2.15.0\lib\net452\Microsoft.AI.ServerTelemetryChannel.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.AI.Web, Version=2.15.0.44798, Culture=neutral, PublicKeyToken=31bf3856ad364e35">
+      <Name>Microsoft.AI.Web</Name>
+      <AssemblyName>Microsoft.AI.Web.dll</AssemblyName>
+      <HintPath>..\packages\Microsoft.ApplicationInsights.Web.2.15.0\lib\net452\Microsoft.AI.Web.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.AI.WindowsServer, Version=2.15.0.44797, Culture=neutral, PublicKeyToken=31bf3856ad364e35">
+      <Name>Microsoft.AI.WindowsServer</Name>
+      <AssemblyName>Microsoft.AI.WindowsServer.dll</AssemblyName>
+      <HintPath>..\packages\Microsoft.ApplicationInsights.WindowsServer.2.15.0\lib\net452\Microsoft.AI.WindowsServer.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.ApplicationInsights, Version=2.15.0.44797, Culture=neutral, PublicKeyToken=31bf3856ad364e35">
+      <Name>Microsoft.ApplicationInsights</Name>
+      <AssemblyName>Microsoft.ApplicationInsights.dll</AssemblyName>
+      <HintPath>..\packages\Microsoft.ApplicationInsights.2.15.0\lib\net46\Microsoft.ApplicationInsights.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.AspNet.TelemetryCorrelation, Version=1.0.8.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35">
+      <Name>Microsoft.AspNet.TelemetryCorrelation</Name>
+      <AssemblyName>Microsoft.AspNet.TelemetryCorrelation.dll</AssemblyName>
+      <HintPath>..\packages\Microsoft.AspNet.TelemetryCorrelation.1.0.8\lib\net45\Microsoft.AspNet.TelemetryCorrelation.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.CSharp">
+      <Name>Microsoft.CSharp</Name>
+      <AssemblyName>
+      </AssemblyName>
+      <HintPath>
+      </HintPath>
+    </Reference>
+    <Reference Include="mscorlib">
+      <Name>mscorlib</Name>
+      <AssemblyName>
+      </AssemblyName>
+      <HintPath>
+      </HintPath>
+    </Reference>
+    <Reference Include="System">
+      <Name>System</Name>
+      <AssemblyName>
+      </AssemblyName>
+      <HintPath>
+      </HintPath>
+    </Reference>
+    <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51">
+      <Name>System.Buffers</Name>
+      <AssemblyName>System.Buffers.dll</AssemblyName>
+      <HintPath>..\packages\System.Buffers.4.5.1\lib\net461\System.Buffers.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Diagnostics.DiagnosticSource, Version=4.0.4.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51">
+      <Name>System.Diagnostics.DiagnosticSource</Name>
+      <AssemblyName>System.Diagnostics.DiagnosticSource.dll</AssemblyName>
+      <HintPath>..\packages\System.Diagnostics.DiagnosticSource.4.6.0\lib\net46\System.Diagnostics.DiagnosticSource.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Management">
+      <Name>System.Management</Name>
+      <AssemblyName>
+      </AssemblyName>
+      <HintPath>
+      </HintPath>
+    </Reference>
+    <Reference Include="System.Memory, Version=4.0.1.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51">
+      <Name>System.Memory</Name>
+      <AssemblyName>System.Memory.dll</AssemblyName>
+      <HintPath>..\packages\System.Memory.4.5.4\lib\net461\System.Memory.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Net.Http">
+      <Name>System.Net.Http</Name>
+      <AssemblyName>
+      </AssemblyName>
+      <HintPath>
+      </HintPath>
+    </Reference>
+    <Reference Include="System.Numerics">
+      <Name>System.Numerics</Name>
+      <AssemblyName>
+      </AssemblyName>
+      <HintPath>
+      </HintPath>
+    </Reference>
+    <Reference Include="System.Numerics.Vectors, Version=4.1.4.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <Name>System.Numerics.Vectors</Name>
+      <AssemblyName>System.Numerics.Vectors.dll</AssemblyName>
+      <HintPath>..\packages\System.Numerics.Vectors.4.5.0\lib\net46\System.Numerics.Vectors.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Runtime.Caching">
+      <Name>System.Runtime.Caching</Name>
+      <AssemblyName>
+      </AssemblyName>
+      <HintPath>
+      </HintPath>
+    </Reference>
+    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=4.0.4.1, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <Name>System.Runtime.CompilerServices.Unsafe</Name>
+      <AssemblyName>System.Runtime.CompilerServices.Unsafe.dll</AssemblyName>
+      <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.4.5.3\lib\net461\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web">
+      <Name>System.Web</Name>
+      <AssemblyName>
+      </AssemblyName>
+      <HintPath>
+      </HintPath>
+    </Reference>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.Django.targets" />
   <!-- Specify pre- and post-build commands in the BeforeBuild and 
@@ -196,4 +620,19 @@
       </FlavorProperties>
     </VisualStudio>
   </ProjectExtensions>
+  <Import Project="..\packages\Microsoft.ApplicationInsights.DependencyCollector.2.15.0\build\Microsoft.ApplicationInsights.DependencyCollector.targets" Condition="Exists('..\packages\Microsoft.ApplicationInsights.DependencyCollector.2.15.0\build\Microsoft.ApplicationInsights.DependencyCollector.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>Данный проект ссылается на пакеты NuGet, отсутствующие на этом компьютере. Используйте восстановление пакетов NuGet, чтобы скачать их.  Дополнительную информацию см. по адресу: http://go.microsoft.com/fwlink/?LinkID=322105. Отсутствует следующий файл: {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\Microsoft.ApplicationInsights.DependencyCollector.2.15.0\build\Microsoft.ApplicationInsights.DependencyCollector.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.ApplicationInsights.DependencyCollector.2.15.0\build\Microsoft.ApplicationInsights.DependencyCollector.targets'))" />
+    <Error Condition="!Exists('..\packages\Microsoft.ApplicationInsights.PerfCounterCollector.2.15.0\build\Microsoft.ApplicationInsights.PerfCounterCollector.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.ApplicationInsights.PerfCounterCollector.2.15.0\build\Microsoft.ApplicationInsights.PerfCounterCollector.targets'))" />
+    <Error Condition="!Exists('..\packages\Microsoft.ApplicationInsights.WindowsServer.TelemetryChannel.2.15.0\build\Microsoft.ApplicationInsights.WindowsServer.TelemetryChannel.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.ApplicationInsights.WindowsServer.TelemetryChannel.2.15.0\build\Microsoft.ApplicationInsights.WindowsServer.TelemetryChannel.targets'))" />
+    <Error Condition="!Exists('..\packages\Microsoft.ApplicationInsights.WindowsServer.2.15.0\build\Microsoft.ApplicationInsights.WindowsServer.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.ApplicationInsights.WindowsServer.2.15.0\build\Microsoft.ApplicationInsights.WindowsServer.targets'))" />
+    <Error Condition="!Exists('..\packages\Microsoft.ApplicationInsights.Web.2.15.0\build\Microsoft.ApplicationInsights.Web.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.ApplicationInsights.Web.2.15.0\build\Microsoft.ApplicationInsights.Web.targets'))" />
+  </Target>
+  <Import Project="..\packages\Microsoft.ApplicationInsights.PerfCounterCollector.2.15.0\build\Microsoft.ApplicationInsights.PerfCounterCollector.targets" Condition="Exists('..\packages\Microsoft.ApplicationInsights.PerfCounterCollector.2.15.0\build\Microsoft.ApplicationInsights.PerfCounterCollector.targets')" />
+  <Import Project="..\packages\Microsoft.ApplicationInsights.WindowsServer.TelemetryChannel.2.15.0\build\Microsoft.ApplicationInsights.WindowsServer.TelemetryChannel.targets" Condition="Exists('..\packages\Microsoft.ApplicationInsights.WindowsServer.TelemetryChannel.2.15.0\build\Microsoft.ApplicationInsights.WindowsServer.TelemetryChannel.targets')" />
+  <Import Project="..\packages\Microsoft.ApplicationInsights.WindowsServer.2.15.0\build\Microsoft.ApplicationInsights.WindowsServer.targets" Condition="Exists('..\packages\Microsoft.ApplicationInsights.WindowsServer.2.15.0\build\Microsoft.ApplicationInsights.WindowsServer.targets')" />
+  <Import Project="..\packages\Microsoft.ApplicationInsights.Web.2.15.0\build\Microsoft.ApplicationInsights.Web.targets" Condition="Exists('..\packages\Microsoft.ApplicationInsights.Web.2.15.0\build\Microsoft.ApplicationInsights.Web.targets')" />
 </Project>

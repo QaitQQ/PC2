@@ -115,6 +115,7 @@ namespace Server.Class.IntegrationSiteApi.Market.Yandex.YandexGetName
             public APISetting APISettingSource { get; set; }
             public List<string> Pic { get { return pictures; } set { pictures = value; } }
             public List<string> Barcodes { get => barcodes; set => barcodes = value; }
+            public List<object> attributes { get; set; }
         }
         [Serializable]
         public class Mapping

@@ -1,7 +1,11 @@
-﻿using SiteApi.IntegrationSiteApi.APIMarket.Yandex.YandexPUTStocks;
+﻿using SiteApi.IntegrationSiteApi.APIMarket.Ozon.Post;
+using SiteApi.IntegrationSiteApi.APIMarket.Yandex.YandexPUTStocks;
+
 using StructLibCore;
 using StructLibCore.Marketplace;
+
 using StructLibs;
+
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -28,6 +32,9 @@ namespace MGSol.Panel
     public partial class ItemControl : UserControl
     {
         private List<MarketItem> ItemsList;
+
+        private List<IMarketItem> _result { get; set; }
+
         private ObservableCollection<VisMarketItem> VisItemsList { get; set; }
         private Выгрузка items1C;
         private List<WS> WCList { get; set; }
@@ -140,9 +147,9 @@ namespace MGSol.Panel
                 case "System.String SKU":
                     Fill_V_list(from lst in nlist orderby lst.SKU select lst);
                     break;
-                case "System.Collections.ObjectModel.ObservableCollection`1[StructLibCore.Marketplace.IMarketItem] Items":    
+                case "System.Collections.ObjectModel.ObservableCollection`1[StructLibCore.Marketplace.IMarketItem] Items":
                     Fill_V_list(selectionItem: from lst in nlist orderby lst.Items?.Count descending select lst);
-                    break;                   
+                    break;
                 default:
                     break;
             }
@@ -156,14 +163,11 @@ namespace MGSol.Panel
             }
             ItemsList = Model.OptionMarketPlace.MarketItems;
             SyncStorages();
-
             var Results = new List<KeyValuePair<APISetting, List<IMarketItem>>>();
-
             foreach (APISetting Option in Options)
             {
                 Task.Factory.StartNew(() =>
                 {
-
                     List<IMarketItem> Result = null;
                     if (Option.Active)
                     {
@@ -186,15 +190,11 @@ namespace MGSol.Panel
                         {
                             Results.Add(new KeyValuePair<APISetting, List<IMarketItem>>(Option, Result));
                         });
-
                     }
-
                 });
-             
             }
-
             int i = 0;
-            while (Results.Count < Options.Count )
+            while (Results.Count < Options.Count)
             {
                 i++; Thread.Sleep(1000);
                 if (Results.Count == Options.Count || i > 30)
@@ -202,10 +202,8 @@ namespace MGSol.Panel
                     FiillResults(Results);
                     break;
                 }
-                
             }
         }
-
         private void FiillResults(List<KeyValuePair<APISetting, List<IMarketItem>>> Results)
         {
             foreach (var Result in Results)
@@ -245,15 +243,12 @@ namespace MGSol.Panel
                         }
                     }
                 }
-
                 Dispatcher.Invoke(() =>
                 {
                     Fill_V_list(ItemsList);
                 });
-                
             };
         }
-
         private static string ImportItems(IMarketItem[] mass)
         {
             IMarketItem[] X = mass;
@@ -586,7 +581,6 @@ namespace MGSol.Panel
                                             {
                                                 X.MinPrice = X.MinPrice.Replace(".", ",");
                                             }
-
                                             double G = double.Parse(X.MinPrice, System.Globalization.NumberStyles.AllowDecimalPoint);
                                             X.MinPrice = (((P / 100) + 1) * G).ToString();
                                         }
@@ -613,7 +607,6 @@ namespace MGSol.Panel
             {
                 RenewPrice(mass.ToArray());
             }
-         
         }
         private void MinusPricePercent(object sender, RoutedEventArgs e)
         {
@@ -702,7 +695,7 @@ namespace MGSol.Panel
         }
         private void ApiBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            IEnumerable<MarketItem> selectionItem = from lst in ItemsList where lst.Items?.FirstOrDefault(x => x.APISetting.Name  == ApiBox.SelectedItem.ToString()) != null select lst;
+            IEnumerable<MarketItem> selectionItem = from lst in ItemsList where lst.Items?.FirstOrDefault(x => x.APISetting.Name == ApiBox.SelectedItem.ToString()) != null select lst;
             Fill_V_list(selectionItem);
         }
         private void DownloadItemPicsButton_MouseDown(object sender, MouseButtonEventArgs e)
@@ -818,12 +811,70 @@ namespace MGSol.Panel
                     MarketItem item = I.Item;
                     foreach (IMarketItem X in item.Items)
                     {
-                            X.Stocks = ProcessingPanelPercentBox.Text;
-                            mass.Add(X);
+                        X.Stocks = ProcessingPanelPercentBox.Text;
+                        mass.Add(X);
                     }
                 }
             }
             RenewPrice(mass.ToArray());
+        }
+
+        private void LoadArchive_Click(object sender, RoutedEventArgs e)
+        {
+
+            var Results = new List<KeyValuePair<APISetting, List<IMarketItem>>>();
+            foreach (APISetting Option in Options)
+            {
+                if (Option.Active)
+                {
+                    List<IMarketItem> Result = new Server.Class.IntegrationSiteApi.Market.Ozon.OzonPostItemARCHIVEDList(Option).Get();
+
+                    _result = Result;
+                    Results.Add(new KeyValuePair<APISetting, List<IMarketItem>>(Option, Result));
+                }
+
+            }
+
+            FiillResults(Results);
+        }
+
+        private void CopyList_Click(object sender, RoutedEventArgs e)
+        {
+            var list = new List<string>();
+            OzonPostGetAttr.Response T = null;
+            foreach (var item in Options)
+            {
+                if (ProcessingPanelApiBox.SelectedItem != null && item.Name == ProcessingPanelApiBox.SelectedItem.ToString())
+                {
+                    foreach (var X in Options)
+                    {
+                        if (X.Active)
+                        {
+                            foreach (var Y in _result)
+                            {
+                                list.Add(Y.SKU);
+                            }
+
+                           T = new OzonPostGetAttr(X).Get(list);
+
+                        }
+                    }
+                    if (T == null)
+                    {
+                        break;
+                    }
+                    foreach (var Z in T.Result)
+                    {
+                        var fi = _result.Find(x => x.SKU == Z.OfferId);
+                        fi.attributes = new List<object>();
+                        fi.attributes.Add(Z);
+                    }
+
+                    new Server.Class.IntegrationSiteApi.Market.Ozon.OzonPostItemCopyObject(item).Get(_result);
+                }
+            }
+          
+
         }
     }
 }

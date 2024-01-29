@@ -1,25 +1,54 @@
-{% extends 'PostingAccounting/layout.html' %}
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Модальное окно с использованием Bootstrap</title>
+    <link rel="stylesheet" href="{% static 'main/css/main.css' %}" />
+</head>
+<body>
+    <div class='my_modal' data-modal="1">
+        <div>
+            <form id="item-form">
+                {% csrf_token %}
+                {{form.orderId}}
+                {{form.itemForm}}
+                <button id="js-add-item"> Добавить</button> <br />
+            </form>
+        </div>
+        <svg id="js-modal-close" class="modal__cross" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M23.954 21.03l-9.184-9.095 9.092-9.174-2.832-2.807-9.09 9.179-9.176-9.088-2.81 2.81 9.186 9.105-9.095 9.184 2.81 2.81 9.112-9.192 9.18 9.1z" /></svg>
+    </div>
 
-{% block title  %}
+    {% block javascript %}
+    <script>
 
-Страница добавления
+        document.addEventListener('DOMContentLoaded', function () {
+            addItemButton = document.querySelectorAll('#js-add-item');
+            var itmform = $('#item-form');
+            var orderform = $('#order-form'); 
+            addItemButton.forEach(function (item) {
+                item.addEventListener('click', function (e) {
+                    $.ajax({
+                        type: "POST",
+                        data: { 'order': '{{form.orderId}}', 'item': itmform.serialize() } , 
+                        csrfmiddlewaretoken: '{{ csrf_token }}',
+                        url: 'item_add',
+                        success: function (response) {
+                            console.log(text)
+                        },
+                        error: function (response) {
+                            // предупредим об ошибке
+                            console.log(response.responseJSON.errors)
+                        }
+                    });
 
-{% endblock %}
+                });
+            });
+        });
 
-{% block content  %}
 
-<div class="features">
-    <h1> Вот тут таблица</h1>
-    <form method="post">
-        {% csrf_token %}
-        {{form.sku}}<br />
-        {{form.count}}<br />
-        {{form.price}}<br />
-        {{form.order}}<br />
-        {{form.url}}<br />
-        {{form.description}}<br />
-        <span>{{error}}</span>
-        <button class="btn btn-info" type="submit"> Добавить</button>
-    </form>
-</div>
-{% endblock %}
+    </script>
+
+
+    {% endblock javascript %}
+</body>
+</html>
