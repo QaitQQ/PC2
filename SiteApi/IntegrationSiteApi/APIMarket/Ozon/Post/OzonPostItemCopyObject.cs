@@ -86,7 +86,11 @@ namespace Server.Class.IntegrationSiteApi.Market.Ozon
                 {
                     Request.Items.Add(new Item(EndList[n]));
                 }
-                Response = Send(httpWebRequest, Request);
+                if (Request.Items.Count > 0)
+                {
+                    Response = Send(httpWebRequest, Request);
+                }
+               
             }
             return Response;
         }

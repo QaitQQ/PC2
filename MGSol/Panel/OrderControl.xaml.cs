@@ -1,9 +1,12 @@
 ﻿using Server.Class.IntegrationSiteApi.Market.Ozon;
+
 using SiteApi.IntegrationSiteApi.ApiBase.Post;
 using SiteApi.IntegrationSiteApi.ApiMainSite.Post;
 using SiteApi.IntegrationSiteApi.APIMarket.Ozon.Post;
 using SiteApi.IntegrationSiteApi.APIMarket.Yandex;
+
 using StructLibCore.Marketplace;
+
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -142,49 +145,53 @@ namespace MGSol.Panel
             Button btn = (Button)sender;
             IOrder X = (IOrder)btn.DataContext;
             bool Z = false;
-            try
+            if (X != null)
             {
-                switch (X.APISetting.Type)
+
+                try
                 {
-                    case MarketName.Yandex:
-                        Z = new SiteApi.IntegrationSiteApi.APIMarket.Yandex.YandexPUTShip(X.APISetting).Get(X);
-                        break;
-                    case MarketName.Ozon:
-                        Z = new SiteApi.IntegrationSiteApi.APIMarket.Ozon.Post.OzonPostShip(X.APISetting).Get(X);
-                        break;
-                    case MarketName.Avito:
-                        break;
-                    case MarketName.Sber:
-                        break;
-                    default:
-                        break;
+                    switch (X.APISetting.Type)
+                    {
+                        case MarketName.Yandex:
+                            Z = new SiteApi.IntegrationSiteApi.APIMarket.Yandex.YandexPUTShip(X.APISetting).Get(X);
+                            break;
+                        case MarketName.Ozon:
+                            Z = new SiteApi.IntegrationSiteApi.APIMarket.Ozon.Post.OzonPostShip(X.APISetting).Get(X);
+                            break;
+                        case MarketName.Avito:
+                            break;
+                        case MarketName.Sber:
+                            break;
+                        default:
+                            break;
+                    }
+                    if (Z)
+                    {
+                        bool AddToBase = new PostOrderBase(Model.BaseInfoPrice.ToketBase, Model.BaseInfoPrice.UriBase).Post(X);
+                        if (AddToBase)
+                        {
+                            X.SetStatus(OrderStatus.READY);
+                            StatusBox_SelectionChanged(null, null);
+                        }
+                        else
+                        {
+                            MessageBox.Show("Не удалось добавить в базу");
+                        }
+                        //List<string> ItwmLIst = new();
+                        //foreach (MarketOrderItems item in X.Items)
+                        //{
+                        //    bool v1 = double.TryParse(item.Count, out double Icount);
+                        //    bool v = double.TryParse(item.Price, out double Iprice);
+                        //    ItwmLIst.Add(item.Sku + "|" + item.Count + "|" + item.Price + "|" + (Icount * Iprice).ToString());
+                        //}
+                        // string data = DateTime.Now.ToString("dd/MM/yy");
+                        // model.ShipmentOrders.Add(new ShipmentOrder() { Date = X.Date, DateShipment = DateTime.Now.ToString(), ID = model.ShipmentOrders.Count + 1.ToString() + data, Nomber = X.Id, Items = ItwmLIst });
+                    }
                 }
-                if (Z)
+                catch (Exception E)
                 {
-                    bool AddToBase = new PostOrderBase(Model.BaseInfoPrice.ToketBase, Model.BaseInfoPrice.UriBase).Post(X);
-                    if (AddToBase)
-                    {
-                        X.SetStatus(OrderStatus.READY);
-                        StatusBox_SelectionChanged(null, null);
-                    }
-                    else
-                    {
-                        MessageBox.Show("Не удалось добавить в базу");
-                    }
-                    //List<string> ItwmLIst = new();
-                    //foreach (MarketOrderItems item in X.Items)
-                    //{
-                    //    bool v1 = double.TryParse(item.Count, out double Icount);
-                    //    bool v = double.TryParse(item.Price, out double Iprice);
-                    //    ItwmLIst.Add(item.Sku + "|" + item.Count + "|" + item.Price + "|" + (Icount * Iprice).ToString());
-                    //}
-                    // string data = DateTime.Now.ToString("dd/MM/yy");
-                    // model.ShipmentOrders.Add(new ShipmentOrder() { Date = X.Date, DateShipment = DateTime.Now.ToString(), ID = model.ShipmentOrders.Count + 1.ToString() + data, Nomber = X.Id, Items = ItwmLIst });
+                    _ = MessageBox.Show(E.Message);
                 }
-            }
-            catch (Exception E)
-            {
-                _ = MessageBox.Show(E.Message);
             }
         }
         private void Label_Click(object sender, RoutedEventArgs e)

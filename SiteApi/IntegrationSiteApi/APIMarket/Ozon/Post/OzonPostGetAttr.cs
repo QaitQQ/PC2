@@ -33,7 +33,7 @@ namespace SiteApi.IntegrationSiteApi.APIMarket.Ozon.Post
         {
             public Filter()
             {
-                Visibility = "ARCHIVED";
+                Visibility = "ALL";
             }
             [JsonProperty("offer_id")]
             public List<string> ProductId { get; set; }

@@ -11,23 +11,51 @@
             <RowDefinition Height="50"/>
             <RowDefinition/>
         </Grid.RowDefinitions>
-        <StackPanel Orientation="Horizontal">
+        <StackPanel Margin="2" Orientation="Horizontal">
             <TextBox Width="200" x:Name="IdBox"></TextBox>
             <ComboBox Width="200" x:Name="ApiListBox"></ComboBox>
             <Button Content="Скопировать" Margin="2" Click="Button_Click"/>
         </StackPanel>
-        <Grid Grid.Row="1">
+        <Grid Grid.Row="1" Margin="2">
             <StackPanel>
                 <ItemsControl x:Name="TaskList">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
                             <Grid>
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition/>
-                                    <ColumnDefinition/>
+                                    <ColumnDefinition Width="80"/>
+                                    <ColumnDefinition />
+                                    <ColumnDefinition Width="80"/>
                                 </Grid.ColumnDefinitions>
                                 <TextBlock Text="{Binding TaskId}"></TextBlock>
-                                <Button Grid.Column="1" Content="Статус" Click="Button_Click_1"></Button>
+                                <StackPanel Grid.Column="1" Background="White">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="80"/>
+                                            <ColumnDefinition/>
+                                        </Grid.ColumnDefinitions>
+                                        <Label Content="NameBox"></Label>
+                                        <TextBox Grid.Column="1" x:Name="NameBox"></TextBox>
+                                    </Grid>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="80"/>
+                                            <ColumnDefinition/>
+                                        </Grid.ColumnDefinitions>
+                                        <Label Content="SKUBox"></Label>
+                                        <TextBox Grid.Column="1" x:Name="SKUBox"></TextBox>
+                                    </Grid>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="80"/>
+                                            <ColumnDefinition/>
+                                        </Grid.ColumnDefinitions>
+                                        <Label Content="PriceBox"></Label>
+                                        <TextBox Grid.Column="1"  x:Name="PriceBox"></TextBox>
+                                    </Grid>
+
+                                </StackPanel>
+                                <Button Grid.Column="2" Content="Скопировать" Click="Button_Click_1"></Button>
                             </Grid>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
