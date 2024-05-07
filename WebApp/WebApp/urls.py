@@ -5,7 +5,8 @@ from datetime import datetime
 from django.contrib import admin, auth
 from django.contrib.auth.views import LoginView, LogoutView
 from djoser.urls import authtoken
-
+from django.conf import settings
+from django.conf.urls.static import static
 
 # Serializers define the API representation.
 class UserSerializer(serializers.HyperlinkedModelSerializer):
@@ -32,4 +33,4 @@ urlpatterns = [
     path('api/v1/auth/', include('djoser.urls')),
     path('api/v1/auth_token/',authtoken.views.TokenCreateView.as_view()),
     path('posting_accounting/', include('PostingAccounting.urls')),
-		]
+		]  

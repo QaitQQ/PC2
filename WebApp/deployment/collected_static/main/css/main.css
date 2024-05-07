@@ -1,0 +1,89 @@
+body {
+    background: white;
+    margin:3px;
+    
+}
+
+    aside {
+        float: left;
+        width: 180px;
+        padding: 2.5%;
+        height: 100vh;
+        border-right: 5px solid #2a2727;
+        background: grey;
+    }
+
+    aside ul {
+        padding-left: 0rem;
+    }
+
+aside p {
+    color: white;
+    font-size: 20px;
+}
+
+aside a {
+    color: white;
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+aside ul li:has(:hover) {
+    color: red;
+}
+
+main .features{
+    float:left;
+    margin-top:50px;
+    text-align:center;
+    width:75%;
+    margin: 20px, 34%;
+}
+
+
+.alert-warning {
+    width: 30%;
+    float: left;
+}
+.my_modal {
+    /* Скрываем окна  */
+    opacity: 0;
+    visibility: hidden;
+    /*  Установаем ширину окна  */
+    width: 100%;
+    max-width: 500px;
+    /*  Центрируем и задаем z-index */
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 30; /* Должен быть выше чем у подложки*/
+    /*  Побочные стили   */
+    box-shadow: 0 3px 10px -.5px rgba(0, 0, 0, .2);
+    text-align: center;
+    padding: 30px;
+    border-radius: 3px;
+    background-color: #fff;
+    transition: 0.3s all;
+}
+
+/* Стили для кнопки закрытия */
+
+.modal__cross {
+    width: 15px;
+    height: 15px;
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    fill: #444;
+    cursor: pointer;
+}
+
+.my_modal.active {
+    opacity: 1;
+    visibility: visible;
+}
+body .center {
+    margin-left: 200px;
+    width:100%;
+}

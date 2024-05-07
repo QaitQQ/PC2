@@ -1,5 +1,4 @@
-﻿from asyncio.windows_events import NULL
-from collections import OrderedDict
+﻿from collections import OrderedDict
 from django.db.models import QuerySet, query
 from rest_framework import serializers
 from rest_framework.fields import ValidationError

@@ -1,5 +1,4 @@
-﻿from asyncio.windows_events import NULL
-from django.urls import path, include
+﻿from django.urls import path, include
 from PostingAccounting import views
 from django.contrib.staticfiles.storage import staticfiles_storage
 from django.views.generic.base import RedirectView

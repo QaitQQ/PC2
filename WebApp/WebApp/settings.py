@@ -16,6 +16,7 @@ import posixpath
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.1/howto/deployment/checklist/
 
@@ -25,7 +26,7 @@ SECRET_KEY = 'b99f00a6-710a-457e-bce7-0e06ad38e692'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True 
 
-ALLOWED_HOSTS = ['xn--80ach6cd.xn--p1ai','127.0.0.1','localhost', '192.168.8.100']
+ALLOWED_HOSTS = ['xn--80ach6cd.xn--p1ai','127.0.0.1','localhost', '192.168.8.102']
 
 
 # Application references
@@ -108,7 +109,7 @@ DATABASES = {
     }
 }
 
-#DATABASES = {
+# DATABASES = {
 #    'default': {
 #        'ENGINE': 'django.db.backends.mysql',
 #        'NAME': 'u2163474_dj_def',
@@ -117,7 +118,7 @@ DATABASES = {
 #        'HOST': 'localhost',
 #        'PORT': '3306',
 #    }
-#}
+# }
 
 REST_FRAMEWORK = {
     # Use Django's standard `django.contrib.auth` permissions,
@@ -171,9 +172,27 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
+STATIC_PRODUCTION_DIR = os.path.abspath(os.path.join(
+os.path.dirname(__file__), '..', '..', 'static_production'))
 
 STATIC_URL = '/static/'
-STATICFILES_DIRS = (
-    os.path.join(BASE_DIR, "static"),
-)
+STATIC_ROOT = os.path.join(STATIC_PRODUCTION_DIR, "static")
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(STATIC_PRODUCTION_DIR, "media")
+
+
+STATICFILES_DIRS = [
+   os.path.join(BASE_DIR, "static"),
+]
+#print(STATIC_PRODUCTION_DIR)
+
+# STATIC_ROOT = os.path.join(BASE_DIR, "/static/")
+# STATIC_URL = 'static'
+# STATICFILES_DIRS = (
+#     os.path.join(BASE_DIR, "/static/"),
+# )
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+# STATICFILES_DIRS
