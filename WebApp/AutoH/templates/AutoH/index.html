@@ -1,0 +1,18 @@
+﻿{% extends 'AutoH/layout.html' %}
+{% block title  %}
+Главная страница
+{% endblock %}
+{% block content  %}
+<div>
+    {% if user.is_authenticated %}
+    <h1>{{ title}}</h1>
+    {% endif %}
+
+    {% for el in values %}
+    <p>{{el}}</p>
+    {%endfor %}
+    {% include 'main/Modal.html' %}
+
+</div>
+
+{% endblock %}

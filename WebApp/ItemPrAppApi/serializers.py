@@ -90,7 +90,7 @@ class ItemsSerializer(serializers.ModelSerializer):
             tcname = ccname        
             i = 1
             while ComparisonName.objects.filter(cname = tcname).exists():
-                return NULL
+                return None
             comparisonName = ComparisonName.objects.create(item=item, cname=tcname)
             comparisonNames.append(comparisonName);
         item.itemComparisonName.set(comparisonNames);
@@ -126,7 +126,7 @@ class ItemsListCreateSerializer(serializers.Serializer):
             itemsBooble = self.initial_data.pop('Items')             
             for x in itemsBooble:
                 item = ItemsSerializer.CreateItem(x)
-                if item is not NULL:
+                if item is not None:
                     print(str(item.name)) 
                     items.append(item.get_id())             
             self.ids = items

@@ -50,6 +50,22 @@
     <Compile Include="Api\urls.py" />
     <Compile Include="Api\views.py" />
     <Compile Include="Api\__init__.py" />
+    <Compile Include="AutoH\admin.py" />
+    <Compile Include="AutoH\apps.py" />
+    <Compile Include="AutoH\middleware.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="AutoH\migrations\__init__.py" />
+    <Compile Include="AutoH\models.py" />
+    <Compile Include="AutoH\serializers.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="AutoH\tests.py" />
+    <Compile Include="AutoH\urls.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="AutoH\views.py" />
+    <Compile Include="AutoH\__init__.py" />
     <Compile Include="ItemPrAppApi\admin.py" />
     <Compile Include="ItemPrAppApi\apps.py" />
     <Compile Include="ItemPrAppApi\migrations\__init__.py" />
@@ -82,7 +98,9 @@
     <Compile Include="PostingAccounting\views.py" />
     <Compile Include="PostingAccounting\__init__.py" />
     <Compile Include="WebApp\__init__.py" />
-    <Compile Include="WebApp\settings.py" />
+    <Compile Include="WebApp\settings.py">
+      <Publish>False</Publish>
+    </Compile>
     <Compile Include="WebApp\urls.py" />
     <Compile Include="WebApp\wsgi.py" />
   </ItemGroup>
@@ -91,6 +109,11 @@
     <Folder Include="Api\migrations\" />
     <Folder Include="Api\templates\" />
     <Folder Include="Api\templates\Api\" />
+    <Folder Include="AutoH\" />
+    <Folder Include="AutoH\migrations\" />
+    <Folder Include="AutoH\templates\" />
+    <Folder Include="AutoH\templates\AutoH\" />
+    <Folder Include="AutoH\templates\AutoH\devtype\" />
     <Folder Include="ItemPrAppApi\" />
     <Folder Include="ItemPrAppApi\migrations\" />
     <Folder Include="ItemPrAppApi\templates\" />
@@ -145,6 +168,12 @@
     </Content>
     <Content Include="Api\templates\Api\index.html" />
     <Content Include="ApplicationInsights.config" />
+    <Content Include="AutoH\templates\AutoH\devices.html" />
+    <Content Include="AutoH\templates\AutoH\devtype\relay.html" />
+    <Content Include="AutoH\templates\AutoH\index.html" />
+    <Content Include="AutoH\templates\AutoH\layout.html" />
+    <Content Include="AutoH\templates\AutoH\rem_dev.html" />
+    <Content Include="AutoH\templates\AutoH\devtype\valve.html" />
     <Content Include="favicon.ico" />
     <Content Include="ItemPrAppApi\templates\ItemPrAppApi\index.html" />
     <Content Include="main\static\main\css\bootstrap-grid.css" />

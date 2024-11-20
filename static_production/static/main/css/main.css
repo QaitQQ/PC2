@@ -3,15 +3,40 @@ body {
     margin:3px;
     
 }
+p {
+    margin: 5px;
+}
 
-    aside {
-        float: left;
-        width: 180px;
-        padding: 2.5%;
-        height: 100vh;
-        border-right: 5px solid #2a2727;
-        background: grey;
-    }
+summary {
+    margin: 5px;
+
+
+}
+
+div {
+    margin: 5px;
+}
+button {
+    margin: 5px;
+    border-radius: 5px;
+}
+input {
+    margin: 5px;
+    border-radius: 5px;
+}
+label {
+    margin: 5px;
+    border-radius: 5px;
+}
+
+aside {
+    float: left;
+    width: 180px;
+    padding: 2.5%;
+    height: 100vh;
+    border-right: 5px solid #2a2727;
+    background: grey;
+}
 
     aside ul {
         padding-left: 0rem;
@@ -43,7 +68,7 @@ main .features{
 
 .alert-warning {
     width: 30%;
-    float: left;
+
 }
 .my_modal {
     /* Скрываем окна  */

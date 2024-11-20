@@ -1,7 +1,11 @@
 ﻿using MGSol.Panel.Other;
+
 using NPOI.SS.Formula.Functions;
+
 using SiteApi.IntegrationSiteApi.APIMarket.Ozon.Post;
+
 using StructLibCore.Marketplace;
+
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -23,8 +27,8 @@ namespace MGSol.Panel
     {
         private MainModel Model { get; set; }
         private ObservableCollection<ObservableCollection<ColorCell>> ColorCellsList { get; set; }
-        private FileInfo[] FolderFile;
-        private ObservableCollection<FileOption> InfoFolderFile;
+
+        private ObservableCollection<FileListClass> InfoFolderFile;
         private object PressBtn;
         private TextBlock ColtextBlock;
         private List<ReportTokenRing> ReportToken;
@@ -253,6 +257,8 @@ namespace MGSol.Panel
                             if (OrderReturnPrice is not "0" and not "")
                             {
                                 string NPost = ColorCellsList[i][GiveColorCell(ParamEnum.НомерЗаказа).Y]?.Value;
+
+
                                 string Date = DateTime.Now.ToString().Split(" ")[0];
                                 SF SchetFaktura = null;
                                 try
@@ -296,7 +302,19 @@ namespace MGSol.Panel
                     }
                     else
                     {
-                        Order NOrder = new() { DepartureNumber = NPost, DepartureDate = Date, SchetFaktura = SchetFaktura };
+                        string simpleNPost = null;
+
+                        foreach (char item in NPost)
+                        {
+                            if (char.IsDigit(item))
+                            {
+                                simpleNPost = simpleNPost + item;
+                            }
+                        }
+                       
+
+
+                        Order NOrder = new() { DepartureNumber = simpleNPost, DepartureDate = Date, SchetFaktura = SchetFaktura };
                         NOrder.Items.Add(NOrderItem);
                         Document.Orders.Add(NOrder);
                     }
@@ -336,8 +354,17 @@ namespace MGSol.Panel
         }
         private SF GetSchetFaktura(string NNomer, string SFNomber, ref string[][] byerSFmass)
         {
+
+            var i = 1;
+
             try
             {
+                string y = AppDomain.CurrentDomain.BaseDirectory;
+                DirectoryInfo mainDir = new(y + @"/Report");
+                var FolderFile = mainDir.GetFiles();
+
+
+
                 FileInfo Fn = FolderFile.First(x => x.Name.Contains(NNomer) && x.Name.Contains("DocumentB2BSales") && !x.Name.Contains('#'));
                 if (byerSFmass == null) { try { byerSFmass = ReadFileToMass(Fn.FullName)[0]; } catch { _ = MessageBox.Show("Не удалось загрузить файл B2B"); } }
                 string[] nameCollstring = byerSFmass.First(x => x.Contains("Наименование покупателя"));
@@ -352,7 +379,7 @@ namespace MGSol.Panel
             }
             catch
             {
-                _ = MessageBox.Show("Ненайден файл с счетфактурами");
+                _ = MessageBox.Show("Не найден файл с счет фактурами");
             }
             return null;
         }
@@ -361,6 +388,8 @@ namespace MGSol.Panel
             try
             {
                 string Nomber = GiveColorCell(ParamEnum.НомерОтчета).Value;
+
+                Nomber = Nomber.Split(" от ")[0];
                 string NNomer = null;
                 DateTime date = DateTime.Now;
                 foreach (char item in Nomber)
@@ -594,27 +623,43 @@ namespace MGSol.Panel
         }
         private void RenewFile_Click(object sender, RoutedEventArgs e)
         {
-            InfoFolderFile = new ObservableCollection<FileOption>();
+            InfoFolderFile = new ObservableCollection<FileListClass>();
             string y = AppDomain.CurrentDomain.BaseDirectory;
-            DirectoryInfo dir = new(y + @"/Report");
-            FolderFile = dir.GetFiles();
-            ParamStack = new ObservableCollection<ColorCell>();
-            InitializeComponent();
-            ParamButtons = ReturnList();
-            ButtonFieldStack.ItemsSource = ParamButtons;
-            foreach (FileInfo file in FolderFile)
+            DirectoryInfo mainDir = new(y + @"/Report");
+
+
+            var FolderDir = mainDir.GetDirectories();
+
+            foreach (DirectoryInfo dir in FolderDir)
             {
-                if (file.Name.Contains("xlsx") && !file.Name.Contains('#'))
+                var FolderFile = dir.GetFiles();
+                ParamStack = new ObservableCollection<ColorCell>();
+                InitializeComponent();
+                ParamButtons = ReturnList();
+                ButtonFieldStack.ItemsSource = ParamButtons;
+
+                var folder = new FileListClass();
+
+                folder.Name = dir.Name;
+                folder.Path = dir.FullName;
+
+                foreach (FileInfo file in FolderFile)
                 {
-                    FileOption fileOption = new() { FileName = file.Name, FullPath = file.FullName };
-                    if (File.Exists(file.FullName.Replace("xlsx", "xml")))
+                    if (file.Name.Contains("xlsx") && !file.Name.Contains('#'))
                     {
-                        fileOption = LoadFileOptioins(fileOption);
+                        FileOption fileOption = new() { FileName = file.Name, FullPath = file.FullName };
+                        if (File.Exists(file.FullName.Replace("xlsx", "xml")))
+                        {
+                            fileOption = LoadFileOptioins(fileOption);
+                        }
+                        fileOption ??= new() { FileName = file.Name, FullPath = file.FullName };
+                        folder.Add(fileOption);
                     }
-                    fileOption ??= new() { FileName = file.Name, FullPath = file.FullName };
-                    InfoFolderFile.Add(fileOption);
                 }
+                InfoFolderFile.Add(folder);
+
             }
+
             FileList.ItemsSource = InfoFolderFile;
         }
         private void LoadReport_Click(object sender, RoutedEventArgs e)
@@ -633,7 +678,7 @@ namespace MGSol.Panel
                 }
             }
         }
-        private void download(ReportTokenRing uri) 
+        private void download(ReportTokenRing uri)
         {
             using (var client = new WebClient())
             {
@@ -641,11 +686,11 @@ namespace MGSol.Panel
                 if (!Directory.Exists(dir))
                 {
                     Directory.CreateDirectory(dir);
-                } 
+                }
                 client.DownloadFile(uri.ReportLink, dir + @"/" + uri.APISetting.Name + ".csv");
             }
         }
-        private class ReportTokenRing : INotifyPropertyChanged 
+        private class ReportTokenRing : INotifyPropertyChanged
         {
             public APISetting APISetting { get; set; }
             public ReportTokenRing(string reportToken)
@@ -696,5 +741,21 @@ namespace MGSol.Panel
             }
 
         }
+
+        protected class FileListClass : ObservableCollection<FileOption>
+        {
+
+            public string Name { get; set; }
+
+            public string Path { get; set; }
+
+
+
+
+        }
+
+
+
+
     }
 }

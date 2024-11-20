@@ -33,4 +33,5 @@ urlpatterns = [
     path('api/v1/auth/', include('djoser.urls')),
     path('api/v1/auth_token/',authtoken.views.TokenCreateView.as_view()),
     path('posting_accounting/', include('PostingAccounting.urls')),
+    path('auto/', include('AutoH.urls'), name='auto'),
 		]  

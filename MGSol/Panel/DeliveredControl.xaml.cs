@@ -24,7 +24,7 @@ namespace MGSol.Panel
             var list = new List<PostingsList>();
             foreach (StructLibCore.Marketplace.APISetting item in Model.OptionMarketPlace.APISettings)
             {
-                if (item.Type == MarketName.Ozon)
+                if (item.Type == MarketName.Ozon && item.Active)
                 {
                     list.Add(new PostingsList(new OzonPostMonthOrderList(item).Get(), item));
                 }

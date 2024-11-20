@@ -19,11 +19,7 @@
         <p>Навигация</p>
         <ul>
             <li><a href="{% url 'home' %}"> <i class="bi bi-house"> </i>Главная </a>  </li>
-            <!--<li><a href="{% url 'one' %}"> <i class="bi bi-inbox"> </i>Первая </a> </li>-->
-            <li><a href="{% url 'PostingAccounting' %}"> <i class="bi bi-inbox"> </i>Посылки </a> </li>
-            <li><a href="{% url 'AutoH' %}"> <i class="bi bi-option"> </i>Автоматизация</a> </li>
-            <!--<li><a href=""> <i class="bi bi-inbox"> </i> Вторая</a> </li>-->
-            <!--<li><form action="{% url 'add' %}"> <button class="btn btn-info">Добавить<i class="bi bi-clipboard-plus "></i></button></form></li>-->
+            <li><a href="{% url 'devices' %}"> <i class="bi bi-option"> </i>Устройства </a>  </li>
         </ul>
         {% else %}
         <ul class="sidebar-nav">

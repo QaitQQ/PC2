@@ -7,7 +7,6 @@
              d:DesignHeight="450" d:DesignWidth="800"
              xmlns:MainModel="clr-namespace:MGSol"
              >
-
     <UserControl.Resources>
         <DataTemplate x:Key="DataTemplate_Level2">
             <Border BorderBrush="Black" BorderThickness="1">
@@ -25,7 +24,6 @@
         </DataTemplate>
         <ObjectDataProvider x:Key="AnyByer" MethodName="GetINN" ObjectType="{x:Type MainModel:MainModel}"/>
         <ObjectDataProvider x:Key="AnyApi" MethodName="GetApi" ObjectType="{x:Type MainModel:MainModel}"/>
-       
     </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
@@ -44,25 +42,42 @@
                     <ItemsControl x:Name="FileList">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <Border Margin="2" BorderBrush="Black" BorderThickness="2" CornerRadius="2">
-                                    <Grid>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition/>
-                                            <ColumnDefinition Width="0.2*"/>
-                                            <ColumnDefinition Width="0.2*"/>
-                                            <ColumnDefinition Width="Auto"/>
-                                            <ColumnDefinition/>
-                                        </Grid.ColumnDefinitions>
-                                        <TextBox Grid.Column="0" Text="{Binding FileName}" ></TextBox>
-                                        <ComboBox Grid.Column="1" SelectedItem="{Binding APISetting.Name}" ItemsSource="{Binding Source={StaticResource ResourceKey=AnyApi}}" SelectionChanged="ComboBox_SelectionChanged"></ComboBox>
-                                        <ComboBox Grid.Column="2" x:Name="ByerComboBoxINN" SelectedItem="{Binding InnStringName, Mode=OneWay}" ItemsSource="{Binding Source={StaticResource ResourceKey=AnyByer}}" SelectionChanged="ByerComboBoxINN_SelectionChanged"></ComboBox>
-                                        <StackPanel Grid.Column="3" Orientation="Horizontal">
-                                            <Button x:Name="Read_file_button"  Content="Прочитать" Click="Read_file_button_Click"></Button>
-                                            <Button Content="Загрузить Настройки" Click="Load_options"></Button>
-                                        </StackPanel>
-                                        <TextBox Grid.Column="4" Text="{Binding Description}"></TextBox>
-                                    </Grid>
-                                </Border>
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition/>
+                                        <RowDefinition/>
+                                    </Grid.RowDefinitions>
+                                    <TextBlock  Text="{Binding Name}" ></TextBlock>
+                                    <StackPanel Grid.Row="1">
+                                        <ItemsControl ItemsSource ="{Binding .}">
+                                        <ItemsControl.ItemTemplate>
+                                                <DataTemplate>
+
+                                                    <Border Grid.Row="1" Margin="2" BorderBrush="Black" BorderThickness="2" CornerRadius="2">
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition/>
+                                                    <ColumnDefinition Width="0.2*"/>
+                                                    <ColumnDefinition Width="0.2*"/>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                    <ColumnDefinition/>
+                                                </Grid.ColumnDefinitions>
+                                                <TextBox Grid.Column="0" Text="{Binding FileName}" ></TextBox>
+                                                <ComboBox Grid.Column="1" SelectedItem="{Binding APISetting.Name}" ItemsSource="{Binding Source={StaticResource ResourceKey=AnyApi}}" SelectionChanged="ComboBox_SelectionChanged"></ComboBox>
+                                                <ComboBox Grid.Column="2" x:Name="ByerComboBoxINN" SelectedItem="{Binding InnStringName, Mode=OneWay}" ItemsSource="{Binding Source={StaticResource ResourceKey=AnyByer}}" SelectionChanged="ByerComboBoxINN_SelectionChanged"></ComboBox>
+                                                <StackPanel Grid.Column="3" Orientation="Horizontal">
+                                                    <Button x:Name="Read_file_button"  Content="Прочитать" Click="Read_file_button_Click"></Button>
+                                                    <Button Content="Загрузить Настройки" Click="Load_options"></Button>
+                                                </StackPanel>
+                                                <TextBox Grid.Column="4" Text="{Binding Description}"></TextBox>
+                                            </Grid>
+                                        </Border>
+                                   
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                </StackPanel>
+                                </Grid>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>

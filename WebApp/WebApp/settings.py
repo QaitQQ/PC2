@@ -1,39 +1,11 @@
-"""
-Django settings for WebApp project.
-
-Based on 'django-admin startproject' using Django 2.1.2.
-
-For more information on this file, see
-https://docs.djangoproject.com/en/2.1/topics/settings/
-
-For the full list of settings and their values, see
-https://docs.djangoproject.com/en/2.1/ref/settings/
-"""
-
 import os
 import posixpath
-
-# Build paths inside the project like this: os.path.join(BASE_DIR, ...)
+import socket
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
-
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/2.1/howto/deployment/checklist/
-
-# SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'b99f00a6-710a-457e-bce7-0e06ad38e692'
-
-# SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True 
-
-ALLOWED_HOSTS = ['xn--80ach6cd.xn--p1ai','127.0.0.1','localhost', '192.168.8.102']
-
-
-# Application references
-# https://docs.djangoproject.com/en/2.1/ref/settings/#std:setting-INSTALLED_APPS
+ALLOWED_HOSTS = ['xn--80ach6cd.xn--p1ai','127.0.0.1','localhost', '192.168.8.103']
 INSTALLED_APPS = [
-    
-    # Add your apps here to enable them
     'django.contrib.admin',
     'django.contrib.admindocs',
     'django.contrib.auth',
@@ -49,15 +21,11 @@ INSTALLED_APPS = [
     'djoser',
     'django_extensions',
     'PostingAccounting',
-    
-   
+    'AutoH', 
 ]
-
 LOGIN_REDIRECT_URL = '/'
-
-# Middleware framework
-# https://docs.djangoproject.com/en/2.1/topics/http/middleware/
 MIDDLEWARE = [
+    'AutoH.middleware.RemoveHeaders',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -66,22 +34,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
-
 ROOT_URLCONF = 'WebApp.urls'
-
-
-#DJOSER = {
-
-#    "SERIALIZERS": {
-#        "user_create": "account.serializers.user_serializer.CustomUserCreateSerializer",
-#        "user": "account.serializers.user_serializer.CustomUserSerializer",
-#        "user_create_password_retype": "account.serializers.user_serializer.UserCreatePasswordRetypeSerializer",
-#    }
-     
-#}
-
-# Template configuration
-# https://docs.djangoproject.com/en/2.1/topics/templates/
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -97,39 +50,32 @@ TEMPLATES = [
         },
     },
 ]
-
 WSGI_APPLICATION = 'WebApp.wsgi.application'
-
-
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+if str(socket.gethostname()) == "DESKTOP-0":
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        }
     }
-}
-
-# DATABASES = {
-#    'default': {
-#        'ENGINE': 'django.db.backends.mysql',
-#        'NAME': 'u2163474_dj_def',
-#        'USER': 'u2163474_dj_def',
-#        'PASSWORD': 'fn3-XJd-9YF-vBv',
-#        'HOST': 'localhost',
-#        'PORT': '3306',
-#    }
-# }
-
+else:
+    DATABASES = {
+       'default': {
+           'ENGINE': 'django.db.backends.mysql',
+           'NAME': 'u2163474_dj_def',
+           'USER': 'u2163474_dj_def',
+           'PASSWORD': 'fn3-XJd-9YF-vBv',
+           'HOST': 'localhost',
+           'PORT': '3306',
+       }
+    }
 REST_FRAMEWORK = {
-    # Use Django's standard `django.contrib.auth` permissions,
-    # or allow read-only access for unauthenticated users.
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
     'PAGE_SIZE': 1000,
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.TokenAuthentication',
         'rest_framework.authentication.BasicAuthentication',
         'rest_framework.authentication.SessionAuthentication',
-        
         ],
     'DEFAULT_PERMISSION_CLASSES': [],
     'DEFAULT_PERMISSION_CLASSES': [
@@ -141,11 +87,6 @@ REST_FRAMEWORK = {
     ],
     'DEFAULT_METADATA_CLASS': 'rest_framework.metadata.SimpleMetadata'
 }
-
-
-
-# Password validation
-# https://docs.djangoproject.com/en/2.1/ref/settings/#auth-password-validators
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -160,39 +101,18 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
-
-# Internationalization
-# https://docs.djangoproject.com/en/2.1/topics/i18n/
-# 'en-us
 LANGUAGE_CODE ='ru'
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Etc/GMT-3'
 USE_I18N = True
 USE_L10N = True
 USE_TZ = True
-
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/2.1/howto/static-files/
 STATIC_PRODUCTION_DIR = os.path.abspath(os.path.join(
 os.path.dirname(__file__), '..', '..', 'static_production'))
-
-STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(STATIC_PRODUCTION_DIR, "static")
-
-MEDIA_URL = '/media/'
+STATIC_URL = 'static/'
+STATIC_ROOT = os.path.join(STATIC_PRODUCTION_DIR, "static/")
+MEDIA_URL = 'media/'
 MEDIA_ROOT = os.path.join(STATIC_PRODUCTION_DIR, "media")
-
-
 STATICFILES_DIRS = [
    os.path.join(BASE_DIR, "static"),
 ]
-#print(STATIC_PRODUCTION_DIR)
-
-# STATIC_ROOT = os.path.join(BASE_DIR, "/static/")
-# STATIC_URL = 'static'
-# STATICFILES_DIRS = (
-#     os.path.join(BASE_DIR, "/static/"),
-# )
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-
-# STATICFILES_DIRS

@@ -1,0 +1,41 @@
+{% extends 'AutoH/layout.html' %}
+{% block title  %}
+Устройства
+{% endblock %}
+{% block content  %}
+{% csrf_token %}
+<div style="display: grid;">
+    {% if user.is_authenticated %}
+    {% for el in device %}
+    <div style="background:{{ el.color }} ; Margin:6px; border-radius: 5px;width: 500px;">
+        <div style="display: inline-flex; vertical-align: top; Margin: 5px;">
+            <div style="width:350px;">
+                <div>
+                    <p style="display: ruby; Margin: 5px; vertical-align: super;">{{el.device.sn}} </p>
+                    <p style="display: ruby; Margin: 5px; vertical-align: super;">id {{el.device.id}} </p>
+                    <p style="display: ruby; Margin: 5px; vertical-align: super;">Тип {{el.device.deviceType.name}} </p>
+
+                </div>
+
+                <p style="display: ruby; Margin: 5px; vertical-align: super;">Активность - {{el.data}}</p>
+
+            </div>
+            <details>
+                <summary>Удалить устройство</summary>
+                <form action="{% url 'rem_dev' el.device.id %}"> <button class="bth alert-warning" style="width: 100px; Margin: 5px;">Удалить</button></form>
+            </details>
+        </div>
+        {% if el.device.deviceType.name == "valve" %}
+        {% include 'AutoH/devtype/valve.html' %}
+        {% endif %}
+
+        {% if el.device.deviceType.name == "relay" %}
+        {% include 'AutoH/devtype/relay.html' %}
+        {% endif %}
+    </div>
+
+        {%endfor %}
+        {% endif %}
+        {% include 'main/Modal.html' %}
+    </div>
+{% endblock %}

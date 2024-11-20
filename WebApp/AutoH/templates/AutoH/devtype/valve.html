@@ -1,0 +1,33 @@
+{% if el.id_str == request.GET.dev_act %}
+<details open>
+    {% else %}
+    <details>
+        {% endif %}
+
+        <summary>Настройки</summary>
+        <div style="display: grid; Margin: 3px; ">
+            <p style="display: ruby; Margin: 5px; vertical-align: super;">Последняя сработка - {{el.DateOfLastOperation}}</p>
+            {% for x in el.on_time %}
+            <form action="{% url 'rem_opt' %}" method="post" style="display: ruby;">
+                {% csrf_token %}
+                <input type="hidden" name="rem_val" value={{x}} />
+                <input type="hidden" name="dev_id" value={{el.device.id}} />
+                <p style="width: 75px;">{{x}}</p>
+                <button> Убрать</button>
+            </form>
+            {%endfor %}
+            <form action="{% url 'add_opt' %}" method="post">
+                {% csrf_token %}
+                <div style="display: inline-flex;">
+                    <input style="width: 30px;" type="text" name="hour" />
+                    <label>:</label>
+                    <input style="width: 30px;" type="text" name="minutes" />
+                    <label>:</label>
+                    <input style="width: 50px;" type="text" name="delay" />
+                </div>
+                <input type="hidden" name="dev_id" value={{el.device.id}} />
+                <button class="bth alert-warning">Добавить</button>
+            </form>
+        </div>
+    </details>
+  
