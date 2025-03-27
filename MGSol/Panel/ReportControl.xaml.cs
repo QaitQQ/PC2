@@ -354,9 +354,6 @@ namespace MGSol.Panel
         }
         private SF GetSchetFaktura(string NNomer, string SFNomber, ref string[][] byerSFmass)
         {
-
-            var i = 1;
-
             try
             {
                 string y = AppDomain.CurrentDomain.BaseDirectory;

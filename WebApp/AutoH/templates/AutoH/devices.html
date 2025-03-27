@@ -6,6 +6,29 @@
 {% csrf_token %}
 <div style="display: grid;">
     {% if user.is_authenticated %}
+    <details>
+        <summary>Добавить новое устройство</summary>
+        <div style=" background: #98e38d; Margin: 6px; border-radius: 5px; width: 500px; ">
+            <form style="display: grid; " action="{% url 'add_new_dev' %}" method="post">
+                {% csrf_token %}
+                <div>
+                    <div>
+                        <label style="width: 60px; ">Имя</label>
+                        <input style="width: 380px; " type="text" name="name" />
+                    </div>
+                    <div>
+                        <label style="width: 60px;">Строка</label>
+                        <input style="width: 380px; " type="text" name="devicedata" />
+                    </div>
+                    <div>
+                        <label style="width: 60px;">Тип</label>
+                        <input style="width: 380px; " type="text" name="type" />
+                    </div>
+                </div>
+                <button> Добавить </button>
+            </form>
+        </div>
+    </details>
     {% for el in device %}
     <div style="background:{{ el.color }} ; Margin:6px; border-radius: 5px;width: 500px;">
         <div style="display: inline-flex; vertical-align: top; Margin: 5px;">
@@ -14,11 +37,8 @@
                     <p style="display: ruby; Margin: 5px; vertical-align: super;">{{el.device.sn}} </p>
                     <p style="display: ruby; Margin: 5px; vertical-align: super;">id {{el.device.id}} </p>
                     <p style="display: ruby; Margin: 5px; vertical-align: super;">Тип {{el.device.deviceType.name}} </p>
-
                 </div>
-
                 <p style="display: ruby; Margin: 5px; vertical-align: super;">Активность - {{el.data}}</p>
-
             </div>
             <details>
                 <summary>Удалить устройство</summary>
@@ -27,15 +47,26 @@
         </div>
         {% if el.device.deviceType.name == "valve" %}
         {% include 'AutoH/devtype/valve.html' %}
-        {% endif %}
-
-        {% if el.device.deviceType.name == "relay" %}
+        {% elif el.device.deviceType.name == "relay" %}
         {% include 'AutoH/devtype/relay.html' %}
-        {% endif %}
-    </div>
+        {% elif el.device.deviceType.name == "ext_dev" %}
+        <label>{{el.time}}</label>
+        <label>{{el.term}}</label>
+        <label>{{el.stat}}</label>
+        <form action="{% url 'get_ext_dev' %}" method="post">
+            {% csrf_token %}
+            <input type="hidden" name="dev_id" value={{el.device.id}} />
+            <input type="hidden" name="dev_link" value={{el.link}} />
+            <button>On/Off</button>
+        </form>
 
-        {%endfor %}
+        {% else %}
+        <label>{{el.DeviceData}}</label>
         {% endif %}
-        {% include 'main/Modal.html' %}
+
     </div>
+    {%endfor %}
+    {% endif %}
+    {% include 'main/Modal.html' %}
+</div>
 {% endblock %}

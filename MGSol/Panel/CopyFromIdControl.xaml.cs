@@ -88,8 +88,8 @@ namespace MGSol.Panel
                 btn.Background = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(255,0, 0));
 
 
-                var item = (OzonItemDesc)items[0];
-                item.offer_id = Environment.TickCount.ToString();
+                var item = (ItemDesc)items[0];
+                item.OfferId = Environment.TickCount.ToString();
                 OzonPostGetAttr.Response attr = new OzonPostGetAttr(api).Get(new List<string> { itemName });
                 if (attr != null)
                 {
@@ -98,13 +98,12 @@ namespace MGSol.Panel
                     {
                         item.attributes.Add(X);
                     }
-                    item.name = NameBox;
-                    item.offer_id = SKUBox;
-                    item.price = PriceBox;
-                    item.old_price = ((double.Parse(item.price)) * 1.3).ToString();
-                    item.premium_price = item.price;
-                    item.min_ozon_price = ((double.Parse(item.price)) * 0.9).ToString();
-                    item.min_price = ((double.Parse(item.price)) * 0.9).ToString();
+                    item.Name = NameBox;
+                    item.OfferId = SKUBox;
+                    item.Price = PriceBox;
+                    item.OldPrice = ((double.Parse(item.Price)) * 1.3).ToString();
+
+                    item.MinPrice = ((double.Parse(item.Price)) * 0.9).ToString();
                     var copyItem = new OzonPostItemCopyObject(api).Get(new List<StructLibCore.Marketplace.IMarketItem> { item });
                     if (copyItem != null)
                     {

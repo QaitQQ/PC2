@@ -57,11 +57,11 @@ namespace Server.Class.IntegrationSiteApi.Market.Ozon
 
                 List<string> IDS = new List<string>();
 
-                foreach (var item in End.result.items) { IDS.Add(item.id.ToString()); }
+                foreach (var item in End.Items) { IDS.Add(item.Id.ToString()); }
 
                 var PriceInfoList = new OzonPostPriceInfo(aPISetting).Get(IDS, OzonPostPriceInfo.PriceInfoType.product);
 
-                foreach (OzonItemDesc item in End.result.items) { item.Priceinfo = PriceInfoList?.FirstOrDefault(x => x.ProductId == item.id); NLST.Add(item); }
+                foreach (var item in End.Items) { item.Priceinfo = PriceInfoList?.FirstOrDefault(x => x.ProductId == item.Id); NLST.Add(item); }
 
             }
             catch (System.Exception e)

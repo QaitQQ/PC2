@@ -21,7 +21,7 @@ namespace Server.Class.IntegrationSiteApi.Market.Ozon
         public object Get(IMarketItem[] List)
         {
             Root itemsRoot = new Root();
-            foreach (OzonItemDesc item in List)
+            foreach (ItemDesc item in List)
             {
                 itemsRoot.Prices.Add(new PriceItem(item));
             }
@@ -61,21 +61,21 @@ namespace Server.Class.IntegrationSiteApi.Market.Ozon
             [JsonProperty("product_id")]
             public int ProductId;
 
-            public PriceItem(OzonItemDesc ozonItemDesc, AutoActionEnabled autoActionEnabled = AutoActionEnabled.UNKNOWN)
+            public PriceItem(ItemDesc ozonItemDesc, AutoActionEnabled autoActionEnabled = AutoActionEnabled.UNKNOWN)
             {
-                MinPrice = ozonItemDesc.min_price.Replace(',', '.');
-                OfferId = ozonItemDesc.offer_id;
+                MinPrice = ozonItemDesc.MinPrice.Replace(',', '.');
+                OfferId = ozonItemDesc.OfferId;
 
-                if (Convert.ToDouble(ozonItemDesc.old_price.Replace('.', ',')) < Convert.ToDouble(ozonItemDesc.price.Replace('.', ',')))
+                if (Convert.ToDouble(ozonItemDesc.OldPrice.Replace('.', ',')) < Convert.ToDouble(ozonItemDesc.Price.Replace('.', ',')))
                 {
-                    double oldPrice = Convert.ToDouble(ozonItemDesc.price.Replace('.', ',')) * 1.1;
+                    double oldPrice = Convert.ToDouble(ozonItemDesc.Price.Replace('.', ',')) * 1.1;
 
                     OldPrice = oldPrice.ToString().Replace(',', '.');
                 }
 
                 
-                Price = ozonItemDesc.price.Replace(',','.');
-                ProductId = ozonItemDesc.id;
+                Price = ozonItemDesc.Price.Replace(',','.');
+                ProductId = (int)ozonItemDesc.Id;
             }
         }
         public class Root

@@ -4,6 +4,8 @@ using StructLibCore.Marketplace;
 using System;
 using System.Collections.Generic;
 using System.Net;
+using System.Text.Json.Serialization;
+using System.Xml.Linq;
 namespace SiteApi.IntegrationSiteApi.APIMarket.Ozon.Post
 {
     public abstract class OzonPost : IMarketApi
@@ -99,52 +101,171 @@ namespace SiteApi.IntegrationSiteApi.APIMarket.Ozon.Post
         public DateTime state_updated_at { get; set; }
     }
     [Serializable]
-    public class OzonItemDesc : IMarketItem
+    public class Commission
     {
-        public OzonItemDesc() { barcodes = new List<string>(); }
-        public int id { get; set; }
-        public string name { get; set; }
-        public string offer_id { get; set; }
-        public string barcode { get; set; }
-        public List<string> barcodes { get; set; }
-        public string buybox_price { get; set; }
-        public int category_id { get; set; }
-        public DateTime created_at { get; set; }
-        public List<string> images { get; set; }
-        public string marketing_price { get; set; }
-        public string min_ozon_price { get; set; }
-        public string old_price { get; set; }
-        public string premium_price { get; set; }
-        public string price { get; set; }
-        public string recommended_price { get; set; }
-        public string min_price { get; set; }
-        public List<Source> sources { get; set; }
-        public Stocks stocks { get; set; }
-        public List<object> errors { get; set; }
-        public string vat { get; set; }
-        public bool visible { get; set; }
-        public VisibilityDetails visibility_details { get; set; }
-        public string price_index { get; set; }
-        public List<object> images360 { get; set; }
-        public string color_image { get; set; }
-        public string primary_image { get; set; }
-        public Status status { get; set; }
-        public string state { get; set; }
-        public string service_type { get; set; }
-        public string Stocks { get => stocks.present; set => stocks.present = value; }
-        public string SKU => offer_id;
+        [JsonPropertyName("delivery_amount")]
+        public double? DeliveryAmount;
+
+        [JsonPropertyName("percent")]
+        public int? Percent;
+
+        [JsonPropertyName("return_amount")]
+        public int? ReturnAmount;
+
+        [JsonPropertyName("sale_schema")]
+        public string SaleSchema;
+
+        [JsonPropertyName("value")]
+        public double? Value;
+    }
+    [Serializable]
+    public class ExternalIndexData
+    {
+        [JsonPropertyName("minimal_price")]
+        public string MinimalPrice;
+
+        [JsonPropertyName("minimal_price_currency")]
+        public string MinimalPriceCurrency;
+
+        [JsonPropertyName("price_index_value")]
+        public int? PriceIndexValue;
+    }
+    [Serializable]
+    public class ItemDesc : IMarketItem
+    {
+
+        public ItemDesc() { Barcodes = new List<string>(); }
+
+        [JsonPropertyName("id")]
+        public int? Id;
+
+        [JsonPropertyName("name")]
+        public string Name;
+
+        [JsonPropertyName("offer_id")]
+        public string OfferId;
+
+        [JsonPropertyName("is_archived")]
+        public bool? IsArchived;
+
+        [JsonPropertyName("is_autoarchived")]
+        public bool? IsAutoarchived;
+
+        [JsonPropertyName("barcodes")]
+        public List<string> Barcodes;
+
+        [JsonPropertyName("description_category_id")]
+        public int? DescriptionCategoryId;
+
+        [JsonPropertyName("type_id")]
+        public int? TypeId;
+
+        [JsonPropertyName("created_at")]
+        public DateTime? CreatedAt;
+
+        [JsonPropertyName("images")]
+        public List<string> Images;
+
+        [JsonPropertyName("currency_code")]
+        public string CurrencyCode;
+
+        [JsonPropertyName("marketing_price")]
+        public string MarketingPrice;
+
+        [JsonPropertyName("min_price")]
+        public string MinPrice;
+
+        [JsonPropertyName("old_price")]
+        public string OldPrice;
+
+        [JsonPropertyName("price")]
+        public string Price;
+
+        [JsonPropertyName("sources")]
+        public List<Source> Sources;
+
+        [JsonPropertyName("model_info")]
+        public ModelInfo ModelInfo;
+
+        [JsonPropertyName("commissions")]
+        public List<Commission> Commissions;
+
+        [JsonPropertyName("is_prepayment_allowed")]
+        public bool? IsPrepaymentAllowed;
+
+        [JsonPropertyName("volume_weight")]
+        public double? VolumeWeight;
+
+        [JsonPropertyName("has_discounted_fbo_item")]
+        public bool? HasDiscountedFboItem;
+
+        [JsonPropertyName("is_discounted")]
+        public bool? IsDiscounted;
+
+        [JsonPropertyName("discounted_fbo_stocks")]
+        public int? DiscountedFboStocks;
+
+        [JsonPropertyName("stocks")]
+        public Stocks Stocks;
+
+        [JsonPropertyName("errors")]
+        public List<object> Errors;
+
+        [JsonPropertyName("updated_at")]
+        public DateTime? UpdatedAt;
+
+        [JsonPropertyName("vat")]
+        public string Vat;
+
+        [JsonPropertyName("visibility_details")]
+        public VisibilityDetails_D VisibilityDetails;
+
+        [JsonPropertyName("price_indexes")]
+        public PriceIndexes PriceIndexes;
+
+        [JsonPropertyName("images360")]
+        public List<object> Images360;
+
+        [JsonPropertyName("is_kgt")]
+        public bool? IsKgt;
+
+        [JsonPropertyName("color_image")]
+        public List<object> ColorImage;
+
+       
+        public List<string> primary_image;
+
+        [JsonPropertyName("statuses")]
+        public Statuses Statuses;
+
+        [JsonPropertyName("is_super")]
+        public bool? IsSuper;
+        public object Priceinfo { get; set; }
+
+        public static explicit operator ItemDesc(List<IMarketItem> v)
+        {
+            throw new NotImplementedException();
+        }
+
+        public string SKU => OfferId;
+
+        string IMarketItem.Stocks { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         public APISetting APISetting { get; set; }
-        public string Name { get => name; set => name = value; }
-        public string Price { get => price; set => price = value; }
-        public string MinPrice { get => min_price; set => min_price = value; }
+
         public APISetting APISettingSource { get; set; }
         public List<string> Pic
         {
             get
             {
                 var nlist = new List<string>();
-                nlist.Add(primary_image);
-                foreach (var item in images)
+
+                if (primary_image != null )
+                {
+                    nlist.Add(primary_image[0]);
+                }
+
+
+                    foreach (var item in Images)
                 {
                     nlist.Add(item);
                 }
@@ -152,24 +273,155 @@ namespace SiteApi.IntegrationSiteApi.APIMarket.Ozon.Post
             }
 
         }
-        public List<string> Barcodes { get => barcodes; set => barcodes = value; }
-        public object Priceinfo { get; set; }
         public List<object> attributes { get; set; }
+        string IMarketItem.Name  { get { return Name; } set { Name = value; } }
 
-        public static explicit operator OzonItemDesc(List<IMarketItem> v)
-        {
-            throw new NotImplementedException();
-        }
+        string IMarketItem.Price { get { return Price; } set { Price = value; } }
+        string IMarketItem.MinPrice { get { return MinPrice; } set { MinPrice = value; } }
+        List<string> IMarketItem.Barcodes { get { return Barcodes; } set { Barcodes = value; } }
     }
     [Serializable]
-    public class Result_D
+    public class ModelInfo
     {
-        public List<OzonItemDesc> items { get; set; }
+        [JsonPropertyName("model_id")]
+        public int? ModelId;
+
+        [JsonPropertyName("count")]
+        public int? Count;
+    }
+    [Serializable]
+    public class OzonIndexData
+    {
+        [JsonPropertyName("minimal_price")]
+        public string MinimalPrice;
+
+        [JsonPropertyName("minimal_price_currency")]
+        public string MinimalPriceCurrency;
+
+        [JsonPropertyName("price_index_value")]
+        public int? PriceIndexValue;
+    }
+    [Serializable]
+    public class PriceIndexes
+    {
+        [JsonPropertyName("color_index")]
+        public string ColorIndex;
+
+        [JsonPropertyName("external_index_data")]
+        public ExternalIndexData ExternalIndexData;
+
+        [JsonPropertyName("ozon_index_data")]
+        public OzonIndexData OzonIndexData;
+
+        [JsonPropertyName("self_marketplaces_index_data")]
+        public SelfMarketplacesIndexData SelfMarketplacesIndexData;
     }
     [Serializable]
     public class Root_D
     {
-        public Result_D result { get; set; }
+        [JsonPropertyName("items")]
+        public List<ItemDesc> Items;
     }
+    [Serializable]
+    public class SelfMarketplacesIndexData
+    {
+        [JsonPropertyName("minimal_price")]
+        public string MinimalPrice;
+
+        [JsonPropertyName("minimal_price_currency")]
+        public string MinimalPriceCurrency;
+
+        [JsonPropertyName("price_index_value")]
+        public int? PriceIndexValue;
+    }
+    [Serializable]
+    public class Source_D
+    {
+        [JsonPropertyName("sku")]
+        public int? Sku;
+
+        [JsonPropertyName("source")]
+        public string Source;
+
+        [JsonPropertyName("created_at")]
+        public DateTime? CreatedAt;
+
+        [JsonPropertyName("shipment_type")]
+        public string ShipmentType;
+
+        [JsonPropertyName("quant_code")]
+        public string QuantCode;
+    }
+    [Serializable]
+    public class Statuses
+    {
+        [JsonPropertyName("status")]
+        public string Status;
+
+        [JsonPropertyName("status_failed")]
+        public string StatusFailed;
+
+        [JsonPropertyName("moderate_status")]
+        public string ModerateStatus;
+
+        [JsonPropertyName("validation_status")]
+        public string ValidationStatus;
+
+        [JsonPropertyName("status_name")]
+        public string StatusName;
+
+        [JsonPropertyName("status_description")]
+        public string StatusDescription;
+
+        [JsonPropertyName("is_created")]
+        public bool? IsCreated;
+
+        [JsonPropertyName("status_tooltip")]
+        public string StatusTooltip;
+
+        [JsonPropertyName("status_updated_at")]
+        public DateTime? StatusUpdatedAt;
+    }
+    [Serializable]
+    public class Stock
+    {
+        [JsonPropertyName("present")]
+        public int? Present;
+
+        [JsonPropertyName("reserved")]
+        public int? Reserved;
+
+        [JsonPropertyName("sku")]
+        public int? Sku;
+
+        [JsonPropertyName("source")]
+        public string Source;
+
+        [JsonPropertyName("has_stock")]
+        public bool? HasStock;
+
+        [JsonPropertyName("stocks")]
+        public List<Stock> Stocks;
+    }
+    [Serializable]
+    public class VisibilityDetails_D
+    {
+        [JsonPropertyName("has_price")]
+        public bool? HasPrice;
+
+        [JsonPropertyName("has_stock")]
+        public bool? HasStock;
+    }
+
+
+
+
+
+
+
+
+
+
+
     #endregion
 }

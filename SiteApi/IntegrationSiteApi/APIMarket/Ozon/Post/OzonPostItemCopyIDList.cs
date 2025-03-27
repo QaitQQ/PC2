@@ -56,14 +56,14 @@ namespace Server.Class.IntegrationSiteApi.Market.Ozon
         {
             public Item(IMarketItem item)
             {
-                var ozItem = (SiteApi.IntegrationSiteApi.APIMarket.Ozon.Post.OzonItemDesc)item;
-                Sku = ozItem.id.ToString();
+                var ozItem = (SiteApi.IntegrationSiteApi.APIMarket.Ozon.Post.ItemDesc)item;
+                Sku = ozItem.Id.ToString();
                 Name = ozItem.Name;
                 OfferId = ozItem.SKU;
                 CurrencyCode = "RUB";
-                OldPrice = ozItem.old_price;
-                Price = ozItem.price;
-                PremiumPrice = ozItem.premium_price;
+                OldPrice = ozItem.OldPrice;
+                Price = ozItem.Price;
+                PremiumPrice = ozItem.MarketingPrice;
                 Vat = "0";
             }
             public Item(string Id)

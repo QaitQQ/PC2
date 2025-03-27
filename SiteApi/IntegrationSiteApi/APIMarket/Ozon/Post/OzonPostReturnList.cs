@@ -19,20 +19,23 @@ namespace SiteApi.IntegrationSiteApi.APIMarket.Ozon.Post
             HttpWebRequest httpWebRequest = GetRequest(@"v2/returns/company/fbs");
             ReturnListRoot root = new() { Limit = 100, Offset = 0 };
             using (StreamWriter streamWriter = new(httpWebRequest.GetRequestStream())) { string json = JsonConvert.SerializeObject(root); streamWriter.Write(json); }
-            HttpWebResponse httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
+            HttpWebResponse httpResponse = null;
+            List<object> X = new();
             try
             {
+                httpResponse =(HttpWebResponse)httpWebRequest.GetResponse();
                 using StreamReader streamReader = new(httpResponse.GetResponseStream());
                 result = streamReader.ReadToEnd();
+                ResultRoot Result = JsonConvert.DeserializeObject<ResultRoot>(result);
+
+                foreach (Return item in Result.Result.Returns)
+                {
+                    item.APISetting = aPISetting;
+                    X.Add(item);
+                }
             }
             catch { }
-            ResultRoot Result = JsonConvert.DeserializeObject<ResultRoot>(result);
-            List<object> X = new();
-            foreach (Return item in Result.Result.Returns)
-            {
-                item.APISetting = aPISetting;
-                X.Add(item);
-            }
+
             return X;
         }
         public class Filter

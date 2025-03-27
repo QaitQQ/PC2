@@ -25,28 +25,36 @@ namespace Server.Class.IntegrationSiteApi.Market.Ozon
             var LstIDs = new List<string>();
             foreach (var item in Lst)
             {
-                var Oitm = (OzonItemDesc)item;
-                LstCat.Add(Oitm.category_id.ToString());
-                LstIDs.Add(Oitm.id.ToString());
-            }
-            var CatAttr = new OzonPostGetAttFromCat(aPISetting).Get(LstCat);
-            var ItmAttr = new OzonPostGetAttr(aPISetting).Get(LstIDs);
-            List<IGrouping<APISetting, IMarketItem>> LST = ConvertListApi();
-            foreach (IGrouping<APISetting, IMarketItem> item in LST)
-            {
-                ClientID = item.Key.ApiString[0];
-                apiKey = item.Key.ApiString[1];
-                HttpWebRequest httpWebRequest = GetRequest(@"v2/product/import");
-                Root items = new Root() { items = ConvertItems(item.ToList(), ItmAttr.Result, CatAttr.Result) };
-                using (StreamWriter streamWriter = new StreamWriter(httpWebRequest.GetRequestStream()))
+                if (item is IMarketItem)
                 {
-                    string root = JsonConvert.SerializeObject(items);
-                    streamWriter.Write(root);
+                    var Oitm = (ItemDesc)item;
+                    LstCat.Add(Oitm.DescriptionCategoryId.ToString());
+                    LstIDs.Add(Oitm.Id.ToString());
                 }
-                HttpWebResponse httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
-                using StreamReader streamReader = new StreamReader(httpResponse.GetResponseStream());
-                result = streamReader.ReadToEnd();
-                // ResultRoot = JsonConvert.DeserializeObject<ResultRoot>(result);
+            }
+            if (LstCat.Count > 0)
+            {
+
+
+                var CatAttr = new OzonPostGetAttFromCat(aPISetting).Get(LstCat);
+                var ItmAttr = new OzonPostGetAttr(aPISetting).Get(LstIDs);
+                List<IGrouping<APISetting, IMarketItem>> LST = ConvertListApi();
+                foreach (IGrouping<APISetting, IMarketItem> item in LST)
+                {
+                    ClientID = item.Key.ApiString[0];
+                    apiKey = item.Key.ApiString[1];
+                    HttpWebRequest httpWebRequest = GetRequest(@"v2/product/import");
+                    Root items = new Root() { items = ConvertItems(item.ToList(), ItmAttr.Result, CatAttr.Result) };
+                    using (StreamWriter streamWriter = new StreamWriter(httpWebRequest.GetRequestStream()))
+                    {
+                        string root = JsonConvert.SerializeObject(items);
+                        streamWriter.Write(root);
+                    }
+                    HttpWebResponse httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
+                    using StreamReader streamReader = new StreamReader(httpResponse.GetResponseStream());
+                    result = streamReader.ReadToEnd();
+                    // ResultRoot = JsonConvert.DeserializeObject<ResultRoot>(result);
+                }
             }
             return result;
         }
@@ -61,10 +69,10 @@ namespace Server.Class.IntegrationSiteApi.Market.Ozon
             List<SetOzonItem> Nlst = new List<SetOzonItem>();
             foreach (IMarketItem item in lst)
             {
-                var Oitm = (OzonItemDesc)item;
-                var Attribute = ItmAttr.First(x => x.Id == Oitm.id);
+                var Oitm = (ItemDesc)item;
+                var Attribute = ItmAttr.First(x => x.Id == Oitm.Id);
                 var LSTAttr = new List<Attribute>();
-                var CatArrt = CatAttr.First(x => x.CategoryId == Oitm.category_id);
+                var CatArrt = CatAttr.First(x => x.CategoryId == Oitm.DescriptionCategoryId);
                 foreach (var X in CatArrt.Attributes)
                 {
                     if (Attribute.Attributes.FirstOrDefault(x => x.ID == X.Id) == null)
@@ -76,7 +84,7 @@ namespace Server.Class.IntegrationSiteApi.Market.Ozon
                 {
                     LSTAttr.Add(new Attribute(X));
                 }
-                Nlst.Add(new SetOzonItem((OzonItemDesc)item) { attributes = LSTAttr, weight = Attribute.Weight, depth = Attribute.Depth, width = Attribute.Width, height = Attribute.Height });
+                Nlst.Add(new SetOzonItem((ItemDesc)item) { attributes = LSTAttr, weight = Attribute.Weight, depth = Attribute.Depth, width = Attribute.Width, height = Attribute.Height });
             }
             return Nlst;
         }
@@ -125,32 +133,31 @@ namespace Server.Class.IntegrationSiteApi.Market.Ozon
             public int weight { get; set; }
             public string weight_unit { get; set; }
             public int width { get; set; }
-            public SetOzonItem(OzonItemDesc itemDesc)
+            public SetOzonItem(ItemDesc itemDesc)
             {
                 attributes = new List<Attribute>();
                 complex_attributes = new List<object>();
                 pdf_list = new List<object>();
-                if (itemDesc.barcodes.Count > 1)
+                if (itemDesc.Barcodes.Count > 1)
                 {
-                    barcode = itemDesc.barcodes?[1];
+                    barcode = itemDesc.Barcodes?[1];
                 }
                 else
                 {
-                    barcode = itemDesc.barcodes?[0];
+                    barcode = itemDesc.Barcodes?[0];
                 }
                 //  barcodes = itemDesc.barcodes;
-                category_id = itemDesc.category_id;
-                color_image = itemDesc.color_image;
-                images = itemDesc.images;
-                images360 = itemDesc.images360;
-                name = itemDesc.name;
-                offer_id = itemDesc.offer_id;
-                old_price = itemDesc.old_price;
-                premium_price = itemDesc.premium_price;
-                price = itemDesc.price;
-                primary_image = itemDesc.primary_image;
-                vat = itemDesc.vat;
-                min_price = itemDesc.min_price;
+                category_id = (int)itemDesc.DescriptionCategoryId;
+ 
+                images = itemDesc.Images;
+                images360 = itemDesc.Images360;
+                name = itemDesc.Name;
+                offer_id = itemDesc.OfferId;
+                old_price = itemDesc.OldPrice;
+                price = itemDesc.Price;
+                primary_image = itemDesc.primary_image[0];
+                vat = itemDesc.Vat;
+                min_price = itemDesc.MinPrice;
                 weight_unit = "g";
                 dimension_unit = "mm";
             }

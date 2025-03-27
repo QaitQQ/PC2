@@ -8,6 +8,7 @@
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
         <StackPanel Orientation="Vertical" VerticalAlignment="Top" >
+            <StackPanel></StackPanel>
             <Button Height="20" x:Name="Btn" Click="Btn_Click" Content="↺"></Button>
             <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" >
                 <Grid >

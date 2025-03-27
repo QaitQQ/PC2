@@ -128,7 +128,7 @@ namespace Server.Class.IntegrationSiteApi.Market.Ozon
         {
             public Item(IMarketItem item)
             {
-                var ozItem = (SiteApi.IntegrationSiteApi.APIMarket.Ozon.Post.OzonItemDesc)item;
+                var ozItem = (SiteApi.IntegrationSiteApi.APIMarket.Ozon.Post.ItemDesc)item;
                 var ozDesc = (SiteApi.IntegrationSiteApi.APIMarket.Ozon.Post.OzonPostGetAttr.Result)(ozItem.attributes[0]);
                 var attr = (ozDesc).Attributes;
                 Attributes = new List<Attribute>();
@@ -150,8 +150,8 @@ namespace Server.Class.IntegrationSiteApi.Market.Ozon
                 {
                     Barcode = bar;
                 }
-                CategoryId = ozItem.category_id;
-                ColorImage = ozItem.color_image;
+                CategoryId = (int)ozItem.DescriptionCategoryId;
+                ColorImage = ozItem.ColorImage.ToString();
                 //ComplexAttributes = complexAttributes;
                 CurrencyCode = "RUB";
                 Depth = ozDesc.Depth;
@@ -162,10 +162,10 @@ namespace Server.Class.IntegrationSiteApi.Market.Ozon
                 { Images.Add(X.FileName); };
                 Name = ozItem.Name;
                 OfferId = ozItem.SKU;
-                OldPrice = ozItem.old_price;
-                PremiumPrice = ozItem.premium_price;
-                Price = ozItem.price;
-                Vat = ozItem.vat;
+                OldPrice = ozItem.OldPrice;
+
+                Price = ozItem.Price;
+                Vat = ozItem.Vat;
                 Weight = ozDesc.Weight;
                 WeightUnit = ozDesc.WeightUnit;
                 Width = ozDesc.Width;

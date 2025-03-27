@@ -147,7 +147,6 @@ namespace MGSol.Panel
             bool Z = false;
             if (X != null)
             {
-
                 try
                 {
                     switch (X.APISetting.Type)
@@ -355,7 +354,7 @@ namespace MGSol.Panel
                 case MarketName.Ozon:
                     Task.Factory.StartNew(() =>
                     {
-                        OzonItemDesc item = (OzonItemDesc)new OzonPostItemDesc(OrderItem.Order.APISetting).Get(new List<string> { OrderItem.Sku })[0];
+                        ItemDesc item = (ItemDesc)new OzonPostItemDesc(OrderItem.Order.APISetting).Get(new List<string> { OrderItem.Sku })[0];
                         foreach (string X in item.Pic)
                         {
                             Dispatcher.BeginInvoke(() => AddImage(X, St));
@@ -509,6 +508,7 @@ namespace MGSol.Panel
                     win.Width = SystemParameters.PrimaryScreenWidth / 3;
                     win.Height = SystemParameters.PrimaryScreenWidth / 3;
                     win.Show();
+                    win.Activate();
                 };
                 St.Children.Insert(0, img);
             }

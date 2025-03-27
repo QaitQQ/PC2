@@ -81,7 +81,11 @@ namespace StructLibCore.Marketplace
             {
                 if (Order.IMtemsList != null && Order.IMtemsList.Count()>0)
                 {
-                    return Order.IMtemsList.First(x => x.SKU == Sku).Barcodes;
+                    var X = Order.IMtemsList.FirstOrDefault(x => x.SKU == Sku);
+
+                    if (X != null) {
+
+                        return X.Barcodes; }
                 } 
                 return new List<string>();
             }

@@ -21,7 +21,7 @@ namespace Server.Class.IntegrationSiteApi.Market.Ozon
         {
             List<WarehouseResult> X = (List<WarehouseResult>)new OzonPostWarehouseInfo(aPISetting).Get();
             ProductsStocksRequestStockRoot itemsRoot = new ProductsStocksRequestStockRoot();
-            foreach (OzonItemDesc item in List)
+            foreach (ItemDesc item in List)
             {
                 itemsRoot.Stocks.Add(new Stock(item, X[0].WarehouseId));
             }
@@ -53,11 +53,11 @@ namespace Server.Class.IntegrationSiteApi.Market.Ozon
         }
         public class Stock
         {
-            public Stock(OzonItemDesc itemDesc, string WarehouseId)
+            public Stock(ItemDesc itemDesc, string WarehouseId)
             {
-                OfferId = itemDesc.offer_id;
-                ProductId = itemDesc.id.ToString();
-                StockCount = itemDesc.Stocks;
+                OfferId = itemDesc.OfferId;
+                ProductId = itemDesc.Id.ToString();
+                StockCount = itemDesc.Stocks.ToString();
                 this.WarehouseId = WarehouseId;
             }
             [JsonProperty("offer_id")]

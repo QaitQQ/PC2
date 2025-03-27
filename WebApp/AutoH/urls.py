@@ -13,4 +13,7 @@ urlpatterns = [
     path('rem_opt', views.rem_opt, name="rem_opt"),
     path('on_off_relay', views.on_off_relay, name="on_off_relay"),
     path('add_opt', views.add_opt, name="add_opt"),
+    path('add_new_dev', views.add_new_dev, name="add_new_dev"),
+    path('get_ext_dev', views.get_ext_dev, name="get_ext_dev"),
+    
 ]
