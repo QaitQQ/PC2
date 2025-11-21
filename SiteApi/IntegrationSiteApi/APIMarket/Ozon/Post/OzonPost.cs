@@ -62,7 +62,7 @@ namespace SiteApi.IntegrationSiteApi.APIMarket.Ozon.Post
     public class Source
     {
         public bool is_enabled { get; set; }
-        public int sku { get; set; }
+        public long sku { get; set; }
         public string source { get; set; }
     }
     [Serializable]
@@ -107,10 +107,10 @@ namespace SiteApi.IntegrationSiteApi.APIMarket.Ozon.Post
         public double? DeliveryAmount;
 
         [JsonPropertyName("percent")]
-        public int? Percent;
+        public double? Percent;
 
         [JsonPropertyName("return_amount")]
-        public int? ReturnAmount;
+        public double? ReturnAmount;
 
         [JsonPropertyName("sale_schema")]
         public string SaleSchema;
@@ -128,7 +128,7 @@ namespace SiteApi.IntegrationSiteApi.APIMarket.Ozon.Post
         public string MinimalPriceCurrency;
 
         [JsonPropertyName("price_index_value")]
-        public int? PriceIndexValue;
+        public double? PriceIndexValue;
     }
     [Serializable]
     public class ItemDesc : IMarketItem
@@ -137,7 +137,7 @@ namespace SiteApi.IntegrationSiteApi.APIMarket.Ozon.Post
         public ItemDesc() { Barcodes = new List<string>(); }
 
         [JsonPropertyName("id")]
-        public int? Id;
+        public double? Id;
 
         [JsonPropertyName("name")]
         public string Name;
@@ -155,10 +155,10 @@ namespace SiteApi.IntegrationSiteApi.APIMarket.Ozon.Post
         public List<string> Barcodes;
 
         [JsonPropertyName("description_category_id")]
-        public int? DescriptionCategoryId;
+        public double? DescriptionCategoryId;
 
         [JsonPropertyName("type_id")]
-        public int? TypeId;
+        public double? TypeId;
 
         [JsonPropertyName("created_at")]
         public DateTime? CreatedAt;
@@ -203,7 +203,7 @@ namespace SiteApi.IntegrationSiteApi.APIMarket.Ozon.Post
         public bool? IsDiscounted;
 
         [JsonPropertyName("discounted_fbo_stocks")]
-        public int? DiscountedFboStocks;
+        public double? DiscountedFboStocks;
 
         [JsonPropertyName("stocks")]
         public Stocks Stocks;
@@ -284,10 +284,10 @@ namespace SiteApi.IntegrationSiteApi.APIMarket.Ozon.Post
     public class ModelInfo
     {
         [JsonPropertyName("model_id")]
-        public int? ModelId;
+        public double? ModelId;
 
         [JsonPropertyName("count")]
-        public int? Count;
+        public double? Count;
     }
     [Serializable]
     public class OzonIndexData
@@ -299,7 +299,7 @@ namespace SiteApi.IntegrationSiteApi.APIMarket.Ozon.Post
         public string MinimalPriceCurrency;
 
         [JsonPropertyName("price_index_value")]
-        public int? PriceIndexValue;
+        public double? PriceIndexValue;
     }
     [Serializable]
     public class PriceIndexes
@@ -332,13 +332,13 @@ namespace SiteApi.IntegrationSiteApi.APIMarket.Ozon.Post
         public string MinimalPriceCurrency;
 
         [JsonPropertyName("price_index_value")]
-        public int? PriceIndexValue;
+        public double? PriceIndexValue;
     }
     [Serializable]
     public class Source_D
     {
         [JsonPropertyName("sku")]
-        public int? Sku;
+        public long? Sku;
 
         [JsonPropertyName("source")]
         public string Source;
@@ -386,13 +386,13 @@ namespace SiteApi.IntegrationSiteApi.APIMarket.Ozon.Post
     public class Stock
     {
         [JsonPropertyName("present")]
-        public int? Present;
+        public double? Present;
 
         [JsonPropertyName("reserved")]
-        public int? Reserved;
+        public double? Reserved;
 
         [JsonPropertyName("sku")]
-        public int? Sku;
+        public long? Sku;
 
         [JsonPropertyName("source")]
         public string Source;

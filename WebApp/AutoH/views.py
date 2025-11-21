@@ -54,7 +54,7 @@ def devices(request):
                         pass
                 elif x.device.deviceType.name == "ext_dev":
                     try:
-                        response = requests.get(x.DeviceData)
+                        response = requests.get(x.DeviceData, verify=False)
                         cont = response.content
                         x.time = cont[0:19]
                         x.term = cont[28:33]
@@ -191,8 +191,25 @@ def rem_opt(request):
     rem_val = mess["rem_val"]
     dev_id = mess["dev_id"]
     dev_dat = DeviceData.objects.get(device_id=int(dev_id))
-    dev_str = re.sub(r"\'" + rem_val + ".{1,5}',* *", "", dev_dat.data)
-    dev_dat.data = dev_str
+    
+    cd = dev_dat.data.replace("'", '"')
+    data = json.loads(cd, object_hook=lambda d: SimpleNamespace(**d))
+
+    for x in data.on_time:
+        if x.startswith(rem_val):
+           data.on_time.remove(x)
+    data.update_data = datetime.now().strftime("%d.%m.%Y_%H:%M")
+    pd = json.dumps(
+    data,
+    ensure_ascii=False,
+    default=get_obj_dict,
+    )
+    pd = pd.replace('"', "'")
+
+    # dev_str = re.sub(r"\'" + rem_val + ".{1,5}',* *", "", dev_dat.data)
+    # dev_str = re.sub(r", ]", "]", dev_str)
+    
+    dev_dat.data = pd
     dev_dat.save()
     qd = QueryDict(mutable=True)
     qd.update(dev_act=dev_id)
@@ -266,6 +283,9 @@ def add_new_dev(request):
         else:
             deviceType = DeviceType.objects.get(name=dev_type)
         device = Device.objects.create(sn=name, deviceType=deviceType)
+        print(devicedata)
+
+
         data = DeviceData.objects.create(device=device, data=devicedata)
         devStatus = DeviceStatus.objects.create(
             device=device, data=datetime.now(tzinfo)
@@ -282,10 +302,12 @@ def add_new_dev(request):
 def get_ext_dev(request):
     mess = request.POST
     dev_id = mess["dev_id"] 
+
     device = Device.objects.get(id=dev_id)
-    link = mess["dev_link"]
+    data = DeviceData.objects.get(device=device)
+    link = data.data
     print(link)
-    response = requests.get(link)
+    response = requests.get(link, verify=False)
     
     qd = QueryDict(mutable=True)
     qd.update(dev_act=device.pk)

@@ -37,6 +37,9 @@ namespace Server.Class.IntegrationSiteApi.Market.Ozon.OzonPortOrderList
 
         }
     }
+
+
+
     [Serializable]
     public class Filter
     {
@@ -86,113 +89,183 @@ namespace Server.Class.IntegrationSiteApi.Market.Ozon.OzonPortOrderList
         [JsonProperty("with")]
         public With With;
     }
-
     [Serializable]
+    public class LegalInfo
+    {
+        [JsonProperty("company_name")]
+        public string CompanyName { get; set; }
+
+        [JsonProperty("inn")]
+        public string Inn { get; set; }
+
+        [JsonProperty("kpp")]
+        public string Kpp { get; set; }
+    }
+    [Serializable]
+    public class Optional
+    {
+        [JsonProperty("products_with_possible_mandatory_mark")]
+        public List<object> ProductsWithPossibleMandatoryMark { get; set; }
+    }
+
     public class DeliveryMethod
     {
         [JsonProperty("id")]
-        public long Id;
+        public object Id { get; set; }
+
         [JsonProperty("name")]
-        public string Name;
+        public string Name { get; set; }
+
         [JsonProperty("warehouse_id")]
-        public long WarehouseId;
+        public object WarehouseId { get; set; }
+
         [JsonProperty("warehouse")]
-        public string Warehouse;
+        public string Warehouse { get; set; }
+
         [JsonProperty("tpl_provider_id")]
-        public int TplProviderId;
+        public int? TplProviderId { get; set; }
+
         [JsonProperty("tpl_provider")]
-        public string TplProvider;
+        public string TplProvider { get; set; }
     }
     [Serializable]
     public class Cancellation
     {
         [JsonProperty("cancel_reason_id")]
-        public int CancelReasonId;
+        public int? CancelReasonId { get; set; }
+
         [JsonProperty("cancel_reason")]
-        public string CancelReason;
+        public string CancelReason { get; set; }
+
         [JsonProperty("cancellation_type")]
-        public string CancellationType;
+        public string CancellationType { get; set; }
+
         [JsonProperty("cancelled_after_ship")]
-        public bool CancelledAfterShip;
+        public bool? CancelledAfterShip { get; set; }
+
         [JsonProperty("affect_cancellation_rating")]
-        public bool AffectCancellationRating;
+        public bool? AffectCancellationRating { get; set; }
+
         [JsonProperty("cancellation_initiator")]
-        public string CancellationInitiator;
+        public string CancellationInitiator { get; set; }
     }
+
     [Serializable]
     public class Product
     {
         [JsonProperty("price")]
-        public double Price;
+        public string Price { get; set; }
+
         [JsonProperty("offer_id")]
-        public string OfferId;
+        public string OfferId { get; set; }
+
         [JsonProperty("name")]
-        public string Name;
+        public string Name { get; set; }
+
         [JsonProperty("sku")]
-        public int Sku;
+        public object Sku { get; set; }
+
         [JsonProperty("quantity")]
-        public int Quantity;
+        public int? Quantity { get; set; }
+
         [JsonProperty("mandatory_mark")]
-        public List<object> MandatoryMark;
+        public List<object> MandatoryMark { get; set; }
+
+        [JsonProperty("currency_code")]
+        public string CurrencyCode { get; set; }
+
+        [JsonProperty("is_blr_traceable")]
+        public bool? IsBlrTraceable { get; set; }
+
         [JsonProperty("commission_amount")]
-        public int CommissionAmount;
+        public int? CommissionAmount { get; set; }
+
         [JsonProperty("commission_percent")]
-        public int CommissionPercent;
+        public int? CommissionPercent { get; set; }
+
         [JsonProperty("payout")]
-        public int Payout;
+        public int? Payout { get; set; }
+
         [JsonProperty("product_id")]
-        public int ProductId;
+        public object ProductId { get; set; }
+
         [JsonProperty("old_price")]
-        public double OldPrice;
+        public double? OldPrice { get; set; }
+
         [JsonProperty("total_discount_value")]
-        public double TotalDiscountValue;
+        public double? TotalDiscountValue { get; set; }
+
         [JsonProperty("total_discount_percent")]
-        public double TotalDiscountPercent;
+        public double? TotalDiscountPercent { get; set; }
+
         [JsonProperty("actions")]
-        public List<string> Actions;
+        public List<object> Actions { get; set; }
+
         [JsonProperty("picking")]
-        public object Picking;
+        public object Picking { get; set; }
+
         [JsonProperty("client_price")]
-        public string ClientPrice;
+        public string ClientPrice { get; set; }
+
         [JsonProperty("item_services")]
-        public ItemServices ItemServices;
+        public ItemServices ItemServices { get; set; }
+
+        [JsonProperty("customer_currency_code")]
+        public string CustomerCurrencyCode { get; set; }
+
+        [JsonProperty("customer_price")]
+        public double? CustomerPrice { get; set; }
     }
-    [Serializable]
+
+
     public class Barcodes
     {
         [JsonProperty("upper_barcode")]
-        public string UpperBarcode;
+        public string UpperBarcode { get; set; }
+
         [JsonProperty("lower_barcode")]
-        public string LowerBarcode;
+        public string LowerBarcode { get; set; }
     }
     [Serializable]
     public class AnalyticsData
     {
         [JsonProperty("region")]
-        public string Region;
+        public string Region { get; set; }
+
         [JsonProperty("city")]
-        public string City;
+        public string City { get; set; }
+
         [JsonProperty("delivery_type")]
-        public string DeliveryType;
+        public string DeliveryType { get; set; }
+
         [JsonProperty("is_premium")]
-        public bool IsPremium;
+        public bool? IsPremium { get; set; }
+
         [JsonProperty("payment_type_group_name")]
-        public string PaymentTypeGroupName;
+        public string PaymentTypeGroupName { get; set; }
+
         [JsonProperty("warehouse_id")]
-        public long WarehouseId;
+        public object WarehouseId { get; set; }
+
         [JsonProperty("warehouse")]
-        public string Warehouse;
+        public string Warehouse { get; set; }
+
         [JsonProperty("tpl_provider_id")]
-        public int TplProviderId;
+        public int? TplProviderId { get; set; }
+
         [JsonProperty("tpl_provider")]
-        public string TplProvider;
+        public string TplProvider { get; set; }
+
         [JsonProperty("delivery_date_begin")]
-        public string DeliveryDateBegin;
+        public DateTime? DeliveryDateBegin { get; set; }
+
         [JsonProperty("delivery_date_end")]
-        public string DeliveryDateEnd;
+        public DateTime? DeliveryDateEnd { get; set; }
+
         [JsonProperty("is_legal")]
-        public bool IsLegal;
+        public bool? IsLegal { get; set; }
     }
+
     [Serializable]
     public class ItemServices
     {
@@ -249,20 +322,37 @@ namespace Server.Class.IntegrationSiteApi.Market.Ozon.OzonPortOrderList
     public class FinancialData
     {
         [JsonProperty("products")]
-        public List<Product> Products;
+        public List<Product> Products { get; set; }
+
         [JsonProperty("posting_services")]
-        public PostingServices PostingServices;
+        public object PostingServices { get; set; }
+
+        [JsonProperty("cluster_from")]
+        public string ClusterFrom { get; set; }
+
+        [JsonProperty("cluster_to")]
+        public string ClusterTo { get; set; }
     }
     [Serializable]
     public class Requirements
     {
         [JsonProperty("products_requiring_gtd")]
-        public List<object> ProductsRequiringGtd;
+        public List<long?> ProductsRequiringGtd { get; set; }
+
         [JsonProperty("products_requiring_country")]
-        public List<object> ProductsRequiringCountry;
+        public List<object> ProductsRequiringCountry { get; set; }
+
+        [JsonProperty("products_requiring_mandatory_mark")]
+        public List<object> ProductsRequiringMandatoryMark { get; set; }
+
+        [JsonProperty("products_requiring_rnpt")]
+        public List<object> ProductsRequiringRnpt { get; set; }
+
+        [JsonProperty("products_requiring_jw_uin")]
+        public List<object> ProductsRequiringJwUin { get; set; }
     }
     [Serializable]
-    public class Order: IOrder
+    public class Oder: IOrder
     {
         [JsonProperty("posting_number")]
         public string PostingNumber;
@@ -367,7 +457,195 @@ namespace Server.Class.IntegrationSiteApi.Market.Ozon.OzonPortOrderList
         [JsonProperty("result")]
         public Result Result;
     }
+    [Serializable]
+    public class Order : IOrder
+    {
+        [JsonProperty("posting_number")]
+        public string PostingNumber { get; set; }
 
+        [JsonProperty("order_id")]
+        public object OrderId { get; set; }
+
+        [JsonProperty("order_number")]
+        public string OrderNumber { get; set; }
+
+        [JsonProperty("status")]
+        public string status { get; set; }
+
+        [JsonProperty("delivery_method")]
+        public DeliveryMethod DeliveryMethod { get; set; }
+
+        [JsonProperty("tracking_number")]
+        public string TrackingNumber { get; set; }
+
+        [JsonProperty("tpl_integration_type")]
+        public string TplIntegrationType { get; set; }
+
+        [JsonProperty("in_process_at")]
+        public DateTime? InProcessAt { get; set; }
+
+        [JsonProperty("shipment_date")]
+        public DateTime ShipmentDate { get; set; }
+
+        [JsonProperty("delivering_date")]
+        public DateTime? DeliveringDate { get; set; }
+
+        [JsonProperty("cancellation")]
+        public Cancellation Cancellation { get; set; }
+
+        [JsonProperty("customer")]
+        public object Customer { get; set; }
+
+        [JsonProperty("products")]
+        public List<Product> Products { get; set; }
+
+        [JsonProperty("addressee")]
+        public object Addressee { get; set; }
+
+        [JsonProperty("barcodes")]
+        public Barcodes Barcodes { get; set; }
+
+        [JsonProperty("analytics_data")]
+        public AnalyticsData AnalyticsData { get; set; }
+
+        [JsonProperty("financial_data")]
+        public FinancialData FinancialData { get; set; }
+
+        [JsonProperty("is_express")]
+        public bool? IsExpress { get; set; }
+
+        [JsonProperty("requirements")]
+        public Requirements Requirements { get; set; }
+
+        [JsonProperty("parent_posting_number")]
+        public string ParentPostingNumber { get; set; }
+
+        [JsonProperty("available_actions")]
+        public List<string> AvailableActions { get; set; }
+
+        [JsonProperty("multi_box_qty")]
+        public int? MultiBoxQty { get; set; }
+
+        [JsonProperty("is_multibox")]
+        public bool? IsMultibox { get; set; }
+
+        [JsonProperty("substatus")]
+        public string Substatus { get; set; }
+
+        [JsonProperty("prr_option")]
+        public string PrrOption { get; set; }
+
+        [JsonProperty("quantum_id")]
+        public int? QuantumId { get; set; }
+
+        [JsonProperty("tariffication")]
+        public Tariffication Tariffication { get; set; }
+
+        [JsonProperty("destination_place_id")]
+        public int? DestinationPlaceId { get; set; }
+
+        [JsonProperty("destination_place_name")]
+        public string DestinationPlaceName { get; set; }
+
+        [JsonProperty("is_presortable")]
+        public bool? IsPresortable { get; set; }
+
+        [JsonProperty("pickup_code_verified_at")]
+        public object PickupCodeVerifiedAt { get; set; }
+
+        [JsonProperty("optional")]
+        public Optional Optional { get; set; }
+
+        [JsonProperty("legal_info")]
+        public LegalInfo LegalInfo { get; set; }
+
+
+
+
+        public string Id { get { return PostingNumber; } }
+        public APISetting APISetting { get; set; }
+        public OrderStatus Status => status switch
+        {
+            ("awaiting_deliver") => OrderStatus.READY,
+            ("awaiting_packaging") => OrderStatus.PROCESSING_STARTED,
+            ("delivering") => OrderStatus.DELIVERED,
+            _ => OrderStatus.NONE,
+        };
+
+
+
+        public List<MarketOrderItems> Items
+        {
+            get
+            {
+                var X = new List<MarketOrderItems>();
+                foreach (var item in Products)
+                {
+                    X.Add(new MarketOrderItems(item.Name, item.Quantity.ToString(), item.Price.ToString(), item.OfferId, this));
+                }
+                return X;
+            }
+        }
+        public string Date { get { return InProcessAt.ToString(); } }
+        public string DeliveryDate { get { return ShipmentDate.ToShortDateString(); } }
+
+        public void SetStatus(OrderStatus _status)
+        {
+            switch (_status)
+            {
+                case OrderStatus.NONE:
+                    break;
+                case OrderStatus.PROCESSING_STARTED:
+                    break;
+                case OrderStatus.PROCESSING_SHIPPED:
+                    break;
+                case OrderStatus.DELIVERED:
+                    break;
+                case OrderStatus.CANCELLED:
+                    break;
+                case OrderStatus.READY:
+                    status = "awaiting_deliver";
+
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        string IOrder.ShipmentDate => ShipmentDate.ToString();
+
+        public List<IMarketItem> IMtemsList { get; set; }
+    }
+    [Serializable]
+    public class Tariffication
+    {
+        [JsonProperty("current_tariff_rate")]
+        public int? CurrentTariffRate { get; set; }
+
+        [JsonProperty("current_tariff_type")]
+        public string CurrentTariffType { get; set; }
+
+        [JsonProperty("current_tariff_charge")]
+        public string CurrentTariffCharge { get; set; }
+
+        [JsonProperty("current_tariff_charge_currency_code")]
+        public string CurrentTariffChargeCurrencyCode { get; set; }
+
+        [JsonProperty("next_tariff_rate")]
+        public int? NextTariffRate { get; set; }
+
+        [JsonProperty("next_tariff_type")]
+        public string NextTariffType { get; set; }
+
+        [JsonProperty("next_tariff_charge")]
+        public string NextTariffCharge { get; set; }
+
+        [JsonProperty("next_tariff_starts_at")]
+        public DateTime? NextTariffStartsAt { get; set; }
+
+        [JsonProperty("next_tariff_charge_currency_code")]
+        public string NextTariffChargeCurrencyCode { get; set; }
+    }
 
 
 }

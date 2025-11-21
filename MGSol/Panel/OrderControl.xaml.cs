@@ -43,7 +43,7 @@ namespace MGSol.Panel
             ReturnControl = new ReturnControl(this.Model, this);
             _ = ReturnGrid.Children.Add(ReturnControl);
             _ = Task.Factory.StartNew(() => LoadNetOrders(this.Model.OptionMarketPlace.APISettings));
-            _ = Task.Factory.StartNew(() => new MainSiteAutorization("", @"https://salessab.su/index.php?route=api/").Autorization());
+            _ = Task.Factory.StartNew(() => new MainSiteAutorization("", @"https://sabsb.ru/index.php?route=api/").Autorization());
         }
         private void FillOrders(List<IOrder> orders = null)
         {

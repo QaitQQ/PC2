@@ -33,7 +33,7 @@ namespace Server.Class.IntegrationSiteApi.Market.Ozon
             List<IMarketItem> NLST = new List<IMarketItem>();
             try
             {
-                using (var streamWriter = new StreamWriter(httpWebRequest.GetRequestStream())) { var root = JsonConvert.SerializeObject(itemQ); streamWriter.Write(root); }
+                    using (var streamWriter = new StreamWriter(httpWebRequest.GetRequestStream())) { var root = JsonConvert.SerializeObject(itemQ); streamWriter.Write(root); }
                 var httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
                 using (var streamReader = new StreamReader(httpResponse.GetResponseStream())) { result = streamReader.ReadToEnd(); }
                 Root_D End = JsonConvert.DeserializeObject<Root_D>(result);

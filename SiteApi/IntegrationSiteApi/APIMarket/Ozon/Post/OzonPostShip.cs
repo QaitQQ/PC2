@@ -19,30 +19,36 @@ namespace SiteApi.IntegrationSiteApi.APIMarket.Ozon.Post
             Server.Class.IntegrationSiteApi.Market.Ozon.OzonPortOrderList.Order Or = (Server.Class.IntegrationSiteApi.Market.Ozon.OzonPortOrderList.Order)Order;
             List<Product> Products = new();
 
+            var NeedGtd =  new OzonPostExemplarStatus(aPISetting).Get(Order);
 
-  
+            if (NeedGtd)
+            {
 
-            foreach (Server.Class.IntegrationSiteApi.Market.Ozon.OzonPortOrderList.Product item in Or.Products)
-            {
-                Products.Add(new Product() { ProductId = item.Sku, Quantity = item.Quantity});
             }
-            Request root = new() { PostingNumber = Or.PostingNumber, Packages = new List<Package>() { new Package() { Products = Products } }, With = new With() { AdditionalData = true } };
-            using (StreamWriter streamWriter = new(httpWebRequest.GetRequestStream()))
+            else
             {
-                string json = JsonConvert.SerializeObject(root); streamWriter.Write(json);
-            }
-            try
-            {
-                HttpWebResponse httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
-                using (StreamReader streamReader = new(httpResponse.GetResponseStream())) { result = streamReader.ReadToEnd(); }
-                if (result.Contains(Or.PostingNumber))
+                foreach (Server.Class.IntegrationSiteApi.Market.Ozon.OzonPortOrderList.Product item in Or.Products)
                 {
-                    return true;
+                    Products.Add(new Product() { ProductId = (long)item.Sku, Quantity = (long)item.Quantity });
                 }
-            }
-            catch(Exception e)
-            {
-                return false;
+                Request root = new() { PostingNumber = Or.PostingNumber, Packages = new List<Package>() { new Package() { Products = Products } }, With = new With() { AdditionalData = true } };
+                using (StreamWriter streamWriter = new(httpWebRequest.GetRequestStream()))
+                {
+                    string json = JsonConvert.SerializeObject(root); streamWriter.Write(json);
+                }
+                try
+                {
+                    HttpWebResponse httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
+                    using (StreamReader streamReader = new(httpResponse.GetResponseStream())) { result = streamReader.ReadToEnd(); }
+                    if (result.Contains(Or.PostingNumber))
+                    {
+                        return true;
+                    }
+                }
+                catch (Exception e)
+                {
+                    return false;
+                }
             }
             return false;
         }
@@ -56,10 +62,10 @@ namespace SiteApi.IntegrationSiteApi.APIMarket.Ozon.Post
     public class Product
     {
         [JsonProperty("product_id")]
-        public int ProductId { get; set; }
+        public long ProductId { get; set; }
 
         [JsonProperty("quantity")]
-        public int Quantity { get; set; }
+        public long Quantity { get; set; }
     }
 
     public class Request

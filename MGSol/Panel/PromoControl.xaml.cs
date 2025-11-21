@@ -6,6 +6,7 @@ using StructLibCore.Marketplace;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -18,12 +19,12 @@ namespace MGSol.Panel
     public partial class PromoControl : UserControl
     {
         private MainModel model { get; set; }
-        private ObsList VisList { get; set; }
+        private ObsShopPromoItems VisList { get; set; }
         private ObservableCollection<APISetting> Options { get; set; }
         public PromoControl(MainModel model)
         {
             this.model = model;
-            VisList = new ObsList();
+            VisList = new ObsShopPromoItems();
             InitializeComponent();
             Options = new ObservableCollection<APISetting>();
             DtaTable.ItemsSource = VisList;
@@ -80,9 +81,23 @@ namespace MGSol.Panel
         }
 
 
-        private class ObsList : ObservableCollection<ShopPromoItems>
+        private class ObsShopPromoItems : ObservableCollection<ShopPromoItems>
         {
-            new public void Add(ShopPromoItems item) { base.Add(item); OnPropertyChanged(new System.ComponentModel.PropertyChangedEventArgs("This_add")); }
+            new public void Add(ShopPromoItems item)
+            {
+                var X = base.Items.First(x => x.ShopName == item.ShopName);
+                if (X is ShopPromoItems)
+                {
+                    foreach (var Z in item.Promo)
+                    {
+                        X.Promo.Add(Z);
+                    }
+                }
+                else 
+                {
+                    base.Add(item);
+                }
+                OnPropertyChanged(new System.ComponentModel.PropertyChangedEventArgs("This_add")); }
         }
 
 
@@ -90,12 +105,11 @@ namespace MGSol.Panel
         {
             public ShopPromoItems(APISetting Api, Promo Promo)
             {
-                this.Api = Api;this.Promo = Promo;
+                this.Api = Api;this.Promo = new List<Promo>(); this.Promo.Add(Promo);
             }
-
             public APISetting Api { get; set; }
-            public string Name { get { return Api.Name; } }
-            public Promo Promo { get; set; }
+            public string ShopName { get { return Api.Name; } }
+            public List<Promo> Promo { get; set; }
 
         }
 
