@@ -24,15 +24,15 @@
                     <Button Text="&#128269;" Command="{Binding SearchClick}" Clicked="Button_Clicked"></Button>
                 </HorizontalStackLayout>
                 <ScrollView Grid.Row="1" >
-                    <ListView x:Name="SelectedListView" IsEnabled="{Binding _ListBoxSelectedItem.Delay, Mode=OneWay}" ItemsSource="{Binding FindItems}" MaximumHeightRequest="300" SelectedItem="{Binding _ListBoxSelectedItem.Item, Mode=OneWayToSource}" IsRefreshing="True" SelectionMode="Single">
-                        <ListView.ItemTemplate>
+                    <CollectionView x:Name="SelectedListView" IsEnabled="{Binding _ListBoxSelectedItem.Delay, Mode=OneWay}" ItemsSource="{Binding FindItems}" MaximumHeightRequest="300" SelectedItem="{Binding _ListBoxSelectedItem.Item, Mode=OneWayToSource}" IsRefreshing="True" SelectionMode="Single">
+                        <CollectionView.ItemTemplate>
                             <DataTemplate>
-                                <ViewCell >
+                                <CollectionView>
                                     <Label Text="{Binding Name, Mode=OneTime}"></Label>
-                                </ViewCell>
+                                </CollectionView>
                             </DataTemplate>
-                        </ListView.ItemTemplate>
-                    </ListView>
+                            </CollectionView.ItemTemplate>
+                        </CollectionView>
                 </ScrollView>
             </Grid>
             <Grid Background="gray">

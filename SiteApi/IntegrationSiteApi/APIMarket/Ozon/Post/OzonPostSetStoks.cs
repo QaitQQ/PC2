@@ -21,7 +21,7 @@ namespace Server.Class.IntegrationSiteApi.Market.Ozon
         public object Get(IMarketItem[] List)
         {
             Root itemsRoot = new Root();
-            foreach (ItemDesc item in List)
+            foreach (IMarketItem item in List)
             {
                 itemsRoot.Prices.Add(new PriceItem(item));
             }
@@ -59,23 +59,23 @@ namespace Server.Class.IntegrationSiteApi.Market.Ozon
             public string Price;
 
             [JsonProperty("product_id")]
-            public int ProductId;
+            public string ProductId;
 
-            public PriceItem(ItemDesc ozonItemDesc, AutoActionEnabled autoActionEnabled = AutoActionEnabled.UNKNOWN)
+            public PriceItem(IMarketItem ozonItemDesc, AutoActionEnabled autoActionEnabled = AutoActionEnabled.UNKNOWN)
             {
                 MinPrice = ozonItemDesc.MinPrice.Replace(',', '.');
-                OfferId = ozonItemDesc.OfferId;
+                OfferId = ozonItemDesc.SKU;
 
-                if (Convert.ToDouble(ozonItemDesc.OldPrice.Replace('.', ',')) < Convert.ToDouble(ozonItemDesc.Price.Replace('.', ',')))
-                {
-                    double oldPrice = Convert.ToDouble(ozonItemDesc.Price.Replace('.', ',')) * 1.1;
+                //if (Convert.ToDouble(ozonItemDesc.OldPrice.Replace('.', ',')) < Convert.ToDouble(ozonItemDesc.Price.Replace('.', ',')))
+                //{
+                //    double oldPrice = Convert.ToDouble(ozonItemDesc.Price.Replace('.', ',')) * 1.1;
 
-                    OldPrice = oldPrice.ToString().Replace(',', '.');
-                }
+                //    OldPrice = oldPrice.ToString().Replace(',', '.');
+                //}
 
                 
                 Price = ozonItemDesc.Price.Replace(',','.');
-                ProductId = (int)ozonItemDesc.Id;
+                ProductId = ozonItemDesc.MarketID;
             }
         }
         public class Root
@@ -98,7 +98,7 @@ namespace Server.Class.IntegrationSiteApi.Market.Ozon
             public int Present;
 
             [JsonProperty("product_id")]
-            public int ProductId;
+            public string ProductId;
 
             [JsonProperty("reserved")]
             public int Reserved;

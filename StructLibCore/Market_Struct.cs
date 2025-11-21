@@ -141,6 +141,7 @@ namespace StructLibCore.Marketplace
         public string SKU { get; }
         public string Stocks { get; set; }
         public string MinPrice { get; set; }
+        public string MarketID { get; }
         public APISetting APISetting { get; set; }
         public APISetting APISettingSource { get; set; }
         public List<string> Pic { get; }
@@ -157,8 +158,10 @@ namespace StructLibCore.Marketplace
         public APISetting APISetting { get; set; }
         public APISetting APISettingSource { get; set; }
         public List<string> Barcodes { get; set; }
-        List<string> IMarketItem.Pic { get => throw new NotImplementedException();}
+        List<string> IMarketItem.Pic { get;}
         public List<object> attributes { get; set; }
+
+        public string MarketID { get; }
     }
     public interface Promo
     {

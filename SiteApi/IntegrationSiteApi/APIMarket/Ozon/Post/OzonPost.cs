@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Text.Json.Serialization;
+using System.Windows.Forms;
 using System.Xml.Linq;
 namespace SiteApi.IntegrationSiteApi.APIMarket.Ozon.Post
 {
@@ -137,7 +138,7 @@ namespace SiteApi.IntegrationSiteApi.APIMarket.Ozon.Post
         public ItemDesc() { Barcodes = new List<string>(); }
 
         [JsonPropertyName("id")]
-        public double? Id;
+        public string Id;
 
         [JsonPropertyName("name")]
         public string Name;
@@ -206,7 +207,7 @@ namespace SiteApi.IntegrationSiteApi.APIMarket.Ozon.Post
         public double? DiscountedFboStocks;
 
         [JsonPropertyName("stocks")]
-        public Stocks Stocks;
+        public Stocks stocks;
 
         [JsonPropertyName("errors")]
         public List<object> Errors;
@@ -242,14 +243,9 @@ namespace SiteApi.IntegrationSiteApi.APIMarket.Ozon.Post
         public bool? IsSuper;
         public object Priceinfo { get; set; }
 
-        public static explicit operator ItemDesc(List<IMarketItem> v)
-        {
-            throw new NotImplementedException();
-        }
-
         public string SKU => OfferId;
 
-        string IMarketItem.Stocks { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public string Stocks { get { return stocks.present; } set { stocks.present = value; } }
         public APISetting APISetting { get; set; }
 
         public APISetting APISettingSource { get; set; }
@@ -263,7 +259,6 @@ namespace SiteApi.IntegrationSiteApi.APIMarket.Ozon.Post
                 {
                     nlist.Add(primary_image[0]);
                 }
-
 
                     foreach (var item in Images)
                 {
@@ -279,6 +274,8 @@ namespace SiteApi.IntegrationSiteApi.APIMarket.Ozon.Post
         string IMarketItem.Price { get { return Price; } set { Price = value; } }
         string IMarketItem.MinPrice { get { return MinPrice; } set { MinPrice = value; } }
         List<string> IMarketItem.Barcodes { get { return Barcodes; } set { Barcodes = value; } }
+
+        public string MarketID { get { return this.Id; } }
     }
     [Serializable]
     public class ModelInfo

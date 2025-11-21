@@ -1,0 +1,26 @@
+
+<p style="display: ruby; Margin: 5px; vertical-align: super;">Температура - {{el.Degrees}}</p>
+<p style="display: ruby; Margin: 5px; vertical-align: super;">Влажность - {{el.Hp}}</p>
+<div>
+
+
+    <p style="display: ruby; Margin: 5px; vertical-align: super;">Статус реле</p>
+
+    {% for x in el.st_relay %}
+
+    <form action="{% url 'on_off_relay' %}" method="post" style="display: ruby;">
+        {% csrf_token %}
+
+
+
+        <input type="hidden" name="val" value={{x}} />
+        <input type="hidden" name="counter" value={{forloop.counter}} />
+        <input type="hidden" name="dev_id" value={{el.device.id}} />
+        {% if x == '1' %}
+        <button> ON </button>
+        {% else %}
+        <button> OFF </button>
+        {% endif %}
+    </form>
+    {%endfor %}
+</div>

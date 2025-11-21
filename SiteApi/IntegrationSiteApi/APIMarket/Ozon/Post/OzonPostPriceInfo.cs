@@ -109,7 +109,7 @@ namespace SiteApi.IntegrationSiteApi.APIMarket.Ozon.Post
         public class Item
         {
             [JsonProperty("product_id")]
-            public int ProductId { get; set; }
+            public string ProductId { get; set; }
             [JsonProperty("offer_id")]
             public string OfferId { get; set; }
             [JsonProperty("price")]

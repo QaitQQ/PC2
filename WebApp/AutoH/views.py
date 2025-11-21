@@ -68,6 +68,18 @@ def devices(request):
                         x.color = "#98e38d"
                     except:
                         pass
+                elif x.device.deviceType.name == "thermo_socket":
+                   try:
+                        mess = json.loads(
+                            cd, object_hook=lambda d: SimpleNamespace(**d)
+                        )
+                        x.st_relay = mess.status
+
+                        x.Degrees = mess.Degrees
+                        x.Hp = mess.Hp
+                        x.DateOfLastOperation = mess.DateOfLastOperation
+                   except:
+                        pass
         data = {"device": device}
     return render(request, "AutoH/devices.html", data)
 def NewDev(dev_id, tape, requestData):
@@ -103,8 +115,11 @@ def data_ex(request):
         # читаем id отдаем статус
         dev_id = request.GET.get("dev_id", "")
         DateOfLastOperation = request.GET.get("DateOfLastOperation", "")
+
+        Degrees = request.GET.get("Degrees", "")
+        Hp = request.GET.get("Hp", "")
         try:
-            device = Device.objects.get(sn=dev_id)
+            device = Device.objects.get(sn=dev_id) # type: ignore
         except ObjectDoesNotExist:
             device = None
         if device != None:
@@ -115,12 +130,17 @@ def data_ex(request):
                 dev_dat = DeviceData.objects.get(device=device)
                 if dev_dat.data == "":
                     dev_dat.data = "{'status': '0', 'on_time': []}"
-                if DateOfLastOperation != None and DateOfLastOperation != "":
+                else:
                     cd = dev_dat.data.replace("'", '"')
                     data_obj = json.loads(
                         cd, object_hook=lambda d: SimpleNamespace(**d)
                     )
-                    data_obj.DateOfLastOperation = DateOfLastOperation
+                    if DateOfLastOperation != None and DateOfLastOperation != "":
+                        data_obj.DateOfLastOperation = DateOfLastOperation
+                    if Degrees !=  None and Degrees != "":
+                        data_obj.Degrees = Degrees
+                        data_obj.Hp = Hp
+                    
                     pd = json.dumps(
                         data_obj,
                         ensure_ascii=False,
@@ -128,7 +148,9 @@ def data_ex(request):
                     )
                     pd = pd.replace('"', "'")
                     dev_dat.data = pd
-                    dev_dat.save()
+
+
+                dev_dat.save()
             if not DeviceStatus.objects.filter(device=device).exists():
                 devStatus = DeviceStatus.objects.create(
                     device=device, data=datetime.now(tzinfo)
@@ -222,14 +244,22 @@ def on_off_relay(request):
     dev_id = mess["dev_id"]
     counter = mess["counter"]
     val = mess["val"]
+    
     dev_dat = DeviceData.objects.get(device_id=int(dev_id))
     cd = dev_dat.data.replace("'", '"')
     mess = json.loads(cd, object_hook=lambda d: SimpleNamespace(**d))
-    if val == "1":
-        mess.RelayStatus[int(counter) - 1] = "0"
-    else:
-        mess.RelayStatus[int(counter) - 1] = "1"
-  
+    device = Device.objects.get(id=int(dev_id))
+    if device.deviceType.name == "relay":
+        if val == "1":
+            mess.RelayStatus[int(counter) - 1] = "0"
+        else:
+            mess.RelayStatus[int(counter) - 1] = "1"
+    elif device.deviceType.name == "thermo_socket":
+        if val == "1":
+
+           mess.status = "0"
+        else:
+            mess.status = "1"
     dev_dat.data = json.dumps(mess.__dict__)
     dev_dat.save()
     qd = QueryDict(mutable=True)

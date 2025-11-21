@@ -49,6 +49,8 @@
         {% include 'AutoH/devtype/valve.html' %}
         {% elif el.device.deviceType.name == "relay" %}
         {% include 'AutoH/devtype/relay.html' %}
+        {% elif el.device.deviceType.name == "thermo_socket" %}
+        {% include 'AutoH/devtype/thermo_socket.html' %}
         {% elif el.device.deviceType.name == "ext_dev" %}
         <label>{{el.time}}</label>
         <label>{{el.term}}</label>

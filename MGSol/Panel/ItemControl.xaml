@@ -23,11 +23,11 @@
             <ComboBox Margin="2" x:Name="ApiBox" Height="35" Width="80" SelectionChanged="ApiBox_SelectionChanged" ></ComboBox>
         </StackPanel>
         <Grid Grid.Row="1">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition/>
-                <ColumnDefinition x:Name="ProcessingPanel" Width="100"/>
-            </Grid.ColumnDefinitions>
-            <Grid Grid.Column="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="36"/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            <Grid Grid.Row="1">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="18"/>
                     <RowDefinition/>
@@ -148,8 +148,8 @@
                     </StackPanel>
                 </ScrollViewer>
             </Grid>
-            <StackPanel Grid.Column="1">
-                <TextBox x:Name="ProcessingPanelPercentBox" Height="35"></TextBox>
+            <StackPanel Orientation="Horizontal" Grid.Row="0">
+                <TextBox x:Name="ProcessingPanelPercentBox" Width="150"></TextBox>
                 <ComboBox x:Name="ProcessingPanelApiBox" ></ComboBox>
                 <Button Background="Beige" Height="35" Content="+% по API" Click="PlusPricePercent"></Button>
                 <Button Background="Beige" Height="35" Content="-% по API" Click="MinusPricePercent"></Button>
@@ -158,6 +158,7 @@
                 <Button x:Name="PlusStack_Button" Background="Beige" Height="35" Content="Прировнять остатки" Click="PlusStack_Button_Click"></Button>
                 <Button x:Name="LoadArchive" Background="Beige" Height="35" Content="Загрузить архив" Click="LoadArchive_Click"></Button>
                 <Button x:Name="CopyList" Background="Beige" Height="35" Content="Копировать из списка" Click="CopyList_Click"></Button>
+                <Button x:Name="AddOneRub" Background="Beige" Height="35" Content="Докинуть Рубль" Click="AddOneRub_Click"></Button>
                 
             </StackPanel>
         </Grid>

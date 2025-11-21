@@ -4,7 +4,7 @@ import socket
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'b99f00a6-710a-457e-bce7-0e06ad38e692'
 DEBUG = True 
-ALLOWED_HOSTS = ['xn--80ach6cd.xn--p1ai','127.0.0.1','localhost', '192.168.8.102']
+ALLOWED_HOSTS = ['xn--80ach6cd.xn--p1ai','127.0.0.1','localhost', '192.168.8.100']
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.admindocs',

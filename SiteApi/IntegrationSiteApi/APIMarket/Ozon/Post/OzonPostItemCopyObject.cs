@@ -18,12 +18,12 @@ namespace Server.Class.IntegrationSiteApi.Market.Ozon
             var httpWebRequest = GetRequest(@"v2/product/import");
             var Request = new Request();
             Response Response = null;
-            List<SiteApi.IntegrationSiteApi.APIMarket.Ozon.Post.Item> TestList = new OzonPostItemList(aPISetting).Get();
+            var TestList = new OzonPostItemList(aPISetting).Get();
             List<IMarketItem> TestListArchive = new OzonPostItemARCHIVEDList(aPISetting).Get();
             List<string> Ids = new List<string>();
             foreach (var item in TestList)
             {
-                Ids.Add(item.offer_id);
+                Ids.Add(item.OfferId);
             }
             foreach (var item in TestListArchive)
             {

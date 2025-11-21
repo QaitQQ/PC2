@@ -1,29 +1,43 @@
 ﻿using Newtonsoft.Json;
+
 using StructLibCore.Marketplace;
+
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
 namespace SiteApi.IntegrationSiteApi.APIMarket.Ozon.Post
 {
-    public class OzonPostEmplarSet : OzonPost
+    public class OzonPostExemplarSet : OzonPost
     {
-        public OzonPostEmplarSet(APISetting aPISetting) : base(aPISetting)
+        public OzonPostExemplarSet(APISetting aPISetting) : base(aPISetting)
         {
         }
-        public bool Get(object Order)
+        public bool Get(object Order, List<OzonPostExemplarStatus.Product> products)
         {
             HttpWebRequest httpWebRequest = GetRequest(@"/v6/fbs/posting/product/exemplar/set");
             Server.Class.IntegrationSiteApi.Market.Ozon.OzonPortOrderList.Order Or = (Server.Class.IntegrationSiteApi.Market.Ozon.OzonPortOrderList.Order)Order;
 
-
-            foreach (var item in Or.p)
+            var Products = new List<Product>();
+            foreach (var item in products)
             {
+                var Product = new Product() { ProductId = (long)item.ProductId };
+                Product.Exemplars = new List<Exemplar>();
+                foreach (var ex in item.Exemplars)
+                {
+                    var Exemplar = new Exemplar();
+                    Exemplar.Gtd = "";
+                    Exemplar.ExemplarId = (long)ex.ExemplarId;
+                    Exemplar.IsGtdAbsent = true;
+                    Exemplar.IsRnptAbsent = true;
+                    Product.Exemplars.Add(Exemplar);
+                }
 
+                Products.Add(Product);
             }
 
 
-            Request root = new() { PostingNumber = Or.PostingNumber, Products = new List<Product>};
+            Request root = new() { MultiBoxQty = 1, PostingNumber = Or.PostingNumber, Products = Products };
             using (StreamWriter streamWriter = new(httpWebRequest.GetRequestStream()))
             {
                 string json = JsonConvert.SerializeObject(root); streamWriter.Write(json);
@@ -33,16 +47,8 @@ namespace SiteApi.IntegrationSiteApi.APIMarket.Ozon.Post
                 HttpWebResponse httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
                 using (StreamReader streamReader = new(httpResponse.GetResponseStream())) { result = streamReader.ReadToEnd(); }
 
-                Response OrderList = JsonConvert.DeserializeObject<Response>(result);
-
-
-                if (OrderList.Status == "ship_not_available")
-                {
-                    return true;
-                }
-                
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 return false;
             }
@@ -53,7 +59,7 @@ namespace SiteApi.IntegrationSiteApi.APIMarket.Ozon.Post
         public class Exemplar
         {
             [JsonProperty("exemplar_id")]
-            public int ExemplarId { get; set; }
+            public long ExemplarId { get; set; }
 
             [JsonProperty("gtd")]
             public string Gtd { get; set; }
@@ -74,7 +80,7 @@ namespace SiteApi.IntegrationSiteApi.APIMarket.Ozon.Post
         public class Mark
         {
             [JsonProperty("mark")]
-            public string Mark { get; set; }
+            public string mark { get; set; }
 
             [JsonProperty("mark_type")]
             public string MarkType { get; set; }
@@ -86,7 +92,7 @@ namespace SiteApi.IntegrationSiteApi.APIMarket.Ozon.Post
             public List<Exemplar> Exemplars { get; set; }
 
             [JsonProperty("product_id")]
-            public int ProductId { get; set; }
+            public long ProductId { get; set; }
         }
 
         public class Request

@@ -13,14 +13,14 @@ namespace SiteApi.IntegrationSiteApi.APIMarket.Ozon.Post
         public OzonPostExemplarStatus(APISetting aPISetting) : base(aPISetting)
         {
         }
-        public bool Get(object Order)
+        public List<Product> Get(object Order)
         {
             HttpWebRequest httpWebRequest = GetRequest(@"v5/fbs/posting/product/exemplar/status");
             Server.Class.IntegrationSiteApi.Market.Ozon.OzonPortOrderList.Order Or = (Server.Class.IntegrationSiteApi.Market.Ozon.OzonPortOrderList.Order)Order;
 
 
 
-  
+
 
             OzonPostEmplarStatus_Request root = new() { PostingNumber = Or.PostingNumber};
             using (StreamWriter streamWriter = new(httpWebRequest.GetRequestStream()))
@@ -32,20 +32,20 @@ namespace SiteApi.IntegrationSiteApi.APIMarket.Ozon.Post
                 HttpWebResponse httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
                 using (StreamReader streamReader = new(httpResponse.GetResponseStream())) { result = streamReader.ReadToEnd(); }
 
-                Response OrderList = JsonConvert.DeserializeObject<Response>(result);
+                Response Response = JsonConvert.DeserializeObject<Response>(result);
 
 
-                if (OrderList.Status == "ship_not_available")
+                if (Response.Status == "ship_not_available")
                 {
-                    return true;
+                    return Response.Products;
                 }
                 
             }
             catch(Exception e)
             {
-                return false;
+                return null;
             }
-            return false;
+            return null;
         }
         public class Exemplar
         {

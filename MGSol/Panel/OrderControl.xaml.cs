@@ -1,12 +1,9 @@
 ﻿using Server.Class.IntegrationSiteApi.Market.Ozon;
-
 using SiteApi.IntegrationSiteApi.ApiBase.Post;
 using SiteApi.IntegrationSiteApi.ApiMainSite.Post;
 using SiteApi.IntegrationSiteApi.APIMarket.Ozon.Post;
 using SiteApi.IntegrationSiteApi.APIMarket.Yandex;
-
 using StructLibCore.Marketplace;
-
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -238,7 +235,10 @@ namespace MGSol.Panel
                 case MarketName.Ozon:
                     IEnumerable<IOrder> t = from c in OrderList where c.APISetting == X && c.Status == OrderStatus.READY select c;
                     List<IOrder> m = t.ToList();
-                    if (m.Count > 0) { Z = new SiteApi.IntegrationSiteApi.APIMarket.Ozon.Post.OzonPostAct(X).Get(m); }
+                    if (m.Count > 0) {
+                        //  Z = new SiteApi.IntegrationSiteApi.APIMarket.Ozon.Post.OzonPostAct(X).Get(m);
+                        var D = new SiteApi.IntegrationSiteApi.APIMarket.Ozon.Post.OzonPost_v1_carriage_create(X).Get(m);
+                    }
                     break;
                 case MarketName.Avito:
                     break;
@@ -354,7 +354,7 @@ namespace MGSol.Panel
                 case MarketName.Ozon:
                     Task.Factory.StartNew(() =>
                     {
-                        ItemDesc item = (ItemDesc)new OzonPostItemDesc(OrderItem.Order.APISetting).Get(new List<string> { OrderItem.Sku })[0];
+                        IMarketItem item = (IMarketItem)new OzonPostItemDesc(OrderItem.Order.APISetting).Get(new List<string> { OrderItem.Sku })[0];
                         foreach (string X in item.Pic)
                         {
                             Dispatcher.BeginInvoke(() => AddImage(X, St));

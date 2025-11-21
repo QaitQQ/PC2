@@ -12,7 +12,7 @@ namespace SiteApi.IntegrationSiteApi.APIMarket.Ozon.Post
         public string Get(IMarketItem item)
         {
             HttpWebRequest httpWebRequest = GetRequest(@"v1/product/info/description");
-            using (StreamWriter streamWriter = new(httpWebRequest.GetRequestStream())) { string root = JsonConvert.SerializeObject(new Root() { OfferId = item.SKU, ProductId = (int)((ItemDesc)item).Id }); streamWriter.Write(root); }
+            using (StreamWriter streamWriter = new(httpWebRequest.GetRequestStream())) { string root = JsonConvert.SerializeObject(new Root() { OfferId = item.SKU, ProductId = ((ItemDesc)item).Id }); streamWriter.Write(root); }
             HttpWebResponse httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
             using (StreamReader streamReader = new(httpResponse.GetResponseStream())) { result = streamReader.ReadToEnd(); }
             RootResult End = JsonConvert.DeserializeObject<RootResult>(result);
@@ -23,7 +23,7 @@ namespace SiteApi.IntegrationSiteApi.APIMarket.Ozon.Post
             [JsonProperty("offer_id")]
             public string OfferId { get; set; }
             [JsonProperty("product_id")]
-            public int ProductId { get; set; }
+            public string ProductId { get; set; }
         }
         internal class Result
         {

@@ -19,11 +19,11 @@ namespace SiteApi.IntegrationSiteApi.APIMarket.Ozon.Post
             Server.Class.IntegrationSiteApi.Market.Ozon.OzonPortOrderList.Order Or = (Server.Class.IntegrationSiteApi.Market.Ozon.OzonPortOrderList.Order)Order;
             List<Product> Products = new();
 
-            var NeedGtd =  new OzonPostExemplarStatus(aPISetting).Get(Order);
+            List<OzonPostExemplarStatus.Product> NeedGtd = new OzonPostExemplarStatus(aPISetting).Get(Order);
 
-            if (NeedGtd)
+            if (NeedGtd is List<OzonPostExemplarStatus.Product>)
             {
-
+                new OzonPostExemplarSet(aPISetting).Get(Order, NeedGtd);
             }
             else
             {

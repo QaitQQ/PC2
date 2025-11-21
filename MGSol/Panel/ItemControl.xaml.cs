@@ -32,9 +32,8 @@ namespace MGSol.Panel
     public partial class ItemControl : UserControl
     {
         private List<MarketItem> ItemsList;
-
+        private string FiltrShop;
         private List<IMarketItem> _result { get; set; }
-
         private ObservableCollection<VisMarketItem> VisItemsList { get; set; }
         private Выгрузка items1C;
         private List<WS> WCList { get; set; }
@@ -65,6 +64,7 @@ namespace MGSol.Panel
         private void SyncItem_Button_Click(object sender, RoutedEventArgs e)
         {
             VisItemsList.Clear();
+            FiltrShop = ProcessingPanelApiBox.SelectedItem?.ToString();
             _ = System.Threading.Tasks.Task.Factory.StartNew(() => SyncItemList());
         }
         private void Renew_click(object sender, RoutedEventArgs e)
@@ -148,7 +148,9 @@ namespace MGSol.Panel
                     Fill_V_list(from lst in nlist orderby lst.SKU select lst);
                     break;
                 case "System.Collections.ObjectModel.ObservableCollection`1[StructLibCore.Marketplace.IMarketItem] Items":
-                    Fill_V_list(selectionItem: from lst in nlist orderby lst.Items?.Count descending select lst);
+
+                    nlist = nlist.Where(x => x.Items != null && x.Items.Count > 0).ToList();
+                    Fill_V_list(selectionItem: from lst in nlist orderby lst.Items[0].Stocks descending select lst);
                     break;
                 default:
                     break;
@@ -171,33 +173,44 @@ namespace MGSol.Panel
                     List<IMarketItem> Result = null;
                     if (Option.Active)
                     {
-                        switch (Option.Type)
+                        if ((FiltrShop == null) || (Option.Name == FiltrShop))
                         {
-                            case MarketName.Yandex:
-                                Result = new Server.Class.IntegrationSiteApi.Market.Yandex.YandexGetName.YandexGetItemList(Option).Get();
-                                break;
-                            case MarketName.Ozon:
-                                Result = new Server.Class.IntegrationSiteApi.Market.Ozon.OzonPostItemDesc(Option).Get();
-                                break;
-                            case MarketName.Avito:
-                                break;
-                            case MarketName.Sber:
-                                break;
-                            default:
-                                break;
+                            switch (Option.Type)
+                            {
+                                case MarketName.Yandex:
+                                    Result = new Server.Class.IntegrationSiteApi.Market.Yandex.YandexGetName.YandexGetItemList(Option).Get();
+                                    break;
+                                case MarketName.Ozon:
+                                    Result = new Server.Class.IntegrationSiteApi.Market.Ozon.OzonPostItemDesc(Option).Get();
+                                    break;
+                                case MarketName.Avito:
+                                    break;
+                                case MarketName.Sber:
+                                    break;
+                                default:
+                                    break;
+                            }
+                            Dispatcher.Invoke(() =>
+                            {
+                                Results.Add(new KeyValuePair<APISetting, List<IMarketItem>>(Option, Result));
+                            });
                         }
-                        Dispatcher.Invoke(() =>
-                        {
-                            Results.Add(new KeyValuePair<APISetting, List<IMarketItem>>(Option, Result));
-                        });
                     }
                 });
             }
             int i = 0;
-            while (Results.Count < Options.Count)
+            int n = 0;
+            foreach (var item in Options)
+            {
+                if (item.Active == true)
+                {
+                    n++;
+                }
+            }
+            while (Results.Count < n)
             {
                 i++; Thread.Sleep(1000);
-                if (Results.Count == Options.Count || i > 30)
+                if (Results.Count == n || i > 30 ||(Results.Count == 1 && FiltrShop != null))
                 {
                     FiillResults(Results);
                     break;
@@ -247,7 +260,8 @@ namespace MGSol.Panel
                 {
                     Fill_V_list(ItemsList);
                 });
-            };
+            }
+            ;
         }
         private static string ImportItems(IMarketItem[] mass)
         {
@@ -423,7 +437,7 @@ namespace MGSol.Panel
             {
                 try
                 {
-                    using HttpResponseMessage response = await client.GetAsync("https://salessab.su/STList.xml");
+                    using HttpResponseMessage response = await client.GetAsync("https://sabsb.ru/STList.xml");
                     using Stream streamToReadFrom = await response.Content.ReadAsStreamAsync();
                     XmlSerializer serializer = new(typeof(SiteStoregeStruct));
                     P = (SiteStoregeStruct)serializer.Deserialize(streamToReadFrom);
@@ -447,7 +461,7 @@ namespace MGSol.Panel
         private async void DownloadName_Click(object sender, RoutedEventArgs e)
         {
             using HttpClient client = new();
-            using HttpResponseMessage response = await client.GetAsync("https://salessab.su/ComNameList.xml");
+            using HttpResponseMessage response = await client.GetAsync("https://sabsb.ru/ComNameList.xml");
             using Stream streamToReadFrom = await response.Content.ReadAsStreamAsync();
             XmlSerializer serializer = new(typeof(List<СomparisonNameID>));
             ComparisonsNames = (List<СomparisonNameID>)serializer.Deserialize(streamToReadFrom);
@@ -818,26 +832,20 @@ namespace MGSol.Panel
             }
             RenewPrice(mass.ToArray());
         }
-
         private void LoadArchive_Click(object sender, RoutedEventArgs e)
         {
-
             var Results = new List<KeyValuePair<APISetting, List<IMarketItem>>>();
             foreach (APISetting Option in Options)
             {
                 if (Option.Active)
                 {
                     List<IMarketItem> Result = new Server.Class.IntegrationSiteApi.Market.Ozon.OzonPostItemARCHIVEDList(Option).Get();
-
                     _result = Result;
                     Results.Add(new KeyValuePair<APISetting, List<IMarketItem>>(Option, Result));
                 }
-
             }
-
             FiillResults(Results);
         }
-
         private void CopyList_Click(object sender, RoutedEventArgs e)
         {
             var list = new List<string>();
@@ -854,9 +862,7 @@ namespace MGSol.Panel
                             {
                                 list.Add(Y.SKU);
                             }
-
-                           T = new OzonPostGetAttr(X).Get(list);
-
+                            T = new OzonPostGetAttr(X).Get(list);
                         }
                     }
                     if (T == null)
@@ -869,11 +875,20 @@ namespace MGSol.Panel
                         fi.attributes = new List<object>();
                         fi.attributes.Add(Z);
                     }
-
                     new Server.Class.IntegrationSiteApi.Market.Ozon.OzonPostItemCopyObject(item).Get(_result);
                 }
             }
-          
+        }
+        private void AddOneRub_Click(object sender, RoutedEventArgs e)
+        {
+
+            foreach (var item in VisItemsList)
+            {
+
+            }
+
+
+
 
         }
     }

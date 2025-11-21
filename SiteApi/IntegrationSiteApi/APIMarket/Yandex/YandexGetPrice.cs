@@ -63,6 +63,8 @@ namespace Server.Class.IntegrationSiteApi.Market.Yandex.YandexGetPrice
         public List<string> Pic { get; set; }
         public List<string> Barcodes { get; set; }
         public List<object> attributes { get; set; }
+
+        public string MarketID { get { return id; } }
     }
     [Serializable]
     public class Result

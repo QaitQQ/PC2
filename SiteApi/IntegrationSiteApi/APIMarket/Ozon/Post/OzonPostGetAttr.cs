@@ -78,7 +78,7 @@ namespace SiteApi.IntegrationSiteApi.APIMarket.Ozon.Post
         public class Result
         {
             [JsonProperty("id")]
-            public int Id { get; set; }
+            public string Id { get; set; }
             [JsonProperty("barcode")]
             public string Barcode { get; set; }
             [JsonProperty("category_id")]

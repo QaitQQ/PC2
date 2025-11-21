@@ -115,8 +115,8 @@ namespace MGSol.Panel
         }
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            try
-            {
+            //try
+            //{
                 if (ActiveFile != null)
                 {
                     Document Document = GenDocument();
@@ -134,7 +134,7 @@ namespace MGSol.Panel
                         if (ActiveFile.APISetting.Type == MarketName.Ozon)
                         {
                             string SFNumber = ColorCellsList[i][GiveColorCell(ParamEnum.НомерСФ).Y].Value;
-                            string Bonus = ColorCellsList[i][GiveColorCell(ParamEnum.Бонус).Y].Value;
+                            string Bonus = "";
                             if (OrderPrice != "" && Bonus is not "" and not null)
                             {
                                 OrderPrice = (((double.Parse(OrderPrice) * double.Parse(Count)) + double.Parse(Bonus)) / double.Parse(Count)).ToString();
@@ -319,12 +319,12 @@ namespace MGSol.Panel
                         Document.Orders.Add(NOrder);
                     }
                 }
-            }
-            catch (Exception E)
-            {
-                TestParamStack();
-                _ = MessageBox.Show(E.Message);
-            }
+            //}
+            //catch (Exception E)
+            //{
+            //    TestParamStack();
+            //    _ = MessageBox.Show(E.Message);
+            //}
         }
         private string FindArt1C(string sKU)
         {
@@ -370,7 +370,7 @@ namespace MGSol.Panel
                 string NameVal = valString[ind];
                 ind = Array.IndexOf(nameCollstring, "ИНН");
                 string INNVal = valString[ind];
-                ind = Array.IndexOf(nameCollstring, "Дата\nсчета-фактуры\nпродавца");
+                ind = Array.IndexOf(nameCollstring, "Дата счета-фактуры продавца");
                 string DataVal = valString[ind];
                 return new SF() { NameBuyer = NameVal, Date = DataVal, INN = INNVal, Nomber = SFNomber };
             }

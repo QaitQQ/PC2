@@ -68,7 +68,7 @@ namespace MGSol.Panel
                     {
                         foreach (IMarketItem item in Items)
                         {
-                            if (item.Stocks is not "" and not null)
+                            if (item.Stocks is not null and not "")
                             {
                                 SaleItemCount += Convert.ToInt32(item.Stocks);
                             }
