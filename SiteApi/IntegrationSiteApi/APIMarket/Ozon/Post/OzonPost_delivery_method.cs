@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Text.Json.Serialization;
 namespace SiteApi.IntegrationSiteApi.APIMarket.Ozon.Post
 {
     public class OzonPost_delivery_method : OzonPost
@@ -32,49 +33,69 @@ namespace SiteApi.IntegrationSiteApi.APIMarket.Ozon.Post
                 }
                 var httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
                 using (var streamReader = new StreamReader(httpResponse.GetResponseStream())) { result = streamReader.ReadToEnd(); }
-                 response = JsonConvert.DeserializeObject<Response>(result);
+                
+                
+
+                response = JsonConvert.DeserializeObject<Response>(result);
 
             }
             catch (System.Exception e)
             { 
             }
-            return response.Result;
+
+            if (response != null)
+            {
+                return response.Result;
+            }
+
+            return new List<OzonPost_delivery_method_Result>();
         }
 
 
         public class OzonPost_delivery_method_Result
         {
             [JsonProperty("id")]
-            public long Id { get; set; }
+            [JsonPropertyName("id")]
+            public double Id { get; set; }
 
             [JsonProperty("company_id")]
-            public int CompanyId { get; set; }
+            [JsonPropertyName("company_id")]
+            public double CompanyId { get; set; }
 
             [JsonProperty("name")]
+            [JsonPropertyName("name")]
             public string Name { get; set; }
 
             [JsonProperty("status")]
+            [JsonPropertyName("status")]
             public string Status { get; set; }
 
             [JsonProperty("cutoff")]
+            [JsonPropertyName("cutoff")]
             public string Cutoff { get; set; }
 
             [JsonProperty("provider_id")]
-            public int ProviderId { get; set; }
+            [JsonPropertyName("provider_id")]
+            public double ProviderId { get; set; }
 
             [JsonProperty("template_id")]
-            public int TemplateId { get; set; }
+            [JsonPropertyName("template_id")]
+            public double TemplateId { get; set; }
 
             [JsonProperty("warehouse_id")]
-            public long WarehouseId { get; set; }
+            [JsonPropertyName("warehouse_id")]
+            public double WarehouseId { get; set; }
 
             [JsonProperty("sla_cut_in")]
-            public int SlaCutIn { get; set; }
+            [JsonPropertyName("sla_cut_in")]
+            public double SlaCutIn { get; set; }
 
             [JsonProperty("created_at")]
+            [JsonPropertyName("created_at")]
             public DateTime CreatedAt { get; set; }
 
             [JsonProperty("updated_at")]
+            [JsonPropertyName("updated_at")]
             public DateTime UpdatedAt { get; set; }
         }
 
@@ -91,13 +112,13 @@ namespace SiteApi.IntegrationSiteApi.APIMarket.Ozon.Post
         public class Filter
         {
             [JsonProperty("provider_id")]
-            public int ProviderId { get; set; }
+            public double ProviderId { get; set; }
 
             [JsonProperty("status")]
             public string Status { get; set; }
 
             [JsonProperty("warehouse_id")]
-            public long WarehouseId { get; set; }
+            public double WarehouseId { get; set; }
         }
 
         public class OzonPost_delivery_method_Request
@@ -106,10 +127,10 @@ namespace SiteApi.IntegrationSiteApi.APIMarket.Ozon.Post
             public Filter Filter { get; set; }
 
             [JsonProperty("limit")]
-            public int Limit { get; set; }
+            public double Limit { get; set; }
 
             [JsonProperty("offset")]
-            public int Offset { get; set; }
+            public double Offset { get; set; }
         }
 
     }

@@ -32,6 +32,7 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.3650.58" />
     <PackageReference Include="System.Data.Odbc" Version="8.0.0-preview.5.23280.8" />
     <PackageReference Include="System.Data.OleDb" Version="8.0.0-preview.5.23280.8" />
     <PackageReference Include="System.Reactive" Version="6.0.1-preview.1" />

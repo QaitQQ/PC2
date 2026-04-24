@@ -36,8 +36,16 @@ namespace SiteApi.IntegrationSiteApi.ApiMainSite.Post
             //попытка принять
             try
             {
-                using StreamReader streamReader = new(httpResponse.GetResponseStream());
-                result = streamReader.ReadToEnd();
+                if (httpResponse != null)
+                {
+                    using StreamReader streamReader = new(httpResponse.GetResponseStream());
+                    result = streamReader.ReadToEnd();
+                }
+                else
+                {
+                    return null;
+                }
+
             }
             catch (Exception e)
             {

@@ -17,6 +17,11 @@ from django.urls import reverse
 from django.http.response import HttpResponseRedirect
 from django.http.request import QueryDict
 import requests
+
+from django_q.tasks import async_task
+from django_q.models import Schedule
+from django_q.tasks import schedule
+
 def index(request):
     return render(request, "AutoH/index.html")
 def devices(request):
@@ -80,6 +85,18 @@ def devices(request):
                         x.DateOfLastOperation = mess.DateOfLastOperation
                    except:
                         pass
+                elif x.device.deviceType.name == "Relay_2_termo":
+                   try:
+                        mess = json.loads(
+                            cd, object_hook=lambda d: SimpleNamespace(**d)
+                        )
+                        x.st_relay = mess.status
+                        x.st_relay_2 = mess.status_2
+                        x.Degrees = mess.Degrees
+                        x.Hp = mess.Hp
+                        x.DateOfLastOperation = mess.DateOfLastOperation
+                   except:
+                        pass
         data = {"device": device}
     return render(request, "AutoH/devices.html", data)
 def NewDev(dev_id, tape, requestData):
@@ -92,7 +109,18 @@ def NewDev(dev_id, tape, requestData):
         else:
             deviceType = DeviceType.objects.get(name=tape)
         device = Device.objects.create(sn=dev_id, deviceType=deviceType)
+
+
+
         data = DeviceData.objects.create(device=device, data="")
+        if tape == "Relay_2_termo":
+           data.data = "{'status': '0', 'status_2': '0'}"
+            
+
+
+        pass
+
+
         devStatus = DeviceStatus.objects.create(
             device=device, data=datetime.now(tzinfo)
         )
@@ -163,8 +191,8 @@ def data_ex(request):
             create = request.GET.get("create", "")
             tape = request.GET.get("tape", "")
             if create == "new":
-                print("создание")
-                data = '"status":"0"'
+                print("создание")             
+                data = '"status":"0"'         
                 NewDev(dev_id, tape, [data])
             else:
                 return JsonResponse(
@@ -244,7 +272,7 @@ def on_off_relay(request):
     dev_id = mess["dev_id"]
     counter = mess["counter"]
     val = mess["val"]
-    
+    st_relay = mess["st_relay"]
     dev_dat = DeviceData.objects.get(device_id=int(dev_id))
     cd = dev_dat.data.replace("'", '"')
     mess = json.loads(cd, object_hook=lambda d: SimpleNamespace(**d))
@@ -260,6 +288,17 @@ def on_off_relay(request):
            mess.status = "0"
         else:
             mess.status = "1"
+    elif device.deviceType.name == "Relay_2_termo":
+        if val == "1":
+            if st_relay == "st_relay":
+                mess.status = "0"
+            else:
+                mess.status_2 = "0"
+        else:
+            if st_relay == "st_relay":
+                mess.status = "1"
+            else:
+                mess.status_2 = "1"
     dev_dat.data = json.dumps(mess.__dict__)
     dev_dat.save()
     qd = QueryDict(mutable=True)
@@ -317,6 +356,14 @@ def add_new_dev(request):
 
 
         data = DeviceData.objects.create(device=device, data=devicedata)
+
+        if dev_type == "Relay_2_termo":
+           
+           data.data = "{'status': '0', 'status_2': '0','on_time': []}"
+
+        pass
+
+
         devStatus = DeviceStatus.objects.create(
             device=device, data=datetime.now(tzinfo)
         )
@@ -342,3 +389,23 @@ def get_ext_dev(request):
     qd = QueryDict(mutable=True)
     qd.update(dev_act=device.pk)
     return redirect_qd(devices, qd=qd) 
+
+def Prt():
+    print("123");
+def print_result(task):
+    print(task.result)
+
+@csrf_exempt
+@api_view(["GET"])
+@permission_classes([AllowAny])
+def add_task(request):
+    print("321");
+    opts = {'task_name': '123'}
+
+   # Schedule.objects.create( func='AutoH.views.Prt', schedule_type=Schedule.MINUTES, repeats=-1,name = 123, minutes = 1, q_options = opts)
+    schedule('AutoH.views.Prt',schedule_type=Schedule.MINUTES, repeats = -1,q_options = opts)
+
+
+
+    qd = QueryDict(mutable=True)
+    return redirect_qd(index, qd=qd)

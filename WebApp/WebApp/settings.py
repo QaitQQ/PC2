@@ -1,10 +1,12 @@
 import os
 import posixpath
 import socket
+from socket import gethostname, gethostbyname, gethostbyname_ex
+
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'b99f00a6-710a-457e-bce7-0e06ad38e692'
 DEBUG = True 
-ALLOWED_HOSTS = ['xn--80ach6cd.xn--p1ai','127.0.0.1','localhost', '192.168.8.100']
+ALLOWED_HOSTS = ['xn--80ach6cd.xn--p1ai','127.0.0.1','localhost','auto.sabsb.ru',  gethostname(), gethostbyname(gethostname()),]
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.admindocs',
@@ -22,6 +24,7 @@ INSTALLED_APPS = [
     'django_extensions',
     'PostingAccounting',
     'AutoH', 
+    'django_q',
 ]
 LOGIN_REDIRECT_URL = '/'
 MIDDLEWARE = [
@@ -116,3 +119,12 @@ STATICFILES_DIRS = [
    os.path.join(BASE_DIR, "static"),
 ]
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+Q_CLUSTER = {
+    'name': 'DjangORM',
+    'workers': 4,
+    'timeout': 90,
+    'retry': 120,
+    'queue_limit': 50,
+    'bulk': 10,
+    'orm': 'default'
+}

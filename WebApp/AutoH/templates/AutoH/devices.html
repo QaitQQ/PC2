@@ -51,6 +51,8 @@
         {% include 'AutoH/devtype/relay.html' %}
         {% elif el.device.deviceType.name == "thermo_socket" %}
         {% include 'AutoH/devtype/thermo_socket.html' %}
+        {% elif el.device.deviceType.name == "Relay_2_termo" %}
+        {% include 'AutoH/devtype/Relay_2_termo.html' %}
         {% elif el.device.deviceType.name == "ext_dev" %}
         <label>{{el.time}}</label>
         <label>{{el.term}}</label>

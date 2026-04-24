@@ -1,11 +1,7 @@
 ﻿using MGSol.Panel.Other;
-
 using NPOI.SS.Formula.Functions;
-
 using SiteApi.IntegrationSiteApi.APIMarket.Ozon.Post;
-
 using StructLibCore.Marketplace;
-
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -27,7 +23,6 @@ namespace MGSol.Panel
     {
         private MainModel Model { get; set; }
         private ObservableCollection<ObservableCollection<ColorCell>> ColorCellsList { get; set; }
-
         private ObservableCollection<FileListClass> InfoFolderFile;
         private object PressBtn;
         private TextBlock ColtextBlock;
@@ -230,7 +225,27 @@ namespace MGSol.Panel
                                     SKU = ColorCellsList[i][GiveColorCell(ParamEnum.SKU).Y].Value,
                                     Type = OrdersTaypeEnum.Возврат
                                 };
-                                NOrderItem.Article1C = Model.OptionMarketPlace.MarketItems.First(x => x.SKU == NOrderItem.SKU).Art1C;
+                            var ArticleItem = Model.OptionMarketPlace.MarketItems.FirstOrDefault(x => x.SKU == NOrderItem.SKU);
+                            if (ArticleItem != null && ArticleItem.Art1C != null)
+                            {
+                                NOrderItem.Article1C = ArticleItem.Art1C;
+                            }
+                            else 
+                            {
+
+                                ModalBox MB = new()
+                                {
+                                    _STR = "не удалось найти позицию в базе с таким SKU, создать?"
+                                };
+                                if (MB.ShowDialog() == true)
+                                {
+                                    Model.OptionMarketPlace.MarketItems.Add(new StructLibCore.Marketplace.MarketItem() { SKU = NOrderItem.SKU });
+                                }
+                                Model.Save();
+
+
+
+                            }
                                 AddItem(Document, NPost, Date, FindPost, NOrderItem, SchetFaktura);
                             }
                         }
@@ -257,8 +272,6 @@ namespace MGSol.Panel
                             if (OrderReturnPrice is not "0" and not "")
                             {
                                 string NPost = ColorCellsList[i][GiveColorCell(ParamEnum.НомерЗаказа).Y]?.Value;
-
-
                                 string Date = DateTime.Now.ToString().Split(" ")[0];
                                 SF SchetFaktura = null;
                                 try
@@ -303,7 +316,6 @@ namespace MGSol.Panel
                     else
                     {
                         string simpleNPost = null;
-
                         foreach (char item in NPost)
                         {
                             if (char.IsDigit(item))
@@ -311,9 +323,6 @@ namespace MGSol.Panel
                                 simpleNPost = simpleNPost + item;
                             }
                         }
-                       
-
-
                         Order NOrder = new() { DepartureNumber = simpleNPost, DepartureDate = Date, SchetFaktura = SchetFaktura };
                         NOrder.Items.Add(NOrderItem);
                         Document.Orders.Add(NOrder);
@@ -359,9 +368,6 @@ namespace MGSol.Panel
                 string y = AppDomain.CurrentDomain.BaseDirectory;
                 DirectoryInfo mainDir = new(y + @"/Report");
                 var FolderFile = mainDir.GetFiles();
-
-
-
                 FileInfo Fn = FolderFile.First(x => x.Name.Contains(NNomer) && x.Name.Contains("DocumentB2BSales") && !x.Name.Contains('#'));
                 if (byerSFmass == null) { try { byerSFmass = ReadFileToMass(Fn.FullName)[0]; } catch { _ = MessageBox.Show("Не удалось загрузить файл B2B"); } }
                 string[] nameCollstring = byerSFmass.First(x => x.Contains("Наименование покупателя"));
@@ -385,7 +391,6 @@ namespace MGSol.Panel
             try
             {
                 string Nomber = GiveColorCell(ParamEnum.НомерОтчета).Value;
-
                 Nomber = Nomber.Split(" от ")[0];
                 string NNomer = null;
                 DateTime date = DateTime.Now;
@@ -409,7 +414,7 @@ namespace MGSol.Panel
             }
             catch (Exception E)
             {
-                _ = MessageBox.Show(E.Message);
+                _ = MessageBox.Show("нет номер отчета");
                 return null;
             }
         }
@@ -623,10 +628,7 @@ namespace MGSol.Panel
             InfoFolderFile = new ObservableCollection<FileListClass>();
             string y = AppDomain.CurrentDomain.BaseDirectory;
             DirectoryInfo mainDir = new(y + @"/Report");
-
-
             var FolderDir = mainDir.GetDirectories();
-
             foreach (DirectoryInfo dir in FolderDir)
             {
                 var FolderFile = dir.GetFiles();
@@ -634,12 +636,9 @@ namespace MGSol.Panel
                 InitializeComponent();
                 ParamButtons = ReturnList();
                 ButtonFieldStack.ItemsSource = ParamButtons;
-
                 var folder = new FileListClass();
-
                 folder.Name = dir.Name;
                 folder.Path = dir.FullName;
-
                 foreach (FileInfo file in FolderFile)
                 {
                     if (file.Name.Contains("xlsx") && !file.Name.Contains('#'))
@@ -654,9 +653,7 @@ namespace MGSol.Panel
                     }
                 }
                 InfoFolderFile.Add(folder);
-
             }
-
             FileList.ItemsSource = InfoFolderFile;
         }
         private void LoadReport_Click(object sender, RoutedEventArgs e)
@@ -727,32 +724,18 @@ namespace MGSol.Panel
         }
         private void GetReport_Click(object sender, RoutedEventArgs e)
         {
-
             foreach (APISetting item in Model.OptionMarketPlace.APISettings)
             {
                 if (item.Type == MarketName.Ozon)
                 {
                     var X = new SiteApi.IntegrationSiteApi.APIMarket.Ozon.Post.OzonPostMonthOrderList(item).Get();
-
                 }
             }
-
         }
-
         protected class FileListClass : ObservableCollection<FileOption>
         {
-
             public string Name { get; set; }
-
             public string Path { get; set; }
-
-
-
-
         }
-
-
-
-
     }
 }

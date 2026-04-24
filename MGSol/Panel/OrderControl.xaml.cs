@@ -17,6 +17,8 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using Microsoft.Web.WebView2.Core;
+
 namespace MGSol.Panel
 {
     public partial class OrdersControl : UserControl
@@ -194,30 +196,32 @@ namespace MGSol.Panel
         {
             Button btn = (Button)sender;
             IOrder X = (IOrder)btn.DataContext;
-            Browser.Navigate("http://localhost/");
+            Browser.Source = new Uri("http://localhost/");
             string Z = null;
-            switch (X.APISetting.Type)
+            if (X != null)
             {
-                case MarketName.Yandex:
-                    Z = new YandexGetLabel(X.APISetting).Get(X);
-                    break;
-                case MarketName.Ozon:
-                    Z = new SiteApi.IntegrationSiteApi.APIMarket.Ozon.Post.OzonPostLabel(X.APISetting).Get(X);
-                    break;
-                case MarketName.Avito:
-                    break;
-                case MarketName.Sber:
-                    break;
-                default:
-                    break;
+                switch (X.APISetting.Type)
+                {
+                    case MarketName.Yandex:
+                        Z = new YandexGetLabel(X.APISetting).Get(X);
+                        break;
+                    case MarketName.Ozon:
+                        Z = new SiteApi.IntegrationSiteApi.APIMarket.Ozon.Post.OzonPostLabel(X.APISetting).Get(X);
+                        break;
+                    case MarketName.Avito:
+                        break;
+                    case MarketName.Sber:
+                        break;
+                    default:
+                        break;
+                }
+                BNavi(Z);
             }
-            BNavi(Z);
         }
         private void GetActClick(object sender, RoutedEventArgs e)
         {
             Control btn = (Control)sender;
             APISetting X = (APISetting)btn.DataContext;
-            Browser.Navigate("http://localhost/");
             string Z = null;
             switch (X.Type)
             {
@@ -274,11 +278,15 @@ namespace MGSol.Panel
             string y = AppDomain.CurrentDomain.BaseDirectory;
             if (Z == null || !Z.Contains("none"))
             {
-                Browser.Navigate(@"file:///" + y + Z);
+
+                string Y = @"file:///" + y + Z;
+                Browser.Source = new Uri(Y);
+
+                //  Browser.NavigateToString(@"file:///" + y + Z);
             }
             else
             {
-                Browser.NavigateToString(Z);
+                Browser.Source = new Uri("http://localhost/");
             }
         }
         private void Search_Click(object sender, RoutedEventArgs e)

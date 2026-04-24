@@ -6,13 +6,29 @@
 <div>
     {% if user.is_authenticated %}
     <h1>{{ title}}</h1>
-    {% endif %}
+
+    <div>
+
+        Сценарии
+
+        Устройство 
+        Элименты
+        Условия 
+        Устройство
+        <div>
+            <form action="{% url 'add_task' %}" method="GET" style="display: ruby;">
+                {% csrf_token %}
+                <button> ADD </button>
+            </form>
+        </div>
+    </div>
+
 
     {% for el in values %}
     <p>{{el}}</p>
     {%endfor %}
     {% include 'main/Modal.html' %}
-
+    {% endif %}
 </div>
 
 {% endblock %}

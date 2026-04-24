@@ -85,7 +85,7 @@ namespace SiteApi.IntegrationSiteApi.APIMarket.Ozon.Post
             public bool AllBlrTraceable { get; set; }
 
             [JsonProperty("delivery_method_id")]
-            public long DeliveryMethodId { get; set; }
+            public double DeliveryMethodId { get; set; }
 
             [JsonProperty("departure_date")]
             public string DepartureDate { get; set; }
