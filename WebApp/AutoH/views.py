@@ -268,11 +268,13 @@ def rem_opt(request):
 @api_view(["POST"])
 @permission_classes([AllowAny])
 def on_off_relay(request):
-    mess = request.POST
-    dev_id = mess["dev_id"]
-    counter = mess["counter"]
-    val = mess["val"]
-    st_relay = mess["st_relay"]
+    vmess = request.POST
+    dev_id = vmess["dev_id"]
+    counter = vmess["counter"]
+    val = vmess["val"]
+    
+
+
     dev_dat = DeviceData.objects.get(device_id=int(dev_id))
     cd = dev_dat.data.replace("'", '"')
     mess = json.loads(cd, object_hook=lambda d: SimpleNamespace(**d))
@@ -289,6 +291,7 @@ def on_off_relay(request):
         else:
             mess.status = "1"
     elif device.deviceType.name == "Relay_2_termo":
+        st_relay = vmess["st_relay"]
         if val == "1":
             if st_relay == "st_relay":
                 mess.status = "0"

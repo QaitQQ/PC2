@@ -83,6 +83,7 @@
     </Compile>
     <Compile Include="main\migrations\__init__.py" />
     <Compile Include="main\models.py" />
+    <Compile Include="main\startup.py" />
     <Compile Include="main\tests.py" />
     <Compile Include="main\urls.py" />
     <Compile Include="main\views.py" />
@@ -97,6 +98,8 @@
     <Compile Include="PostingAccounting\urls.py" />
     <Compile Include="PostingAccounting\views.py" />
     <Compile Include="PostingAccounting\__init__.py" />
+    <Compile Include="WebApp\apps.py" />
+    <Compile Include="WebApp\startup.py" />
     <Compile Include="WebApp\__init__.py" />
     <Compile Include="WebApp\settings.py">
       <Publish>True</Publish>
