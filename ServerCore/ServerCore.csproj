@@ -42,7 +42,7 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
 
-    <PackageReference Include="Npgsql" Version="7.0.0-rc.2" />
+    <PackageReference Include="Npgsql" Version="8.0.3" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="7.0.0-rc.2" />
     <PackageReference Include="Spire.XLS" Version="12.10.1" />
     <PackageReference Include="System.Drawing.Common" Version="7.0.0-rc.2.22472.3" />
