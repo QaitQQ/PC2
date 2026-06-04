@@ -117,6 +117,7 @@
     <Folder Include="AutoH\templates\" />
     <Folder Include="AutoH\templates\AutoH\" />
     <Folder Include="AutoH\templates\AutoH\devtype\" />
+    <Folder Include="AutoH\templates\AutoH\rules\" />
     <Folder Include="ItemPrAppApi\" />
     <Folder Include="ItemPrAppApi\migrations\" />
     <Folder Include="ItemPrAppApi\templates\" />
@@ -180,6 +181,7 @@
     <Content Include="AutoH\templates\AutoH\layout.html" />
     <Content Include="AutoH\templates\AutoH\rem_dev.html" />
     <Content Include="AutoH\templates\AutoH\devtype\valve.html" />
+    <Content Include="AutoH\templates\AutoH\rules\rule.html" />
     <Content Include="favicon.ico" />
     <Content Include="ItemPrAppApi\templates\ItemPrAppApi\index.html" />
     <Content Include="main\static\main\css\bootstrap-grid.css" />

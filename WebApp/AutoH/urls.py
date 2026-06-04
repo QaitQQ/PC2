@@ -15,7 +15,8 @@ urlpatterns = [
     path('add_opt', views.add_opt, name="add_opt"),
     path('add_new_dev', views.add_new_dev, name="add_new_dev"),
     path('get_ext_dev', views.get_ext_dev, name="get_ext_dev"),
-    path('add_task', views.add_task, name="add_task"),
-    
-    
+    path('add_rule', views.add_rule, name="add_rule"),
+    path('add_rule', views.add_rule, name="add_rule"),
+    path('edit_rule', views.edit_rule, name="edit_rule"),
+    path('rem_rule', views.rem_rule, name="rem_rule"),
 ]

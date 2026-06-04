@@ -25,7 +25,7 @@ INSTALLED_APPS = [
     'django_extensions',
     'PostingAccounting',
     'AutoH', 
-    'django_q',
+
 ]
 LOGIN_REDIRECT_URL = '/'
 MIDDLEWARE = [

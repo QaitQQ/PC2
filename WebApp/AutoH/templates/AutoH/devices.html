@@ -45,6 +45,9 @@
                 <form action="{% url 'rem_dev' el.device.id %}"> <button class="bth alert-warning" style="width: 100px; Margin: 5px;">Удалить</button></form>
             </details>
         </div>
+
+        <p style="display: ruby; Margin: 5px; vertical-align: super;">Активность - {{el.DeviceData}}</p>
+
         {% if el.device.deviceType.name == "valve" %}
         {% include 'AutoH/devtype/valve.html' %}
         {% elif el.device.deviceType.name == "relay" %}
@@ -54,13 +57,13 @@
         {% elif el.device.deviceType.name == "Relay_2_termo" %}
         {% include 'AutoH/devtype/Relay_2_termo.html' %}
         {% elif el.device.deviceType.name == "ext_dev" %}
-        <label>{{el.time}}</label>
-        <label>{{el.term}}</label>
-        <label>{{el.stat}}</label>
+        <label>{{el.attr.time}}</label>
+        <label>{{el.attr.term}}</label>
+        <label>{{el.attr.stat}}</label>
         <form action="{% url 'get_ext_dev' %}" method="post">
             {% csrf_token %}
             <input type="hidden" name="dev_id" value={{el.device.id}} />
-            <input type="hidden" name="dev_link" value={{el.link}} />
+            <input type="hidden" name="dev_link" value={{el.attr.link}} />
             <button>On/Off</button>
         </form>
 

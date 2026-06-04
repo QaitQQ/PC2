@@ -1,0 +1,84 @@
+<div style="Margin: 6px;background: lightgray; border-radius: 5px; width: 500px;">
+    <div>
+        <p style="display: ruby; Margin: 5px; vertical-align: super;">Id</p>
+        <p style="display: ruby; Margin: 5px; vertical-align: super;">{{el.id}} </p>
+        <form action="{% url 'rem_rule' %}" method="POST" style="display: ruby;">
+            {% csrf_token %}
+            <input type="hidden" name="rule_id" value={{el.id}} />
+            <button> DEL </button>
+        </form>
+    </div>
+    <div style=" display: table; width: 400px ">
+        <form action="{% url 'edit_rule' %}" method="POST" style="display: ruby;">
+            <input type="hidden" name="rule_id" value={{el.id}} />
+            <div style="background: white; margin: 5px; width: 400px; ">
+                <p>Поле источника</p>
+                <p style="display: ruby; Margin: 5px; vertical-align: super;">{{el.objectDevices.sn}} </p>
+                {% csrf_token %}
+                <input type="hidden" name="old_sn" value={{el.objectDevices.sn}} />
+                <input type="hidden" name="rule_dev_type" value="objectDevices" />
+                <select name="objectDevices_sel">
+                    {% for X in devices %}
+                    <option value="{{ X.id}}"
+                            {% if X.sn= =el.objectDevices.sn %}selected="selected" {% endif %}>
+                        {{ X.sn}}
+                    </option>
+                    {%endfor %}
+                </select>
+            </div>
+            <div style="background: white; margin: 5px; width: 400px; ">
+                <p>Поле условия</p>
+                <div>
+                    <select name="con_attributes">
+                        {% for X in el.objectDevices.attributes %}
+                        <option value="{{X}}"
+                                {% if X= =el.objectDevices.splitData.con_attributes %}selected="selected" {% endif %}>
+                            {{X}}
+                        </option>
+                        {%endfor %}
+                    </select>
+                    <select name="con_z">
+                        {% for X in condition %}
+                        <option value="{{ X}}"
+                                {% if X= =el.objectDevices.splitData.con_z %}selected="selected" {% endif %}>
+                            {{ X}}
+                        </option>
+                        {%endfor %}
+                    </select>
+                    <input type="text" name="text_con" value={{el.objectDevices.splitData.condition_text}} />
+                </div>
+                <p style="display: ruby; Margin: 5px; vertical-align: super;">{{el.condition}} </p>
+            </div>
+            <div style="background: white; margin: 5px; width: 400px;">
+                <p>Поле приемника</p>
+                <p style="display: ruby; Margin: 5px; vertical-align: super;">{{el.subjectDevices.sn}} </p>
+                <input type="hidden" name="rule_dev_type" value="subjectDevices" />
+                <select name="subjectDevices_sel">
+                    {% for X in devices %}
+                    <option value="{{ X.id}}" {% if X.sn= =el.subjectDevices.sn %}selected="selected" {% endif %}>
+                        {{ X.sn}}
+                    </option>
+                    {%endfor %}
+                </select>
+            </div>
+            <div style="background: white; margin: 5px; width: 400px;">
+                <p>Поле значения</p>
+                <div>
+                    <select name="elimentData_att">
+                        {% for X in el.subjectDevices.attributes %}
+                        <option value="{{X}}"
+                                {% if X= =el.subjectDevices.splitData.elimentData_att %}selected="selected" {% endif %}>
+                            {{X}}
+                        </option>
+                        {%endfor %}
+                    </select>
+                    <input type="text" name="elimentData_text" value={{el.subjectDevices.splitData.elimentData_text}} />
+                </div>
+                <p style="display: ruby; Margin: 5px; vertical-align: super;">{{el.elimentData}} </p>
+            </div>
+            <div>
+                <button> Установить </button>
+            </div>
+        </form>
+    </div>
+</div>

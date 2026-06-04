@@ -6,7 +6,7 @@
 
         <summary>Настройки</summary>
         <div style="display: grid; Margin: 3px; ">
-            <p style="display: ruby; Margin: 5px; vertical-align: super;">Последняя сработка - {{el.DateOfLastOperation}}</p>
+            <p style="display: ruby; Margin: 5px; vertical-align: super;">Последняя сработка - {{el.attr.DateOfLastOperation}}</p>
             {% for x in el.on_time %}
             <form action="{% url 'rem_opt' %}" method="post" style="display: ruby;">
                 {% csrf_token %}

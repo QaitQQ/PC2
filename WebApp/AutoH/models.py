@@ -15,3 +15,9 @@ class DeviceData(models.Model):
 class DeviceStatus(models.Model):
     device = models.ForeignKey("Device", verbose_name='Device', on_delete=models.CASCADE)
     data =  models.DateTimeField(verbose_name="Date", max_length=200, null=True)
+
+class Rule(models.Model):
+    objectDevices = models.ForeignKey("Device", verbose_name='Object', on_delete=models.CASCADE, null=True)
+    subjectDevices = models.ForeignKey("Device",related_name="%(app_label)s_%(class)s_related", verbose_name='Subject', on_delete=models.CASCADE, null=True)
+    elimentData = models.CharField(verbose_name="Data", max_length=200, null=True)
+    condition = models.CharField(verbose_name="Condition", max_length=200, null=True)
